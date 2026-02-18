@@ -1,0 +1,305 @@
+NOTES: 
+  - useCallback() function in abilities.py is where mechanics are applied
+  - make sure all 'crit damage' or similar is variable named to critMulti
+
+BUGS:
+  - 
+
+no styles/rune errors:
+- greater affix randomiser
+- erasing rune
+greater prefix + greater suffix erasing same as greater erasing
+if added == 0 for growth
+if removed == 0 for erasing
+space after confirm rune application
+
+NEW AFFIXES:
+- thorns damage: head, feet, legs, boots - prefix
+- otherworld resistance: same as divine but for psychic, ethereal and chaos damage
+- all affixes should have a minimum of 6 tiers, preferably 7+
+- after ability rework:
+  > +max stamina, +stamina regen per turn
+    - both suffixes, scale same on all pieces of equipment, not available on rings/amulets
+
+OTHER STUFF:
+  - more types of consumables as more things get added to the game
+
+CURRENTLY WORKING ON:
+  - abilities.json and abilities.py
+    > abilities.json first, make at least all base class skills
+    > rewrite necessary parts of abilities.py to function with new format of json
+  - dungeons
+    > better modifiers + more modifiers
+      > dungeons.json basically needs to be remade
+    > chance for inbetween wave events (more roguelike elements)
+
+RIGHT NOW IMPORTANT:
+- finish ascendancies descriptions + functionality
+  -> need to rework Assassin for Rogue and anything first strike related
+  -> add ascending + character creation with sub types available
+  - add _removeOldAscendancy and _removeOldSubType methods to add classes
+- make sure onHit return damageTaken and damageType at the end of methods
+
+NEED TO WORK ON:
+  - ascendancy shrine camp area
+    > also hosts changing ascendancy and subtypes
+  - multihit mechanic in combat system
+    > multihit = 50% chance for +1 target hit, 25% for +2, 5% for +3
+  - reworks
+
+FUN ADDITIONAL STUFF:
+  - playtime per save file
+
+FUN BONUS LIBRARIES:
+  - markovify library
+    > gpt says good for random names, fantasy text + procedural diagolue
+  - textual library
+    > allows for terminal UI -> pygame but in the terminal
+    > gpt: "AMAZING for your game if you ever want: proper menus, skill trees, inventory screens"
+      - would actually allow passive skill tree to be added in python and not need a game engine
+  - python-constraint
+    > puzzle mechanics or procedural rules
+    > can define systems like "generate x enemies/loot that obey y set of rules"
+  - py_trees
+    > behaviour trees
+    > boss logic! modular AI systems
+  - noise
+    > good for procedural generation + dungeon maps
+  - simpy
+    > "discrete-event simultation library"
+    > can simulate combat and other things outside of main game loop to test balance
+
+- keep adding more classes, more ascendancies, more sub types whenever you think of anything cool
+- fix ascendancy numbers + decide when roughly + how ascending works (~ level 20-30 seems good)
+  - ascendancy stat buffs need a lot bigger numbers.
+  - most likely unlocked around level 20-30, see average stats at that level and balance around top end
+  - some type of boss fight or trial?
+    > would need to implement bosses for boss fight, would be preferred method!
+    > refight same boss for re-picking ascendancy
+
+MARKET REWORK
+  - need to fix/rework item value calculation and make it make logical sense
+    - baesd on amount of affixes on an item, item rarity, rarity of item affixes (based on weight), etc.
+  - more exciting items, different items
+  - market has a unique selection of affixes that are market-only
+    > market items on average have higher tiers of affixes
+    > e.g. % more damage, % damage reduction etc.
+  - player can choose to 'vaporise' an item at the market to get a selection of runes of similar level to the item's level
+    - number of runes could be dictated by item level, number of affix slots, total tiers of items, total rarity of item affixes + item
+
+ITEM REWORK/IMPROVEMENTS
+  - introduce item bases + base types
+    > each base type has 1-2 base buffs they apply to themselves/the player, similar to affixes
+      - e.g. daggers give +multihit chance, plate armour gives +x damage reduction, axes give chance to bleed on hit, etc.
+      - buffs should be varied but of roughly similar power (shouldn't be any obvious BIS base unless build-specific)
+      - better base types should be unlocked at higher levels e.g. low lvl 1 dagger might have 1-2 multihit, lvl 100 could have 20+
+        > stats dont scale linearly - might be easier to have a json file with all base types + their buffs with roll ranges
+    > small chance for items dropped to be class specific
+      - should only be for the player's class until the account stash is added
+      - class items should have unique affixes/base buffs that target class mechanics
+        > e.g. berserker weapons could have +rage gained, berserker armour could have %reduced rage loss
+        > e.g. rogue weapons grant %chance for bonus siphon, rogue armour grants increased siphon effect
+        > e.g. mage weapons grant +%elemental damage (higher than base damage), mage armour grants +max mana, +mana regen
+  - two new item slots:
+    > off hand
+      - can be used to wield a new type of item: shields
+        - shields function similarly to armour
+          > they can roll defense types and defense values
+          > shields have block chance and unique-to-shield affixes like +x added block chance, +x% increased block chance
+          > other shield affixes should be the same as head/feet affix values
+          > block chance should have a maximum value (perhaps 75%), blocking negates all damage from any hit apart from ethereal
+      - alternatively can be used for wielding a secondary weapons
+        > offhand weapons should have x% reduced stat buffs whilst in the offhand
+          - can be made as a property or similar to applyMastery method, only applied to affix.value and not affix.baseValue
+        > using two weapons still only counts as 1 attack (not 2 separate) for the purposes of combat
+      - or can be used with new item type: two handed weapons (2h)
+        > reqiure both hands empty to wield, stats should be significant enough that deciding between 2h and 1h + 1h takes thought
+        > 2h should not have 2x affix stats, but would share the same stats as weapons
+          - 2h should be able to roll +x block chance at a reduced amount than shields, perhaps between 1-20 through tiers
+    > sigils
+      - up to 5 item slots for sigils
+      - used for smaller but noticeable buffs and some sigil-only affixes
+      - sigil affixes should be maxed at 3 prefix/3 suffix - never more than that unless through runes
+      - different base types of sigils can roll from different affix pools
+        > e.g. 'bloody sigil' rolls offensive affixes, 'guarding sigil' rolls defensive
+          - some sigils can be more focused, focused sigils should be rarer
+            > e.g. 'focused elemental sigil' rolls only elemental affixes
+        > all sigils should always be able to roll:
+          - flat/increased damage/defenses + resistances
+        > all sigil affixes have 6-8 tiers, no more no less
+      - player begins with 1 sigil slot
+        > sigil slots unlocked every 20 levels (max 5)
+    - UNIQUE ITEM REWORK
+      > delete unique items, replace with the two following:
+        - mythic items
+          > 1 tier higher than legendary, extremely rare
+          > only drop after level 60 (endgame items)
+          > 4p/4s base affix slots
+          > base entropy is 1.5, base resistance is 20%
+          > have 1-2 unique 'mythic affix' slots
+            - new affixes that are allowed to completely overwrite rules
+              > e.g. "damage over time heals you instead", "ignore enemy x resistance", "speed is permanently 0.01, +x damage taken, +y% damage multiplier"
+              > should be extremely strong and build defining, could even make a build completely change its course
+                - e.g. a tank gets an extremely powerful weapon with an affix of "no defenses, +20% damage per 1% missing hp" and becomes crazy strong
+                - or a super-dps gets a very defensive weapon with an affix like "-50% damage dealt, 10% max hp gained as thorns. when thorns kills an enemy, double your damage" and becomes super long-fight Scaling
+        - blank items
+          > crafters dream item
+          > should be similar rarity to strong legendary or mythic items
+          > [3, 4]p/[3, 4]s base affix slots
+          > blank items have no entropy and no entropy resistance (entropy = float('inf') for all purposes)
+          > upon interacting with a blank item:
+            - a new menu opens up
+            - a random selection of powerful runes are shown to the player
+            - the player can continue crafting on the item, using only the given selection of runes until they are happy with the item
+            - a destabilisation rune is always given in the selection
+            - once the player confirms their item, it is 'destabilised'
+              > not a true destabilisation unless player used the rune
+              > only in name to prevent further modification to the item
+    - add a quick sell option when getting an item at the end of combat (simple QoL)
+
+- ABILITY REWORK
+  - a lot less available abilities but each one is more impactful + costs more resources
+  - could give all entities mana as a resource to use, some could use health or other mechanics instead?
+    > mage can keep its mechanic even if mana is global since its unique enough
+  - basic attack always exists, but abilities are generally how damage is dealt
+  - abilities could be split with tags that are used to scale
+    - e.g. 'Slash' has tags: {physical, bleed, dot, attack, melee}
+  - abilities could be split between 'offense', 'defense', 'utility', 'unique' for simplicity
+  - rework should aim to make combat more meaningful rather than just a dps race as it is currently
+  - allows for probably weapons/rings to have more affixes as well (increased dot damage, etc.)
+  - abilities should have the opportunity to consist of multiple parts:
+    > example: deal 300% of base damage as x damage type, gain x shield, for x turns gain [] buff
+  - rework abilities.py and the mechanics
+    > separate mechanics into a json file where they can be more descriptive + have better structure
+  - rework status effects
+    > more impactful on actual gameplay, DoTs should have secondary effects to help differentiate
+      - e.g. bleeding reduces speed, posion negates health regen, etc.
+      - DoTs should also have damage types so extra resistances can be applied to them
+    > remove second tiers of mechanics and reduce total amount of mechanics: quality over quantity
+      - do not remove so many mechanics that some abilities have nothing, but so that they are not overwhelming/extra
+
+- ENEMY REWORK
+  - enemies have smarter thinking + decision making
+    > weight based
+    > on attack, attempt to use an attack the player does not have a lot of resistance toward
+    > never attempt an action that won't succeed e.g. using an ability without the resources for it
+    > utility/buff skills used if a buff expires or the enemy has no buffs <or other reasons as well>
+  - enemies drop less loot in terms of resources and equipment
+    > note: check if enemy equipment loses durability whilst they are using it (might not be the case)
+  - enemies should be able to access their own loot tables as if it was their inventory
+    > main use would be to be able to use consumables
+  - rework enemy name system
+    > change it into enemy affix system
+      - each enemy affix does a combination of : adding stats, adding mechanics
+      - some affixes could affect enemy behaviour/decision making too
+        > e.g. more aggressive, more intelligent (more buff timers + attack patterns)
+      - enemy affixes should also affect their own item quantity + rarity
+        > not abundant levels of rarity/quantity but a noticeable amount still
+        > affixes are made/applied before loot table is made so item buffs can be applied correctly
+
+- lowest priority: (EXPANSION IDEAS)
+
+  > New zones unlocked at levels, granting access to brand new mechanics/events/places to explore
+    > New campfire zones
+    > Explorable 'landmarks'
+      > Map implementation - grid based rather than plain GUI
+        - allows for actual tactical combat + more abilities being implemented (e.g. teleports, dashes, aoe)
+          - could be easier in pygame
+
+  > Dungeons - enemies very rarely drop dungeon keys/maps -> allows entrance into a dungeon
+    -> similar to PoE maps
+      - dungeons can have modifiers: up to 3 positive and 3 negative
+        - positive can be things like +rarity of items, +quantity of items, +experience gained, +gold,
+        - negative can be things like +%enemy damage, +%enemy health, +%enemy speed, (or all 3 in one stat), +enemy <stat> etc.
+    -> dungeons are like gauntlets of waves of enemies, higher levels have higher waves
+    -> no healing between fights (e.g. from campfire) - continuous battles
+    -> should be very high risk, very high reward
+      - unique items, stat buffs, legendary items, very high resources, etc
+        - would want a secondary item system or expand greatly on current uniques, for now can just be high-tier items
+    -> must be a genuine challenge but not impossible or unfair
+    -> can have 1 unique modifier: 'Anomaly Modifier'
+      - separate from other map affixes
+      - changes entire combat for map e.g.
+        - all hits apply burn, enemies take 50% less damage, all resistances are inverted, etc.
+
+  > Account Stash
+    > is a camp station
+      - must be built before being able to be accessed per character
+    > can store items and pull them out from other characters
+    > min level required to access
+    > can only pull items out that the character is high enough level for
+    > can deposit anything at any point
+
+  > Infinite Scaling Challenges:
+    > e.g. infinity dungeons:
+      - one attempt, one life, can retreat at any point after each wave
+      - better rewards per dungeon wave cleared
+    > harder and harder one-shot encounters (tower mechanic)
+      - climb the floors of th tower, like infinity dungeon but you can leave and enter at any point
+      - tower progress saves upon leaving. can re-attempt lower floors for less rewards
+        - rewards for lower floors decrease based on difference in floor number 
+          > e.g. attempting floor 1 when you reach floor 40 is very unrewarding
+      - every x floors has a challenging boss fight
+      > could contain tower-only unique crafting resources that provide particular boosts
+        - boosts could be niche or less obvious, but can get stronger and stronger
+        > boosts could be 'blessings' like permanent buffs?
+    >>> general purpose is to create 'endgame' - things to do at level 60+
+      - endgame can begin around level 60-70, makes sense as that would be a lot of character power
+    > each infinite challenge should include a variety of:
+      -> custom and unique crafting methods
+      -> charater power
+      -> engaging mechanics + activities
+      -> new uniques + items
+      -> new abilities?
+      - could try to challenge programming-side of development by trying to make new things
+        - e.g. real-time mechanics, other such things
+
+  > occasional unique zones + dungeons with significantly harder modifiers but equally greater rewards
+
+  > NPCs + Dialogue + Quests:
+    > need a way to discover NPCs, probably in zones
+    > dialogue system with choices e.g.
+      {"dialogue": {
+        "response1": {"dialogue": {
+          "response1": "dialogue",
+          "response2": {"dialogue": "ending_response"}
+          }
+        },
+        "response2": "dialogue",
+        "exit_response": false
+        }
+      }
+      JUST AN EXAMPLE NOT ANYTHING FINAL
+    > probably stored as classes with 'dialogueScript' variable holding above choices
+      > alternatively could make 'dialogue' class:
+        - contains dialogue, response options, option outcomes
+        - then outcomes can be linked to other dialogue options <- like linked lists?
+    > npcs can have quests that give rewards
+      - questBoard functionality placed into NPCs
+      > could replace questBoard with townHall building where all NPCs are stored
+
+  > NOT FOR TERMINAL
+    > Skill Upgrades (Last Epoch Skill Trees)
+    > Skill Tree (Path of Exile-like)
+      -> Unique per class, smaller secondary one for ascendancies
+        -> Some nodes could be different for sub-types
+          -> E.g. savage berserker sub-type has no rage, could be replaced with damage nodes?
+      -> Should contain small nodes which lead to notables with larger buffs.
+      -> 'Travel' nodes can be basic things such as +hp or +damage or such
+      -> Might be a good idea to add armour and dodge/evasion to all characters as bonus stats if the tree feels too small/not enough things!
+    >>> FOR THIS!!! Need to make a node system that works and correctly and efficiently affects the player!
+      -> Potential implementation: 'treeBuffs' dict or equivalent, then added onto the player in recalculateStats
+      -> Would need to rework how skills function alongside upgrades potentially
+        - might not actually need to depending on how well serialisation works in terms of its affects
+          - could still be useful for making sure skills can be upgraded more effectively and allowing for more options
+
+  > Boss fights - unlocked on level? needed to progress to next zone? some reason to fight bosses!
+    -> e.g. one time uniques, one time stat bonuses
+      - if grid system is implemented, boss fights can be significantly more indepth
+        -> custom arena maps specifically tailored for the boss
+
+IF AND WHEN MOVING TO GODOT GAME ENGINE/PYGAME:
+  - Caves of Qud / Tales of Maj'Eyal style movement/combat/grid
+  - Reduce enemy item drops to 3 at max, significantly reduce resources dropped or significantly increase resource costs
+  - Could eventually make an entire skill tree (path of exile) per class, with a smaller one for ascendancies
+

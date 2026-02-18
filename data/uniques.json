@@ -1,0 +1,1118 @@
+{
+    "Lost Guidance": {
+        "slot": "amulet",
+        "stats": {
+            "xpGain": 50,
+            "goldGain": 25,
+            "speed": 0.1,
+            "itemQuantity": 25,
+            "itemRarity": 10
+        },
+        "callback": null,
+        "tier": "rare",
+        "description": "Wisdom of a past adventurer, granting many benefits.",
+        "level": 10
+    },
+    "Sparking Blade": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 40,
+            "speed": 0.1,
+            "damageType": "Lightning"
+        },
+        "callback": "livewire",
+        "tier": "epic",
+        "description": "Shocks enemies on hit, lowering their lightning resistance.",
+        "level": 10
+    },
+    "Young Hope": {
+        "slot": "ring",
+        "stats": {
+            "health": 20,
+            "damage": 5,
+            "healingMagnitude": 20
+        },
+        "callback": "spark_of_life",
+        "tier": "common",
+        "description": "Grants healing and protection.",
+        "level": 10
+    },
+
+    "Shadowstep Boots": {
+        "slot": "feet",
+        "stats": {
+            "health": 40,
+            "speed": 0.1,
+            "stunAvoidance": 20
+        },
+        "callback": "shadow_step",
+        "tier": "common",
+        "description": "Grants a chance to dodge attacks, retaliating when you do.",
+        "level": 15
+    },
+    "Soulbind": {
+        "slot": "amulet",
+        "stats": {
+            "health": 50,
+            "healingMagnitude": 50,
+            "dotResistance": 20
+        },
+        "callback": "rejuvenate",
+        "tier": "epic",
+        "description": "Protects the user's soul through regeneration and shielding.",
+        "level": 15
+    },
+    "Windcutter": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 35,
+            "speed": 0.15,
+            "enemyQuantity": 10,
+            "damageType": "wind"
+        },
+        "callback": "breeze",
+        "tier": "rare",
+        "description": "Reduces enemy wind resistance per hit.",
+        "level": 15
+    },
+
+    "Serpent's Coil": {
+        "slot": "amulet",
+        "stats": {
+            "damage": 15,
+            "health": 30,
+            "dotResistance": 10
+        },
+        "callback": "venomous_embrace",
+        "tier": "common",
+        "description": "An amulet infused with serpent venom. Poisons stack quickly.",
+        "level": 20
+    },
+    "Bloodstone Ring": {
+        "slot": "ring",
+        "stats": {
+            "damage": 20,
+            "health": 30,
+            "healingMagnitude": 25,
+            "lifesteal": 0.1
+        },
+        "callback": "bloodstone",
+        "tier": "rare",
+        "description": "Drains the enemy's life, bleeding them and healing the wearer.",
+        "level": 20
+    },
+    "Flaming Pike" : {
+        "slot": "weapon",
+        "stats": {
+            "damage": 80,
+            "speed": 0.2,
+            "xpGain": 30,
+            "fire": 15,
+            "damageType": "fire"
+        },
+        "callback": "skewer",
+        "tier": "epic",
+        "description": "Skewers the target, bleeding and burning them.",
+        "level": 20
+    },
+
+    "Mindbreaker's Circlet": {
+        "slot": "head",
+        "stats": {
+            "health": 60,
+            "damage": 10,
+            "arcane": 20
+        },
+        "callback": "arcane_feedback",
+        "tier": "common",
+        "description": "Disrupts enemy magic and saps their strength.",
+        "level": 25
+    },
+    "Plaguebringer": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 90,
+            "speed": 0.15,
+            "xpGain": 25,
+            "itemQuantity": 20,
+            "dark": 25,
+            "damageType": "dark"
+        },
+        "callback": "plague",
+        "tier": "legendary",
+        "description": "Inflics deadly poisons, debilitating enemies.",
+        "level": 25
+    },
+    "Crown of Bones": {
+        "slot": "head",
+        "stats": {
+            "health": 100,
+            "physical": 25,
+            "dark": 20,
+            "itemRarity": 20,
+            "goldGain": 30
+        },
+        "callback": "boneweave",
+        "tier": "epic",
+        "description": "Greatly protects the user from harm, shielding them every turn.",
+        "level": 25
+    },
+
+    "Sunforged Plate": {
+        "slot": "chest",
+        "stats": {
+            "health": 80,
+            "fire": 30,
+            "physical": 20
+        },
+        "callback": "blazing_aegis",
+        "tier": "common",
+        "description": "Armor forged in solar flames. Reflects fire damage.",
+        "level": 30
+    },
+    "Giant's Greaves": {
+        "slot": "feet",
+        "stats": {
+            "damage": 15,
+            "health": 70,
+            "physical": 25,
+            "earth": 25
+        },
+        "callback": "crush",
+        "tier": "rare",
+        "description": "Empowers your attacks, crushing enemy defenses on hit.",
+        "level": 30
+    },
+    "Glacier Plate": {
+        "slot": "chest",
+        "stats": {
+            "health": 80,
+            "cold": 35,
+            "physical": 15,
+            "earth": 10,
+            "xpGain": 25,
+            "healingMagnitude": 10
+        },
+        "callback": "biting_cold",
+        "tier": "epic",
+        "description": "Slows attackers when hit.",
+        "level": 30
+    },
+
+    "Tempest Core": {
+        "slot": "amulet",
+        "stats": {
+            "damage": 35,
+            "speed": 0.10,
+            "lightning": 30,
+            "enemyQuantity": 15
+        },
+        "callback": "storm_surge",
+        "tier": "rare",
+        "description": "Contains the heart of a storm. Lightning chains to nearby foes.",
+        "level": 35
+    },
+    "Starfall": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 170,
+            "speed": 0.25,
+            "arcane": 30,
+            "lightning": 15,
+            "fire": 15,
+            "damageType": "arcane"
+        },
+        "callback": "starstruck",
+        "tier": "mythic",
+        "description": "Shoots stars at opponents, debilitating them greatly with each attack.",
+        "level": 35
+    },
+    "Ice Skates": {
+        "slot": "feet",
+        "stats": {
+            "health": 70,
+            "damage": 20,
+            "cold": 40,
+            "physical": 15,
+            "itemRarity": 25,
+            "xpGain": 35
+        },
+        "callback": "frosting",
+        "tier": "epic",
+        "description": "Slows attackers greatly when hit.",
+        "level": 35
+    },
+
+    "Frostfang": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 120,
+            "speed": 0.1,
+            "enemyQuantity": 10,
+            "damageType": "cold"
+        },
+        "callback": "frostchill",
+        "tier": "rare",
+        "description": "Slows enemies and reduces their Cold Resistance on hit.",
+        "level": 40
+    },
+    "Doomcaller": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 200,
+            "critChance": 0.15,
+            "critDamage": 0.25,
+            "dark": 35,
+            "damageType": "dark"
+        },
+        "callback": "doom_call",
+        "tier": "legendary",
+        "description": "Stacks doom on the target with each hit.",
+        "level": 40
+    },
+    "Manastorm Maze": {
+        "slot": "amulet",
+        "stats": {
+            "arcane": 30,
+            "damage": 15,
+            "health": 50,
+            "xpGain": 20
+        },
+        "callback": "manastorm",
+        "tier": "common",
+        "description": "Distrupts your target's mana flow, reducing their arcane resistance.",
+        "level": 40
+    },
+    "Mirror Ring": {
+        "slot": "ring",
+        "stats": {
+            "physical": 20,
+            "arcane": 25,
+            "xpGain": 20,
+            "itemQuantity": 30
+        },
+        "callback": "reflection",
+        "tier": "epic",
+        "description": "Confuses your target, causing them to be weaker and slower.",
+        "level": 40
+    },
+
+    "Prismatic Heart": {
+        "slot": "ring",
+        "stats": {
+            "damage": 20,
+            "health": 60,
+            "fire": 15,
+            "cold": 15,
+            "lightning": 15
+        },
+        "callback": "crystalline_resonance",
+        "tier": "rare",
+        "description": "Has the power to channel multiple elements.",
+        "level": 45
+    },
+    "Immortal Bark": {
+        "slot": "chest",
+        "stats": {
+            "health": 50,
+            "healingMagnitude": 50
+        },
+        "callback": "living_armour",
+        "tier": "common",
+        "description": "Armour that constantly heals and protects its wearer.",
+        "level": 45
+    },
+    "Sunfire Greaves": {
+        "slot": "legs",
+        "stats": {
+            "health": 100,
+            "damage": 20,
+            "fire": 30,
+            "holy": 25
+        },
+        "callback": "flare",
+        "tier": "epic",
+        "description": "Reactive flares reduce the attacker's fire resistance.",
+        "level": 45
+    },
+
+    "Bloodletter": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 150,
+            "lifesteal": 0.20,
+            "speed": 0.15,
+            "damageType": "physical"
+        },
+        "callback": "vampiric_hunger",
+        "tier": "rare",
+        "description": "Thirsts for blood. Causes severe bleeding and drains life.",
+        "level": 50
+    },
+    "Reaper's Embrace": {
+        "slot": "chest",
+        "stats": {
+            "health": 130,
+            "damage": 25,
+            "dark": 40,
+            "physical": 25,
+            "wind": 20
+        },
+        "callback": "soul_harvest",
+        "tier": "mythic",
+        "description": "Fully heals the user whenever anything dies.",
+        "level": 50
+    },
+    "Voidwalker Treads": {
+        "slot": "feet",
+        "stats": {
+            "health": 90,
+            "speed": 0.2,
+            "dark": 30,
+            "stunAvoidance": 25
+        },
+        "callback": "insanity",
+        "tier": "epic",
+        "description": "Walk through the void, driving any attacking enemies insane.",
+        "level": 50
+    },
+
+    "Earthshaker Gauntlets": {
+        "slot": "legs",
+        "stats": {
+            "health": 140,
+            "damage": 30,
+            "earth": 35,
+            "stunAvoidance": 15
+        },
+        "callback": "earth_shaker",
+        "tier": "rare",
+        "description": "Each strike sends tremors through the ground.",
+        "level": 55
+    },
+    "Celestial Wrath": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 280,
+            "speed": 0.1,
+            "holy": 40,
+            "healingMagnitude": 30,
+            "damageType": "holy"
+        },
+        "callback": "smite",
+        "tier": "legendary",
+        "description": "Channels divine fury to smite targets.",
+        "level": 55
+    },
+    "Nullifier's Crown": {
+        "slot": "head",
+        "stats": {
+            "health": 200,
+            "damage": 40,
+            "arcane": 40,
+            "cold": 25,
+            "fire": 25,
+            "dotResistance": 30,
+            "stunAvoidance": 25
+        },
+        "callback": "nullify",
+        "tier": "mythic",
+        "description": "Nullifies aggression, causing enemy attacks to fail.",
+        "level": 55
+    },
+
+    "Scorching Wind": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 280,
+            "speed": 0.3,
+            "health": 40,
+            "itemRarity": 25,
+            "itemQuantity": 50,
+            "damageType": "fire"
+        },
+        "callback": "scorching_wind",
+        "tier": "rare",
+        "description": "Apply heavy stacks of burn with each hit.",
+        "level": 60
+    },
+    "Crushing Weight": {
+        "slot": "legs",
+        "stats": {
+            "health": 60,
+            "speed": -0.1,
+            "physical": 20
+        },
+        "callback": "unstoppable_force",
+        "tier": "epic",
+        "description": "Makes enemies vulnerable to all damage.",
+        "level": 60
+    },
+    "Dragonscale Mail": {
+        "slot": "chest",
+        "stats": {
+            "health": 220,
+            "fire": 40,
+            "physical": 30,
+            "cold": 20
+        },
+        "callback": "dragon_fire",
+        "tier": "legendary",
+        "description": "Armor of dragon scales that unleashes devastating flames.",
+        "level": 60
+    },
+    "Infinity Edge": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 350,
+            "speed": 0.2,
+            "critChance": 0.15,
+            "critDamage": 0.3,
+            "damageType": "physical"
+        },
+        "callback": "eviscerate",
+        "tier": "mythic",
+        "description": "Deals devastating damage to undamaged foes.",
+        "level": 60
+    },
+
+    "Voidheart": {
+        "slot": "chest",
+        "stats": {
+            "health": 200,
+            "dark": 40,
+            "lifesteal": 0.15,
+            "dotResistance": 25
+        },
+        "callback": "voidheart_pulse",
+        "tier": "epic",
+        "description": "Pulses with dark energy, cursing all enemies every turn.",
+        "level": 65
+    },
+    "Oblivion": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 290,
+            "speed": 0.15,
+            "dark": 40,
+            "lifesteal": 0.2,
+            "damageType": "dark"
+        },
+        "callback": "execute",
+        "tier": "mythic",
+        "description": "Has a chance to erase enemies from existence, consuming their souls.",
+        "level": 65
+    },
+    "Fractured Gauntlets": {
+        "slot": "legs",
+        "stats": {
+            "health": 140,
+            "damage": 40,
+            "earth": 30,
+            "physical": 25
+        },
+        "callback": "fracture",
+        "tier": "rare",
+        "description": "Fractures the earth, reducing enemy resistances.",
+        "level": 65
+    },
+
+    "Crusader's Might": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 240,
+            "health": 70,
+            "holy": 40,
+            "healingMagnitude": 30,
+            "damageType": "holy"
+        },
+        "callback": "holy_wrath",
+        "tier": "epic",
+        "description": "Brings holy judgment upon the wicked.",
+        "level": 70
+    },
+    "Absolute Zero": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 200,
+            "speed": 0.1,
+            "cold": 30,
+            "enemyQuantity": 10,
+            "stunAvoidance": 20,
+            "damageType": "cold"
+        },
+        "callback": "absolute_zero",
+        "tier": "rare",
+        "description": "Freezes enemies solid, greatly reducing their speed.",
+        "level": 70
+    },
+
+    "Stormcrown": {
+        "slot": "head",
+        "stats": {
+            "health": 240,
+            "speed": 0.2,
+            "lightning": 30,
+            "wind": 30,
+            "stunAvoidance": 10
+        },
+        "callback": "stormcaller",
+        "tier": "epic",
+        "description": "Strikes a random enemy with lightning every turn",
+        "level": 75
+    },
+    "Exposed Core": {
+        "slot": "amulet",
+        "stats": {
+            "damage": 60,
+            "health": 90,
+            "physical": 20
+        },
+        "callback": "primed",
+        "tier": "rare",
+        "description": "Primes enemies by exposing their weaknesses to all damage types.",
+        "level": 75
+    },
+    "Armageddon Plate": {
+        "slot": "chest",
+        "stats": {
+            "health": 250,
+            "fire": 25,
+            "physical": 35,
+            "arcane": 30,
+            "healingMagnitude": 30
+        },
+        "callback": "absorb",
+        "tier": "legendary",
+        "description": "Absorbs a portion of damage dealt to the wearer",
+        "level": 75
+    },
+    "Titan's Grip": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 320,
+            "health": 80,
+            "speed": -0.2,
+            "damageType": "earth"
+        },
+        "callback": "titan_strike",
+        "tier": "epic",
+        "description": "Attacks shatter and stun enemies.",
+        "level": 75
+    },
+
+    "Beacon Spire": {
+        "slot": "head",
+        "stats": {
+            "health": 150,
+            "speed": 0.2,
+            "stunAvoidance": 30
+        },
+        "callback": "blinding",
+        "tier": "rare",
+        "description": "Blinds enemies, causing their attacks to sometimes miss.",
+        "level": 80
+    },
+    "Leviathan's Grip": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 420,
+            "speed": 0.2,
+            "cold": 40,
+            "health": 100,
+            "critChance": 0.2,
+            "damageType": "cold"
+        },
+        "callback": "depths_pressure",
+        "tier": "legendary",
+        "description": "Crushes enemies with the power of the depths.",
+        "level": 80
+    },
+    "Ethereal Blade": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 100,
+            "speed": 0.2,
+            "xpGain": 30,
+            "critDamage": 0.5,
+            "damageType": "arcane"
+        },
+        "callback": "phase_strike",
+        "tier": "legendary",
+        "description": "Phases through armour, ignoring all enemy resistances",
+        "level": 80
+    },
+    "Immortal Crown": {
+        "slot": "head",
+        "stats": {
+            "health": 230,
+            "healingMagnitude": 50,
+            "holy": 40,
+            "fire": 30,
+            "stunAvoidance": 30
+        },
+        "callback": "immortal_blessing",
+        "tier": "epic",
+        "description": "Grants periodic regeneration and resistance to death.",
+        "level": 80
+    },
+    "Perfection": {
+        "slot": "amulet",
+        "stats": {
+            "health": 200,
+            "damage": 80,
+            "speed": 0.3,
+            "critChance": 0.2,
+            "critDamage": 0.4,
+            "xpGain": 30,
+            "itemRarity": 30
+        },
+        "callback": "perfection",
+        "tier": "mythic",
+        "description": "The perfect talisman, empowering the wearer significantly.",
+        "level": 80
+    },
+
+    "Voidtouched Relic": {
+        "slot": "amulet",
+        "stats": {
+            "damage": 40,
+            "health": 120,
+            "dark": 40,
+            "arcane": 30,
+            "dotResistance": 30
+        },
+        "callback": "void_corruption",
+        "tier": "epic",
+        "description": "Corrupts enemies with void energy, weakening them greatly.",
+        "level": 85
+    },
+    "Dawnbreaker": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 600,
+            "speed": 0.25,
+            "enemyQuantity": 20,
+            "healingMagnitude": 50,
+            "holy": 30,
+            "fire": 35,
+            "damageType": "holy"
+        },
+        "callback": "dawnbreaker",
+        "tier": "mythic",
+        "description": "Channels the power of dawn, smiting enemies with great force whilst protecting its user.",
+        "level": 85
+    },
+    "Reality Warper": {
+        "slot": "head",
+        "stats": {
+            "health": 230,
+            "damage": 70,
+            "arcane": 50,
+            "speed": 0.25
+        },
+        "callback": "distortion",
+        "tier": "epic",
+        "description": "Bends reality, manipulating time and space to debilitate opponents.",
+        "level": 85
+    },
+
+    "Dragonheart": {
+        "slot": "chest",
+        "stats": {
+            "health": 280,
+            "damage": 60,
+            "fire": 50,
+            "physical": 30,
+            "healingMagnitude": 25
+        },
+        "callback": "dragon_fury",
+        "tier": "legendary",
+        "description": "Contains the heart of an ancient dragon. Unleashes draconic fury.",
+        "level": 90
+    },
+    "Gladiator's Ring": {
+        "slot": "ring",
+        "stats": {
+            "health": 50,
+            "damage": 100,
+            "speed": 0.2,
+            "itemQuantity": 25,
+            "enemyQuantity": 20
+        },
+        "callback": "gladiator",
+        "tier": "epic",
+        "description": "The ring of a lost hero. Each slain enemy greatly boosts stats.",
+        "level": 90
+    },
+    "Worldbreaker": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 1000,
+            "speed": -0.5,
+            "health": 100,
+            "enemyQuantity": 20,
+            "critDamage": 1,
+            "damageType": "physical"
+        },
+        "callback": "worldbreaker_slam",
+        "tier": "mythic",
+        "description": "Devastating attacks that shatter all defenses.",
+        "level": 90
+    },
+    "Ring of Infinite Potential": {
+        "slot": "ring",
+        "stats": {
+            "health": 80,
+            "damage": 40,
+            "speed": 0.15,
+            "xpGain": 50,
+            "goldGain": 50,
+            "itemRarity": 40,
+            "itemQuantity": 20
+        },
+        "callback": "infinite_potential",
+        "tier": "legendary",
+        "description": "Empowers the user with limitless growth.",
+        "level": 90
+    },
+
+    "Amulet of the Fallen God": {
+        "slot": "amulet",
+        "stats": {
+            "health": 150,
+            "damage": 60,
+            "lifesteal": 0.25,
+            "dark": 50,
+            "holy": -30
+        },
+        "callback": "fallen_god_wrath",
+        "tier": "legendary",
+        "description": "Channel the power of a fallen diety.",
+        "level": 95
+    },
+    "God's Grace": {
+        "slot": "amulet",
+        "stats": {
+            "health": 160,
+            "speed": 0.2,
+            "xpGain": 50,
+            "goldGain": 50,
+            "holy": 30,
+            "dark": 40
+        },
+        "callback": "gods_favour",
+        "tier": "epic",
+        "description": "Given to the righteous to decimate and cleanse all evil.",
+        "level": 95
+    },
+    "Ragnarok": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 700,
+            "speed": 0.25,
+            "fire": 30,
+            "lightning": 30,
+            "critDamage": 0.5,
+            "critChance": 0.2,
+            "itemRarity": 50,
+            "damageType": "fire"
+        },
+        "callback": "ragnarok",
+        "tier": "mythic",
+        "description": "Call forth destruction upon all your enemies.",
+        "level": 95
+    },
+    "Inevitable End": {
+        "slot": "chest",
+        "stats": {
+            "health": 300,
+            "damage": 80,
+            "dark": 50,
+            "lifesteal": 0.25,
+            "dotResistance": 40,
+            "stunAvoidance": 25
+        },
+        "callback": "inevitability",
+        "tier": "epic",
+        "description": "All things must end, and this armour hastens that fate.",
+        "level": 95
+    },
+
+    "Chronos Fragment": {
+        "slot": "ring",
+        "stats": {
+            "damage": 40,
+            "speed": 0.4,
+            "health": 100,
+            "cold": 40,
+            "stunAvoidance": 40
+        },
+        "callback": "time_distortion",
+        "tier": "rare",
+        "description": "Manipulates time itself, reducing cooldowns of abilities and the speeds of enemies.",
+        "level": 100
+    },
+    "Void Fang": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 750,
+            "speed": 0.2,
+            "dark": 40,
+            "cold": 40,
+            "damageType": "dark"
+        },
+        "callback": "void_touch",
+        "tier": "mythic",
+        "description": "A fragment of the void, consuming all around it.",
+        "level": 100
+    },
+    "The First Light": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 850,
+            "speed": 0.25,
+            "holy": 60,
+            "healingMagnitude": 60,
+            "enemyQuantity": 50,
+            "damageType": "holy"
+        },
+        "callback": "first_light",
+        "tier": "mythic",
+        "description": "The first light of creation, dealing severe damage to all enemies whilst protecting the wielder.",
+        "level": 100
+    },
+
+    "Soul Reaver": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 900,
+            "lifesteal": 0.2,
+            "speed": 0.2,
+            "dark": 40,
+            "holy": -30,
+            "damageType": "dark"
+        },
+        "callback": "soul_reaver",
+        "tier": "mythic",
+        "description": "Reaps the souls of enemies, cursing enemies and granting high lifesteal.",
+        "level": 105
+    },
+    "Seraph's Decree": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 840,
+            "health": 200,
+            "holy": 40,
+            "healingMagnitude": 50,
+            "damageType": "holy"
+        },
+        "callback": "celestial_judgement",
+        "tier": "mythic",
+        "description": "Divine judgement executes enemies below 10% health.",
+        "level": 105
+    },
+    "Decaying Loop": {
+        "slot": "ring",
+        "stats": {
+            "health": 300,
+            "damage": 50,
+            "dark": 25,
+            "holy": 40,
+            "earth": 30,
+            "xpGain": 50,
+            "itemRarity": 40
+        },
+        "callback": "decay",
+        "tier": "legendary",
+        "description": "An endless cycle of suffering, now bestowed upon your enemies.",
+        "level": 105
+    },
+    
+    "Alpha Prima": {
+        "slot": "head",
+        "stats": {
+            "health": 600,
+            "damage": 50,
+            "speed": 0.2,
+            "healingMagnitude": 100,
+            "physical": 20,
+            "fire": 20,
+            "cold": 20,
+            "lightning": 20,
+            "dark": 20,
+            "holy": 20,
+            "arcane": 20,
+            "wind": 20,
+            "earth": 20
+        },
+        "callback": "alpha_protocol",
+        "tier": "mythic",
+        "description": "The beginning unified in perfect armor.",
+        "level": 110
+    },
+
+    "Omega Core": {
+        "slot": "chest", 
+        "stats": {
+            "health": 1000,
+            "damage": 100,
+            "speed": 0.25,
+            "stunAvoidance": 50,
+            "dotResistance": 50,
+            "dark": 50,
+            "holy": 50
+        },
+        "callback": "omega_protocol",
+        "tier": "mythic",
+        "description": "The ultimate core, periodically causing the wearer to deal double damage",
+        "level": 115
+    },
+    
+    "Beta Reverie": {
+        "slot": "legs",
+        "stats": {
+            "health": 500,
+            "damage": 100,
+            "speed": 0.75,
+            "xpGain": 100,
+            "arcane": 30,
+            "earth": 30,
+            "wind": 30,
+            "goldGain": 100,
+            "itemQuantity": 75
+        },
+        "callback": "beta_protocol",
+        "tier": "mythic",
+        "description": "The second stage of unity, blazing cinders and toxic smog follow in your path.",
+        "level": 120
+    },
+    
+    "Gamma Sabatons": {
+        "slot": "feet",
+        "stats": {
+            "health": 600,
+            "damage": 100,
+            "speed": 0.5,
+            "physical": 30,
+            "fire": 30,
+            "cold": 30,
+            "lightning": 30
+        },
+        "callback": "gamma_protocol",
+        "tier": "mythic",
+        "description": "The end of creation, cascading death upon all enemies.",
+        "level": 125
+    },
+
+    "Berserker's Wrath": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 80,
+            "speed": 0.15,
+            "fire": 20,
+            "damageType": "fire"
+        },
+        "callback": "rage_amplifier",
+        "tier": "epic",
+        "description": "Amplifies damage dealt when fuelled by rage.",
+        "level": 30,
+        "classRestriction": "Berserker"
+    },
+    "Nightstalker's Edge": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 70,
+            "speed": 0.2,
+            "dark": 25,
+            "damageType": "dark"
+        },
+        "callback": "shadow_dance",
+        "tier": "epic",
+        "description": "Boosts siphon effectiveness and applies poison.",
+        "level": 30,
+        "classRestriction": "Rogue"
+    },
+    "Archmage's Focus": {
+        "slot": "amulet",
+        "stats": {
+            "damage": 30,
+            "health": 40,
+            "arcane": 30
+        },
+        "callback": "mana_overflow",
+        "tier": "epic",
+        "description": "Restores mana with each hit and reduces enemy arcane resistance.",
+        "level": 30,
+        "classRestriction": "Mage"
+    },
+    "Brawler's Pride": {
+        "slot": "ring",
+        "stats": {
+            "damage": 25,
+            "speed": 0.15,
+            "health": 50
+        },
+        "callback": "combo_breaker",
+        "tier": "epic",
+        "description": "Accelerates combo building, periodically debilitating enemies.",
+        "level": 30,
+        "classRestriction": "Fighter"
+    },
+    "Hawkeye's Band": {
+        "slot": "ring",
+        "stats": {
+            "damage": 20,
+            "speed": 0.2,
+            "wind": 20,
+            "critChance": 0.1
+        },
+        "callback": "perfect_shot",
+        "tier": "epic",
+        "description": "Increases dodge chance and critical strike chance.",
+        "level": 30,
+        "classRestriction": "Ranger"
+    },
+    "Nature's Harvest": {
+        "slot": "weapon",
+        "stats": {
+            "damage": 85,
+            "speed": 0.1,
+            "earth": 25,
+            "damageType": "earth"
+        },
+        "callback": "natures_harvest",
+        "tier": "epic",
+        "description": "Amplifies thorn generation and deals damage based on current thorns.",
+        "level": 30,
+        "classRestriction": "Druid"
+    },
+    "Sanctified Halo": {
+        "slot": "head",
+        "stats": {
+            "health": 80,
+            "damage": 30,
+            "holy": 25,
+            "healingMagnitude": 25
+        },
+        "callback": "divine_radiance",
+        "tier": "epic",
+        "description": "Increases favour generation and periodically grants divine blessings.",
+        "level": 30,
+        "classRestriction": "Paladin"
+    },
+    "Zen Master's Gi": {
+        "slot": "chest",
+        "stats": {
+            "health": 70,
+            "speed": 0.1,
+            "lightning": 10,
+            "cold": 10
+        },
+        "callback": "inner_peace",
+        "tier": "epic",
+        "description": "Amplifies elemental prowess buffs during combat.",
+        "level": 30,
+        "classRestriction": "Monk"
+    }
+}

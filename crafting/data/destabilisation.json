@@ -1,0 +1,208 @@
+{
+    "outcomes": {
+        "brick": {
+            "weight": 250,
+            "description": "Item was destabilised with no additional effect.",
+            "tier": "negative"
+        },
+        "add_implicit": {
+            "weight": 100,
+            "description": "Adds a random destabilised implicit modifier.",
+            "tier": "positive"
+        },
+        "double_affix_value": {
+            "weight": 60,
+            "description": "Doubles the value of one random affix, ignoring normal limits",
+            "tier": "positive"
+        },
+        "upgrade_tiers": {
+            "weight": 70,
+            "amount": 1,
+            "description": "Upgrades all affixes by 1 tier if possible",
+            "tier": "positive"
+        },
+        "mastery_boost": {
+            "weight": 85,
+            "minShift": 1,
+            "maxShift": 5,
+            "description": "Increases mastery quality by 1-5%, can exceed 20% cap",
+            "tier": "positive"
+        },
+        "downgrade_tiers_minor": {
+            "weight": 120,
+            "amount": 1,
+            "description": "Downgrades all affixes by 1 tier",
+            "tier": "negative"
+        },
+        "downgrade_tiers_major": {
+            "weight": 60,
+            "amount": 2,
+            "description": "Downgrades all affixes by 2 tiers",
+            "tier": "negative"
+        },
+        "remove_affixes_minor": {
+            "weight": 100,
+            "minRemove": 1,
+            "maxRemove": 1,
+            "description": "Removes 1 random affix",
+            "tier": "negative"
+        },
+        "remove_affixes_moderate": {
+            "weight": 70,
+            "minRemove": 2,
+            "maxRemove": 2,
+            "description": "Removes 2 random affixes",
+            "tier": "negative"
+        },
+        "remove_affixes_major": {
+            "weight": 40,
+            "minRemove": 3,
+            "maxRemove": 3,
+            "description": "Removes 3 random affixes",
+            "tier": "negative"
+        },
+        "invert_affix": {
+            "weight": 90,
+            "description": "Inverts one random affix, making it negative",
+            "tier": "negative"
+        },
+        "add_curse": {
+            "weight": 110,
+            "description": "Adds a permanent negative destabilised modifier",
+            "tier": "negative"
+        },
+        "mastery_loss": {
+            "weight": 95,
+            "minShift": -5,
+            "maxShift": -1,
+            "description": "Decreases mastery quality by 1-5%, can go below 0%",
+            "tier": "negative"
+        },
+        "eternal": {
+            "weight": 15,
+            "description": "Item becomes indestructible with infinite durability",
+            "tier": "godtier"
+        },
+        "transcendent": {
+            "weight": 5,
+            "description": "All affixes upgraded to maximum tier available for item level with greater value randomisation",
+            "tier": "godtier"
+        }
+    },
+    "implicits": {
+        "all_res_minor": {
+            "stat": "all_resistance",
+            "min": 8,
+            "max": 15,
+            "isPercent": false,
+            "name": "of Fractured Balance"
+        },
+        "all_res_major": {
+            "stat": "all_resistance",
+            "min": 16,
+            "max": 25,
+            "isPercent": false,
+            "name": "of Unholy Transcendence"
+        },
+        "increased_damage": {
+            "stat": "damage",
+            "min": 25,
+            "max": 50,
+            "isPercent": true,
+            "name": "of Malignant Fury"
+        },
+        "added_damage": {
+            "stat": "damage",
+            "min": 50,
+            "max": 120,
+            "isPercent": false,
+            "name": "of Overwhelming Power"
+        },
+        "increased_health": {
+            "stat": "health",
+            "min": 15,
+            "max": 35,
+            "isPercent": true,
+            "name": "of Hungering Vitality"
+        },
+        "crit_multi": {
+            "stat": "crit_multi",
+            "min": 30,
+            "max": 75,
+            "isPercent": false,
+            "name": "of Apathetic Slaughter"
+        },
+        "speed": {
+            "stat": "speed",
+            "min": 0.15,
+            "max": 0.35,
+            "isPercent": false,
+            "name": "of Fractured Movement"
+        },
+        "crit_chance": {
+            "stat": "crit_chance",
+            "min": 1,
+            "max": 5,
+            "isPercent": false,
+            "name": "of Lethal Precision"
+        }
+    },
+    "curses": {
+        "reduced_health": {
+            "stat": "health",
+            "min": -35,
+            "max": -15,
+            "isPercent": true,
+            "name": "Frail"
+        },
+        "reduced_damage": {
+            "stat": "damage",
+            "min": -40,
+            "max": -20,
+            "isPercent": true,
+            "name": "Weak"
+        },
+        "increased_damage_taken": {
+            "stat": "damage_taken",
+            "min": 10,
+            "max": 25,
+            "isPercent": true,
+            "name": "Vulnerable"
+        },
+        "reduced_resistances": {
+            "stat": "all_resistance",
+            "min": -10,
+            "max": -5,
+            "isPercent": false,
+            "name": "Exposed"
+        },
+        "reduced_speed": {
+            "stat": "speed",
+            "min": -0.25,
+            "max": -0.1,
+            "isPercent": false,
+            "name": "Lethargic"
+        },
+        "reduced_armour": {
+            "stat": "armour",
+            "min": -50,
+            "max": -25,
+            "isPercent": true,
+            "name": "Brittle"
+        },
+        "reduced_evasion": {
+            "stat": "evasion",
+            "min": -50,
+            "max": -25,
+            "isPercent": true,
+            "name": "Clumsy"
+        },
+        "reduced_energy_shield": {
+            "stat": "energy_shield",
+            "min": -50,
+            "max": -25,
+            "isPercent": true,
+            "name": "Hollow"
+        }
+    }
+}

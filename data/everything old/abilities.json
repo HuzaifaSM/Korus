@@ -1,0 +1,1290 @@
+{
+    "classes": {
+        "Berserker": {
+            "Break": {
+                "damage": 5,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 2,
+                "rollWeight": 0,
+                "mechanic": ["vulnerable"],
+                "levelReq": 1
+            },
+            "Slashing Hit": {
+                "damage": 25,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "rollWeight": 0,
+                "mechanic": ["bleed", "vulnerable"],
+                "levelReq": 10
+            },
+            "Crushing Blow": {
+                "damage": 50,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 5,
+                "rollWeight": 0,
+                "mechanic": ["vulnerable", "stun"],
+                "levelReq": 25
+            },
+            "Infernal Strike": {
+                "damage": 140,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 6,
+                "rollWeight": 0,
+                "mechanic": ["vulnerable", "burn", "burn"],
+                "levelReq": 50
+            },
+            "Annihilation": {
+                "damage": 220,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 8,
+                "rollWeight": 0,
+                "mechanic": ["vulnerable", "vulnerable", "burn", "burn", "fatigue"],
+                "levelReq": 75
+            },
+            "Armageddon": {
+                "damage": 400,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 12,
+                "rollWeight": 0,
+                "mechanic": ["vulnerable", "vulnerable", "burn", "burn", "burn", "burn", "weaken", "exposed", "scorched"],
+                "levelReq": 100
+            }
+        },
+        "Rogue": {
+            "Coated Dagger": {
+                "damage": 5,
+                "damageType": "dark",
+                "cooldown": 0,
+                "maxCooldown": 3,
+                "rollWeight": 0,
+                "mechanic": ["first_strike", "poison"],
+                "levelReq": 1
+            },
+            "Ambush": {
+                "damage": 30,
+                "damageType": "dark",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "rollWeight": 0,
+                "mechanic": ["first_strike", "bleed"],
+                "levelReq": 10
+            },
+            "Slit Throat": {
+                "damage": 55,
+                "damageType": "dark",
+                "cooldown": 0,
+                "maxCooldown": 5,
+                "rollWeight": 0,
+                "mechanic": ["first_strike", "bleed", "bleed", "weaken"],
+                "levelReq": 25
+            },
+            "Assassination": {
+                "damage": 100,
+                "damageType": "dark",
+                "cooldown": 0,
+                "maxCooldown": 7,
+                "rollWeight": 0,
+                "mechanic": ["first_strike", "bleed", "bleed", "curse"],
+                "levelReq": 50
+            },
+            "Exsanguinate": {
+                "damage": 190,
+                "damageType": "dark",
+                "cooldown": 0,
+                "maxCooldown": 10,
+                "rollWeight": 0,
+                "mechanic": ["first_strike", "lifesteal", "bleed", "bleed", "bleed", "weaken", "fatigue"],
+                "levelReq": 75
+            },
+            "Eviscerate": {
+                "damage": 350,
+                "damageType": "dark",
+                "cooldown": 0,
+                "maxCooldown": 15,
+                "rollWeight": 0,
+                "mechanic": ["first_strike", "lifesteal", "bleed", "bleed", "bleed", "bleed", "weaken", "slow", "exposed"],
+                "levelReq": 100
+            }
+        },
+        "Mage": {
+            "Arcane Bolt": {
+                "damage": 5,
+                "damageType": "arcane",
+                "cooldown": 0,
+                "maxCooldown": 2,
+                "rollWeight": 0,
+                "mechanic": ["mana_leech"],
+                "levelReq": 1
+            },
+            "Elemental Cascade": {
+                "damage": 25,
+                "damageType": "arcane",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "rollWeight": 0,
+                "mechanic": ["mana_leech", "slow"],
+                "targets": "multiple",
+                "levelReq": 15
+            },
+            "Ether Torrent": {
+                "damage": 60,
+                "damageType": "arcane",
+                "cooldown": 0,
+                "maxCooldown": 6,
+                "rollWeight": 0,
+                "mechanic": ["mana_leech", "weaken"],
+                "targets": "all",
+                "levelReq": 25
+            },
+            "Prism Burst": {
+                "damage": 90,
+                "damageType": "arcane",
+                "cooldown": 0,
+                "maxCooldown": 5,
+                "rollWeight": 0,
+                "mechanic": ["mana_leech", "mana_leak", "burn", "charged", "chilled"],
+                "levelReq": 50
+            },
+            "Convergence": {
+                "damage": 160,
+                "damageType": "arcane",
+                "cooldown": 0,
+                "maxCooldown": 8,
+                "rollWeight": 0,
+                "mechanic": ["mana_leech", "mana_leak", "fatigue", "slow", "weaken"],
+                "levelReq": 75
+            },
+            "Supernova": {
+                "damage": 360,
+                "damageType": "arcane",
+                "cooldown": 0,
+                "maxCooldown": 13,
+                "rollWeight": 0,
+                "mechanic": ["mana_leech", "mana_leak", "burn", "burn", "charged", "scorched", "chilled", "slow", "weaken", "brittle"],
+                "levelReq": 100
+            }
+        },
+        "Fighter": {
+            "Jab": {
+                "damage": 8,
+                "damageType": "physical",
+                "cooldown": 0,
+                "maxCooldown": 1,
+                "rollWeight": 0,
+                "mechanic": ["goad"],
+                "levelReq": 1
+            },
+            "Flurry": {
+                "damage": 25,
+                "damageType": "physical",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "rollWeight": 0,
+                "mechanic": ["goad", "bleed"],
+                "levelReq": 10
+            },
+            "Gust of Blades": {
+                "damage": 50,
+                "damageType": "physical",
+                "cooldown": 0,
+                "maxCooldown": 6,
+                "rollWeight": 0,
+                "mechanic": ["goad", "bleed", "poison", "weaken"],
+                "targets": "multiple",
+                "levelReq": 25
+            },
+            "Crushing Dance": {
+                "damage": 80,
+                "damageType": "physical",
+                "cooldown": 0,
+                "maxCooldown": 8,
+                "rollWeight": 0,
+                "mechanic": ["goad", "stun", "weaken", "slow"],
+                "levelReq": 50
+            },
+            "Finisher": {
+                "damage": 140,
+                "damageType": "physical",
+                "cooldown": 0,
+                "maxCooldown": 10,
+                "rollWeight": 0,
+                "mechanic": ["goad", "bleed", "bleed", "weaken", "stun", "fatigue"],
+                "levelReq": 75
+            },
+            "Dancing Guillotine": {
+                "damage": 350,
+                "damageType": "physical",
+                "cooldown": 0,
+                "maxCooldown": 14,
+                "mechanic": ["goad", "bleed", "bleed", "bleed", "weaken", "slow", "exposed", "brittle"],
+                "levelReq": 100
+            }
+        },
+        "Ranger": {
+            "Snipe": {
+                "damage": 6,
+                "damageType": "wind",
+                "cooldown": 0,
+                "maxCooldown": 2,
+                "mechanic": ["blind"],
+                "levelReq": 1
+            },
+            "Piercing Shot": {
+                "damage": 25,
+                "damageType": "wind",
+                "cooldown": 0,
+                "maxCooldown": 3,
+                "mechanic": ["blind", "bleed"],
+                "levelReq": 10
+            },
+            "Tempest Shot": {
+                "damage": 50,
+                "damageType": "wind",
+                "cooldown": 0,
+                "maxCooldown": 5,
+                "mechanic": ["blind", "slow"],
+                "targets": "multiple",
+                "levelReq": 25
+            },
+            "Elemental Arrow": {
+                "damage": 75,
+                "damageType": "wind",
+                "cooldown": 0,
+                "maxCooldown": 7,
+                "mechanic": ["blind", "bleed", "poison", "burn", "curse"],
+                "levelReq": 50
+            },
+            "Eye of the Storm": {
+                "damage": 100,
+                "damageType": "wind",
+                "cooldown": 0,
+                "maxCooldown": 9,
+                "mechanic": ["blind", "stun", "weaken", "bleed", "bleed", "poison", "fatigue"],
+                "targets": "all",
+                "levelReq": 75
+            },
+            "Stormwind": {
+                "damage": 250,
+                "damageType": "wind",
+                "cooldown": 0,
+                "maxCooldown": 13,
+                "mechanic": ["blind", "weaken", "bleed", "bleed", "poison", "windswept", "exposed", "brittle"],
+                "targets": "all",
+                "levelReq": 100
+            }
+        },
+        "Druid": {
+            "Steel and Fire": {
+                "damage": 4,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 2,
+                "mechanic": ["nature", "bleed"],
+                "levelReq": 1,
+                "formReq": "human"
+            },
+            "Tooth and Nail": {
+                "damage": 8,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 3,
+                "mechanic": ["harvest", "bleed"],
+                "levelReq": 1,
+                "formReq": "beast"
+            },
+            "Spiked Chains": {
+                "damage": 15,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "mechanic": ["nature", "bleed", "slow"],
+                "levelReq": 10,
+                "formReq": "human"
+            },
+            "Vicious Swipes": {
+                "damage": 25,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 5,
+                "mechanic": ["harvest", "bleed", "bleed"],
+                "levelReq": 10,
+                "formReq": "beast"
+            },
+            "Festering Wounds": {
+                "damage": 50,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 7,
+                "mechanic": ["nature", "bleed", "poison", "weaken"],
+                "levelReq": 25,
+                "formReq": "human"
+            },
+            "Crazed Frenzy": {
+                "damage": 70,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 7,
+                "mechanic": ["harvest", "bleed", "bleed", "bleed", "stun"],
+                "levelReq": 25,
+                "formReq": "beast"
+            },
+            "Lurking Terror": {
+                "damage": 90,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 9,
+                "mechanic": ["nature", "slow", "weaken", "exposed", "fractured"],
+                "targets": "multiple",
+                "levelReq": 50,
+                "formReq": "human"
+            },
+            "Abomination": {
+                "damage": 130,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 10,
+                "mechanic": ["harvest", "bleed", "bleed", "exposed", "brittle", "fatigue"],
+                "levelReq": 50,
+                "formReq": "beast"
+            },
+            "Serenity": {
+                "damage": -100,
+                "damageType": "heal",
+                "cooldown": 0,
+                "maxCooldown": 6,
+                "mechanic": ["nature", "regeneration", "regeneration", "self_shield"],
+                "levelReq": 75,
+                "formReq": "human"
+            },
+            "Abyssal Horror": {
+                "damage": 240,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 12,
+                "mechanic": ["harvest", "harvest", "bleed", "bleed", "curse", "exposed", "exhaustion"],
+                "levelReq": 75,
+                "formReq": "beast"
+            },
+            "Damnation": {
+                "damage": 200,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 15,
+                "mechanic": ["nature", "bleed", "bleed", "bleed", "poison", "poison", "weaken", "fractured"],
+                "targets": "all",
+                "levelReq": 100,
+                "formReq": "human"
+            },
+            "Carnage": {
+                "damage": 350,
+                "damageType": "earth",
+                "cooldown": 0,
+                "maxCooldown": 16,
+                "mechanic": ["harvest", "harvest", "harvest",
+                             "bleed", "bleed", "bleed", "bleed",
+                             "curse", "poison", "poison", "lifesteal",
+                             "exposed", "brittle", "fractured"
+                ],
+                "levelReq": 100,
+                "formReq": "beast"
+            }
+        },
+        "Paladin": {
+            "Holy Strike": {
+                "damage": 5,
+                "damageType": "holy",
+                "cooldown": 0,
+                "maxCooldown": 2,
+                "rollWeight": 0,
+                "mechanic": ["blessing", "glowing"],
+                "levelReq": 1
+            },
+            "Divine Favour": {
+                "damage": -30,
+                "damageType": "heal",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "rollWeight": 0,
+                "mechanic": ["blessing", "regeneration", "self_shield"],
+                "levelReq": 10
+            },
+            "Righteous Hammer": {
+                "damage": 50,
+                "damageType": "holy",
+                "cooldown": 0,
+                "maxCooldown": 5,
+                "rollWeight": 0,
+                "mechanic": ["blessing", "glowing", "burn"],
+                "levelReq": 25
+            },
+            "Celestial Judgement": {
+                "damage": 80,
+                "damageType": "holy",
+                "cooldown": 0,
+                "maxCooldown": 6,
+                "rollWeight": 0,
+                "mechanic": ["blessing", "glowing", "burn", "stun"],
+                "targets": "multiple",
+                "levelReq": 50
+            },
+            "Divine Intervention": {
+                "damage": 130,
+                "damageType": "holy",
+                "cooldown": 0,
+                "maxCooldown": 9,
+                "rollWeight": 0,
+                "mechanic": ["glowing", "burn", "burn", "regeneration", "self_shield", "fatigue"],
+                "targets": "all",
+                "levelReq": 75
+            }
+        },
+        "Monk": {
+            "Striking Palm": {
+                "damage": 4,
+                "damageType": "cold",
+                "cooldown": 0,
+                "maxCooldown": 1,
+                "rollWeight": 0,
+                "mechanic": ["peaceful", "chilled"],
+                "levelReq": 1
+            },
+            "Thunderfist": {
+                "damage": 28,
+                "damageType": "lightning",
+                "cooldown": 0,
+                "maxCooldown": 3,
+                "rollWeight": 0,
+                "mechanic": ["peaceful", "charged"],
+                "levelReq": 10
+            },
+            "Elemental Fury": {
+                "damage": 50,
+                "damageType": "cold",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "rollWeight": 0,
+                "mechanic": ["peaceful", "chilled", "charged", "slow"],
+                "targets": "multiple",
+                "levelReq": 25
+            },
+            "Storm and Ice": {
+                "damage": 75,
+                "damageType": "lightning",
+                "cooldown": 0,
+                "maxCooldown": 6,
+                "rollWeight": 0,
+                "mechanic": ["peaceful", "stun", "charged", "stun"],
+                "levelReq": 50
+            },
+            "Elemental Transcendence": {
+                "damage": 110,
+                "damageType": "cold",
+                "cooldown": 0,
+                "maxCooldown": 8,
+                "rollWeight": 0,
+                "mechanic": ["peaceful", "stun", "charged", "chilled", "stun", "fatigue"],
+                "targets": "all",
+                "levelReq": 75
+            }
+        }
+    },
+    "Spark": {
+        "damage": 15,
+        "damageType": "lightning",
+        "cooldown": 0,
+        "maxCooldown": 2,
+        "rollWeight": 80,
+        "levelReq": 5
+    },
+    "Stab": {
+        "damage": 10,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 2,
+        "rollWeight": 70,
+        "mechanic": ["bleed"],
+        "levelReq": 5
+    },
+    "Ember": {
+        "damage": 10,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 1,
+        "rollWeight": 70,
+        "mechanic": ["burn"],
+        "levelReq": 5
+    },
+    "Crush": {
+        "damage": 35,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 40,
+        "mechanic": ["stun"],
+        "levelReq": 20
+    },
+    "Venom Strike": {
+        "damage": 8,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 65,
+        "mechanic": ["poison"],
+        "levelReq": 5
+    },
+    "Frostbolt": {
+        "damage": 12,
+        "damageType": "cold",
+        "cooldown": 0,
+        "maxCooldown": 2,
+        "rollWeight": 70,
+        "mechanic": ["slow"],
+        "levelReq": 10
+    },
+    "Shadow Strike": {
+        "damage": 20,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 60,
+        "mechanic": ["weaken"],
+        "levelReq": 20
+    },
+    "Healing Light": {
+        "damage": -15,
+        "damageType": "heal",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 50,
+        "mechanic": ["regeneration"],
+        "levelReq": 15
+    },
+    "Chain Lightning": {
+        "damage": 25,
+        "damageType": "lightning",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 45,
+        "targets": "multiple",
+        "levelReq": 25
+    },
+    "Arcane Blast": {
+        "damage": 25,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 55,
+        "levelReq": 20
+    },
+    "Whirlwind": {
+        "damage": 35,
+        "damageType": "wind",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 35,
+        "targets": "all",
+        "levelReq": 30
+    },
+    "Vampiric Bite": {
+        "damage": 40,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 50,
+        "mechanic": ["lifesteal"],
+        "levelReq": 30
+    },
+    "Fireball": {
+        "damage": 35,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 40,
+        "mechanic": ["burn"],
+        "targets": "all",
+        "levelReq": 30
+    },
+    "Quickstrike": {
+        "damage": 8,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 1,
+        "rollWeight": 90,
+        "levelReq": 5
+    },
+    "Earth Shatter": {
+        "damage": 25,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 45,
+        "levelReq": 20
+    },
+    "Divine Smite": {
+        "damage": 30,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 35,
+        "mechanic": ["regeneration"],
+        "levelReq": 30
+    },
+    "Dawn's Light": {
+        "damage": 150,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 9,
+        "rollWeight": 5,
+        "mechanic": ["regeneration", "regeneration", "regeneration", "glowing"],
+        "targets": "all",
+        "levelReq": 70
+    },
+    "Backstab": {
+        "damage": 40,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 25,
+        "mechanic": ["bleed", "bleed"],
+        "levelReq": 40
+    },
+    "Wind Slash": {
+        "damage": 14,
+        "damageType": "wind",
+        "cooldown": 0,
+        "maxCooldown": 2,
+        "rollWeight": 75,
+        "levelReq": 10
+    },
+    "Curse": {
+        "damage": 55,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 15,
+        "mechanic": ["curse", "weaken", "poison"],
+        "levelReq": 50
+    },
+    "Leech Strike": {
+        "damage": 60,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 7,
+        "rollWeight": 20,
+        "mechanic": ["lifesteal"],
+        "levelReq": 60
+    },
+    "Transfusion": {
+        "damage": 45,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 15,
+        "mechanic": ["lifesteal", "bleed", "bleed"],
+        "levelReq": 60
+    },
+    "Earthquake": {
+        "damage": 50,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 10,
+        "mechanic": ["stun"],
+        "targets": "all",
+        "levelReq": 65
+    },
+    "Rock Wall": {
+        "damage": 30,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 40,
+        "mechanic": ["self_shield", "self_shield"],
+        "levelReq": 25
+    },
+    "Bash": {
+        "damage": 20,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 2,
+        "rollWeight": 70,
+        "levelReq": 15
+    },
+    "Tectonic Slam": {
+        "damage": 150,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 10,
+        "rollWeight": 5,
+        "mechanic": ["stun", "slow", "self_shield", "fatigue"],
+        "levelReq": 70
+    },
+    "Ripper": {
+        "damage": 60,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 15,
+        "mechanic": ["bleed", "bleed", "weaken"],
+        "levelReq": 50
+    },
+    "Growing Shadows": {
+        "damage": 20,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 60,
+        "mechanic": ["slow", "self_shield"],
+        "levelReq": 30
+    },
+    "Blight": {
+        "damage": 10,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 10,
+        "rollWeight": 5,
+        "mechanic": ["slow", "weaken", "curse", "bleed", "bleed", "poison", "poison", "burn", "burn"],
+        "levelReq": 70
+    },
+    "Overwhelm": {
+        "damage": 70,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 1,
+        "rollWeight": 10,
+        "mechanic": ["fatigue"],
+        "levelReq": 60
+    },
+    "Hellfire": {
+        "damage": 100,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 5,
+        "mechanic": ["burn", "burn", "burn", "burn", "fatigue"],
+        "levelReq": 65
+    },
+    "Thunderstorm": {
+        "damage": 60,
+        "damageType": "lightning",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 20,
+        "targets": "all",
+        "levelReq": 40
+    },
+    "Invoke Lightning": {
+        "damage": 30,
+        "damageType": "lightning",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 40,
+        "mechanic": ["charged"],
+        "targets": "multiple",
+        "levelReq": 30
+    },
+    "Fungal Bloom": {
+        "damage": 35,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 30,
+        "mechanic": ["poison", "poison"],
+        "levelReq": 45
+    },
+    "Prayer": {
+        "damage": -40,
+        "damageType": "heal",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 50,
+        "mechanic": ["regeneration"],
+        "levelReq": 40
+    },
+    "Burnout": {
+        "damage": -30,
+        "damageType": "heal",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 50,
+        "mechanic": ["burn", "burn"],
+        "levelReq": 30
+    },
+    "Frost Nova": {
+        "damage": 18, 
+        "damageType": "cold",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 50,
+        "mechanic": ["slow", "chilled"],
+        "targets": "all",
+        "levelReq": 25
+    },
+    "Arctic Blast": {
+        "damage": 30,
+        "damageType": "cold",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 40,
+        "mechanic": ["stun"],
+        "levelReq": 35
+    },
+    "Glacial Spike": {
+        "damage": 60,
+        "damageType": "cold",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 25,
+        "mechanic": ["stun", "slow"],
+        "levelReq": 50
+    },
+    "Razor Wind": {
+        "damage": 25,
+        "damageType": "wind",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 60,
+        "mechanic": ["bleed"],
+        "levelReq": 15
+    },
+    "Hurricane": {
+        "damage": 60,
+        "damageType": "wind",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 20,
+        "mechanic": ["stun", "slow"],
+        "targets": "all",
+        "levelReq": 50
+    },
+    "Shield Bash": {
+            "damage": 10,
+            "damageType": "earth",
+            "cooldown": 0,
+            "maxCooldown": 2,
+            "rollWeight": 0,
+            "mechanic": ["self_shield"],
+            "levelReq": 5
+    },
+    "Fortress": {
+        "damage": 10,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 0,
+        "mechanic": ["self_shield", "self_shield"],
+        "levelReq": 10
+    },
+    "Titan Slam": {
+        "damage": 80,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 7,
+        "rollWeight": 0,
+        "mechanic": ["stun", "fatigue"],
+        "levelReq": 25
+    },
+    "Aegis": {
+        "damage": 40,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 0,
+        "mechanic": [ "self_shield", "self_shield", "regeneration"],
+        "levelReq": 50
+    },
+    "Gaia's Gift": {
+        "damage": 60,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 8,
+        "rollWeight": 0,
+        "mechanic": ["self_shield", "self_shield", "regeneration", "lifesteal"],
+        "levelReq": 75
+    },
+    "Twister": {
+        "damage": 40,
+        "damageType": "wind",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 40,
+        "targets": "multiple",
+        "levelReq": 35
+    },
+    "Smite": {
+        "damage": 50,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 35,
+        "mechanic": ["glowing"],
+        "levelReq": 40
+    },
+    "Turn Undead": {
+        "damage": 30,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 45,
+        "mechanic": ["glowing"],
+        "targets": "all",
+        "levelReq": 30
+    },
+    "Magic Missiles": {
+        "damage": 30,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 50,
+        "targets": "multiple",
+        "levelReq": 30
+    },
+    "Arcane Barrage": {
+        "damage": 60,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 20,
+        "mechanic": ["slow", "weaken", "mana_leak"],
+        "targets": "all",
+        "levelReq": 60
+    },
+    "Mystic Force": {
+        "damage": 25,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 60,
+        "levelReq": 15
+    },
+    "Incinerate": {
+        "damage": 20,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 5,
+        "rollWeight": 40,
+        "mechanic": ["burn", "burn", "burn", "scorched"],
+        "levelReq": 40
+    },
+    "Burning Strike": {
+        "damage": 23,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 2,
+        "rollWeight": 65,
+        "mechanic": ["burn"],
+        "levelReq": 10
+    },
+    "Inferno": {
+        "damage": 55,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 7,
+        "rollWeight": 20,
+        "mechanic": ["burn", "burn"],
+        "targets": "all",
+        "levelReq": 55
+    },
+    "Lightning Strike": {
+        "damage": 28,
+        "damageType": "lightning",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 50,
+        "mechanic": ["charged"],
+        "levelReq": 20
+    },
+    "Storm Call": {
+        "damage": 50,
+        "damageType": "lightning",
+        "cooldown": 0,
+        "maxCooldown": 6,
+        "rollWeight": 25,
+        "targets": "multiple",
+        "levelReq": 50
+    },
+    "Tremor": {
+        "damage": 20,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 2,
+        "rollWeight": 70,
+        "targets": "all",
+        "levelReq": 10
+    },
+    "Boulder Toss": {
+        "damage": 45,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 30,
+        "mechanic": ["stun"],
+        "levelReq": 35
+    },
+    "Meteor": {
+        "damage": 140,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 10,
+        "rollWeight": 2,
+        "mechanic": ["stun", "burn", "burn", "burn", "fatigue", "scorched"],
+        "targets": "all",
+        "levelReq": 80
+    },
+    "Arcane Surge": {
+        "damage": 30,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 50,
+        "mechanic": ["regeneration"],
+        "levelReq": 20
+    },
+    "Mana Bomb": {
+        "damage": 80,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 7,
+        "rollWeight": 20,
+        "mechanic": ["mana_leak", "slow"],
+        "targets": "all",
+        "levelReq": 60
+    },
+    "God's Wrath": {
+        "damage": 200,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 11,
+        "rollWeight": 2,
+        "mechanic": ["regeneration", "regeneration", "burn", "burn", "self_shield", "fatigue"],
+        "levelReq": 80
+    },
+    "Judgement": {
+        "damage": 50,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 4,
+        "rollWeight": 50,
+        "mechanic": ["burn", "glowing"],
+        "levelReq": 25
+    },
+    "Zealous Cleave": {
+        "damage": 30,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 3,
+        "rollWeight": 60,
+        "targets": "multiple",
+        "levelReq": 20
+    },
+    "Deep Freeze": {
+        "damage": 180,
+        "damageType": "cold",
+        "cooldown": 0,
+        "maxCooldown": 9,
+        "rollWeight": 2,
+        "mechanic": ["stun", "chilled", "slow", "slow", "weaken", "fatigue"],
+        "levelReq": 80
+    },
+    "Calamity": {
+        "damage": 135,
+        "damageType": "wind",
+        "cooldown": 0,
+        "maxCooldown": 10,
+        "rollWeight": 2,
+        "mechanic": ["stun", "slow", "weaken", "weaken", "fatigue"],
+        "targets": "all",
+        "levelReq": 80
+    },
+    "Soul Drain": {
+        "damage": 150,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 11,
+        "rollWeight": 2,
+        "mechanic": ["scorched", "glowing", "mana_leak", "chilled", "curse", "lifesteal", "bleed", "fatigue"],
+        "levelReq": 80
+    },
+
+    "Ragnarok": {
+        "damage": 250,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 12,
+        "rollWeight": 1,
+        "mechanic": ["burn", "burn", "scorched", "brittle", "exposed", "exhaustion"],
+        "targets": "all",
+        "levelReq": 85
+    },
+    "Void Collapse": {
+        "damage": 300,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 13,
+        "rollWeight": 1,
+        "mechanic": ["withered", "curse", "curse", "curse", "lifesteal", "exhaustion"],
+        "levelReq": 85
+    },
+    "Celestial Annihilation": {
+        "damage": 240,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 11,
+        "rollWeight": 1,
+        "mechanic": ["glowing", "glowing", "burn", "burn", "regeneration", "regeneration", "exhaustion"],
+        "targets": "all",
+        "levelReq": 85
+    },
+    "Elemental Cataclysm": {
+        "damage": 220,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 12,
+        "rollWeight": 1,
+        "mechanic": ["mana_leak", "scorched", "charged", "chilled", "windswept", "fractured", "exhaustion"],
+        "targets": "all",
+        "levelReq": 85
+    },
+    "Titan's Fist": {
+        "damage": 300,
+        "damageType": "earth",
+        "cooldown": 0,
+        "maxCooldown": 14,
+        "rollWeight": 1,
+        "mechanic": ["stun", "fractured", "shattered", "exhaustion"],
+        "levelReq": 85
+    },
+    "Tempest Fury": {
+        "damage": 200,
+        "damageType": "wind",
+        "cooldown": 0,
+        "maxCooldown": 10,
+        "rollWeight": 1,
+        "mechanic": ["windswept", "bleed", "bleed", "bleed", "stun", "exhaustion"],
+        "targets": "all",
+        "levelReq": 85
+    },
+    "Sub Zero": {
+        "damage": 260,
+        "damageType": "cold",
+        "cooldown": 0,
+        "maxCooldown": 13,
+        "rollWeight": 1,
+        "mechanic": ["stun", "chilled", "chilled", "brittle", "exhaustion"],
+        "targets": "all",
+        "levelReq": 85
+    },
+    "Thunderlord's Decree": {
+        "damage": 260,
+        "damageType": "lightning",
+        "cooldown": 0,
+        "maxCooldown": 12,
+        "rollWeight": 1,
+        "mechanic": ["stun", "charged", "charged", "slow", "weaken", "exhaustion"],
+        "targets": "all",
+        "levelReq": 85
+    },
+
+    "Obliterate": {
+        "damage": 340,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 16,
+        "rollWeight": 1,
+        "mechanic": ["bleed", "bleed", "poison", "shattered", "brittle", "stun", "weaken", "slow", "exhaustion"],
+        "levelReq": 90
+    },
+    "Ascension": {
+        "damage": -200,
+        "damageType": "heal",
+        "cooldown": 0,
+        "maxCooldown": 15,
+        "rollWeight": 1,
+        "mechanic": ["regeneration", "regeneration", "regeneration", "self_shield", "self_shield"],
+        "levelReq": 90
+    },
+
+    "Apocalypse": {
+        "damage": 400,
+        "damageType": "dark",
+        "cooldown": 0,
+        "maxCooldown": 18,
+        "rollWeight": 1,
+        "mechanic": [
+            "bleed", "bleed", "bleed",
+            "burn", "burn", "burn",
+            "poison", "poison", "poison",
+            "curse", "curse", "withered",
+            "weaken", "brittle", "slow"
+        ],
+        "levelReq": 100
+    },
+    "Avert Heaven": {
+        "damage": 340,
+        "damageType": "holy",
+        "cooldown": 0,
+        "maxCooldown": 22,
+        "rollWeight": 1,
+        "mechanic": ["glowing", "exposed", "burn", "burn", "brittle", "weaken", "slow", "stun"],
+        "targets": "all",
+        "levelReq": 100
+    },
+    "Genesis": {
+        "damage": -300,
+        "damageType": "heal",
+        "cooldown": 0,
+        "maxCooldown": 17,
+        "rollWeight": 1,
+        "mechanic": ["regeneration", "regeneration", "regeneration", "regeneration",
+                     "regeneration", "regeneration", "regeneration", "regeneration"
+        ],
+        "levelReq": 100
+    },
+
+    "Merciless": {
+        "damage": 700,
+        "damageType": "physical",
+        "cooldown": 0,
+        "maxCooldown": 999,
+        "rollWeight": 1,
+        "mechanic": [
+            "bleed", "bleed", "bleed", "bleed", "bleed", "bleed",
+            "bleed", "bleed", "bleed", "bleed", "bleed", "bleed",
+            "brittle", "brittle", "exposed", "exposed", "shattered", 
+            "shattered", "stun", "weaken", "weaken", "slow", "slow"
+        ],
+        "levelReq": 105
+    },
+    "Fission": {
+        "damage": 600,
+        "damageType": "fire",
+        "cooldown": 0,
+        "maxCooldown": 999,
+        "rollWeight": 1,
+        "mechanic": [
+            "burn", "burn", "burn", "burn", "burn", "burn",
+            "scorched", "scorched", "scorched", "slow", "slow"
+        ],
+        "targets": "all",
+        "levelReq": 105
+    },
+    "Disintegrate": {
+        "damage": 720,
+        "damageType": "arcane",
+        "cooldown": 0,
+        "maxCooldown": 999,
+        "rollWeight": 1,
+        "mechanic": [
+            "weaken", "weaken", "weaken", "weaken",
+            "slow", "slow", "slow", "slow",
+            "curse", "curse", "curse", "curse"
+        ],
+        "levelReq": 105
+    }
+}

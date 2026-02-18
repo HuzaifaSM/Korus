@@ -1,0 +1,188 @@
+{
+    "Slayer 1": {
+        "tier": 1,
+        "task": "Kill Enemies",
+        "amount": 10,
+        "rewards": {
+            "xp": 50,
+            "gold": 100
+        },
+        "description": "Defeat 10 enemies"
+    },
+    "Slayer 2": {
+        "tier": 2,
+        "task": "Kill Enemies",
+        "amount": 30,
+        "rewards": {
+            "xp": 250,
+            "gold": 400
+        },
+        "description": "Defeat 30 enemies"
+    },
+    "Slayer 3": {
+        "tier": 3,
+        "task": "Kill Enemies",
+        "amount": 75,
+        "rewards": {
+            "xp": 800,
+            "gold": 1200,
+            "items": {"mana_essence": 5}
+        },
+        "description": "Defeat 75 enemies"
+    },
+    "Slayer 4": {
+        "tier": 4,
+        "task": "Kill Enemies",
+        "amount": 150,
+        "rewards": {
+            "xp": 2000,
+            "gold": 3000,
+            "items": {"dragon_scale": 2}
+        },
+        "description": "Defeat 150 enemies"
+    },
+    "Champion 1": {
+        "tier": 1,
+        "task": "Win Battles",
+        "amount": 5,
+        "rewards": {
+            "xp": 100,
+            "gold": 200
+        },
+        "description": "Win 5 battles"
+    },
+    "Champion 2": {
+        "tier": 2,
+        "task": "Win Battles",
+        "amount": 20,
+        "rewards": {
+            "xp": 400,
+            "gold": 800,
+            "items": {"crystal": 5}
+        },
+        "description": "Win 20 battles"
+    },
+    "Champion 3": {
+        "tier": 3,
+        "task": "Win Battles",
+        "amount": 50,
+        "rewards": {
+            "xp": 1200,
+            "gold": 2000,
+            "items": {"soul": 10}
+        },
+        "description": "Win 50 battles"
+    },
+    "Resource Gatherer 1": {
+        "tier": 1,
+        "task": "Collect Resources",
+        "amount": 100,
+        "rewards": {
+            "xp": 75,
+            "gold": 150
+        },
+        "description": "Collect 100 resources from enemies"
+    },
+    "Resource Gatherer 2": {
+        "tier": 2,
+        "task": "Collect Resources",
+        "amount": 500,
+        "rewards": {
+            "xp": 400,
+            "gold": 600,
+            "items": {"bone": 10}
+        },
+        "description": "Collect 500 resources from enemies"
+    },
+    "Treasure Hunter 1": {
+        "tier": 1,
+        "task": "Collect Gold",
+        "amount": 1000,
+        "rewards": {
+            "xp": 150,
+            "items": {"crystal": 3}
+        },
+        "description": "Collect 1000 gold"
+    },
+    "Treasure Hunter 2": {
+        "tier": 3,
+        "task": "Collect Gold",
+        "amount": 10000,
+        "rewards": {
+            "xp": 1500,
+            "items": {"diamond": 5}
+        },
+        "description": "Collect 10000 gold"
+    },
+    "Survivor 1": {
+        "tier": 1,
+        "task": "Reach Level",
+        "amount": 10,
+        "rewards": {
+            "gold": 500,
+            "items": {"soul": 3}
+        },
+        "description": "Reach level 10"
+    },
+    "Survivor 2": {
+        "tier": 2,
+        "task": "Reach Level",
+        "amount": 25,
+        "rewards": {
+            "gold": 1500,
+            "items": {"mana_essence": 10}
+        },
+        "description": "Reach level 25"
+    },
+    "Survivor 3": {
+        "tier": 3,
+        "task": "Reach Level",
+        "amount": 50,
+        "rewards": {
+            "gold": 5000,
+            "items": {"dragon_scale": 5}
+        },
+        "description": "Reach level 50"
+    },
+    "Area Explorer 1": {
+        "tier": 2,
+        "task": "Reach Area",
+        "amount": 25,
+        "rewards": {
+            "xp": 500,
+            "gold": 1000
+        },
+        "description": "Reach area level 25"
+    },
+    "Area Explorer 2": {
+        "tier": 3,
+        "task": "Reach Area",
+        "amount": 50,
+        "rewards": {
+            "xp": 1500,
+            "gold": 3000,
+            "items": {"ancient_wood": 10}
+        },
+        "description": "Reach area level 50"
+    },
+    "Master Craftsman": {
+        "tier": 4,
+        "task": "Craft Equipment",
+        "amount": 50,
+        "rewards": {
+            "xp": 2000,
+            "items": {"ascended_essence": 5}
+        },
+        "description": "Craft 50 pieces of equipment"
+    },
+    "Ability Master": {
+        "tier": 3,
+        "task": "Learn Abilities",
+        "amount": 15,
+        "rewards": {
+            "xp": 1000,
+            "gold": 2000
+        },
+        "description": "Learn 15 different abilities"
+    }
+}

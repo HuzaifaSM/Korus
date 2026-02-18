@@ -1,0 +1,139 @@
+{
+  "positive": {
+    "common": [
+      {
+        "name": "Bountiful",
+        "type": "quantity",
+        "value": 0.2,
+        "description": "+20% Item Quantity",
+        "weight": 100
+      },
+      {
+        "name": "Fortunate",
+        "type": "rarity",
+        "value": 0.1,
+        "description": "+10% Item Rarity",
+        "weight": 80
+      },
+      {
+        "name": "Enlightening",
+        "type": "experience",
+        "value": 0.15,
+        "description": "+15% Experience Gained",
+        "weight": 90
+      },
+      {
+        "name": "Wealthy",
+        "type": "gold",
+        "value": 0.25,
+        "description": "+25% Gold Dropped",
+        "weight": 70
+      }
+    ],
+    "rare": [
+      {
+        "name": "Rejuvenating",
+        "type": "heal_per_wave",
+        "value": 0.05,
+        "description": "Heal 5% Max HP after each wave",
+        "weight": 30
+      },
+      {
+        "name": "Overflowing",
+        "type": "guaranteed_drops",
+        "value": 2,
+        "rarity": "uncommon",
+        "description": "Guaranteed 2 Uncommon items on completion",
+        "weight": 20
+      }
+    ],
+    "legendary": [
+      {
+        "name": "Demonic",
+        "type": "boss_wave",
+        "value": 1,
+        "description": "Final wave contains 1 Boss (future)",
+        "weight": 5
+      },
+      {
+        "name": "Mythic",
+        "type": "guaranteed_drops",
+        "value": 1,
+        "rarity": "legendary",
+        "description": "Guaranteed 1 Legendary item on completion",
+        "weight": 3
+      }
+    ]
+  },
+  "negative": {
+    "common": [
+      {
+        "name": "Brutal",
+        "type": "enemy_damage",
+        "value": 0.15,
+        "description": "Enemies deal 15% more damage",
+        "weight": 100
+      },
+      {
+        "name": "Fortified",
+        "type": "enemy_health",
+        "value": 0.2,
+        "description": "Enemies have 20% more health",
+        "weight": 100
+      },
+      {
+        "name": "Swift",
+        "type": "enemy_speed",
+        "value": 0.1,
+        "description": "Enemies have 10% more speed",
+        "weight": 90
+      },
+      {
+        "name": "Extended",
+        "type": "bonus_waves",
+        "value": 1,
+        "description": "+1 Wave.",
+        "weight": 25
+      }
+    ],
+    "rare": [
+      {
+        "name": "Overwhelming",
+        "type": "enemy_all_stats",
+        "value": 0.20,
+        "description": "Enemies have 10% more damage, health and speed",
+        "weight": 40
+      },
+      {
+        "name": "Escalating",
+        "type": "enemy_level",
+        "value": 5,
+        "description": "Enemy level increases by 5",
+        "weight": 30
+      },
+      {
+        "name": "Swarming",
+        "type": "extra_enemies",
+        "value": 2,
+        "description": "+2 enemies per wave",
+        "weight": 35
+      }
+    ],
+    "legendary": [
+      {
+        "name": "Cursed",
+        "type": "no_healing",
+        "value": 1,
+        "description": "No healing at all (passive regen disabled)",
+        "weight": 10
+      },
+      {
+        "name": "Relentless",
+        "type": "enemy_all_stats",
+        "value": 0.50,
+        "description": "Enemies have 50% more all stats",
+        "weight": 5
+      }
+    ]
+  }
+}

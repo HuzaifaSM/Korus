@@ -1,0 +1,345 @@
+{
+    "player": {
+        "maxHealth": 295,
+        "baseHealth": 295,
+        "health": 295,
+        "baseDamage": 53,
+        "damageType": "fire",
+        "baseSpeed": 1.2900000000000005,
+        "stats": {
+            "Resistances": {
+                "physical": 0,
+                "fire": 0,
+                "cold": 0,
+                "lightning": 0,
+                "dark": 0,
+                "holy": 0,
+                "arcane": 0,
+                "wind": 0,
+                "earth": 0,
+                "psychic": 0,
+                "ethereal": 0,
+                "chaos": 0,
+                "all": 0,
+                "elemental": 0,
+                "divine": 0
+            },
+            "Bonuses": {
+                "itemRarity": 0,
+                "itemQuantity": 0,
+                "enemyQuantity": 0,
+                "xpGain": 0,
+                "goldGain": 0,
+                "stunAvoidance": 0,
+                "dotResistance": 0,
+                "ailmentAvoidance": 0,
+                "healingMagnitude": 100,
+                "critChance": 0,
+                "critMulti": 0,
+                "critResistance": 0,
+                "resistancePenetration": 0,
+                "multihit": 0,
+                "lifesteal": 0
+            },
+            "Permanent": {
+                "holy": 0,
+                "dark": 0,
+                "psychic": 0,
+                "all": 0,
+                "ailmentAvoidance": 0,
+                "dotResistance": 0,
+                "lifesteal": 0
+            },
+            "Temporary": {
+                "lifesteal": 0,
+                "all": 0,
+                "dotResistance": 0,
+                "increased_evasion": 0,
+                "speed": 0,
+                "critChance": 0
+            },
+            "baseCritChance": 0.05,
+            "baseCritMulti": 2.0,
+            "armour": 0,
+            "evasion": 0,
+            "energyShield": 0,
+            "maxEnergyShield": 0
+        },
+        "abilities": {
+            "Break": {
+                "name": "Break",
+                "damage": 5,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 2,
+                "rollWeight": 0,
+                "mechanics": [
+                    "vulnerable"
+                ],
+                "targets": "single",
+                "levelReq": 1,
+                "playerClass": "Berserker",
+                "formReq": null
+            },
+            "Slashing Hit": {
+                "name": "Slashing Hit",
+                "damage": 25,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 4,
+                "rollWeight": 0,
+                "mechanics": [
+                    "bleed",
+                    "vulnerable"
+                ],
+                "targets": "single",
+                "levelReq": 10,
+                "playerClass": "Berserker",
+                "formReq": null
+            },
+            "Crushing Blow": {
+                "name": "Crushing Blow",
+                "damage": 50,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 5,
+                "rollWeight": 0,
+                "mechanics": [
+                    "vulnerable",
+                    "stun"
+                ],
+                "targets": "single",
+                "levelReq": 25,
+                "playerClass": "Berserker",
+                "formReq": null
+            },
+            "Infernal Strike": {
+                "name": "Infernal Strike",
+                "damage": 140,
+                "damageType": "fire",
+                "cooldown": 0,
+                "maxCooldown": 6,
+                "rollWeight": 0,
+                "mechanics": [
+                    "vulnerable",
+                    "burn",
+                    "burn"
+                ],
+                "targets": "single",
+                "levelReq": 50,
+                "playerClass": "Berserker",
+                "formReq": null
+            }
+        },
+        "name": "The Hero",
+        "level": 50,
+        "xp": 0,
+        "xpToNextLevel": 22500,
+        "gold": 0,
+        "equipped": {},
+        "equipmentStorage": [],
+        "craftingInventory": {},
+        "inventory": {},
+        "className": "Berserker",
+        "classDescription": "A strong but slower fighter.\n+3 Damage dealt per rage. +1 Rage per 8 damage dealt. -1 Rage per 5 damage taken. +2 HP per leftover rage at the end of combat.\nStarting Stats: 50 Health | 4 Damage | 5% Crit Chance | 200% Crit Damage | Fire Damage | 0.8 Speed | 50 Max Rage | +1 Rage on Level Up.",
+        "ascendancy": null,
+        "ascendancyDescription": null,
+        "subType": null,
+        "maxLevel": 100,
+        "maxRage": 99,
+        "maxFury": 10,
+        "maxFortify": 20
+    },
+    "camp": {
+        "campfire": {
+            "name": "Campfire",
+            "resourcesNeeded": {
+                "wood": 5,
+                "stone": 5
+            },
+            "level": 0,
+            "supplies": 0
+        },
+        "crafter": {
+            "name": "Crafter",
+            "resourcesNeeded": {
+                "wood": 50,
+                "stone": 50,
+                "iron_ore": 20
+            },
+            "level": 0,
+            "blueprints": 0
+        },
+        "forge": {
+            "name": "Forge",
+            "resourcesNeeded": {
+                "iron_ore": 50,
+                "stone": 100,
+                "wood": 50
+            },
+            "level": 0,
+            "fuel": 0
+        },
+        "trainingGrounds": {
+            "name": "Training Grounds",
+            "resourcesNeeded": {
+                "wood": 100,
+                "stone": 50,
+                "iron_ore": 25
+            },
+            "level": 0,
+            "skillPoints": 0,
+            "trainingPoints": 0
+        },
+        "market": {
+            "name": "Market",
+            "resourcesNeeded": {
+                "wood": 75,
+                "stone": 75,
+                "iron_ore": 30,
+                "leather": 20
+            },
+            "level": 0,
+            "tradeVouchers": 0,
+            "stock": {
+                "herbs": {
+                    "amount": 27,
+                    "value": 6
+                },
+                "iron_ore": {
+                    "amount": 12,
+                    "value": 18
+                },
+                "stone": {
+                    "amount": 28,
+                    "value": 3
+                },
+                "[common]Common Chest of the Glacier[/common]": {
+                    "amount": 1,
+                    "value": 12432,
+                    "item": {
+                        "name": "[common]Common Chest of the Glacier[/common]",
+                        "itemType": "armour",
+                        "rarity": "common",
+                        "value": 500,
+                        "stackable": false,
+                        "maxStack": 1,
+                        "slot": "chest",
+                        "prefixSlots": [
+                            {
+                                "kind": "prefix",
+                                "affix": null
+                            }
+                        ],
+                        "suffixSlots": [
+                            {
+                                "kind": "suffix",
+                                "affix": {
+                                    "id": "cold_resistance_t1",
+                                    "name": "of the Glacier",
+                                    "levelReq": 1,
+                                    "tier": 1,
+                                    "stat": "cold_resistance",
+                                    "minVal": 5,
+                                    "maxVal": 12,
+                                    "baseValue": 7,
+                                    "mastery": 0,
+                                    "isPercent": false,
+                                    "kind": "suffix",
+                                    "weight": 900,
+                                    "categories": [
+                                        "resistance",
+                                        "elemental",
+                                        "cold",
+                                        "defensive"
+                                    ],
+                                    "locked": false,
+                                    "soulbound": false
+                                }
+                            }
+                        ],
+                        "level": 1,
+                        "durability": 52,
+                        "maxDurability": 52,
+                        "baseMaxDurability": 52,
+                        "defenseType": "armour",
+                        "defenseValue": 16,
+                        "baseDefenseValue": 16,
+                        "damage": 0,
+                        "baseDamage": 0,
+                        "damageType": null,
+                        "entropy": 0.0,
+                        "entropyPreserved": false,
+                        "maxEntropy": 1.0,
+                        "baseEntropyResistance": 0.0,
+                        "entropyResistance": 0.0,
+                        "entropyLocked": false,
+                        "destabilised": false,
+                        "destabilisedAffixes": []
+                    }
+                },
+                "[common]Common Feet[/common]": {
+                    "amount": 1,
+                    "value": 10803,
+                    "item": {
+                        "name": "[common]Common Feet[/common]",
+                        "itemType": "armour",
+                        "rarity": "common",
+                        "value": 500,
+                        "stackable": false,
+                        "maxStack": 1,
+                        "slot": "feet",
+                        "prefixSlots": [
+                            {
+                                "kind": "prefix",
+                                "affix": null
+                            }
+                        ],
+                        "suffixSlots": [
+                            {
+                                "kind": "suffix",
+                                "affix": null
+                            }
+                        ],
+                        "level": 1,
+                        "durability": 52,
+                        "maxDurability": 52,
+                        "baseMaxDurability": 52,
+                        "defenseType": "energy_shield",
+                        "defenseValue": 10,
+                        "baseDefenseValue": 10,
+                        "damage": 0,
+                        "baseDamage": 0,
+                        "damageType": null,
+                        "entropy": 0.0,
+                        "entropyPreserved": false,
+                        "maxEntropy": 1.0,
+                        "baseEntropyResistance": 0.0,
+                        "entropyResistance": 0.0,
+                        "entropyLocked": false,
+                        "destabilised": false,
+                        "destabilisedAffixes": []
+                    }
+                }
+            },
+            "lastRestock": "2026-01-25T19:14:47.380716"
+        },
+        "questBoard": {
+            "name": "Quest Board",
+            "resourcesNeeded": {
+                "wood": 30,
+                "stone": 30
+            },
+            "level": 0,
+            "activeQuests": {},
+            "completedQuests": []
+        }
+    },
+    "game": {
+        "areaLevel": 25,
+        "battlesWon": 0,
+        "difficulty": "easy",
+        "hardcoreMode": false,
+        "saveNum": null
+    }
+}

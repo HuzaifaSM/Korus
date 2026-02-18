@@ -1,0 +1,653 @@
+{
+    "weapon": {
+        "prefixes": {
+            "soulbound_added_damage": {
+                "stat": "damage",
+                "isPercent": false,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Empyrean Wrath,",
+                "min": 230,
+                "max": 400,
+                "levelReq": 75
+            },
+            "soulbound_increased_damage": {
+                "stat": "damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Judgement Absolute,",
+                "min": 180,
+                "max": 320,
+                "levelReq": 75
+            },
+            "soulbound_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": "Heaven's Guillotine,",
+                "min": 140,
+                "max": 250,
+                "levelReq": 80
+            },
+            "soulbound_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": false,
+                "categories": ["penetration", "offensive", "soulbound"],
+                "name": "Cataclsym Unbound,",
+                "min": 60,
+                "max": 100,
+                "levelReq": 80
+            },
+            "soulbound_lifesteal": {
+                "stat": "life_leech",
+                "isPercent": true,
+                "categories": ["lifesteal", "utility", "soulbound"],
+                "name": "Sermon of Reclamation,",
+                "min": 2,
+                "max": 7,
+                "levelReq": 85
+            },
+            "soulbound_first_blood": {
+                "stat": "first_blood_damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "First Covenant's Blade,",
+                "min": 40,
+                "max": 80,
+                "turns": 4,
+                "levelReq": 85
+            },
+            "soulbound_execution": {
+                "stat": "low_life_damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "The Reaper's Edict,",
+                "min": 50,
+                "max": 100,
+                "threshold": 25,
+                "levelReq": 85
+            },
+            "soulbound_lucky_strikes": {
+                "stat": "double_damage_chance",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "The Falling Sun,",
+                "min": 10,
+                "max": 20,
+                "levelReq": 90
+            }
+        },
+        "suffixes": {
+            "soulbound_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility", "soulbound"],
+                "name": ", The Imperceivable Warper",
+                "min": 0.5,
+                "max": 1.0,
+                "levelReq": 75
+            },
+            "soulbound_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": ", The Unerring Judgement",
+                "min": 8,
+                "max": 14,
+                "levelReq": 80
+            },
+            "soulbound_heal_on_kill": {
+                "stat": "heal_on_kill",
+                "isPercent": true,
+                "categories": ["healing", "utility", "soulbound"],
+                "name": ", False Immortality",
+                "min": 4,
+                "max": 10,
+                "levelReq": 85
+            },
+            "soulbound_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility", "soulbound"],
+                "name": ", The Divine Bounty",
+                "min": 40,
+                "max": 100,
+                "levelReq": 80
+            },
+            "soulbound_xp_gain": {
+                "stat": "xp_gain",
+                "isPercent": true,
+                "categories": ["xp", "utility", "soulbound"],
+                "name": ", Apotheosis Manifest",
+                "min": 80,
+                "max": 150,
+                "levelReq": 75
+            },
+            "soulbound_gold_gain": {
+                "stat": "gold_gain",
+                "isPercent": true,
+                "categories": ["gold", "utility", "soulbound"],
+                "name": ", The Gilded Providence",
+                "min": 100,
+                "max": 180,
+                "levelReq": 75
+            }
+        }
+    },
+    "head": {
+        "prefixes": {
+            "soulbound_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "soulbound"],
+                "name": "Bulwark of The Eternal Host,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "soulbound"],
+                "name": "Grace of The Seraph,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "soulbound"],
+                "name": "Halo of Angels,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_guardian": {
+                "stat": "early_damage_reduction",
+                "isPercent": true,
+                "categories": ["defensive", "soulbound"],
+                "name": "Protector's Oath,",
+                "min": 20,
+                "max": 40,
+                "turns": 3,
+                "levelReq": 85
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", Transcendence Beyond Flesh",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", Divinity's Consecration",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Cosmic Pathfinder",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_thorns": {
+                "stat": "thorns",
+                "isPercent": false,
+                "categories": ["defensive", "offensive", "soulbound"],
+                "name": ", The Last Laugh",
+                "min": 60,
+                "max": 180,
+                "levelReq": 85
+            }
+        }
+    },
+    "chest": {
+        "prefixes": {
+            "soulbound_increased_health": {
+                "stat": "health",
+                "isPercent": true,
+                "categories": ["health", "defensive", "soulbound"],
+                "name": "Mantle of Undying Flesh,",
+                "min": 80,
+                "max": 160,
+                "levelReq": 75
+            },
+            "soulbound_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "soulbound"],
+                "name": "Colossal Bulkwark,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "soulbound"],
+                "name": "Flesh of Ghosts,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "soulbound"],
+                "name": "Divine Aegis,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_decay": {
+                "stat": "decay_damage_boost",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Covenant of Wasting Hate,",
+                "min": 60,
+                "max": 120,
+                "healthLoss": 2,
+                "levelReq": 90
+            },
+            "soulbound_endurance": {
+                "stat": "late_damage_boost",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Judgement Day,",
+                "min": 20,
+                "max": 40,
+                "turnsRequired": 5,
+                "levelReq": 85
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", Transcendence Beyond Flesh",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", Divinity's Consecration",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Cosmic Pathfinder",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_splash_damage": {
+                "stat": "splash_damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": ", The Rapturous Core",
+                "min": 20,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_cleave": {
+                "stat": "cleave",
+                "isPercent": false,
+                "categories": ["offensive", "soulbound"],
+                "name": "of The Sundering Path",
+                "min": 1,
+                "max": 3,
+                "levelReq": 85
+            }
+        }
+    },
+    "legs": {
+        "prefixes": {
+            "soulbound_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "soulbound"],
+                "name": "Solidarity's Stand,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "soulbound"],
+                "name": "Illusion's Grace,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "soulbound"],
+                "name": "Abyssal Barrier,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", Transcendence Beyond Flesh",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", Divinity's Consecration",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Cosmic Pathfinder",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility", "soulbound"],
+                "name": ", The Imperceivable Warper",
+                "min": 0.5,
+                "max": 0.9,
+                "levelReq": 75
+            }
+        }
+    },
+    "feet": {
+        "prefixes": {
+            "soulbound_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "soulbound"],
+                "name": "Godslayer's Feet,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "soulbound"],
+                "name": "Hermes' Shoes,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "soulbound"],
+                "name": "Archangel's Grace,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", Transcendence Beyond Flesh",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", Divinity's Consecration",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Cosmic Pathfinder",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility", "soulbound"],
+                "name": ", The Imperceivable Warper",
+                "min": 0.5,
+                "max": 0.9,
+                "levelReq": 75
+            }
+        }
+    },
+    "ring": {
+        "prefixes": {
+            "soulbound_increased_damage": {
+                "stat": "damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Vow of Fury,",
+                "min": 180,
+                "max": 320,
+                "levelReq": 75
+            },
+            "soulbound_increased_health": {
+                "stat": "health",
+                "isPercent": true,
+                "categories": ["health", "defensive", "soulbound"],
+                "name": "Undying Will,",
+                "min": 80,
+                "max": 160,
+                "levelReq": 75
+            },
+            "soulbound_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": "Covenant of Slaughter,",
+                "min": 140,
+                "max": 250,
+                "levelReq": 80
+            },
+            "soulbound_lifesteal": {
+                "stat": "life_leech",
+                "isPercent": true,
+                "categories": ["lifesteal", "utility", "soulbound"],
+                "name": "Crimson Veil,",
+                "min": 2,
+                "max": 7,
+                "levelReq": 85
+            },
+            "soulbound_entropic_feedback": {
+                "stat": "entropy_damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "entropy", "soulbound"],
+                "name": "Madness Manifest,",
+                "min": 2,
+                "max": 5,
+                "perEntropyPercent": 10,
+                "levelReq": 90
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", Transcendence Beyond Flesh",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", Divinity's Consecration",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Cosmic Pathfinder",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": ", The Unerring Fate",
+                "min": 8,
+                "max": 14,
+                "levelReq": 80
+            },
+            "soulbound_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility", "soulbound"],
+                "name": ", The Imperceivable Warper",
+                "min": 0.5,
+                "max": 0.9,
+                "levelReq": 75
+            }
+        }
+    },
+    "amulet": {
+        "prefixes": {
+            "soulbound_increased_damage": {
+                "stat": "damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Fist of Hades,",
+                "min": 180,
+                "max": 320,
+                "levelReq": 75
+            },
+            "soulbound_increased_health": {
+                "stat": "health",
+                "isPercent": true,
+                "categories": ["health", "defensive", "soulbound"],
+                "name": "Gift of Eternity,",
+                "min": 80,
+                "max": 160,
+                "levelReq": 75
+            },
+            "soulbound_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": "Pact of Sacrifice,",
+                "min": 140,
+                "max": 250,
+                "levelReq": 80
+            },
+            "soulbound_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": false,
+                "categories": ["penetration", "offensive", "soulbound"],
+                "name": "Ever-Shifting Talisman,",
+                "min": 60,
+                "max": 100,
+                "levelReq": 80
+            },
+            "soulbound_lifesteal": {
+                "stat": "life_leech",
+                "isPercent": true,
+                "categories": ["lifesteal", "utility", "soulbound"],
+                "name": "Bloodless Leech,",
+                "min": 2,
+                "max": 7,
+                "levelReq": 85
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", Transcendence Beyond Flesh",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", Divinity's Consecration",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Cosmic Pathfinder",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": ", The Unerring Fate",
+                "min": 8,
+                "max": 14,
+                "levelReq": 80
+            },
+            "soulbound_heal_on_kill": {
+                "stat": "heal_on_kill",
+                "isPercent": true,
+                "categories": ["healing", "utility", "soulbound"],
+                "name": ", The Dark Pact",
+                "min": 4,
+                "max": 10,
+                "levelReq": 85
+            }
+        }
+    }
+}

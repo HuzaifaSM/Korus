@@ -1,0 +1,860 @@
+{
+    "Druid": {
+        "base": {
+            "Maul": {
+                "name": "Maul",
+                "category": "damage",
+                "tags": ["damage", "beast", "dot", "bleed", "verdance", "strike", "elemental"],
+                "damage_base": 5,
+                "damage_scaling": 30,
+                "resources": {
+                    "gain": {"verdance": 2}
+                },
+                "level": 1,
+                "cooldown": 2,
+                "targets": 1,
+                "effects": {
+                    "target": {
+                        "bleed": {
+                            "stacks": 1
+                        }
+                    }
+                },
+                "requirements": {
+                    "form": "beast"
+                },
+                "description": "Maul your target in Beast Form.\n  - Cooldown: 2 Turns\n  - Gain 2 Verdance.\n  - Deal 5 Damage + 30% of your base damage\n  - Apply 1 stack of Bleed to your target.",
+                "evolutions": {
+                    "25": {
+                        "damage_base": 30,
+                        "damage_scaling": 55,
+                        "tags+": ["debuff", "vulnerable"],
+                        "resources": {
+                            "gain": {"verdance": 4}
+                        },
+                        "level": 25,
+                        "effects": {
+                            "target": {
+                                "bleed": {
+                                    "stacks": 2
+                                },
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.25
+                                }
+                            }
+                        },
+                        "description": "Maul your target in Beast Form.\n  - Cooldown: 2 Turns\n  - Gain 4 Verdance.\n  - Deal 30 Damage + 55% of your base damage\n  - Apply 2 stacks of Bleed and 25% Vulnerable to your target for 2 turns."
+                    },
+                    "50": {
+                        "damage_base": 100,
+                        "damage_scaling": 90,
+                        "tags+": ["slow", "buff", "stoneskin"],
+                        "resources": {
+                            "gain": {"verdance": 6}
+                        },
+                        "level": 50,
+                        "effects": {
+                            "self": {
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.1
+                                }
+                            },
+                            "target": {
+                                "bleed": {
+                                    "stacks": 3
+                                },
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.5
+                                },
+                                "slow": {
+                                    "turns": 3,
+                                    "amount": 0.3
+                                }
+                            }
+                        },
+                        "description":"Maul your target in Beast Form.\n  - Cooldown: 2 Turns\n  - Gain 6 Verdance.\n  - Deal 100 Damage + 90% of your base damage\n  - Apply 3 stacks of Bleed and 50% Vulnerable to your target for 2 turns, 30% Slow for 3 turns.\n  - Gain 10% Damage Reduction for 2 turns."
+                    },
+                    "75": {
+                        "damage_base": 230,
+                        "damage_scaling": 140,
+                        "tags+": ["weaken", "speed"],
+                        "resources": {
+                            "gain": {"verdance": 8}
+                        },
+                        "level": 75,
+                        "effects": {
+                            "self": {
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.15
+                                },
+                                "speed": {
+                                    "turns": 2,
+                                    "amount": 0.1
+                                }
+                            },
+                            "target": {
+                                "bleed": {
+                                    "stacks": 5
+                                },
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.5
+                                },
+                                "slow": {
+                                    "turns": 3,
+                                    "amount": 0.4
+                                },
+                                "weaken": {
+                                    "turns": 2,
+                                    "amount": 0.25
+                                }
+                            }
+                        },
+                        "description":"Maul your target in Beast Form.\n  - Cooldown: 2 Turns\n  - Gain 8 Verdance.\n  - Deal 230 Damage + 140% of your base damage\n  - Apply 5 stacks of bleed and 50% Vulnerable to your target for 2 turns and 40% Slow for 3 turns.\n  - Gain 15% Damage Reduction for 3 turns and +0.1 Speed for 2 turns"
+                    }
+                },
+                "variants": {
+                    "Maul of Recklessness": {
+                        "damage_base+": 40,
+                        "damage_scaling+": 60,
+                        "tags+": ["variant"],
+                        "resources": {
+                            "gain": {"verdance": 0}
+                        },
+                        "level": 50,
+                        "cooldown+": 1,
+                        "effects+": {
+                            "self": {
+                                "stoneskin": {
+                                    "turns": 1,
+                                    "amount": -0.2
+                                }
+                            },
+                            "target": {
+                                "bleed": {
+                                    "stacks+": 2
+                                }
+                            }
+                        },
+                        "description+": "Reckless Maul:\n  - Cooldown: +1 Turn\n  - +40 Base Damage, +60% Damage Scaling\n  - Gain no Verdance\n - Gain -20% Damage Reduction for 2 turns.\n  - Apply 2 additional stacks of Bleed to your target."
+                    }
+                }
+            },
+            "Verdant Bounty": {
+                "name": "Verdant Bounty",
+                "category": "buff",
+                "tags": ["buff", "heal", "human", "stoneskin", "verdance", "regeneration"],
+                "heal_base": 10,
+                "heal_percent": 1,
+                "resources": {
+                    "required": {"verdance": 3}
+                },
+                "level": 5,
+                "cooldown": 3,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 10
+                        },
+                        "stoneskin": {
+                            "turns": 2,
+                            "amount": 0.05
+                        }
+                    }
+                },
+                "requirements": {
+                    "form": "human"
+                },
+                "description": "Call upon nature for a boon in Human Form.\n  - Cooldown: 3 Turns\n  - Only useable whilst above 3 Verdance\n  - Heal 10 HP + 1% Max HP.\n  - Gain 10 HP Regeneration and 5% Damage Reduction for 2 turns.",
+                "evolutions": {
+                    "30": {
+                        "heal_base": 30,
+                        "heal_percent": 3,
+                        "resources": {
+                            "required": {"verdance": 5}
+                        },
+                        "level": 30,
+                        "tags+": ["speed"],
+                        "effects": {
+                            "self": {
+                                "regeneration": {
+                                    "turns": 2,
+                                    "amount_flat": 20,
+                                    "amount_percent": 1
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.1
+                                },
+                                "speed": {
+                                    "turns": 2,
+                                    "amount": 0.1
+                                }
+                            }
+                        },
+                        "description": "Call upon nature for a boon in Human Form.\n  - Cooldown: 3 Turns\n  - Only useable whist above 5 Verdance.\n  - Heal 30 HP + 3% Max HP.\n  - Gain 20 HP + 1% Max HP Regeneration, 10% Damage Reduction and +0.1 Speed for 2 turns."
+                    },
+                    "55": {
+                        "heal_base": 65,
+                        "heal_percent": 5,
+                        "resources": {
+                            "required": {"verdance": 8},
+                            "gain": {"energy_shield": 50}
+                        },
+                        "level": 55,
+                        "tags+": ["energy_shield"],
+                        "effects": {
+                            "self": {
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 40,
+                                    "amount_percent": 2
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.15
+                                },
+                                "speed": {
+                                    "turns": 3,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description":"Call upon nature for a boon in Human Form.\n  - Cooldown: 3 Turns\n  - Only useable whilst above 8 Verdance\n  - Regain 50 Energy Shield if possible\n  - Heal 65 HP + 5% Max HP.\n  - Gain 40 HP + 2% Max HP Regeneration, 15% Damage Reduction and +0.2 Speed for 3 turns."
+                    },
+                    "80": {
+                        "heal_base": 130,
+                        "heal_percent": 10,
+                        "resources": {
+                            "required": {"verdance": 12},
+                            "gain": {
+                                "verdance": 3,
+                                "energy_shield": 100
+                            }
+                        },
+                        "level": 80,
+                        "tags+": ["haste"],
+                        "effects": {
+                            "self": {
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 60,
+                                    "amount_percent": 5
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.2
+                                },
+                                "speed": {
+                                    "turns": 3,
+                                    "amount": 0.3
+                                },
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.1,
+                                    "damage": 1.2
+                                }
+                            }
+                        },
+                        "description":"Call upon nature for a boon in Human Form.\n  - Cooldown: 3 Turns\n  - Only useable whist above 12 Verdance. Gain 3 Verdance.\n  - Gain 100 Energy Shield if possible\n  - Heal 130 HP + 10% Max HP.\n  - Gain 60 HP + 5% Max HP Regeneration, 20% Damage Reduction and +0.3 Speed for 3 turns. Gain Haste for 2 Turns: +0.1 Speed, +20% Damage."
+                    }
+                },
+                "variants": {
+                    "Verdant Bounty of Blessing": {
+                        "heal_base+": 80,
+                        "heal_percent+": 3,
+                        "tags+": ["variant"],
+                        "resources+": {
+                            "required": {"verdance": 3}
+                        },
+                        "level": 55,
+                        "cooldown+": 3,
+                        "effects+": {
+                            "self": {
+                                "regeneration": {
+                                    "turns": 2,
+                                    "amount_flat": 60,
+                                    "amount_percent": 2
+                                }
+                            }
+                        },
+                        "description+": "Verdant Bounty of Blessing:\n  - Cooldown: +3 Turns\n  - Requires an additional 3 Verdance to use.\n  - +80 HP Healed, +3% Max HP healed\n  - Gain 1 Additional Regeneration buff: 60HP + 2% Max HP for 2 turns."
+                    }
+                }
+            },
+            "Roar": {
+                "name": "Roar",
+                "category": "buff",
+                "tags": ["buff", "debuff", "beast", "vulnerable", "aoe"],
+                "level": 10,
+                "cooldown": 4,
+                "targets": "all",
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.1,
+                            "damage": 1.1
+                        }
+                    },
+                    "target": {
+                        "vulnerable": {
+                            "turns": 2,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "requierments": {
+                    "forms": "beast"
+                },
+                "description": "Let out a furious roar in Beast Form.\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage.\n  - All enemies gain 20% Vulnerable for 2 turns.",
+                "evolutions": {
+                    "35": {
+                        "level": 35,
+                        "tags+": ["stoneskin"],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.15,
+                                    "damage": 1.2
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.05
+                                }
+                            },
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.35
+                                }
+                            }
+                        },
+                        "description": "Let out a furious roar in Beast Form.\n  - Gain Haste for 2 turns: +0.15 Speed, +20% Damage.\n  - Gain 5% Damage Reduction for 2 turns.\n  - All enemies gain 35% Vulnerable for 2 turns."
+                    },
+                    "60": {
+                        "level": 60,
+                        "tags+": ["blind"],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.2,
+                                    "damage": 1.30
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.75
+                                }
+                            },
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.5
+                                },
+                                "blind": {
+                                    "turns": 2,
+                                    "amount": 0.15
+                                }
+                            }
+                        },
+                        "description": "Let out a furious roar in Beast Form.\n  - Gain Haste for 2 turns: +0.2 Speed, +30% Damage.\n  - Gain 7.5% Damage Reduction for 2 turns.\n  - All enemies gain 50% Vulnerable and 15% Blind for 2 turns."
+                    },
+                    "85": {
+                        "level": 85,
+                        "tags+": ["weaken"],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.3,
+                                    "damage": 1.5
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.1
+                                }
+                            },
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 3,
+                                    "amount": 0.75
+                                },
+                                "blind": {
+                                    "turns": 3,
+                                    "amount": 0.25
+                                },
+                                "weaken": {
+                                    "turns": 2,
+                                    "amount": 0.3
+                                }
+                            }
+                        },
+                        "description": "Let out a furious roar in Beast Form.\n  - Gain Haste for 2 turns: +0.3 Speed, +50% Damage.\n  - Gain 10% Damage Reduction for 3 turns.\n  - All enemies gain 75% Vulnerable, 25% Blind and 30% Weaken for 3 turns."
+                    }
+                },
+                "variants": {
+
+                }
+            },
+            "Earthquake": {
+                "name": "Earthquake",
+                "category": "damage",
+                "tags": ["damage", "aoe", "stun", "slam", "elemental"],
+                "damage_base": 30,
+                "damage_scaling": 20,
+                "resources": {
+                    "gain": {"verdance": 2}
+                },
+                "level": 15,
+                "cooldown": 4,
+                "targets": "all",
+                "effects": {
+                    "target": {
+                        "stun": {
+                            "turns": 1,
+                            "chance": 0.2
+                        }
+                    }
+                },
+                "description": "Slam into the ground, causing an earthquake.\n  - Cooldown: 4 Turns\n  - Gain 2 Verdance.\n  - Deal 30 Damage + 20% of your base damage\n  - 20% Chance to Stun all enemies for 1 turn.",
+                "evolutions": {
+                    "40": {
+                        "damage_base": 60,
+                        "damage_scaling": 45,
+                        "tags+": ["bleed", "dot", "slow"],
+                        "resources": {
+                            "gain": {"verdance": 3}
+                        },
+                        "level": 40,
+                        "effects": {
+                            "target": {
+                                "stun": {
+                                    "turns": 1,
+                                    "chance": 0.3
+                                },
+                                "bleed": {
+                                    "stacks": 1
+                                },
+                                "slow": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Slam into the ground, causing an earthquake.\n  - Cooldown: 4 Turns\n  - Gain 3 Verdance.\n  - Deal 60 Damage + 45% of your base damage.\n  - 30% Chance to Stun all enemies for 1 turn. Slows all enemies for 20% for 2 turns. Applies 1 stack of Bleed to all enemies."
+                    },
+                    "65": {
+                        "damage_base": 100,
+                        "damage_scaling": 70,
+                        "tags+": ["elemental_exposure", "exposure"],
+                        "resources": {
+                            "gain": {"verdance": 4}
+                        },
+                        "level": 65,
+                        "effects": {
+                            "target": {
+                                "stun": {
+                                    "turns": 1,
+                                    "chance": 0.4
+                                },
+                                "bleed": {
+                                    "stacks": 2
+                                },
+                                "slow": {
+                                    "turns": 2,
+                                    "amount": 0.3
+                                },
+                                "elemental_exposure": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Slam into the ground, causing an earthquake.\n  - Cooldown: 4 Turns\n  - Gain 4 Verdance.\n  - Deal 100 Damage + 70% of your base damage.\n  - 40% Chance to Stun all enemies for 1 turn. Slows all enemies for 30% and applies 20% Elemental Exposure for 2 turns. Applies 2 stacks of Bleed to all enemies."
+                    },
+                    "90": {
+                        "damage_base": 215,
+                        "damage_scaling": 95,
+                        "level": 90,
+                        "effects": {
+                            "target": {
+                                "stun": {
+                                    "turns": 1,
+                                    "chance": 0.5
+                                },
+                                "bleed": {
+                                    "stacks": 3
+                                },
+                                "slow": {
+                                    "turns": 3,
+                                    "amount": 0.4
+                                },
+                                "elemental_exposure": {
+                                    "turns": 3,
+                                    "amount": 0.3
+                                }
+                            }
+                        },
+                        "description": "Slam into the ground, causing an earthquake.\n  - Cooldown: 4 Turns\n  - Gain 4 Verdance.\n  - Deal 215 Damage + 95% of your base damage.\n  - 50% Chance to Stun all enemies for 1 turn. Slows all enemies for 40% and applies 30% Elemental Exposure for 2 turns. Applies 3 stacks of Bleed to all enemies."
+                    }
+                },
+                "variants": {
+                    "Earthquake of Precision": {
+                        "damage_base+": 70,
+                        "damage_scaling+": 30,
+                        "tags+": ["variant"],
+                        "level": 65,
+                        "cooldown+": 1,
+                        "targets": 2,
+                        "description+": "Earthquake of Precision:\n  - Cooldown: +1 Turn.\n  - +70 Base Damage, +30% Damage Scaling.\n  - Only hits up to 2 targets."
+                    }
+                }
+            },
+            "Bestial Frenzy": {
+                "name": "Bestial Frenzy",
+                "category": "damage",
+                "tags": ["damage", "dot", "bleed", "daze", "debuff"],
+                "damage_base": 50,
+                "damage_scaling": 60,
+                "level": 20,
+                "cooldown": 3,
+                "targets": 1,
+                "effects": {
+                    "target": {
+                        "bleed": {
+                            "stacks": 2
+                        },
+                        "daze": {
+                            "turns": 2,
+                            "speed": -0.1,
+                            "damage": 0.95
+                        }
+                    }
+                },
+                "description": "Unleash your bestial rage and rip your foe to shreds.\n  - Cooldown: 3 Turns\n  - Deal 50 Damage + 60% of your base damage\n  - Apply 2 stacks of Bleed. Inflict Daze for 2 turns: -0.1 Speed, 5% less damage dealt.",
+                "evolutions": {
+                    "45": {
+                        "damage_base": 100,
+                        "damage_scaling": 80,
+                        "level": 45,
+                        "effects": {
+                            "target": {
+                                "bleed": {
+                                    "stacks": 4
+                                },
+                                "daze": {
+                                    "turns": 2,
+                                    "speed": -0.2,
+                                    "damage": 0.9
+                                }
+                            }
+                        },
+                        "description":"Unleash your bestial rage and rip your foe to shreds.\n  - Cooldown: 3 Turns\n  - Deal 100 Damage + 80% of your base damage\n  - Apply 4 stacks of Bleed. Inflict Daze for 2 turns: -0.2 Speed, 10% less damage dealt."
+                    },
+                    "70": {
+                        "damage_base": 150,
+                        "damage_scaling": 105,
+                        "tags+": ["buff", "haste", "onKill", "renegeration"],
+                        "level": 70,
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.1,
+                                    "damage": 1.1
+                                }
+                            },
+                            "target": {
+                                "bleed": {
+                                    "stacks": 6
+                                },
+                                "daze": {
+                                    "turns": 2,
+                                    "speed": -0.3,
+                                    "damage": 0.85
+                                }
+                            },
+                            "onKill": {
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 0,
+                                    "amount_percent": 2
+                                }
+                            }
+                        },
+                        "description": "Unleash your bestial rage and rip your foe to shreds.\n  - Cooldown: 3 Turns\n  - Deal 150 Damage + 105% of your base damage\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage\n  - Apply 6 stacks of Bleed. Inflict Daze for 2 turns: -0.3 Speed, 15% less damage dealt.\n  - On Kill: Regenerate 2% Max HP for 3 turns."
+                    },
+                    "95": {
+                        "damage_base": 200,
+                        "damage_scaling": 130,
+                        "level": 95,
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.25,
+                                    "damage": 1.25
+                                }
+                            },
+                            "target": {
+                                "bleed": {
+                                    "stacks": 8
+                                },
+                                "daze": {
+                                    "turns": 3,
+                                    "speed": -0.4,
+                                    "damage": 0.75
+                                }
+                            },
+                            "onKill": {
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 0,
+                                    "amount_percent": 4
+                                }
+                            }
+                        },
+                        "description": "Unleash your bestial rage and rip your foe to shreds.\n  - Cooldown: 3 Turns\n  - Deal 200 Damage + 130% of your base damage\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage\n  - Apply 8 stacks of Bleed. Inflict Daze for 2 turns: -0.4 Speed, 25% less damage dealt.\n  - On Kill: Regenerate 4% Max HP for 3 turns."
+                    }
+                }
+            }
+        },
+        "Primalist": {
+
+        },
+        "Arbiter": {
+
+        },
+        "Moonkin": {
+
+        },
+        "Chimera": {
+
+        },
+        "Earthshaper": {
+
+        }
+    },
+    "Fighter": {
+        "base": {
+
+        },
+        "Bladedancer": {
+
+        },
+        "Champion": {
+
+        },
+        "Barbarian": {
+
+        },
+        "Brawler": {
+
+        },
+        "Marshal": {
+
+        }
+    },
+    "Mage": {
+        "base": {
+
+        },
+        "Elementalist": {
+
+        },
+        "Arcanist": {
+
+        },
+        "Battlemage": {
+
+        },
+        "Fluxweaver": {
+
+        },
+        "Calamity": {
+
+        },
+        "Archon": {
+
+        }
+    },
+    "Monk": {
+        "base": {
+
+        },
+        "Stormwalker": {
+
+        },
+        "Glacierfist": {
+
+        },
+        "Ascetic": {
+
+        },
+        "Psychopath": {
+
+        },
+        "Avatar": {
+
+        }
+    },
+    "Mutant": {
+        "base": {
+
+        },
+        "Plaguebearer": {
+
+        },
+        "Catalyst": {
+
+        },
+        "Parasite": {
+            
+        },
+        "Aberration": {
+
+        },
+        "Voidborn": {
+
+        },
+        "Symbiote": {
+
+        }
+    },
+    "Paladin": {
+        "base": {
+
+        },
+        "Zealot": {
+
+        },
+        "Guardian": {
+
+        },
+        "Justicar": {
+
+        },
+        "Crusader": {
+
+        },
+        "Inquisitor": {
+
+        }
+    },
+    "Ranger": {
+        "base": {
+
+        },
+        "Sniper": {
+
+        },
+        "Windwalker": {
+
+        },
+        "Hunter": {
+
+        },
+        "Skirmisher": {
+
+        },
+        "Tempest": {
+
+        },
+        "Pathfinder": {
+
+        }
+    },
+    "Rogue": {
+        "base": {
+            
+        },
+        "Assassin": {
+
+        },
+        "Shadow": {
+            
+        },
+        "Trickster": {
+
+        },
+        "Nightblade": {
+
+        },
+        "Voidwalker": {
+
+        }
+    },
+    "Spectre": {
+        "base": {
+
+        },
+        "Wraith": {
+
+        },
+        "Reaper": {
+
+        },
+        "Phantasm": {
+
+        },
+        "Revenant": {
+
+        },
+        "Lich": {
+
+        }
+    },
+    "Wanderer": {
+        "base": {
+
+        },
+        "Fractured": {
+
+        },
+        "Manifestation": {
+
+        },
+        "Weaver": {
+
+        },
+        "Abyssal": {
+
+        },
+        "Warper": {
+
+        },
+        "Mindbreaker": {
+
+        }
+    },
+    "Warrior": {
+        "base": {
+
+        },
+        "Warlord": {
+
+        },
+        "Pyromancer": {
+
+        },
+        "Juggernaut": {
+
+        },
+        "Blood Reaver": {
+
+        },
+        "Flamewarden": {
+
+        },
+        "Annihilist": {
+
+        }
+    }
+}

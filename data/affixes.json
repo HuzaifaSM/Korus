@@ -1,0 +1,3055 @@
+{
+    "weapon": {
+        "prefixes": {
+            "added_damage": {
+                "stat": "damage",
+                "isPercent": false,
+                "categories": ["damage", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 2, "max": 5, "weight": 1000, "name": "Sharp" },
+                    "2": { "levelReq": 8, "min": 6, "max": 11, "weight": 900, "name": "Vicious" },
+                    "3": { "levelReq": 18, "min": 12, "max": 20, "weight": 750, "name": "Brutal" },
+                    "4": { "levelReq": 30, "min": 21, "max": 35, "weight": 600, "name": "Savage" },
+                    "5": { "levelReq": 45, "min": 36, "max": 55, "weight": 450, "name": "Demonic" },
+                    "6": { "levelReq": 56, "min": 56, "max": 80, "weight": 300, "name": "Apocalyptic" },
+                    "7": { "levelReq": 69, "min": 81, "max": 115, "weight": 180, "name": "Tectonic" },
+                    "8": { "levelReq": 84, "min": 116, "max": 165, "weight": 90, "name": "Primordial" },
+                    "9": { "levelReq": 90, "min": 166, "max": 230, "weight": 65, "name": "Godslaying" },
+                    "10": { "levelReq": 96, "min": 231, "max": 270, "weight": 40, "name": "Worldbreaking" },
+                    "11": { "levelReq": 99, "min": 271, "max": 300, "weight": 15, "name": "Unmaking" }
+                }
+            },
+            "increased_damage": {
+                "stat": "damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 10, "max": 18, "weight": 950, "name": "Striking" },
+                    "2": { "levelReq": 15, "min": 19, "max": 32, "weight": 800, "name": "Crushing" },
+                    "3": { "levelReq": 28, "min": 33, "max": 50, "weight": 650, "name": "Devastating" },
+                    "4": { "levelReq": 42, "min": 51, "max": 72, "weight": 500, "name": "Annihilating" },
+                    "5": { "levelReq": 58, "min": 73, "max": 98, "weight": 350, "name": "Cataclysmic" },
+                    "6": { "levelReq": 72, "min": 99, "max": 130, "weight": 200, "name": "Apocalyptic" },
+                    "7": { "levelReq": 82, "min": 131, "max": 165, "weight": 120, "name": "Ruinous" },
+                    "8": { "levelReq": 90, "min": 166, "max": 215, "weight": 70, "name": "Collapsing" },
+                    "9": { "levelReq": 96, "min": 216, "max": 260, "weight": 30, "name": "Oblivion's" },
+                    "10": { "levelReq": 100, "min": 261, "max": 305, "weight": 10, "name": "All-Consuming"}
+                }
+            },
+            "added_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 25, "weight": 700, "name": "Lethal" },
+                    "2": { "levelReq": 25, "min": 26, "max": 40, "weight": 550, "name": "Murderous" },
+                    "3": { "levelReq": 40, "min": 41, "max": 65, "weight": 400, "name": "Executioner's" },
+                    "4": { "levelReq": 62, "min": 66, "max": 85, "weight": 200, "name": "Pinpoint" },
+                    "5": { "levelReq": 78, "min": 86, "max": 110, "weight": 75, "name": "Deathbringer's" },
+                    "6": { "levelReq": 89, "min": 111, "max": 140, "weight": 30, "name": "Reaper's" },
+                    "7": { "levelReq": 95, "min": 141, "max": 175, "weight": 10, "name": "Death's" }
+                }
+            },
+            "added_resistance_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": false,
+                "categories": ["penetration", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 10, "weight": 925, "name": "Bypassing" },
+                    "2": { "levelReq": 15, "min": 11, "max": 17, "weight": 700, "name": "Penetrating" },
+                    "3": { "levelReq": 30, "min": 18, "max": 25, "weight": 475, "name": "Flux" },
+                    "4": { "levelReq": 50, "min": 26, "max": 35, "weight": 200, "name": "Shattering" },
+                    "5": { "levelReq": 80, "min": 36, "max": 50, "weight": 50, "name": "Ravaging" },
+                    "6": { "levelReq": 95, "min": 51, "max": 70, "weight": 25, "name": "Inverting" }
+                }
+            },
+            "increased_xp_gain": {
+                "stat": "xp_gain",
+                "isPercent": true,
+                "categories": ["xp", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wise" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Enlightened" },
+                    "4": { "levelReq": 75, "min": 51, "max": 70, "weight": 240, "name": "Ascendant" },
+                    "5": { "levelReq": 90, "min": 71, "max": 95, "weight": 140, "name": "Awakened" }
+                }
+            },
+            "increased_gold_gain": {
+                "stat": "gold_gain",
+                "isPercent": true,
+                "categories": ["gold", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wealthy" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Opulent" },
+                    "4": { "levelReq": 75, "min": 51, "max": 75, "weight": 250, "name": "Exalted" },
+                    "5": { "levelReq": 90, "min": 76, "max": 110, "weight": 160, "name": "Royal" }
+                }
+            },
+            "increased_item_rarity": {
+                "stat": "item_rarity",
+                "isPercent": true,
+                "categories": ["rarity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "Fortunate" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "Fated" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 280, "name": "Scavenging" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "Manifesting" }
+                }
+            },
+            "added_entropy": {
+                "stat": "entropy",
+                "isPercent": false,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 0.05,   "max": 0.10,  "weight": 900, "name": "Unstable" },
+                    "2": { "levelReq": 12, "min": 0.11,  "max": 0.18,  "weight": 780, "name": "Chaotic" },
+                    "3": { "levelReq": 28, "min": 0.19,  "max": 0.30,  "weight": 620, "name": "Turbulent" },
+                    "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
+                    "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
+                    "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            }
+        },
+        "suffixes": {
+            "added_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8, "min": 0.04, "max": 0.09, "weight": 800, "name": "of Swiftness" },
+                    "2": { "levelReq": 22, "min": 0.10, "max": 0.17, "weight": 650, "name": "of Haste" },
+                    "3": { "levelReq": 40, "min": 0.18, "max": 0.28, "weight": 480, "name": "of Frenzy" },
+                    "4": { "levelReq": 58, "min": 0.29, "max": 0.42, "weight": 300, "name": "of Velocity" },
+                    "5": { "levelReq": 75, "min": 0.43, "max": 0.60, "weight": 150, "name": "of Lightspeed" },
+                    "6": { "levelReq": 90, "min": 0.61, "max": 0.90, "weight": 90, "name": "of the Wormhole" }
+                }
+            },
+            "added_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 1, "max": 2, "weight": 650, "name": "of Precision" },
+                    "2": { "levelReq": 35, "min": 3, "max": 5, "weight": 480, "name": "of Deadliness" },
+                    "3": { "levelReq": 55, "min": 6, "max": 8, "weight": 300, "name": "of Lethality" },
+                    "4": { "levelReq": 80, "min": 9, "max": 11, "weight": 140, "name": "of the Assassin" },
+                    "5": { "levelReq": 95, "min": 12, "max": 15, "weight": 70, "name": "of the Eternal Hunt" }
+                }
+            },
+            "increased_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": true,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 10, "max": 25, "weight": 700, "name": "of Strength" },
+                    "2": { "levelReq": 15, "min": 26, "max": 50, "weight": 500, "name": "of Hatred" },
+                    "3": { "levelReq": 30, "min": 51, "max": 90, "weight": 400, "name": "of Destruction" },
+                    "4": { "levelReq": 50, "min": 91, "max": 130, "weight": 200, "name": "of Cataclysm" },
+                    "5": { "levelReq": 70, "min": 131, "max": 180, "weight": 75, "name": "of Annihilation" }
+                }
+            },
+            "increased_resistance_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": true,
+                "categories": ["penetration", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 20, "weight": 900, "name": "of Wisdom" },
+                    "2": { "levelReq": 20, "min": 21, "max": 35, "weight": 650, "name": "of Piercing" },
+                    "3": { "levelReq": 35, "min": 36, "max": 55, "weight": 425, "name": "of Alteration" },
+                    "4": { "levelReq": 55, "min": 56, "max": 85, "weight": 175, "name": "of Crushing" },
+                    "5": { "levelReq": 85, "min": 86, "max": 120, "weight": 30, "name": "of Pulverising" }
+                }
+            },
+            "added_multihit_chance": {
+                "stat": "multihit",
+                "isPercent": false,
+                "categories": ["multihit", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 2, "max": 5, "weight": 550, "name": "of Chains" },
+                    "2": { "levelReq": 42, "min": 6, "max": 11, "weight": 380, "name": "of Echoes" },
+                    "3": { "levelReq": 65, "min": 12, "max": 17, "weight": 230, "name": "of Cascades" },
+                    "4": { "levelReq": 85, "min": 18, "max": 20, "weight": 100, "name": "of Devastation" },
+                    "5": { "levelReq": 92, "min": 21, "max": 24, "weight": 60, "name": "of Overwhelm" },
+                    "6": { "levelReq": 98, "min": 25, "max": 30, "weight": 20, "name": "of Infinite Strikes" }
+                }
+            },
+            "increased_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "of Abundance" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "of Plenty" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "of Overflow" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "of Cornucopia" }
+                }
+            },
+            "increased_enemy_quantity": {
+                "stat": "enemy_quantity",
+                "isPercent": true,
+                "categories": ["enemy_quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
+                    "2": { "levelReq": 40, "min": 11, "max": 17, "weight": 420, "name": "of Peril" },
+                    "3": { "levelReq": 65, "min": 18, "max": 25, "weight": 320, "name": "of Havoc" },
+                    "4": { "levelReq": 80, "min": 26, "max": 35, "weight": 200, "name": "of Hordes" },
+                    "5": { "levelReq": 95, "min": 36, "max": 50, "weight": 120, "name": "of Teeming Spires" },
+                    "6": { "levelReq": 100, "min": 51, "max": 80, "weight": 40, "name": "of Infinite Challenge" }
+                }
+            },
+            "added_durability": {
+                "stat": "durability",
+                "isPercent": false,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 50,  "max": 120,  "weight": 900, "name": "of Sturdiness" },
+                    "2": { "levelReq": 15, "min": 121, "max": 260,  "weight": 700, "name": "of Fortitude" },
+                    "3": { "levelReq": 35, "min": 261, "max": 450,  "weight": 500, "name": "of Endurance" },
+                    "4": { "levelReq": 60, "min": 451, "max": 700,  "weight": 280, "name": "of Tenacity" },
+                    "5": { "levelReq": 85, "min": 701, "max": 1000, "weight": 100, "name": "of Imperishability" }
+                }
+            },
+            "increased_durability": {
+                "stat": "durability",
+                "isPercent": true,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10,  "max": 25,  "weight": 750, "name": "of Preservation" },
+                    "2": { "levelReq": 25, "min": 26,  "max": 50,  "weight": 600, "name": "of Hardening" },
+                    "3": { "levelReq": 45, "min": 51,  "max": 80,  "weight": 420, "name": "of Reinforcement" },
+                    "4": { "levelReq": 65, "min": 81,  "max": 115, "weight": 220, "name": "of Unyielding" },
+                    "5": { "levelReq": 85, "min": 116, "max": 150, "weight": 80,  "name": "of Performance" }
+                }
+            },
+            "increased_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": true,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 16, "min": 15, "max": 25, "weight": 600, "name": "of Focus" },
+                    "2": { "levelReq": 35, "min": 26, "max": 42, "weight": 450, "name": "of Deadliness" },
+                    "3": { "levelReq": 56, "min": 43, "max": 65, "weight": 280, "name": "of Murder" },
+                    "4": { "levelReq": 70, "min": 66, "max": 85, "weight": 130, "name": "of Heartlessness" },
+                    "5": { "levelReq": 89, "min": 86, "max": 120, "weight": 80, "name": "of No Mercy" },
+                    "6": { "levelReq": 94, "min": 121, "max": 160, "weight": 15, "name": "of Apathy" }
+                }
+            },
+            "increased_entropy": {
+                "stat": "entropy",
+                "isPercent": true,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8,  "max": 14, "weight": 700, "name": "of Distortion" },
+                    "2": { "levelReq": 25, "min": 15, "max": 24, "weight": 560, "name": "of Resonance" },
+                    "3": { "levelReq": 45, "min": 25, "max": 38, "weight": 380, "name": "of Fracture" },
+                    "4": { "levelReq": 65, "min": 39, "max": 55, "weight": 200, "name": "of Unbinding" },
+                    "5": { "levelReq": 85, "min": 56, "max": 75, "weight": 90,  "name": "of Collapse" }
+                }
+            },
+            "entropy_resistance": {
+                "stat": "entropy_resistance",
+                "isPercent": false,
+                "categories": ["entropy", "resistance", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8,  "min": 6,  "max": 12, "weight": 800, "name": "of Grounding" },
+                    "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
+                    "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
+                    "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                }
+            }
+        }
+    },
+
+    "head": {
+        "prefixes": {
+            "added_health": {
+                "stat": "health",
+                "isPercent": false,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 4, "max": 10, "weight": 1000, "name": "Healthy" },
+                    "2": { "levelReq": 10, "min": 11, "max": 25, "weight": 850, "name": "Vigorous" },
+                    "3": { "levelReq": 22, "min": 26, "max": 55, "weight": 700, "name": "Robust" },
+                    "4": { "levelReq": 38, "min": 55, "max": 80, "weight": 550, "name": "Stalwart" },
+                    "5": { "levelReq": 55, "min": 81, "max": 120, "weight": 400, "name": "Thriving" },
+                    "6": { "levelReq": 72, "min": 121, "max": 150, "weight": 250, "name": "Titan's" },
+                    "7": { "levelReq": 84, "min": 151, "max": 195, "weight": 170, "name": "Colossus" },
+                    "8": { "levelReq": 90, "min": 196, "max": 230, "weight": 90, "name": "Immortal" }
+                }
+            },
+            "added_armour": {
+                "stat": "armour",
+                "isPercent": false,
+                "categories": ["armour", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 1000, "name": "Plated" },
+                    "2": { "levelReq": 10, "min": 13, "max": 24, "weight": 900, "name": "Armoured" },
+                    "3": { "levelReq": 25, "min": 25, "max": 42, "weight": 750, "name": "Fortified" },
+                    "4": { "levelReq": 38, "min": 43, "max": 68, "weight": 600, "name": "Reinforced" },
+                    "5": { "levelReq": 56, "min": 69, "max": 102, "weight": 450, "name": "Adamant" },
+                    "6": { "levelReq": 74, "min": 103, "max": 145, "weight": 300, "name": "Unbreakable" },
+                    "7": { "levelReq": 85, "min": 146, "max": 185, "weight": 180, "name": "Indestructible" },
+                    "8": { "levelReq": 90, "min": 186, "max": 220, "weight": 110, "name": "Titanforged" }
+                }
+            },
+            "added_evasion": {
+                "stat": "evasion",
+                "isPercent": false,
+                "categories": ["evasion", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 1000, "name": "Light" },
+                    "2": { "levelReq": 10, "min": 16, "max": 30, "weight": 900, "name": "Flexible" },
+                    "3": { "levelReq": 25, "min": 31, "max": 50, "weight": 750, "name": "Nimble" },
+                    "4": { "levelReq": 38, "min": 51, "max": 80, "weight": 600, "name": "Agile" },
+                    "5": { "levelReq": 56, "min": 81, "max": 110, "weight": 450, "name": "Evasive" },
+                    "6": { "levelReq": 74, "min": 111, "max": 150, "weight": 300, "name": "Untouchable" },
+                    "7": { "levelReq": 85, "min": 151, "max": 195, "weight": 180, "name": "Invisible" },
+                    "8": { "levelReq": 90, "min": 196, "max": 235, "weight": 110, "name": "Ghostlike" }
+                }
+            },
+            "added_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": false,
+                "categories": ["energy_shield", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 3, "max": 8, "weight": 1000, "name": "Shielded" },
+                    "2": { "levelReq": 10, "min": 9, "max": 17, "weight": 900, "name": "Warded" },
+                    "3": { "levelReq": 25, "min": 18, "max": 30, "weight": 750, "name": "Protected" },
+                    "4": { "levelReq": 38, "min": 31, "max": 50, "weight": 600, "name": "Barrier" },
+                    "5": { "levelReq": 56, "min": 51, "max": 75, "weight": 450, "name": "Ethereal" },
+                    "6": { "levelReq": 74, "min": 76, "max": 105, "weight": 300, "name": "Aegis" },
+                    "7": { "levelReq": 85, "min": 106, "max": 136, "weight": 180, "name": "Replusing" },
+                    "8": { "levelReq": 90, "min": 137, "max": 170, "weight": 110, "name": "Fortress" }
+                }
+            },
+            "increased_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 7, "max": 15, "weight": 900, "name": "Sturdy" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 800, "name": "Hardened" },
+                    "3": { "levelReq": 32, "min": 31, "max": 55, "weight": 650, "name": "Steeled" },
+                    "4": { "levelReq": 47, "min": 56, "max": 80, "weight": 480, "name": "Ironclad" },
+                    "5": { "levelReq": 60, "min": 81, "max": 105, "weight": 280, "name": "Cladden" },
+                    "6": { "levelReq": 75, "min": 106, "max": 135, "weight": 170, "name": "Indomitable" },
+                    "7": { "levelReq": 82, "min": 136, "max": 185, "weight": 110, "name": "Imperial" }
+                }
+            },
+            "increased_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 7, "max": 15, "weight": 900, "name": "Swift" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 800, "name": "Dodging" },
+                    "3": { "levelReq": 32, "min": 31, "max": 55, "weight": 650, "name": "Elusive" },
+                    "4": { "levelReq": 47, "min": 56, "max": 80, "weight": 480, "name": "Phantom" },
+                    "5": { "levelReq": 60, "min": 81, "max": 105, "weight": 280, "name": "Spectral" },
+                    "6": { "levelReq": 75, "min": 106, "max": 136, "weight": 170, "name": "Umbral" },
+                    "7": { "levelReq": 82, "min": 137, "max": 185, "weight": 110, "name": "Wraithlike" }
+                }
+            },
+            "increased_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 7, "max": 15, "weight": 900, "name": "Guarding" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 800, "name": "Protecting" },
+                    "3": { "levelReq": 32, "min": 31, "max": 55, "weight": 650, "name": "Deflecting" },
+                    "4": { "levelReq": 47, "min": 56, "max": 80, "weight": 480, "name": "Impervious" },
+                    "5": { "levelReq": 60, "min": 81, "max": 105, "weight": 280, "name": "Unyielding" },
+                    "6": { "levelReq": 75, "min": 106, "max": 136, "weight": 170, "name": "Impenetrable" },
+                    "7": { "levelReq": 82, "min": 137, "max": 185, "weight": 110, "name": "Phased" }
+                }
+            },
+            "increased_item_rarity": {
+                "stat": "item_rarity",
+                "isPercent": true,
+                "categories": ["rarity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "Fortunate" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "Fated" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 280, "name": "Scavenging" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "Manifesting" }
+                }
+            },
+            "added_entropy": {
+                "stat": "entropy",
+                "isPercent": false,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 0.05,   "max": 0.10,  "weight": 900, "name": "Unstable" },
+                    "2": { "levelReq": 12, "min": 0.11,  "max": 0.18,  "weight": 780, "name": "Chaotic" },
+                    "3": { "levelReq": 28, "min": 0.19,  "max": 0.30,  "weight": 620, "name": "Turbulent" },
+                    "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
+                    "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
+                    "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            }
+        },
+        "suffixes": {
+            "added_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 1, "max": 2, "weight": 650, "name": "of Precision" },
+                    "2": { "levelReq": 35, "min": 3, "max": 5, "weight": 480, "name": "of Deadliness" },
+                    "3": { "levelReq": 55, "min": 6, "max": 8, "weight": 300, "name": "of Lethality" },
+                    "4": { "levelReq": 80, "min": 9, "max": 11, "weight": 140, "name": "of the Assassin" },
+                    "5": { "levelReq": 95, "min": 12, "max": 15, "weight": 70, "name": "of the Eternal Hunt" }
+                }
+            },
+            "increased_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": true,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 16, "min": 15, "max": 25, "weight": 600, "name": "of Focus" },
+                    "2": { "levelReq": 35, "min": 26, "max": 42, "weight": 450, "name": "of Deadliness" },
+                    "3": { "levelReq": 56, "min": 43, "max": 65, "weight": 280, "name": "of Murder" },
+                    "4": { "levelReq": 70, "min": 66, "max": 85, "weight": 130, "name": "of Heartlessness" },
+                    "5": { "levelReq": 89, "min": 86, "max": 120, "weight": 80, "name": "of No Mercy" },
+                    "6": { "levelReq": 94, "min": 121, "max": 160, "weight": 15, "name": "of Apathy" }
+                }
+            },
+            "added_crit_resistance": {
+                "stat": "crit_resistance",
+                "isPercent": false,
+                "categories": ["critical", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 5, "max": 10, "weight": 600, "name": "of the Resilient" },
+                    "2": { "levelReq": 30, "min": 11, "max": 18, "weight": 450, "name": "of the Determined" },
+                    "3": { "levelReq": 45, "min": 19, "max": 24, "weight": 370, "name": "of the Resolute" },
+                    "4": { "levelReq": 70, "min": 25, "max": 30, "weight": 240, "name": "of the Deathless" },
+                    "5": { "levelReq": 85, "min": 31, "max": 37, "weight": 120, "name": "of the Unfazed" }
+                }
+            },
+            "added_ailment_avoidance": {
+                "stat": "ailment_avoidance",
+                "isPercent": false,
+                "categories": ["ailment", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 18, "min": 5, "max": 12, "weight": 550, "name": "Warding" },
+                    "2": { "levelReq": 38, "min": 13, "max": 22, "weight": 400, "name": "Immune" },
+                    "3": { "levelReq": 60, "min": 23, "max": 35, "weight": 260, "name": "Pure" },
+                    "4": { "levelReq": 82, "min": 36, "max": 50, "weight": 120, "name": "Perfect" }
+                }
+            },
+            "increased_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "of Abundance" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "of Plenty" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "of Overflow" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "of Cornucopia" }
+                }
+            },
+            "increased_enemy_quantity": {
+                "stat": "enemy_quantity",
+                "isPercent": true,
+                "categories": ["enemy_quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
+                    "2": { "levelReq": 40, "min": 11, "max": 17, "weight": 420, "name": "of Peril" },
+                    "3": { "levelReq": 65, "min": 18, "max": 25, "weight": 320, "name": "of Havoc" },
+                    "4": { "levelReq": 80, "min": 26, "max": 35, "weight": 200, "name": "of Hordes" },
+                    "5": { "levelReq": 95, "min": 36, "max": 50, "weight": 120, "name": "of Teeming Spires" },
+                    "6": { "levelReq": 100, "min": 51, "max": 80, "weight": 40, "name": "of Infinite Challenge" }
+                }
+            },
+            "added_stun_avoidance": {
+                "stat": "stun_avoidance",
+                "isPercent": false,
+                "categories": ["stun", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 12, "min": 5, "max": 10, "weight": 650, "name": "of Steadiness" },
+                    "2": { "levelReq": 32, "min": 11, "max": 18, "weight": 480, "name": "of Stability" },
+                    "3": { "levelReq": 58, "min": 19, "max": 25, "weight": 300, "name": "of Reflexes" },
+                    "4": { "levelReq": 70, "min": 26, "max": 30, "weight": 140, "name": "of the Unshakeable" },
+                    "5": { "levelReq": 86, "min": 31, "max": 38, "weight": 70, "name": "of the Unmovable" },
+                    "6": { "levelReq": 94, "min": 39, "max": 50, "weight": 35, "name": "of the Unfazed" }
+                }
+            },
+            "fire_resistance": {
+                "stat": "fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "fire", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Forge" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Inferno" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Phoenix" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Volcano" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Infernal Flame" }
+                }
+            },
+            "cold_resistance": {
+                "stat": "cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "cold", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Glacier" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tundra" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Yeti" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Sub-Zero" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Absolute Zero" }
+                }
+            },
+            "lightning_resistance": {
+                "stat": "lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "lightning", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Storm" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tempest" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Thunder" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Discharge" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Zeus" }
+                }
+            },
+            "dark_resistance": {
+                "stat": "dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "dark", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Shadow" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Black" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Void" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Abyss" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Emptiness" }
+                }
+            },
+            "holy_resistance": {
+                "stat": "holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "holy", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Light" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Faith" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Blessed" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Divinity" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Righteous" }
+                }
+            },
+            "arcane_resistance": {
+                "stat": "arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "arcane", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Mage" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Wizard" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Archmage" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Attunement" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
+                }
+            },
+            "wind_resistance": {
+                "stat": "wind_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "wind", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
+                }
+            },
+            "earth_resistance": {
+                "stat": "earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "earth", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
+                }
+            },
+            "chaos_resistance": {
+                "stat": "chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "chaos", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of Entropy" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Disorder" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Chaos" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Madness" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Insanity" }
+                }
+            },
+            "psychic_resistance": {
+                "stat": "psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "psychic", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Mind" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Clarity" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Focus" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of the Psychic" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of the Mindlord" }
+                }
+            },
+            "ethereal_resistance": {
+                "stat": "ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "ethereal", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Ghost" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of the Spirit" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of the Ethereal" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Otherworld" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Spirits" }
+                }
+            },
+            "all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "divine", "defensive",
+                    "fire", "cold", "lightning", "dark", "holy",
+                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
+                    "2": { "levelReq": 35, "min": 6, "max": 8, "weight": 300, "name": "of Harmony" },
+                    "3": { "levelReq": 60, "min": 9, "max": 11, "weight": 240, "name": "of Equality" },
+                    "4": { "levelReq": 80, "min": 12, "max": 15, "weight": 100, "name": "of Transcendence" },
+                    "5": { "levelReq": 95, "min": 16, "max": 20, "weight": 40, "name": "of Godhood" }
+                }
+            },
+            "divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "divine", "defensive",
+                    "dark", "holy", "arcane"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 4, "max": 7, "weight": 450, "name": "of the Sacred" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of the Divine" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Gods" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of Eternity" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Creator" }
+                }
+            },
+            "elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "defensive",
+                    "fire", "cold", "lightning", "wind", "earth"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of Nature" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Arcanist" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of the Primordial" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Attuned" }
+                }
+            },
+            "added_durability": {
+                "stat": "durability",
+                "isPercent": false,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 50,  "max": 120,  "weight": 900, "name": "of Sturdiness" },
+                    "2": { "levelReq": 15, "min": 121, "max": 260,  "weight": 700, "name": "of Fortitude" },
+                    "3": { "levelReq": 35, "min": 261, "max": 450,  "weight": 500, "name": "of Endurance" },
+                    "4": { "levelReq": 60, "min": 451, "max": 700,  "weight": 280, "name": "of Tenacity" },
+                    "5": { "levelReq": 85, "min": 701, "max": 1000, "weight": 100, "name": "of Imperishability" }
+                }
+            },
+            "increased_durability": {
+                "stat": "durability",
+                "isPercent": true,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10,  "max": 25,  "weight": 750, "name": "of Preservation" },
+                    "2": { "levelReq": 25, "min": 26,  "max": 50,  "weight": 600, "name": "of Hardening" },
+                    "3": { "levelReq": 45, "min": 51,  "max": 80,  "weight": 420, "name": "of Reinforcement" },
+                    "4": { "levelReq": 65, "min": 81,  "max": 115, "weight": 220, "name": "of Unyielding" },
+                    "5": { "levelReq": 85, "min": 116, "max": 150, "weight": 80,  "name": "of Performance" }
+                }
+            },
+            "added_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 10, "max": 25, "weight": 600, "name": "of Severity" },
+                    "2": { "levelReq": 35, "min": 26, "max": 40, "weight": 440, "name": "of Brutality" },
+                    "3": { "levelReq": 50, "min": 41, "max": 60, "weight": 360, "name": "of Execution" },
+                    "4": { "levelReq": 68, "min": 61, "max": 90, "weight": 210, "name": "of Finality" },
+                    "5": { "levelReq": 85, "min": 91, "max": 125, "weight": 100, "name": "of the End" },
+                    "6": { "levelReq": 94, "min": 126, "max": 160, "weight": 45, "name": "of Lost Hope" }
+                }
+            },
+            "increased_entropy": {
+                "stat": "entropy",
+                "isPercent": true,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8,  "max": 14, "weight": 700, "name": "of Distortion" },
+                    "2": { "levelReq": 25, "min": 15, "max": 24, "weight": 560, "name": "of Resonance" },
+                    "3": { "levelReq": 45, "min": 25, "max": 38, "weight": 380, "name": "of Fracture" },
+                    "4": { "levelReq": 65, "min": 39, "max": 55, "weight": 200, "name": "of Unbinding" },
+                    "5": { "levelReq": 85, "min": 56, "max": 75, "weight": 90,  "name": "of Collapse" }
+                }
+            },
+            "entropy_resistance": {
+                "stat": "entropy_resistance",
+                "isPercent": false,
+                "categories": ["entropy", "resistance", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8,  "min": 6,  "max": 12, "weight": 800, "name": "of Grounding" },
+                    "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
+                    "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
+                    "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                }
+            },
+            "health_regeneration": {
+                "stat": "health_regeneration",
+                "isPercent": false,
+                "categories": ["health", "regeneration", "defensive", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recovery" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Healing" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Mending" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Rejuvenation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Vitality" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
+                    "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            }
+        }
+    },
+
+    "chest": {
+        "prefixes": {
+            "added_health": {
+                "stat": "health",
+                "isPercent": false,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 15, "max": 30, "weight": 1000, "name": "Healthy" },
+                    "2": { "levelReq": 10, "min": 31, "max": 52, "weight": 880, "name": "Vigorous" },
+                    "3": { "levelReq": 22, "min": 53, "max": 82, "weight": 750, "name": "Robust" },
+                    "4": { "levelReq": 38, "min": 83, "max": 120, "weight": 620, "name": "Stalwart" },
+                    "5": { "levelReq": 55, "min": 121, "max": 165, "weight": 480, "name": "Thriving" },
+                    "6": { "levelReq": 72, "min": 166, "max": 205, "weight": 320, "name": "Titan's" },
+                    "7": { "levelReq": 84, "min": 206, "max": 235, "weight": 160, "name": "Colossus" },
+                    "8": { "levelReq": 90, "min": 236, "max": 380, "weight": 100, "name": "Immortal" },
+                    "9": { "levelReq": 95, "min": 281, "max": 320, "weight": 60, "name": "Eternal" }
+                }
+            },
+            "increased_health": {
+                "stat": "health",
+                "isPercent": true,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 550, "name": "Vital" },
+                    "2": { "levelReq": 45, "min": 6, "max": 8, "weight": 380, "name": "Enduring" },
+                    "3": { "levelReq": 65, "min": 9, "max": 12, "weight": 200, "name": "Everlasting" },
+                    "4": { "levelReq": 80, "min": 13, "max": 17, "weight": 75, "name": "Godly" },
+                    "5": { "levelReq": 95, "min": 18, "max": 23, "weight": 30, "name": "Remaking" }
+                }
+            },
+            "added_armour": {
+                "stat": "armour",
+                "isPercent": false,
+                "categories": ["armour", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 10, "max": 25, "weight": 950, "name": "Plated" },
+                    "2": { "levelReq": 10, "min": 26, "max": 40, "weight": 840, "name": "Armoured" },
+                    "3": { "levelReq": 25, "min": 41, "max": 65, "weight": 720, "name": "Fortified" },
+                    "4": { "levelReq": 38, "min": 66, "max": 90, "weight": 590, "name": "Reinforced" },
+                    "5": { "levelReq": 56, "min": 91, "max": 120, "weight": 440, "name": "Adamant" },
+                    "6": { "levelReq": 74, "min": 121, "max": 160, "weight": 280, "name": "Unbreakable" },
+                    "7": { "levelReq": 85, "min": 161, "max": 215, "weight": 160, "name": "Indestructible" },
+                    "8": { "levelReq": 90, "min": 216, "max": 280, "weight": 100, "name": "Titanforged" },
+                    "9": { "levelReq": 96, "min": 281, "max": 330, "weight": 40, "name": "Heavenly" }
+                }
+            },
+            "increased_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 8, "max": 20, "weight": 950, "name": "Sturdy" },
+                    "2": { "levelReq": 18, "min": 21, "max": 45, "weight": 800, "name": "Hardened" },
+                    "3": { "levelReq": 32, "min": 46, "max": 70, "weight": 650, "name": "Steeled" },
+                    "4": { "levelReq": 47, "min": 71, "max": 90, "weight": 480, "name": "Ironclad" },
+                    "5": { "levelReq": 60, "min": 91, "max": 120, "weight": 280, "name": "Cladden" },
+                    "6": { "levelReq": 75, "min": 121, "max": 145, "weight": 170, "name": "Indomitable"},
+                    "7": { "levelReq": 82, "min": 146, "max": 170, "weight": 110, "name": "Imperial" },
+                    "8": { "levelReq": 90, "min": 171, "max": 195, "weight": 60, "name": "Impenetrable" }
+                }
+            },
+             "added_evasion": {
+                "stat": "evasion",
+                "isPercent": false,
+                "categories": ["evasion", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 15, "max": 33, "weight": 950, "name": "Light" },
+                    "2": { "levelReq": 10, "min": 34, "max": 55, "weight": 840, "name": "Flexible" },
+                    "3": { "levelReq": 22, "min": 56, "max": 86, "weight": 720, "name": "Nimble" },
+                    "4": { "levelReq": 38, "min": 87, "max": 103, "weight": 590, "name": "Agile" },
+                    "5": { "levelReq": 56, "min": 104, "max": 157, "weight": 440, "name": "Evasive" },
+                    "6": { "levelReq": 74, "min": 158, "max": 205, "weight": 280, "name": "Untouchable" },
+                    "7": { "levelReq": 85, "min": 206, "max": 240, "weight": 160, "name": "Invisible" },
+                    "8": { "levelReq": 90, "min": 241, "max": 300, "weight": 100, "name": "Ghostlike" },
+                    "9": { "levelReq": 96, "min": 301, "max": 355, "weight": 40, "name": "Unreal" }
+                }
+            },
+            "increased_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 8, "max": 20, "weight": 950, "name": "Swift" },
+                    "2": { "levelReq": 18, "min": 21, "max": 45, "weight": 800, "name": "Dodging" },
+                    "3": { "levelReq": 32, "min": 46, "max": 70, "weight": 650, "name": "Elusive" },
+                    "4": { "levelReq": 47, "min": 71, "max": 90, "weight": 480, "name": "Phantom" },
+                    "5": { "levelReq": 60, "min": 91, "max": 120, "weight": 280, "name": "Spectral" },
+                    "6": { "levelReq": 75, "min": 121, "max": 145, "weight": 170, "name": "Umbral" },
+                    "7": { "levelReq": 82, "min": 146, "max": 175, "weight": 110, "name": "Wraithlike" },
+                    "8": { "levelReq": 90, "min": 176, "max": 210, "weight": 60, "name": "Immaterial" }
+                }
+            },
+            "added_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": false,
+                "categories": ["energy_shield", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 11, "weight": 950, "name": "Shielded" },
+                    "2": { "levelReq": 10, "min": 12, "max": 20, "weight": 840, "name": "Warded" },
+                    "3": { "levelReq": 22, "min": 21, "max": 33, "weight": 720, "name": "Protected" },
+                    "4": { "levelReq": 38, "min": 34, "max": 54, "weight": 590, "name": "Barrier" },
+                    "5": { "levelReq": 56, "min": 55, "max": 79, "weight": 440, "name": "Ethereal" },
+                    "6": { "levelReq": 74, "min": 80, "max": 119, "weight": 280, "name": "Aegis" },
+                    "7": { "levelReq": 85, "min": 120, "max": 150, "weight": 160, "name": "Replusing" },
+                    "8": { "levelReq": 90, "min": 151, "max": 180, "weight": 100, "name": "Fortress" },
+                    "9": { "levelReq": 96, "min": 181, "max": 215, "weight": 40, "name": "Invulnerable" }
+                }
+            },
+            "increased_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 8, "max": 20, "weight": 950, "name": "Guarding" },
+                    "2": { "levelReq": 18, "min": 21, "max": 45, "weight": 800, "name": "Protecting" },
+                    "3": { "levelReq": 32, "min": 46, "max": 70, "weight": 650, "name": "Deflecting" },
+                    "4": { "levelReq": 47, "min": 71, "max": 90, "weight": 480, "name": "Impervious" },
+                    "5": { "levelReq": 60, "min": 91, "max": 115, "weight": 280, "name": "Unyielding" },
+                    "6": { "levelReq": 75, "min": 116, "max": 135, "weight": 170, "name": "Impenetrable" },
+                    "7": { "levelReq": 82, "min": 136, "max": 160, "weight": 110, "name": "Phased" },
+                    "8": { "levelReq": 90, "min": 161, "max": 190, "weight": 60, "name": "Dimensional" }
+                }
+            },
+            "increased_item_rarity": {
+                "stat": "item_rarity",
+                "isPercent": true,
+                "categories": ["rarity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "Fortunate" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "Fated" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "Scavenging" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "Manifesting" }
+                }
+            },
+            "added_entropy": {
+                "stat": "entropy",
+                "isPercent": false,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 0.05,   "max": 0.10,  "weight": 900, "name": "Unstable" },
+                    "2": { "levelReq": 12, "min": 0.11,  "max": 0.18,  "weight": 780, "name": "Chaotic" },
+                    "3": { "levelReq": 28, "min": 0.19,  "max": 0.30,  "weight": 620, "name": "Turbulent" },
+                    "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
+                    "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
+                    "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            },
+            "flat_damage_reduction": {
+                "stat": "damage_reduction",
+                "isPercent": false,
+                "categories": ["defensive", "damage_reduction"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "Guarded" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 800, "name": "Shielding" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 680, "name": "Warding" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 550, "name": "Protective" },
+                    "5": { "levelReq": 55, "min": 23, "max": 35, "weight": 400, "name": "Absorbing" },
+                    "6": { "levelReq": 70, "min": 36, "max": 52, "weight": 250, "name": "Nullifying" },
+                    "7": { "levelReq": 82, "min": 53, "max": 68, "weight": 140, "name": "Negating" },
+                    "8": { "levelReq": 92, "min": 69, "max": 85, "weight": 70, "name": "Impervious" }
+                }
+            },
+            "increased_damage_reduction": {
+                "stat": "damage_reduction",
+                "isPercent": true,
+                "categories": ["defensive", "damage_reduction"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 5, "max": 10, "weight": 650, "name": "Deflecting" },
+                    "2": { "levelReq": 35, "min": 11, "max": 20, "weight": 500, "name": "Parrying" },
+                    "3": { "levelReq": 55, "min": 21, "max": 35, "weight": 350, "name": "Mitigating" },
+                    "4": { "levelReq": 72, "min": 36, "max": 52, "weight": 200, "name": "Dissipating" },
+                    "5": { "levelReq": 85, "min": 53, "max": 68, "weight": 100, "name": "Voiding" },
+                    "6": { "levelReq": 95, "min": 69, "max": 82, "weight": 40, "name": "Untouchable" }
+                }
+            }
+        },
+        "suffixes": {
+            "added_crit_resistance": {
+                "stat": "crit_resistance",
+                "isPercent": false,
+                "categories": ["critical", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 5, "max": 10, "weight": 600, "name": "of the Resilient" },
+                    "2": { "levelReq": 30, "min": 11, "max": 18, "weight": 450, "name": "of the Determined" },
+                    "3": { "levelReq": 45, "min": 19, "max": 24, "weight": 370, "name": "of the Resolute" },
+                    "4": { "levelReq": 70, "min": 25, "max": 30, "weight": 240, "name": "of the Deathless" },
+                    "5": { "levelReq": 85, "min": 31, "max": 37, "weight": 120, "name": "of the Unfazed" }
+                }
+            },
+            "increased_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "of Abundance" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "of Plenty" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "of Overflow" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "of Cornucopia" }
+                }
+            },
+            "increased_enemy_quantity": {
+                "stat": "enemy_quantity",
+                "isPercent": true,
+                "categories": ["enemy_quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
+                    "2": { "levelReq": 40, "min": 11, "max": 17, "weight": 420, "name": "of Peril" },
+                    "3": { "levelReq": 65, "min": 18, "max": 25, "weight": 320, "name": "of Havoc" },
+                    "4": { "levelReq": 80, "min": 26, "max": 35, "weight": 200, "name": "of Hordes" },
+                    "5": { "levelReq": 95, "min": 36, "max": 50, "weight": 120, "name": "of Teeming Spires" },
+                    "6": { "levelReq": 100, "min": 51, "max": 80, "weight": 40, "name": "of Infinite Challenge" }
+                }
+            },
+            "added_stun_avoidance": {
+                "stat": "stun_avoidance",
+                "isPercent": false,
+                "categories": ["stun", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 12, "min": 5, "max": 10, "weight": 650, "name": "of Steadiness" },
+                    "2": { "levelReq": 32, "min": 11, "max": 18, "weight": 480, "name": "of Stability" },
+                    "3": { "levelReq": 58, "min": 19, "max": 25, "weight": 300, "name": "of Reflexes" },
+                    "4": { "levelReq": 70, "min": 26, "max": 30, "weight": 140, "name": "of the Unshakeable" },
+                    "5": { "levelReq": 86, "min": 31, "max": 38, "weight": 70, "name": "of the Unmovable" },
+                    "6": { "levelReq": 94, "min": 39, "max": 50, "weight": 35, "name": "of the Unfazed" }
+                }
+            },
+            "dot_resistance": {
+                "stat": "dot_resistance",
+                "isPercent": false,
+                "categories": ["dot", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 18, "min": 5, "max": 12, "weight": 550, "name": "of Recovery" },
+                    "2": { "levelReq": 38, "min": 13, "max": 22, "weight": 400, "name": "of Rejuvenation" },
+                    "3": { "levelReq": 52, "min": 23, "max": 35, "weight": 260, "name": "of Vitality" },
+                    "4": { "levelReq": 68, "min": 36, "max": 45, "weight": 140, "name": "of the Immune" },
+                    "5": { "levelReq": 87, "min": 46, "max": 58, "weight": 60, "name": "of the Mutant" }
+                }
+            },
+            "healing_magnitude": {
+                "stat": "healing_magnitude",
+                "isPercent": true,
+                "categories": ["health", "healing", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 10, "max": 18, "weight": 600, "name": "of Mending" },
+                    "2": { "levelReq": 35, "min": 19, "max": 30, "weight": 450, "name": "of Restoration" },
+                    "3": { "levelReq": 58, "min": 31, "max": 45, "weight": 290, "name": "of Renewal" },
+                    "4": { "levelReq": 73, "min": 46, "max": 65, "weight": 170, "name": "of the Eternal" },
+                    "5": { "levelReq": 90, "min": 66, "max": 90, "weight": 80, "name": "of Infinite Regeneration" }
+                }
+            },
+            "fire_resistance": {
+                "stat": "fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "fire", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Forge" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Inferno" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Phoenix" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Volcano" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Infernal Flame" }
+                }
+            },
+            "cold_resistance": {
+                "stat": "cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "cold", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Glacier" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tundra" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Yeti" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Sub-Zero" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Absolute Zero" }
+                }
+            },
+            "lightning_resistance": {
+                "stat": "lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "lightning", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Storm" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tempest" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Thunder" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Discharge" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Zeus" }
+                }
+            },
+            "dark_resistance": {
+                "stat": "dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "dark", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Shadow" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Black" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Void" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Abyss" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Emptiness" }
+                }
+            },
+            "holy_resistance": {
+                "stat": "holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "holy", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Light" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Faith" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Blessed" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Divinity" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Righteous" }
+                }
+            },
+            "arcane_resistance": {
+                "stat": "arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "arcane", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Mage" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Wizard" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Archmage" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Attunement" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
+                }
+            },
+            "wind_resistance": {
+                "stat": "wind_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "wind", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
+                }
+            },
+            "earth_resistance": {
+                "stat": "earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "earth", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
+                }
+            },
+            "chaos_resistance": {
+                "stat": "chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "chaos", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of Entropy" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Disorder" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Chaos" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Madness" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Insanity" }
+                }
+            },
+            "psychic_resistance": {
+                "stat": "psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "psychic", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Mind" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Clarity" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Focus" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of the Psychic" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of the Mindlord" }
+                }
+            },
+            "ethereal_resistance": {
+                "stat": "ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "ethereal", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Ghost" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of the Spirit" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of the Ethereal" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Otherworld" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Spirits" }
+                }
+            },
+            "all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "divine", "defensive",
+                    "fire", "cold", "lightning", "dark", "holy",
+                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
+                    "2": { "levelReq": 35, "min": 6, "max": 8, "weight": 300, "name": "of Harmony" },
+                    "3": { "levelReq": 60, "min": 9, "max": 11, "weight": 240, "name": "of Equality" },
+                    "4": { "levelReq": 80, "min": 12, "max": 15, "weight": 100, "name": "of Transcendence" },
+                    "5": { "levelReq": 95, "min": 16, "max": 20, "weight": 40, "name": "of Godhood" }
+                }
+            },
+            "divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "divine", "defensive",
+                    "dark", "holy", "arcane"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 4, "max": 7, "weight": 450, "name": "of the Sacred" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of the Divine" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Gods" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of Eternity" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Creator" }
+                }
+            },
+            "elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "defensive",
+                    "fire", "cold", "lightning", "wind", "earth"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of Nature" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Arcanist" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of the Primordial" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Attuned" }
+                }
+            },
+            "added_durability": {
+                "stat": "durability",
+                "isPercent": false,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 50,  "max": 120,  "weight": 900, "name": "of Sturdiness" },
+                    "2": { "levelReq": 15, "min": 121, "max": 260,  "weight": 700, "name": "of Fortitude" },
+                    "3": { "levelReq": 35, "min": 261, "max": 450,  "weight": 500, "name": "of Endurance" },
+                    "4": { "levelReq": 60, "min": 451, "max": 700,  "weight": 280, "name": "of Tenacity" },
+                    "5": { "levelReq": 85, "min": 701, "max": 1000, "weight": 100, "name": "of Imperishability" }
+                }
+            },
+            "increased_durability": {
+                "stat": "durability",
+                "isPercent": true,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10,  "max": 25,  "weight": 750, "name": "of Preservation" },
+                    "2": { "levelReq": 25, "min": 26,  "max": 50,  "weight": 600, "name": "of Hardening" },
+                    "3": { "levelReq": 45, "min": 51,  "max": 80,  "weight": 420, "name": "of Reinforcement" },
+                    "4": { "levelReq": 65, "min": 81,  "max": 115, "weight": 220, "name": "of Unyielding" },
+                    "5": { "levelReq": 85, "min": 116, "max": 150, "weight": 80,  "name": "of Performance" }
+                }
+            },
+            "increased_entropy": {
+                "stat": "entropy",
+                "isPercent": true,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8,  "max": 14, "weight": 700, "name": "of Distortion" },
+                    "2": { "levelReq": 25, "min": 15, "max": 24, "weight": 560, "name": "of Resonance" },
+                    "3": { "levelReq": 45, "min": 25, "max": 38, "weight": 380, "name": "of Fracture" },
+                    "4": { "levelReq": 65, "min": 39, "max": 55, "weight": 200, "name": "of Unbinding" },
+                    "5": { "levelReq": 85, "min": 56, "max": 75, "weight": 90,  "name": "of Collapse" }
+                }
+            },
+            "entropy_resistance": {
+                "stat": "entropy_resistance",
+                "isPercent": false,
+                "categories": ["entropy", "resistance", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8,  "min": 6,  "max": 12, "weight": 800, "name": "of Grounding" },
+                    "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
+                    "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
+                    "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                }
+            },
+            "health_regeneration": {
+                "stat": "health_regeneration",
+                "isPercent": false,
+                "categories": ["health", "regeneration", "defensive", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recovery" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Healing" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Mending" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Rejuvenation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Vitality" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
+                    "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            }
+        }
+    },
+
+    "legs": {
+        "prefixes": {
+            "added_health": {
+                "stat": "health",
+                "isPercent": false,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 15, "max": 30, "weight": 1000, "name": "Healthy" },
+                    "2": { "levelReq": 10, "min": 31, "max": 52, "weight": 880, "name": "Vigorous" },
+                    "3": { "levelReq": 22, "min": 53, "max": 82, "weight": 750, "name": "Robust" },
+                    "4": { "levelReq": 38, "min": 83, "max": 120, "weight": 620, "name": "Stalwart" },
+                    "5": { "levelReq": 55, "min": 121, "max": 165, "weight": 480, "name": "Thriving" },
+                    "6": { "levelReq": 72, "min": 166, "max": 205, "weight": 320, "name": "Titan's" },
+                    "7": { "levelReq": 84, "min": 206, "max": 235, "weight": 160, "name": "Colossus" },
+                    "8": { "levelReq": 90, "min": 236, "max": 280, "weight": 100, "name": "Immortal" },
+                    "9": { "levelReq": 95, "min": 281, "max": 320, "weight": 60, "name": "Eternal" }
+                }
+            },
+            "added_armour": {
+                "stat": "armour",
+                "isPercent": false,
+                "categories": ["armour", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 10, "max": 25, "weight": 950, "name": "Plated" },
+                    "2": { "levelReq": 10, "min": 26, "max": 40, "weight": 840, "name": "Armoured" },
+                    "3": { "levelReq": 25, "min": 41, "max": 65, "weight": 720, "name": "Fortified" },
+                    "4": { "levelReq": 38, "min": 66, "max": 90, "weight": 590, "name": "Reinforced" },
+                    "5": { "levelReq": 56, "min": 91, "max": 120, "weight": 440, "name": "Adamant" },
+                    "6": { "levelReq": 74, "min": 121, "max": 160, "weight": 280, "name": "Unbreakable" },
+                    "7": { "levelReq": 85, "min": 161, "max": 215, "weight": 160, "name": "Indestructible" },
+                    "8": { "levelReq": 90, "min": 216, "max": 280, "weight": 100, "name": "Titanforged" },
+                    "9": { "levelReq": 96, "min": 281, "max": 330, "weight": 40, "name": "Heavenly" }
+                }
+            },
+            "increased_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 8, "max": 20, "weight": 950, "name": "Sturdy" },
+                    "2": { "levelReq": 18, "min": 21, "max": 45, "weight": 800, "name": "Hardened" },
+                    "3": { "levelReq": 32, "min": 46, "max": 70, "weight": 650, "name": "Steeled" },
+                    "4": { "levelReq": 47, "min": 71, "max": 90, "weight": 480, "name": "Ironclad" },
+                    "5": { "levelReq": 60, "min": 91, "max": 120, "weight": 280, "name": "Cladden" },
+                    "6": { "levelReq": 75, "min": 121, "max": 145, "weight": 170, "name": "Indomitable"},
+                    "7": { "levelReq": 82, "min": 146, "max": 170, "weight": 110, "name": "Imperial" },
+                    "8": { "levelReq": 90, "min": 171, "max": 195, "weight": 60, "name": "Impenetrable" }
+                }
+            },
+             "added_evasion": {
+                "stat": "evasion",
+                "isPercent": false,
+                "categories": ["evasion", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 15, "max": 33, "weight": 950, "name": "Light" },
+                    "2": { "levelReq": 10, "min": 34, "max": 55, "weight": 840, "name": "Flexible" },
+                    "3": { "levelReq": 22, "min": 56, "max": 86, "weight": 720, "name": "Nimble" },
+                    "4": { "levelReq": 38, "min": 87, "max": 103, "weight": 590, "name": "Agile" },
+                    "5": { "levelReq": 56, "min": 104, "max": 157, "weight": 440, "name": "Evasive" },
+                    "6": { "levelReq": 74, "min": 158, "max": 205, "weight": 280, "name": "Untouchable" },
+                    "7": { "levelReq": 85, "min": 206, "max": 240, "weight": 160, "name": "Invisible" },
+                    "8": { "levelReq": 90, "min": 241, "max": 300, "weight": 100, "name": "Ghostlike" },
+                    "9": { "levelReq": 96, "min": 301, "max": 355, "weight": 40, "name": "Unreal" }
+                }
+            },
+            "increased_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 8, "max": 20, "weight": 950, "name": "Swift" },
+                    "2": { "levelReq": 18, "min": 21, "max": 45, "weight": 800, "name": "Dodging" },
+                    "3": { "levelReq": 32, "min": 46, "max": 70, "weight": 650, "name": "Elusive" },
+                    "4": { "levelReq": 47, "min": 71, "max": 90, "weight": 480, "name": "Phantom" },
+                    "5": { "levelReq": 60, "min": 91, "max": 120, "weight": 280, "name": "Spectral" },
+                    "6": { "levelReq": 75, "min": 121, "max": 145, "weight": 170, "name": "Umbral" },
+                    "7": { "levelReq": 82, "min": 146, "max": 175, "weight": 110, "name": "Wraithlike" },
+                    "8": { "levelReq": 90, "min": 176, "max": 210, "weight": 60, "name": "Immaterial" }
+                }
+            },
+            "added_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": false,
+                "categories": ["energy_shield", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 11, "weight": 950, "name": "Shielded" },
+                    "2": { "levelReq": 10, "min": 12, "max": 20, "weight": 840, "name": "Warded" },
+                    "3": { "levelReq": 22, "min": 21, "max": 33, "weight": 720, "name": "Protected" },
+                    "4": { "levelReq": 38, "min": 34, "max": 54, "weight": 590, "name": "Barrier" },
+                    "5": { "levelReq": 56, "min": 55, "max": 79, "weight": 440, "name": "Ethereal" },
+                    "6": { "levelReq": 74, "min": 80, "max": 119, "weight": 280, "name": "Aegis" },
+                    "7": { "levelReq": 85, "min": 120, "max": 150, "weight": 160, "name": "Replusing" },
+                    "8": { "levelReq": 90, "min": 151, "max": 180, "weight": 100, "name": "Fortress" },
+                    "9": { "levelReq": 96, "min": 181, "max": 215, "weight": 40, "name": "Invulnerable" }
+                }
+            },
+            "increased_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defense", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 8, "max": 20, "weight": 950, "name": "Guarding" },
+                    "2": { "levelReq": 18, "min": 21, "max": 45, "weight": 800, "name": "Protecting" },
+                    "3": { "levelReq": 32, "min": 46, "max": 70, "weight": 650, "name": "Deflecting" },
+                    "4": { "levelReq": 47, "min": 71, "max": 90, "weight": 480, "name": "Impervious" },
+                    "5": { "levelReq": 60, "min": 91, "max": 115, "weight": 280, "name": "Unyielding" },
+                    "6": { "levelReq": 75, "min": 116, "max": 135, "weight": 170, "name": "Impenetrable" },
+                    "7": { "levelReq": 82, "min": 136, "max": 160, "weight": 110, "name": "Phased" },
+                    "8": { "levelReq": 90, "min": 161, "max": 190, "weight": 60, "name": "Dimensional" }
+                }
+            },
+            "increased_item_rarity": {
+                "stat": "item_rarity",
+                "isPercent": true,
+                "categories": ["rarity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "Fortunate" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "Fated" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 280, "name": "Scavenging" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "Manifesting" }
+                }
+            },
+            "increased_xp_gain": {
+                "stat": "xp_gain",
+                "isPercent": true,
+                "categories": ["xp", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wise" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Enlightened" },
+                    "4": { "levelReq": 75, "min": 51, "max": 70, "weight": 240, "name": "Ascendant" },
+                    "5": { "levelReq": 90, "min": 71, "max": 95, "weight": 140, "name": "Awakened" }
+                }
+            },
+            "increased_gold_gain": {
+                "stat": "gold_gain",
+                "isPercent": true,
+                "categories": ["gold", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wealthy" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Opulent" },
+                    "4": { "levelReq": 75, "min": 51, "max": 75, "weight": 250, "name": "Exalted" },
+                    "5": { "levelReq": 90, "min": 76, "max": 110, "weight": 160, "name": "Royal" }
+                }
+            },
+            "added_entropy": {
+                "stat": "entropy",
+                "isPercent": false,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 0.05,   "max": 0.10,  "weight": 900, "name": "Unstable" },
+                    "2": { "levelReq": 12, "min": 0.11,  "max": 0.18,  "weight": 780, "name": "Chaotic" },
+                    "3": { "levelReq": 28, "min": 0.19,  "max": 0.30,  "weight": 620, "name": "Turbulent" },
+                    "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
+                    "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
+                    "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            }
+        },
+        "suffixes": {
+            "added_multihit_chance": {
+                "stat": "multihit",
+                "isPercent": false,
+                "categories": ["multihit", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 2, "max": 5, "weight": 550, "name": "of Chains" },
+                    "2": { "levelReq": 42, "min": 6, "max": 11, "weight": 380, "name": "of Echoes" },
+                    "3": { "levelReq": 65, "min": 12, "max": 17, "weight": 230, "name": "of Cascades" },
+                    "4": { "levelReq": 85, "min": 18, "max": 20, "weight": 100, "name": "of Devastation" },
+                    "5": { "levelReq": 92, "min": 21, "max": 24, "weight": 60, "name": "of Overwhelm" },
+                    "6": { "levelReq": 98, "min": 25, "max": 30, "weight": 20, "name": "of Infinite Strikes" }
+                }
+            },
+            "added_crit_resistance": {
+                "stat": "crit_resistance",
+                "isPercent": false,
+                "categories": ["critical", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 5, "max": 10, "weight": 600, "name": "of the Resilient" },
+                    "2": { "levelReq": 30, "min": 11, "max": 18, "weight": 450, "name": "of the Determined" },
+                    "3": { "levelReq": 45, "min": 19, "max": 24, "weight": 370, "name": "of the Resolute" },
+                    "4": { "levelReq": 70, "min": 25, "max": 30, "weight": 240, "name": "of the Deathless" },
+                    "5": { "levelReq": 85, "min": 31, "max": 37, "weight": 120, "name": "of the Unfazed" }
+                }
+            },
+            "increased_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "of Abundance" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "of Plenty" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "of Overflow" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "of Cornucopia" }
+                }
+            },
+            "increased_enemy_quantity": {
+                "stat": "enemy_quantity",
+                "isPercent": true,
+                "categories": ["enemy_quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
+                    "2": { "levelReq": 40, "min": 11, "max": 17, "weight": 420, "name": "of Peril" },
+                    "3": { "levelReq": 65, "min": 18, "max": 25, "weight": 320, "name": "of Havoc" },
+                    "4": { "levelReq": 80, "min": 26, "max": 35, "weight": 200, "name": "of Hordes" },
+                    "5": { "levelReq": 95, "min": 36, "max": 50, "weight": 120, "name": "of Teeming Spires" },
+                    "6": { "levelReq": 100, "min": 51, "max": 80, "weight": 40, "name": "of Infinite Challenge" }
+                }
+            },
+            "added_stun_avoidance": {
+                "stat": "stun_avoidance",
+                "isPercent": false,
+                "categories": ["stun", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 12, "min": 5, "max": 10, "weight": 650, "name": "of Steadiness" },
+                    "2": { "levelReq": 32, "min": 11, "max": 18, "weight": 480, "name": "of Stability" },
+                    "3": { "levelReq": 58, "min": 19, "max": 25, "weight": 300, "name": "of Reflexes" },
+                    "4": { "levelReq": 70, "min": 26, "max": 30, "weight": 140, "name": "of the Unshakeable" },
+                    "5": { "levelReq": 86, "min": 31, "max": 38, "weight": 70, "name": "of the Unmovable" },
+                    "6": { "levelReq": 94, "min": 39, "max": 50, "weight": 35, "name": "of the Unfazed" }
+                }
+            },
+            "dot_resistance": {
+                "stat": "dot_resistance",
+                "isPercent": false,
+                "categories": ["dot", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 18, "min": 5, "max": 12, "weight": 550, "name": "of Recovery" },
+                    "2": { "levelReq": 38, "min": 13, "max": 22, "weight": 400, "name": "of Rejuvenation" },
+                    "3": { "levelReq": 52, "min": 23, "max": 35, "weight": 260, "name": "of Vitality" },
+                    "4": { "levelReq": 68, "min": 36, "max": 45, "weight": 140, "name": "of the Immune" },
+                    "5": { "levelReq": 87, "min": 46, "max": 58, "weight": 60, "name": "of the Mutant" }
+                }
+            },
+            "fire_resistance": {
+                "stat": "fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "fire", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Forge" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Inferno" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Phoenix" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Volcano" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Infernal Flame" }
+                }
+            },
+            "cold_resistance": {
+                "stat": "cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "cold", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Glacier" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tundra" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Yeti" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Sub-Zero" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Absolute Zero" }
+                }
+            },
+            "lightning_resistance": {
+                "stat": "lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "lightning", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Storm" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tempest" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Thunder" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Discharge" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Zeus" }
+                }
+            },
+            "dark_resistance": {
+                "stat": "dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "dark", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Shadow" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Black" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Void" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Abyss" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Emptiness" }
+                }
+            },
+            "holy_resistance": {
+                "stat": "holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "holy", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Light" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Faith" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Blessed" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Divinity" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Righteous" }
+                }
+            },
+            "arcane_resistance": {
+                "stat": "arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "arcane", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Mage" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Wizard" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Archmage" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Attunement" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
+                }
+            },
+            "wind_resistance": {
+                "stat": "wind_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "wind", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
+                }
+            },
+            "earth_resistance": {
+                "stat": "earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "earth", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
+                }
+            },
+            "chaos_resistance": {
+                "stat": "chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "chaos", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of Entropy" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Disorder" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Chaos" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Madness" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Insanity" }
+                }
+            },
+            "psychic_resistance": {
+                "stat": "psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "psychic", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Mind" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Clarity" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Focus" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of the Psychic" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of the Mindlord" }
+                }
+            },
+            "ethereal_resistance": {
+                "stat": "ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "ethereal", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Ghost" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of the Spirit" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of the Ethereal" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Otherworld" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Spirits" }
+                }
+            },
+            "all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "divine", "defensive",
+                    "fire", "cold", "lightning", "dark", "holy",
+                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
+                    "2": { "levelReq": 35, "min": 6, "max": 8, "weight": 300, "name": "of Harmony" },
+                    "3": { "levelReq": 60, "min": 9, "max": 11, "weight": 240, "name": "of Equality" },
+                    "4": { "levelReq": 80, "min": 12, "max": 15, "weight": 100, "name": "of Transcendence" },
+                    "5": { "levelReq": 95, "min": 16, "max": 20, "weight": 40, "name": "of Godhood" }
+                }
+            },
+            "divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "divine", "defensive",
+                    "dark", "holy", "arcane"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 4, "max": 7, "weight": 450, "name": "of the Sacred" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of the Divine" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Gods" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of Eternity" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Creator" }
+                }
+            },
+            "elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "defensive",
+                    "fire", "cold", "lightning", "wind", "earth"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of Nature" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Arcanist" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of the Primordial" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Attuned" }
+                }
+            },
+            "added_durability": {
+                "stat": "durability",
+                "isPercent": false,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 50,  "max": 120,  "weight": 900, "name": "of Sturdiness" },
+                    "2": { "levelReq": 15, "min": 121, "max": 260,  "weight": 700, "name": "of Fortitude" },
+                    "3": { "levelReq": 35, "min": 261, "max": 450,  "weight": 500, "name": "of Endurance" },
+                    "4": { "levelReq": 60, "min": 451, "max": 700,  "weight": 280, "name": "of Tenacity" },
+                    "5": { "levelReq": 85, "min": 701, "max": 1000, "weight": 100, "name": "of Imperishability" }
+                }
+            },
+            "increased_durability": {
+                "stat": "durability",
+                "isPercent": true,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10,  "max": 25,  "weight": 750, "name": "of Preservation" },
+                    "2": { "levelReq": 25, "min": 26,  "max": 50,  "weight": 600, "name": "of Hardening" },
+                    "3": { "levelReq": 45, "min": 51,  "max": 80,  "weight": 420, "name": "of Reinforcement" },
+                    "4": { "levelReq": 65, "min": 81,  "max": 115, "weight": 220, "name": "of Unyielding" },
+                    "5": { "levelReq": 85, "min": 116, "max": 150, "weight": 80,  "name": "of Performance" }
+                }
+            },
+            "increased_entropy": {
+                "stat": "entropy",
+                "isPercent": true,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8,  "max": 14, "weight": 700, "name": "of Distortion" },
+                    "2": { "levelReq": 25, "min": 15, "max": 24, "weight": 560, "name": "of Resonance" },
+                    "3": { "levelReq": 45, "min": 25, "max": 38, "weight": 380, "name": "of Fracture" },
+                    "4": { "levelReq": 65, "min": 39, "max": 55, "weight": 200, "name": "of Unbinding" },
+                    "5": { "levelReq": 85, "min": 56, "max": 75, "weight": 90,  "name": "of Collapse" }
+                }
+            },
+            "entropy_resistance": {
+                "stat": "entropy_resistance",
+                "isPercent": false,
+                "categories": ["entropy", "resistance", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8,  "min": 6,  "max": 12, "weight": 800, "name": "of Grounding" },
+                    "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
+                    "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
+                    "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                }
+            },
+            "health_regeneration": {
+                "stat": "health_regeneration",
+                "isPercent": false,
+                "categories": ["health", "regeneration", "defensive", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recovery" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Healing" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Mending" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Rejuvenation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Vitality" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
+                    "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            }
+        }
+    },
+
+    "feet": {
+        "prefixes": {
+            "added_health": {
+                "stat": "health",
+                "isPercent": false,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 4, "max": 10, "weight": 1000, "name": "Healthy" },
+                    "2": { "levelReq": 10, "min": 11, "max": 25, "weight": 850, "name": "Vigorous" },
+                    "3": { "levelReq": 22, "min": 26, "max": 55, "weight": 700, "name": "Robust" },
+                    "4": { "levelReq": 38, "min": 55, "max": 80, "weight": 550, "name": "Stalwart" },
+                    "5": { "levelReq": 55, "min": 81, "max": 120, "weight": 400, "name": "Thriving" },
+                    "6": { "levelReq": 72, "min": 121, "max": 150, "weight": 250, "name": "Titan's" },
+                    "7": { "levelReq": 84, "min": 151, "max": 195, "weight": 170, "name": "Colossus" },
+                    "8": { "levelReq": 90, "min": 196, "max": 230, "weight": 90, "name": "Immortal" }
+                }
+            },
+            "added_armour": {
+                "stat": "armour",
+                "isPercent": false,
+                "categories": ["armour", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 1000, "name": "Plated" },
+                    "2": { "levelReq": 10, "min": 13, "max": 24, "weight": 900, "name": "Armoured" },
+                    "3": { "levelReq": 25, "min": 25, "max": 42, "weight": 750, "name": "Fortified" },
+                    "4": { "levelReq": 38, "min": 43, "max": 68, "weight": 600, "name": "Reinforced" },
+                    "5": { "levelReq": 56, "min": 69, "max": 102, "weight": 450, "name": "Adamant" },
+                    "6": { "levelReq": 74, "min": 103, "max": 145, "weight": 300, "name": "Unbreakable" },
+                    "7": { "levelReq": 85, "min": 146, "max": 185, "weight": 180, "name": "Indestructible" },
+                    "8": { "levelReq": 90, "min": 186, "max": 220, "weight": 110, "name": "Titanforged" }
+                }
+            },
+            "added_evasion": {
+                "stat": "evasion",
+                "isPercent": false,
+                "categories": ["evasion", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 1000, "name": "Light" },
+                    "2": { "levelReq": 10, "min": 16, "max": 30, "weight": 900, "name": "Flexible" },
+                    "3": { "levelReq": 25, "min": 31, "max": 50, "weight": 750, "name": "Nimble" },
+                    "4": { "levelReq": 38, "min": 51, "max": 80, "weight": 600, "name": "Agile" },
+                    "5": { "levelReq": 56, "min": 81, "max": 110, "weight": 450, "name": "Evasive" },
+                    "6": { "levelReq": 74, "min": 111, "max": 150, "weight": 300, "name": "Untouchable" },
+                    "7": { "levelReq": 85, "min": 151, "max": 195, "weight": 180, "name": "Invisible" },
+                    "8": { "levelReq": 90, "min": 196, "max": 235, "weight": 110, "name": "Ghostlike" }
+                }
+            },
+            "added_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": false,
+                "categories": ["energy_shield", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 3, "max": 8, "weight": 1000, "name": "Shielded" },
+                    "2": { "levelReq": 10, "min": 9, "max": 17, "weight": 900, "name": "Warded" },
+                    "3": { "levelReq": 25, "min": 18, "max": 30, "weight": 750, "name": "Protected" },
+                    "4": { "levelReq": 38, "min": 31, "max": 50, "weight": 600, "name": "Barrier" },
+                    "5": { "levelReq": 56, "min": 51, "max": 75, "weight": 450, "name": "Ethereal" },
+                    "6": { "levelReq": 74, "min": 76, "max": 105, "weight": 300, "name": "Aegis" },
+                    "7": { "levelReq": 85, "min": 106, "max": 136, "weight": 180, "name": "Replusing" },
+                    "8": { "levelReq": 90, "min": 137, "max": 170, "weight": 110, "name": "Fortress" }
+                }
+            },
+            "increased_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 7, "max": 15, "weight": 900, "name": "Sturdy" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 800, "name": "Hardened" },
+                    "3": { "levelReq": 32, "min": 31, "max": 55, "weight": 650, "name": "Steeled" },
+                    "4": { "levelReq": 47, "min": 56, "max": 80, "weight": 480, "name": "Ironclad" },
+                    "5": { "levelReq": 60, "min": 81, "max": 105, "weight": 280, "name": "Cladden" },
+                    "6": { "levelReq": 75, "min": 106, "max": 135, "weight": 170, "name": "Indomitable" },
+                    "7": { "levelReq": 82, "min": 136, "max": 185, "weight": 110, "name": "Imperial" }
+                }
+            },
+            "increased_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 7, "max": 15, "weight": 900, "name": "Swift" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 800, "name": "Dodging" },
+                    "3": { "levelReq": 32, "min": 31, "max": 55, "weight": 650, "name": "Elusive" },
+                    "4": { "levelReq": 47, "min": 56, "max": 80, "weight": 480, "name": "Phantom" },
+                    "5": { "levelReq": 60, "min": 81, "max": 105, "weight": 280, "name": "Spectral" },
+                    "6": { "levelReq": 75, "min": 106, "max": 136, "weight": 170, "name": "Umbral" },
+                    "7": { "levelReq": 82, "min": 137, "max": 185, "weight": 110, "name": "Wraithlike" }
+                }
+            },
+            "increased_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "defense"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 7, "max": 15, "weight": 900, "name": "Guarding" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 800, "name": "Protecting" },
+                    "3": { "levelReq": 32, "min": 31, "max": 55, "weight": 650, "name": "Deflecting" },
+                    "4": { "levelReq": 47, "min": 56, "max": 80, "weight": 480, "name": "Impervious" },
+                    "5": { "levelReq": 60, "min": 81, "max": 105, "weight": 280, "name": "Unyielding" },
+                    "6": { "levelReq": 75, "min": 106, "max": 136, "weight": 170, "name": "Impenetrable" },
+                    "7": { "levelReq": 82, "min": 137, "max": 185, "weight": 110, "name": "Phased" }
+                }
+            },
+            "increased_item_rarity": {
+                "stat": "item_rarity",
+                "isPercent": true,
+                "categories": ["rarity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "Fortunate" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "Fated" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 280, "name": "Scavenging" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "Manifesting" }
+                }
+            },
+            "added_entropy": {
+                "stat": "entropy",
+                "isPercent": false,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 0.05,   "max": 0.10,  "weight": 900, "name": "Unstable" },
+                    "2": { "levelReq": 12, "min": 0.11,  "max": 0.18,  "weight": 780, "name": "Chaotic" },
+                    "3": { "levelReq": 28, "min": 0.19,  "max": 0.30,  "weight": 620, "name": "Turbulent" },
+                    "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
+                    "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
+                    "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            }
+        },
+        "suffixes": {
+            "added_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 0.03, "max": 0.08, "weight": 850, "name": "of Nimbleness" },
+                    "2": { "levelReq": 20, "min": 0.09, "max": 0.15, "weight": 700, "name": "of Swiftness" },
+                    "3": { "levelReq": 38, "min": 0.16, "max": 0.25, "weight": 530, "name": "of Haste" },
+                    "4": { "levelReq": 58, "min": 0.26, "max": 0.35, "weight": 350, "name": "of Alacrity" },
+                    "5": { "levelReq": 78, "min": 0.36, "max": 0.5, "weight": 180, "name": "of Velocity" },
+                    "6": { "levelReq": 84, "min": 0.51, "max": 0.65, "weight": 90, "name": "of Lightspeed" },
+                    "7": { "levelReq": 95, "min": 0.65, "max": 0.90, "weight": 20, "name": "of Teleporting" }
+                }
+            },
+            "increased_speed": {
+                "stat": "speed",
+                "isPercent": true,
+                "categories": ["speed", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 5, "max": 12, "weight": 500, "name": "of Dashing" },
+                    "2": { "levelReq": 30, "min": 13, "max": 20, "weight": 350, "name": "of the Rapids" },
+                    "3": { "levelReq": 50, "min": 21, "max": 30, "weight": 100, "name": "of Warping" },
+                    "4": { "levelReq": 75, "min": 31, "max": 45, "weight": 65, "name": "of Portals" },
+                    "5": { "levelReq": 90, "min": 46, "max": 60, "weight": 20, "name": "of Teleporting" }
+                }
+            },
+            "added_crit_resistance": {
+                "stat": "crit_resistance",
+                "isPercent": false,
+                "categories": ["critical", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 5, "max": 10, "weight": 600, "name": "of the Resilient" },
+                    "2": { "levelReq": 30, "min": 11, "max": 18, "weight": 450, "name": "of the Determined" },
+                    "3": { "levelReq": 45, "min": 19, "max": 24, "weight": 370, "name": "of the Resolute" },
+                    "4": { "levelReq": 70, "min": 25, "max": 30, "weight": 240, "name": "of the Deathless" },
+                    "5": { "levelReq": 85, "min": 31, "max": 37, "weight": 120, "name": "of the Unfazed" }
+                }
+            },
+            "increased_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "of Abundance" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "of Plenty" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "of Overflow" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "of Cornucopia" }
+                }
+            },
+            "increased_enemy_quantity": {
+                "stat": "enemy_quantity",
+                "isPercent": true,
+                "categories": ["enemy_quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
+                    "2": { "levelReq": 40, "min": 11, "max": 17, "weight": 420, "name": "of Peril" },
+                    "3": { "levelReq": 65, "min": 18, "max": 25, "weight": 320, "name": "of Havoc" },
+                    "4": { "levelReq": 80, "min": 26, "max": 35, "weight": 200, "name": "of Hordes" },
+                    "5": { "levelReq": 95, "min": 36, "max": 50, "weight": 120, "name": "of Teeming Spires" },
+                    "6": { "levelReq": 100, "min": 51, "max": 80, "weight": 40, "name": "of Infinite Challenge" }
+                }
+            },
+            "added_stun_avoidance": {
+                "stat": "stun_avoidance",
+                "isPercent": false,
+                "categories": ["stun", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 12, "min": 5, "max": 10, "weight": 650, "name": "of Steadiness" },
+                    "2": { "levelReq": 32, "min": 11, "max": 18, "weight": 480, "name": "of Stability" },
+                    "3": { "levelReq": 58, "min": 19, "max": 25, "weight": 300, "name": "of Reflexes" },
+                    "4": { "levelReq": 70, "min": 26, "max": 30, "weight": 140, "name": "of the Unshakeable" },
+                    "5": { "levelReq": 86, "min": 31, "max": 38, "weight": 70, "name": "of the Unmovable" },
+                    "6": { "levelReq": 94, "min": 39, "max": 50, "weight": 35, "name": "of the Unfazed" }
+                }
+            },
+            "fire_resistance": {
+                "stat": "fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "fire", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Forge" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Inferno" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Phoenix" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Volcano" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Infernal Flame" }
+                }
+            },
+            "cold_resistance": {
+                "stat": "cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "cold", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Glacier" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tundra" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Yeti" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Sub-Zero" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Absolute Zero" }
+                }
+            },
+            "lightning_resistance": {
+                "stat": "lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "lightning", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Storm" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tempest" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Thunder" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Discharge" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Zeus" }
+                }
+            },
+            "dark_resistance": {
+                "stat": "dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "dark", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Shadow" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Black" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Void" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Abyss" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Emptiness" }
+                }
+            },
+            "holy_resistance": {
+                "stat": "holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "holy", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Light" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Faith" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Blessed" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Divinity" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Righteous" }
+                }
+            },
+            "arcane_resistance": {
+                "stat": "arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "arcane", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Mage" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Wizard" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Archmage" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Attunement" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
+                }
+            },
+            "wind_resistance": {
+                "stat": "wind_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "wind", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
+                }
+            },
+            "earth_resistance": {
+                "stat": "earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "earth", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
+                }
+            },
+            "chaos_resistance": {
+                "stat": "chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "chaos", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of Entropy" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Disorder" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Chaos" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Madness" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Insanity" }
+                }
+            },
+            "psychic_resistance": {
+                "stat": "psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "psychic", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Mind" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Clarity" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Focus" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of the Psychic" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of the Mindlord" }
+                }
+            },
+            "ethereal_resistance": {
+                "stat": "ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "ethereal", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Ghost" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of the Spirit" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of the Ethereal" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Otherworld" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Spirits" }
+                }
+            },
+            "all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "divine", "defensive",
+                    "fire", "cold", "lightning", "dark", "holy",
+                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
+                    "2": { "levelReq": 35, "min": 6, "max": 8, "weight": 300, "name": "of Harmony" },
+                    "3": { "levelReq": 60, "min": 9, "max": 11, "weight": 240, "name": "of Equality" },
+                    "4": { "levelReq": 80, "min": 12, "max": 15, "weight": 100, "name": "of Transcendence" },
+                    "5": { "levelReq": 95, "min": 16, "max": 20, "weight": 40, "name": "of Godhood" }
+                }
+            },
+            "divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "divine", "defensive",
+                    "dark", "holy", "arcane"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 4, "max": 7, "weight": 450, "name": "of the Sacred" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of the Divine" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Gods" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of Eternity" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Creator" }
+                }
+            },
+            "elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "defensive",
+                    "fire", "cold", "lightning", "wind", "earth"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of Nature" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Arcanist" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of the Primordial" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Attuned" }
+                }
+            },
+            "added_durability": {
+                "stat": "durability",
+                "isPercent": false,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 50,  "max": 120,  "weight": 900, "name": "of Sturdiness" },
+                    "2": { "levelReq": 15, "min": 121, "max": 260,  "weight": 700, "name": "of Fortitude" },
+                    "3": { "levelReq": 35, "min": 261, "max": 450,  "weight": 500, "name": "of Endurance" },
+                    "4": { "levelReq": 60, "min": 451, "max": 700,  "weight": 280, "name": "of Tenacity" },
+                    "5": { "levelReq": 85, "min": 701, "max": 1000, "weight": 100, "name": "of Imperishability" }
+                }
+            },
+            "increased_durability": {
+                "stat": "durability",
+                "isPercent": true,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10,  "max": 25,  "weight": 750, "name": "of Preservation" },
+                    "2": { "levelReq": 25, "min": 26,  "max": 50,  "weight": 600, "name": "of Hardening" },
+                    "3": { "levelReq": 45, "min": 51,  "max": 80,  "weight": 420, "name": "of Reinforcement" },
+                    "4": { "levelReq": 65, "min": 81,  "max": 115, "weight": 220, "name": "of Unyielding" },
+                    "5": { "levelReq": 85, "min": 116, "max": 150, "weight": 80,  "name": "of Performance" }
+                }
+            },
+            "increased_entropy": {
+                "stat": "entropy",
+                "isPercent": true,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8,  "max": 14, "weight": 700, "name": "of Distortion" },
+                    "2": { "levelReq": 25, "min": 15, "max": 24, "weight": 560, "name": "of Resonance" },
+                    "3": { "levelReq": 45, "min": 25, "max": 38, "weight": 380, "name": "of Fracture" },
+                    "4": { "levelReq": 65, "min": 39, "max": 55, "weight": 200, "name": "of Unbinding" },
+                    "5": { "levelReq": 85, "min": 56, "max": 75, "weight": 90,  "name": "of Collapse" }
+                }
+            },
+            "entropy_resistance": {
+                "stat": "entropy_resistance",
+                "isPercent": false,
+                "categories": ["entropy", "resistance", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8,  "min": 6,  "max": 12, "weight": 800, "name": "of Grounding" },
+                    "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
+                    "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
+                    "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                }
+            },
+            "health_regeneration": {
+                "stat": "health_regeneration",
+                "isPercent": false,
+                "categories": ["health", "regeneration", "defensive", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recovery" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Healing" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Mending" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Rejuvenation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Vitality" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
+                    "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            }
+        }
+    },
+
+    "ring": {
+        "prefixes": {
+            "added_damage": {
+                "stat": "damage",
+                "isPercent": false,
+                "categories": ["damage", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 3, "max": 7, "weight": 880, "name": "Striking" },
+                    "2": { "levelReq": 18, "min": 8, "max": 15, "weight": 730, "name": "Brutal" },
+                    "3": { "levelReq": 35, "min": 16, "max": 27, "weight": 570, "name": "Savage" },
+                    "4": { "levelReq": 55, "min": 28, "max": 44, "weight": 400, "name": "Demonic" },
+                    "5": { "levelReq": 75, "min": 45, "max": 68, "weight": 220, "name": "Godslaying" }
+                }
+            },
+            "added_health": {
+                "stat": "health",
+                "isPercent": false,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 9, "max": 17, "weight": 950, "name": "Healthy" },
+                    "2": { "levelReq": 15, "min": 18, "max": 32, "weight": 800, "name": "Vigorous" },
+                    "3": { "levelReq": 32, "min": 33, "max": 57, "weight": 640, "name": "Robust" },
+                    "4": { "levelReq": 52, "min": 58, "max": 79, "weight": 470, "name": "Stalwart" },
+                    "5": { "levelReq": 72, "min": 80, "max": 110, "weight": 290, "name": "Titan's" }
+                }
+            },
+            "added_resistance_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": false,
+                "categories": ["penetration", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 10, "weight": 925, "name": "Bypassing" },
+                    "2": { "levelReq": 15, "min": 11, "max": 17, "weight": 700, "name": "Penetrating" },
+                    "3": { "levelReq": 30, "min": 18, "max": 25, "weight": 475, "name": "Flux" },
+                    "4": { "levelReq": 50, "min": 26, "max": 35, "weight": 200, "name": "Shattering" },
+                    "5": { "levelReq": 80, "min": 36, "max": 50, "weight": 50, "name": "Ravaging" }
+                }
+            },
+            "increased_resistance_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": true,
+                "categories": ["penetration", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 20, "weight": 900, "name": "Wise" },
+                    "2": { "levelReq": 20, "min": 21, "max": 35, "weight": 650, "name": "Piercing" },
+                    "3": { "levelReq": 35, "min": 36, "max": 55, "weight": 425, "name": "Altering" },
+                    "4": { "levelReq": 55, "min": 56, "max": 85, "weight": 175, "name": "Crushing" },
+                    "5": { "levelReq": 85, "min": 86, "max": 120, "weight": 30, "name": "Pulverising" }
+                }
+            },
+            "increased_xp_gain": {
+                "stat": "xp_gain",
+                "isPercent": true,
+                "categories": ["xp", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wise" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Enlightened" },
+                    "4": { "levelReq": 75, "min": 51, "max": 70, "weight": 240, "name": "Ascendant" },
+                    "5": { "levelReq": 90, "min": 71, "max": 95, "weight": 140, "name": "Awakened" }
+                }
+            },
+            "increased_gold_gain": {
+                "stat": "gold_gain",
+                "isPercent": true,
+                "categories": ["gold", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wealthy" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Opulent" },
+                    "4": { "levelReq": 75, "min": 51, "max": 75, "weight": 250, "name": "Exalted" },
+                    "5": { "levelReq": 90, "min": 76, "max": 110, "weight": 160, "name": "Royal" }
+                }
+            },
+            "increased_item_rarity": {
+                "stat": "item_rarity",
+                "isPercent": true,
+                "categories": ["rarity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "Fortunate" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "Fated" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 280, "name": "Scavenging" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "Manifesting" }
+                }
+            },
+            "added_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 0.03, "max": 0.08, "weight": 750, "name": "Nimble" },
+                    "2": { "levelReq": 28, "min": 0.09, "max": 0.15, "weight": 590, "name": "Swift" },
+                    "3": { "levelReq": 48, "min": 0.16, "max": 0.27, "weight": 420, "name": "Hasty" },
+                    "4": { "levelReq": 70, "min": 0.28, "max": 0.35, "weight": 240, "name": "Alactrious" },
+                    "5": { "levelReq": 86, "min": 0.36, "max": 0.50, "weight": 120, "name": "Warp-Speed" },
+                    "6": { "levelReq": 94, "min": 0.51, "max": 0.73, "weight": 30, "name": "Blinking" }
+                }
+            },
+            "added_entropy": {
+                "stat": "entropy",
+                "isPercent": false,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 0.05,   "max": 0.10,  "weight": 900, "name": "Unstable" },
+                    "2": { "levelReq": 12, "min": 0.11,  "max": 0.18,  "weight": 780, "name": "Chaotic" },
+                    "3": { "levelReq": 28, "min": 0.19,  "max": 0.30,  "weight": 620, "name": "Turbulent" },
+                    "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
+                    "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
+                    "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            }
+        },
+        "suffixes": {
+            "added_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 1, "max": 2, "weight": 650, "name": "of Precision" },
+                    "2": { "levelReq": 35, "min": 3, "max": 5, "weight": 480, "name": "of Deadliness" },
+                    "3": { "levelReq": 55, "min": 6, "max": 8, "weight": 300, "name": "of Lethality" },
+                    "4": { "levelReq": 80, "min": 9, "max": 11, "weight": 140, "name": "of the Assassin" },
+                    "5": { "levelReq": 95, "min": 12, "max": 15, "weight": 70, "name": "of the Eternal Hunt" }
+                }
+            },
+            "added_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 10, "max": 25, "weight": 600, "name": "of Severity" },
+                    "2": { "levelReq": 35, "min": 26, "max": 40, "weight": 440, "name": "of Brutality" },
+                    "3": { "levelReq": 50, "min": 41, "max": 60, "weight": 360, "name": "of Execution" },
+                    "4": { "levelReq": 68, "min": 61, "max": 90, "weight": 210, "name": "of Finality" },
+                    "5": { "levelReq": 85, "min": 91, "max": 125, "weight": 100, "name": "of the End" },
+                    "6": { "levelReq": 94, "min": 126, "max": 160, "weight": 45, "name": "of Lost Hope" }
+                }
+            },
+            "ailment_avoidance": {
+                "stat": "ailment_avoidance",
+                "isPercent": false,
+                "categories": ["ailment", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 18, "min": 5, "max": 12, "weight": 550, "name": "of Warding" },
+                    "2": { "levelReq": 38, "min": 13, "max": 22, "weight": 400, "name": "of Immunity" },
+                    "3": { "levelReq": 60, "min": 23, "max": 35, "weight": 260, "name": "of Purity" },
+                    "4": { "levelReq": 82, "min": 36, "max": 50, "weight": 120, "name": "of Perfection" }
+                }
+            },
+            "increased_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "of Abundance" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "of Plenty" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "of Overflow" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "of Cornucopia" }
+                }
+            },
+            "increased_enemy_quantity": {
+                "stat": "enemy_quantity",
+                "isPercent": true,
+                "categories": ["enemy_quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
+                    "2": { "levelReq": 40, "min": 11, "max": 17, "weight": 420, "name": "of Peril" },
+                    "3": { "levelReq": 65, "min": 18, "max": 25, "weight": 320, "name": "of Havoc" },
+                    "4": { "levelReq": 80, "min": 26, "max": 35, "weight": 200, "name": "of Hordes" },
+                    "5": { "levelReq": 95, "min": 36, "max": 50, "weight": 120, "name": "of Teeming Spires" },
+                    "6": { "levelReq": 100, "min": 51, "max": 80, "weight": 40, "name": "of Infinite Challenge" }
+                }
+            },
+            "dot_resistance": {
+                "stat": "dot_resistance",
+                "isPercent": false,
+                "categories": ["dot", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 18, "min": 5, "max": 12, "weight": 550, "name": "of Recovery" },
+                    "2": { "levelReq": 38, "min": 13, "max": 22, "weight": 400, "name": "of Rejuvenation" },
+                    "3": { "levelReq": 52, "min": 23, "max": 35, "weight": 260, "name": "of Vitality" },
+                    "4": { "levelReq": 68, "min": 36, "max": 45, "weight": 140, "name": "of the Immune" },
+                    "5": { "levelReq": 87, "min": 46, "max": 58, "weight": 60, "name": "of the Mutant" }
+                }
+            },
+            "healing_magnitude": {
+                "stat": "healing_magnitude",
+                "isPercent": true,
+                "categories": ["health", "healing", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 10, "max": 18, "weight": 600, "name": "of Mending" },
+                    "2": { "levelReq": 35, "min": 19, "max": 30, "weight": 450, "name": "of Restoration" },
+                    "3": { "levelReq": 58, "min": 31, "max": 45, "weight": 290, "name": "of Renewal" },
+                    "4": { "levelReq": 73, "min": 46, "max": 65, "weight": 170, "name": "of the Eternal" },
+                    "5": { "levelReq": 90, "min": 66, "max": 90, "weight": 80, "name": "of Infinite Regeneration" }
+                }
+            },
+            "fire_resistance": {
+                "stat": "fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "fire", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of the Forge" },
+                    "2": { "levelReq": 15, "min": 16, "max": 30, "weight": 750, "name": "of the Inferno" },
+                    "3": { "levelReq": 35, "min": 31, "max": 40, "weight": 550, "name": "of the Phoenix" }
+                }
+            },
+            "cold_resistance": {
+                "stat": "cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "cold", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of the Glacier" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 750, "name": "of the Tundra" },
+                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of the Yeti" }
+                }
+            },
+            "lightning_resistance": {
+                "stat": "lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "lightning", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of the Tempest" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 750, "name": "of the Storm" },
+                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of Zeus" }
+                }
+            },
+            "dark_resistance": {
+                "stat": "dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "dark", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of Shadow" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 750, "name": "of the Void" },
+                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of the Abyss" }
+                }
+            },
+            "holy_resistance": {
+                "stat": "holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "holy", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 850, "name": "of Light" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 700, "name": "of Divinity" },
+                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 500, "name": "of the Blessed" }
+                }
+            },
+            "arcane_resistance": {
+                "stat": "arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "arcane", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of the Mage" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 750, "name": "of the Wizard" },
+                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of the Archmage" }
+                }
+            },
+            "wind_resistance": {
+                "stat": "wind_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "wind", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of the Breeze" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 750, "name": "of the Gale" },
+                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of the Cyclone" }
+                }
+            },
+            "earth_resistance": {
+                "stat": "earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "earth", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of Stone" },
+                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 750, "name": "of the Mountain" },
+                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of the Earth" }
+                }
+            },
+            "chaos_resistance": {
+                "stat": "chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "chaos", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 15, "weight": 750, "name": "of Entropy" },
+                    "2": { "levelReq": 22, "min": 16, "max": 30, "weight": 600, "name": "of Disorder" },
+                    "3": { "levelReq": 45, "min": 31, "max": 40, "weight": 400, "name": "of Chaos" }
+                }
+            },
+            "psychic_resistance": {
+                "stat": "psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "psychic", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 15, "weight": 750, "name": "of the Mind" },
+                    "2": { "levelReq": 22, "min": 16, "max": 30, "weight": 600, "name": "of Clarity" },
+                    "3": { "levelReq": 45, "min": 31, "max": 40, "weight": 400, "name": "of the Psychic" }
+                }
+            },
+            "ethereal_resistance": {
+                "stat": "ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "ethereal", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 15, "weight": 750, "name": "of the Ghost" },
+                    "2": { "levelReq": 22, "min": 16, "max": 30, "weight": 600, "name": "of the Spirit" },
+                    "3": { "levelReq": 45, "min": 31, "max": 40, "weight": 400, "name": "of the Ethereal" }
+                }
+            },
+            "all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "divine", "defensive",
+                    "fire", "cold", "lightning", "dark", "holy",
+                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
+                    "2": { "levelReq": 45, "min": 6, "max": 8, "weight": 250, "name": "of Harmony" },
+                    "3": { "levelReq": 70, "min": 9, "max": 10, "weight": 100, "name": "of Transcendence" }
+                }
+            },
+            "divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "divine", "defensive",
+                    "dark", "holy", "arcane"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 5, "max": 9, "weight": 450, "name": "of the Sacred" },
+                    "2": { "levelReq": 45, "min": 10, "max": 15, "weight": 300, "name": "of the Divine" },
+                    "3": { "levelReq": 70, "min": 16, "max": 20, "weight": 150, "name": "of the Gods" }
+                }
+            },
+            "elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "defensive",
+                    "fire", "cold", "lightning", "wind", "earth"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 5, "max": 9, "weight": 450, "name": "of the Elements" },
+                    "2": { "levelReq": 45, "min": 10, "max": 15, "weight": 300, "name": "of Nature" },
+                    "3": { "levelReq": 70, "min": 16, "max": 20, "weight": 150, "name": "of the Primordial" }
+                }
+            },
+            "added_durability": {
+                "stat": "durability",
+                "isPercent": false,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 50,  "max": 120,  "weight": 900, "name": "of Sturdiness" },
+                    "2": { "levelReq": 15, "min": 121, "max": 260,  "weight": 700, "name": "of Fortitude" },
+                    "3": { "levelReq": 35, "min": 261, "max": 450,  "weight": 500, "name": "of Endurance" },
+                    "4": { "levelReq": 60, "min": 451, "max": 700,  "weight": 280, "name": "of Tenacity" },
+                    "5": { "levelReq": 85, "min": 701, "max": 1000, "weight": 100, "name": "of Imperishability" }
+                }
+            },
+            "increased_durability": {
+                "stat": "durability",
+                "isPercent": true,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10,  "max": 25,  "weight": 750, "name": "of Preservation" },
+                    "2": { "levelReq": 25, "min": 26,  "max": 50,  "weight": 600, "name": "of Hardening" },
+                    "3": { "levelReq": 45, "min": 51,  "max": 80,  "weight": 420, "name": "of Reinforcement" },
+                    "4": { "levelReq": 65, "min": 81,  "max": 115, "weight": 220, "name": "of Unyielding" },
+                    "5": { "levelReq": 85, "min": 116, "max": 150, "weight": 80,  "name": "of Performance" }
+                }
+            },
+            "increased_entropy": {
+                "stat": "entropy",
+                "isPercent": true,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8,  "max": 14, "weight": 700, "name": "of Distortion" },
+                    "2": { "levelReq": 25, "min": 15, "max": 24, "weight": 560, "name": "of Resonance" },
+                    "3": { "levelReq": 45, "min": 25, "max": 38, "weight": 380, "name": "of Fracture" },
+                    "4": { "levelReq": 65, "min": 39, "max": 55, "weight": 200, "name": "of Unbinding" },
+                    "5": { "levelReq": 85, "min": 56, "max": 75, "weight": 90,  "name": "of Collapse" }
+                }
+            },
+            "entropy_resistance": {
+                "stat": "entropy_resistance",
+                "isPercent": false,
+                "categories": ["entropy", "resistance", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8,  "min": 6,  "max": 12, "weight": 800, "name": "of Grounding" },
+                    "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
+                    "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
+                    "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                }
+            },
+            "health_regeneration": {
+                "stat": "health_regeneration",
+                "isPercent": false,
+                "categories": ["health", "regeneration", "defensive", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 1, "max": 2, "weight": 850, "name": "of Recovery" },
+                    "2": { "levelReq": 25, "min": 3, "max": 5, "weight": 720, "name": "of Healing" },
+                    "3": { "levelReq": 42, "min": 6, "max": 10, "weight": 580, "name": "of Mending" },
+                    "4": { "levelReq": 58, "min": 11, "max": 18, "weight": 420, "name": "of Rejuvenation" },
+                    "5": { "levelReq": 72, "min": 19, "max": 30, "weight": 270, "name": "of Vitality" },
+                    "6": { "levelReq": 84, "min": 31, "max": 48, "weight": 150, "name": "of Renewal" },
+                    "7": { "levelReq": 94, "min": 49, "max": 68, "weight": 60, "name": "of Restoration" }
+                }
+            }
+        }
+    },
+
+    "amulet": {
+        "prefixes": {
+            "added_damage": {
+                "stat": "damage",
+                "isPercent": false,
+                "categories": ["damage", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 3, "max": 7, "weight": 880, "name": "Striking" },
+                    "2": { "levelReq": 18, "min": 8, "max": 15, "weight": 730, "name": "Brutal" },
+                    "3": { "levelReq": 35, "min": 16, "max": 27, "weight": 570, "name": "Savage" },
+                    "4": { "levelReq": 55, "min": 28, "max": 44, "weight": 400, "name": "Demonic" },
+                    "5": { "levelReq": 75, "min": 45, "max": 68, "weight": 220, "name": "Godslaying" }
+                }
+            },
+            "added_health": {
+                "stat": "health",
+                "isPercent": false,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 9, "max": 17, "weight": 950, "name": "Healthy" },
+                    "2": { "levelReq": 15, "min": 18, "max": 32, "weight": 800, "name": "Vigorous" },
+                    "3": { "levelReq": 32, "min": 33, "max": 57, "weight": 640, "name": "Robust" },
+                    "4": { "levelReq": 52, "min": 58, "max": 79, "weight": 470, "name": "Stalwart" },
+                    "5": { "levelReq": 72, "min": 80, "max": 110, "weight": 290, "name": "Titan's" }
+                }
+            },
+            "increased_health": {
+                "stat": "health",
+                "isPercent": true,
+                "categories": ["health", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 550, "name": "Vital" },
+                    "2": { "levelReq": 45, "min": 6, "max": 8, "weight": 380, "name": "Enduring" },
+                    "3": { "levelReq": 65, "min": 9, "max": 12, "weight": 200, "name": "Everlasting" },
+                    "4": { "levelReq": 80, "min": 13, "max": 17, "weight": 75, "name": "Godly" },
+                    "5": { "levelReq": 95, "min": 18, "max": 23, "weight": 30, "name": "Remaking" }
+                }
+            },
+            "global_increased_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "isGlobal": true,
+                "categories": ["armour", "defense", "defensive", "global"],
+                "tiers": {
+                    "1": { "levelReq": 12, "min": 5, "max": 12, "weight": 700, "name": "Fortifying" },
+                    "2": { "levelReq": 30, "min": 13, "max": 25, "weight": 530, "name": "Shielding" },
+                    "3": { "levelReq": 53, "min": 26, "max": 38, "weight": 350, "name": "Bastion" },
+                    "4": { "levelReq": 70, "min": 39, "max": 50, "weight": 170, "name": "Aegis" },
+                    "5": { "levelReq": 83, "min": 51, "max": 63, "weight": 90, "name": "Empire's" },
+                    "6": { "levelReq": 94, "min": 64, "max": 77, "weight": 30, "name": "Warrior-King's" }
+                }
+            },
+            "global_increased_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "isGlobal": true,
+                "categories": ["evasion", "defense", "defensive", "global"],
+                "tiers": {
+                    "1": { "levelReq": 12, "min": 5, "max": 12, "weight": 700, "name": "Dodging" },
+                    "2": { "levelReq": 32, "min": 13, "max": 25, "weight": 530, "name": "Phasing" },
+                    "3": { "levelReq": 55, "min": 26, "max": 38, "weight": 350, "name": "Ethereal" },
+                    "4": { "levelReq": 78, "min": 39, "max": 50, "weight": 170, "name": "Ghostly" },
+                    "5": { "levelReq": 83, "min": 51, "max": 63, "weight": 90, "name": "Imaginary" },
+                    "6": { "levelReq": 94, "min": 64, "max": 77, "weight": 30, "name": "Phase-Attuned" }
+                }
+            },
+            "global_increased_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "isGlobal": true,
+                "categories": ["energy_shield", "defense", "defensive", "global"],
+                "tiers": {
+                    "1": { "levelReq": 12, "min": 5, "max": 12, "weight": 700, "name": "Warding" },
+                    "2": { "levelReq": 32, "min": 13, "max": 25, "weight": 530, "name": "Protecting" },
+                    "3": { "levelReq": 55, "min": 26, "max": 38, "weight": 350, "name": "Shielding" },
+                    "4": { "levelReq": 78, "min": 39, "max": 50, "weight": 170, "name": "Barrier" },
+                    "5": { "levelReq": 83, "min": 51, "max": 63, "weight": 90, "name": "Regenerating" },
+                    "6": { "levelReq": 94, "min": 64, "max": 77, "weight": 30, "name": "Forevermore" }
+                }
+            },
+            "increased_xp_gain": {
+                "stat": "xp_gain",
+                "isPercent": true,
+                "categories": ["xp", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wise" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Enlightened" },
+                    "4": { "levelReq": 75, "min": 51, "max": 70, "weight": 240, "name": "Ascendant" },
+                    "5": { "levelReq": 90, "min": 71, "max": 95, "weight": 140, "name": "Awakened" }
+                }
+            },
+            "increased_gold_gain": {
+                "stat": "gold_gain",
+                "isPercent": true,
+                "categories": ["gold", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
+                    "2": { "levelReq": 30, "min": 19, "max": 32, "weight": 520, "name": "Wealthy" },
+                    "3": { "levelReq": 55, "min": 33, "max": 50, "weight": 320, "name": "Opulent" },
+                    "4": { "levelReq": 75, "min": 51, "max": 75, "weight": 250, "name": "Exalted" },
+                    "5": { "levelReq": 90, "min": 76, "max": 110, "weight": 160, "name": "Royal" }
+                }
+            },
+            "increased_item_rarity": {
+                "stat": "item_rarity",
+                "isPercent": true,
+                "categories": ["rarity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "Fortunate" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "Fated" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 280, "name": "Scavenging" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "Manifesting" }
+                }
+            },
+            "added_entropy": {
+                "stat": "entropy",
+                "isPercent": false,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 0.05,   "max": 0.10,  "weight": 900, "name": "Unstable" },
+                    "2": { "levelReq": 12, "min": 0.11,  "max": 0.18,  "weight": 780, "name": "Chaotic" },
+                    "3": { "levelReq": 28, "min": 0.19,  "max": 0.30,  "weight": 620, "name": "Turbulent" },
+                    "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
+                    "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
+                    "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            },
+            "flat_damage_reduction": {
+                "stat": "damage_reduction",
+                "isPercent": false,
+                "categories": ["defensive", "damage_reduction"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 1, "max": 2, "weight": 850, "name": "Guarding" },
+                    "2": { "levelReq": 25, "min": 3, "max": 5, "weight": 720, "name": "Shielding" },
+                    "3": { "levelReq": 42, "min": 6, "max": 10, "weight": 580, "name": "Warding" },
+                    "4": { "levelReq": 58, "min": 11, "max": 18, "weight": 420, "name": "Protective" },
+                    "5": { "levelReq": 72, "min": 19, "max": 30, "weight": 270, "name": "Absorbing" },
+                    "6": { "levelReq": 84, "min": 31, "max": 48, "weight": 150, "name": "Nullifying" },
+                    "7": { "levelReq": 94, "min": 49, "max": 65, "weight": 60, "name": "Negating" }
+                }
+            },
+            "increased_damage_reduction": {
+                "stat": "damage_reduction",
+                "isPercent": true,
+                "categories": ["defensive", "damage_reduction"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 8, "weight": 600, "name": "Deflecting" },
+                    "2": { "levelReq": 40, "min": 9, "max": 15, "weight": 450, "name": "Parrying" },
+                    "3": { "levelReq": 60, "min": 16, "max": 28, "weight": 300, "name": "Mitigating" },
+                    "4": { "levelReq": 78, "min": 29, "max": 45, "weight": 170, "name": "Dissipating" },
+                    "5": { "levelReq": 92, "min": 46, "max": 62, "weight": 70, "name": "Voiding" }
+                }
+            }
+        },
+        "suffixes": {
+            "added_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 1, "max": 2, "weight": 650, "name": "of Precision" },
+                    "2": { "levelReq": 35, "min": 3, "max": 5, "weight": 480, "name": "of Deadliness" },
+                    "3": { "levelReq": 55, "min": 6, "max": 8, "weight": 300, "name": "of Lethality" },
+                    "4": { "levelReq": 80, "min": 9, "max": 11, "weight": 140, "name": "of the Assassin" },
+                    "5": { "levelReq": 95, "min": 12, "max": 15, "weight": 70, "name": "of the Eternal Hunt" }
+                }
+            },
+            "added_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 10, "max": 25, "weight": 600, "name": "of Severity" },
+                    "2": { "levelReq": 35, "min": 26, "max": 40, "weight": 440, "name": "of Brutality" },
+                    "3": { "levelReq": 50, "min": 41, "max": 60, "weight": 360, "name": "of Execution" },
+                    "4": { "levelReq": 68, "min": 61, "max": 90, "weight": 210, "name": "of Finality" },
+                    "5": { "levelReq": 85, "min": 91, "max": 125, "weight": 100, "name": "of the End" },
+                    "6": { "levelReq": 94, "min": 126, "max": 160, "weight": 45, "name": "of Lost Hope" }
+                }
+            },
+            "increased_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": true,
+                "categories": ["critical", "offensive"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 10, "max": 23, "weight": 630, "name": "of Pinpoint" },
+                    "2": { "levelReq": 40, "min": 24, "max": 38, "weight": 470, "name": "of Slaughter" },
+                    "3": { "levelReq": 60, "min": 39, "max": 50, "weight": 310, "name": "of War" },
+                    "4": { "levelReq": 75, "min": 51, "max": 75, "weight": 190, "name": "of Conquest" },
+                    "5": { "levelReq": 92, "min": 76, "max": 100, "weight": 50, "name": "of Domination" }
+                }
+            },
+            "increased_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
+                    "2": { "levelReq": 25, "min": 11, "max": 17, "weight": 400, "name": "of Abundance" },
+                    "3": { "levelReq": 45, "min": 18, "max": 25, "weight": 240, "name": "of Plenty" },
+                    "4": { "levelReq": 60, "min": 26, "max": 40, "weight": 180, "name": "of Overflow" },
+                    "5": { "levelReq": 80, "min": 41, "max": 65, "weight": 100, "name": "of Cornucopia" }
+                }
+            },
+            "increased_enemy_quantity": {
+                "stat": "enemy_quantity",
+                "isPercent": true,
+                "categories": ["enemy_quantity", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
+                    "2": { "levelReq": 40, "min": 11, "max": 17, "weight": 420, "name": "of Peril" },
+                    "3": { "levelReq": 65, "min": 18, "max": 25, "weight": 320, "name": "of Havoc" },
+                    "4": { "levelReq": 80, "min": 26, "max": 35, "weight": 200, "name": "of Hordes" },
+                    "5": { "levelReq": 95, "min": 36, "max": 50, "weight": 120, "name": "of Teeming Spires" },
+                    "6": { "levelReq": 100, "min": 51, "max": 80, "weight": 40, "name": "of Infinite Challenge" }
+                }
+            },
+            "dot_resistance": {
+                "stat": "dot_resistance",
+                "isPercent": false,
+                "categories": ["dot", "resistance", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 18, "min": 5, "max": 12, "weight": 550, "name": "of Recovery" },
+                    "2": { "levelReq": 38, "min": 13, "max": 22, "weight": 400, "name": "of Rejuvenation" },
+                    "3": { "levelReq": 52, "min": 23, "max": 35, "weight": 260, "name": "of Vitality" },
+                    "4": { "levelReq": 68, "min": 36, "max": 45, "weight": 140, "name": "of the Immune" },
+                    "5": { "levelReq": 87, "min": 46, "max": 58, "weight": 60, "name": "of the Mutant" }
+                }
+            },
+            "healing_magnitude": {
+                "stat": "healing_magnitude",
+                "isPercent": true,
+                "categories": ["health", "healing", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 10, "max": 18, "weight": 600, "name": "of Mending" },
+                    "2": { "levelReq": 35, "min": 19, "max": 30, "weight": 450, "name": "of Restoration" },
+                    "3": { "levelReq": 58, "min": 31, "max": 45, "weight": 290, "name": "of Renewal" },
+                    "4": { "levelReq": 73, "min": 46, "max": 65, "weight": 170, "name": "of the Eternal" },
+                    "5": { "levelReq": 90, "min": 66, "max": 90, "weight": 80, "name": "of Infinite Regeneration" }
+                }
+            },
+            "fire_resistance": {
+                "stat": "fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "fire", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Forge" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Inferno" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Phoenix" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Volcano" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Infernal Flame" }
+                }
+            },
+            "cold_resistance": {
+                "stat": "cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "cold", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Glacier" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tundra" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Yeti" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Sub-Zero" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Absolute Zero" }
+                }
+            },
+            "lightning_resistance": {
+                "stat": "lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "lightning", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Storm" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Tempest" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Thunder" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Discharge" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Zeus" }
+                }
+            },
+            "dark_resistance": {
+                "stat": "dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "dark", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Shadow" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Black" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Void" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Abyss" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Emptiness" }
+                }
+            },
+            "holy_resistance": {
+                "stat": "holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "holy", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Light" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Faith" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Blessed" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Divinity" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Righteous" }
+                }
+            },
+            "arcane_resistance": {
+                "stat": "arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "arcane", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Mage" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Wizard" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Archmage" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Attunement" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
+                }
+            },
+            "wind_resistance": {
+                "stat": "wind_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "wind", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
+                }
+            },
+            "earth_resistance": {
+                "stat": "earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "earth", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
+                }
+            },
+            "chaos_resistance": {
+                "stat": "chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "chaos", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of Entropy" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Disorder" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Chaos" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Madness" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Insanity" }
+                }
+            },
+            "psychic_resistance": {
+                "stat": "psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "psychic", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Mind" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of Clarity" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of Focus" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of the Psychic" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of the Mindlord" }
+                }
+            },
+            "ethereal_resistance": {
+                "stat": "ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "ethereal", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 5, "max": 12, "weight": 750, "name": "of the Ghost" },
+                    "2": { "levelReq": 20, "min": 13, "max": 22, "weight": 600, "name": "of the Spirit" },
+                    "3": { "levelReq": 35, "min": 23, "max": 32, "weight": 400, "name": "of the Ethereal" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 220, "name": "of Otherworld" },
+                    "5": { "levelReq": 75, "min": 41, "max": 50, "weight": 100, "name": "of Spirits" }
+                }
+            },
+            "all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "divine", "defensive",
+                    "fire", "cold", "lightning", "dark", "holy",
+                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
+                    "2": { "levelReq": 35, "min": 6, "max": 8, "weight": 300, "name": "of Harmony" },
+                    "3": { "levelReq": 60, "min": 9, "max": 11, "weight": 240, "name": "of Equality" },
+                    "4": { "levelReq": 80, "min": 12, "max": 15, "weight": 100, "name": "of Transcendence" },
+                    "5": { "levelReq": 95, "min": 16, "max": 20, "weight": 40, "name": "of Godhood" }
+                }
+            },
+            "divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "divine", "defensive",
+                    "dark", "holy", "arcane"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 15, "min": 4, "max": 7, "weight": 450, "name": "of the Sacred" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of the Divine" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Gods" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of Eternity" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Creator" }
+                }
+            },
+            "elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": [
+                    "resistance", "elemental", "defensive",
+                    "fire", "cold", "lightning", "wind", "earth"
+                ],
+                "tiers": {
+                    "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
+                    "2": { "levelReq": 25, "min": 8, "max": 12, "weight": 330, "name": "of Nature" },
+                    "3": { "levelReq": 50, "min": 13, "max": 17, "weight": 260, "name": "of the Arcanist" },
+                    "4": { "levelReq": 75, "min": 18, "max": 23, "weight": 130, "name": "of the Primordial" },
+                    "5": { "levelReq": 90, "min": 24, "max": 28, "weight": 60, "name": "of the Attuned" }
+                }
+            },
+            "added_durability": {
+                "stat": "durability",
+                "isPercent": false,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1,  "min": 50,  "max": 120,  "weight": 900, "name": "of Sturdiness" },
+                    "2": { "levelReq": 15, "min": 121, "max": 260,  "weight": 700, "name": "of Fortitude" },
+                    "3": { "levelReq": 35, "min": 261, "max": 450,  "weight": 500, "name": "of Endurance" },
+                    "4": { "levelReq": 60, "min": 451, "max": 700,  "weight": 280, "name": "of Tenacity" },
+                    "5": { "levelReq": 85, "min": 701, "max": 1000, "weight": 100, "name": "of Imperishability" }
+                }
+            },
+            "increased_durability": {
+                "stat": "durability",
+                "isPercent": true,
+                "categories": ["durability", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 10,  "max": 25,  "weight": 750, "name": "of Preservation" },
+                    "2": { "levelReq": 25, "min": 26,  "max": 50,  "weight": 600, "name": "of Hardening" },
+                    "3": { "levelReq": 45, "min": 51,  "max": 80,  "weight": 420, "name": "of Reinforcement" },
+                    "4": { "levelReq": 65, "min": 81,  "max": 115, "weight": 220, "name": "of Unyielding" },
+                    "5": { "levelReq": 85, "min": 116, "max": 150, "weight": 80,  "name": "of Performance" }
+                }
+            },
+            "increased_entropy": {
+                "stat": "entropy",
+                "isPercent": true,
+                "categories": ["entropy", "crafting", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8,  "max": 14, "weight": 700, "name": "of Distortion" },
+                    "2": { "levelReq": 25, "min": 15, "max": 24, "weight": 560, "name": "of Resonance" },
+                    "3": { "levelReq": 45, "min": 25, "max": 38, "weight": 380, "name": "of Fracture" },
+                    "4": { "levelReq": 65, "min": 39, "max": 55, "weight": 200, "name": "of Unbinding" },
+                    "5": { "levelReq": 85, "min": 56, "max": 75, "weight": 90,  "name": "of Collapse" }
+                }
+            },
+            "entropy_resistance": {
+                "stat": "entropy_resistance",
+                "isPercent": false,
+                "categories": ["entropy", "resistance", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 8,  "min": 6,  "max": 12, "weight": 800, "name": "of Grounding" },
+                    "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
+                    "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
+                    "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                }
+            }
+        }
+    }
+}
