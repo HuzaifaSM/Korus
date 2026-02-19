@@ -10,7 +10,7 @@ from scripts.enemy import Enemy, createEnemy
 from scripts.combat import CombatManager
 from scripts.items import RESOURCES, CONSUMABLES
 from scripts.camp import Camp
-from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, PATH
+from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, PATH, _decodeKorus
 from scripts.debug import Debugger
 from scripts.difficulty import Difficulty
 from scripts.runeDrops import getRuneObject
@@ -111,22 +111,26 @@ class Game:
         try:
             saves = []
             for filename in sorted(listdir(PATH)):
-                if filename.startswith('Save ') and filename.endswith('.json'):
-                    saveNum = filename.replace("Save ", "").replace(".json", "")
+                if filename.startswith('Save ') and filename.endswith('.korus'):
+                    saveNum = filename.replace("Save ", "").replace(".korus", "")
                     try:
-                        with open(f"{PATH}{filename}", 'r') as file:
-                            data: Dict = json.load(file)
+                        tmpJson = f"{PATH}Save {saveNum}.tmp.json"
+                        if not _decodeKorus(f"{PATH}{filename}", tmpJson):
+                            raise Exception("Failed to decode save")
+                        with open(tmpJson, 'r') as f:
+                            data: Dict = json.load(f)
+                        remove(tmpJson)
                         playerName = data.get('player', {}).get('name', 'The Hero')
                         playerLevel = data.get('player', {}).get('level', 1)
                         className = data.get('player', {}).get('className', 'player')
                         difficulty = data.get('game', {}).get('difficulty', 'normal')
                         hardcore = data.get('game', {}).get('hardcoreMode', False)
-                        
+
                         difficultyObj = Difficulty(difficulty)
                         diffDisplay = difficultyObj.getDisplayName()
                         if hardcore:
                             diffDisplay += " [bold red](HARDCORE)[/bold red]"
-                        
+
                         console.print(f"[cyan]{saveNum}.[/cyan] [bold]{playerName}[/bold] [dim]| {className} | Level {playerLevel}[/dim]")
                         console.print(f"    [dim]Difficulty: {diffDisplay}[/dim]\n")
                         saves.append(saveNum)
@@ -305,7 +309,7 @@ class Game:
             elif choice.lower() == "data":
                 console.print("\n[bold cyan]=== ALL GAME DATA ===[/bold cyan]")
                 console.print(f"[dim]{self._serialise()}[/dim]")
-                console.print(f"[dim]{self.player._serialise()}[/dim]")
+                console.print(f"[dim]{self.player.serialise()}[/dim]")
                 console.print(f"[dim]{self.camp._serialiseAll()}[/dim]")
                 pause()
                 continue

@@ -1,6 +1,6 @@
 import random
 from typing import Dict, Any, Optional, List
-from scripts.abilities import ABILITIES, Ability, MECHANICS
+from scripts.abilities import ABILITIES, Ability
 from scripts.enemy import Enemy
 from scripts.styles import console
 
