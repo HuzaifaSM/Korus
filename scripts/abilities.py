@@ -675,6 +675,7 @@ def loadAbilities() -> Dict[str, AbilityTree]:
 
     return classAbilities
 
-CLASS_ABILITIES = loadAbilities()
+ABILITIES = {} # temp
+CLASS_ABILITIES = {} #loadAbilities()
 
 ...

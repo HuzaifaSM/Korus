@@ -10,7 +10,6 @@ class ItemRarity(Enum):
     RARE = "rare"
     EPIC = "epic"
     LEGENDARY = "legendary"
-    UNIQUE = "unique"
     QUEST = "quest"
 
 class AffixSlot:
@@ -77,7 +76,6 @@ RARITY_VALUES = {
     "rare": 3,
     "epic": 4,
     "legendary": 5,
-    "unique": 1,
     "quest": 1
 }
 
@@ -87,7 +85,6 @@ RARITY_SERIALS = {
     "rare": ItemRarity.RARE,
     "epic": ItemRarity.EPIC,
     "legendary": ItemRarity.LEGENDARY,
-    "unique": ItemRarity.UNIQUE,
     "quest": ItemRarity.QUEST
 }
 
@@ -97,7 +94,6 @@ VALUE_MULTIPLIER = {
     ItemRarity.RARE: 3,
     ItemRarity.EPIC: 4,
     ItemRarity.LEGENDARY: 5,
-    ItemRarity.UNIQUE: 1
 }
 
 ENTROPY_RESISTANCE = {
@@ -424,8 +420,7 @@ class Equipment(Item):
             ItemRarity.UNCOMMON: 100,
             ItemRarity.RARE: 200,
             ItemRarity.EPIC: 400,
-            ItemRarity.LEGENDARY: 800,
-            ItemRarity.UNIQUE: 1000
+            ItemRarity.LEGENDARY: 800
         }
         if not hasattr(self, 'baseMaxDurability'):
             baseDurability = durabilityValues[self.rarity] + (self.level * (random.randint(1, 5)))
@@ -637,7 +632,7 @@ class Equipment(Item):
             self.entropyResistance -= 0.1 * self.numPreserved #10% resistance reduction per preservation rune used
 
     @staticmethod
-    def _generateEquipmentPiece(level: int, slot: str, rarity: ItemRarity, className: str = None, uniqueTier = None) -> 'Equipment':
+    def _generateEquipmentPiece(level: int, slot: str, rarity: ItemRarity, className: str = None) -> 'Equipment':
         def getAffixCounts(level, rarity):
             bases = {
                 ItemRarity.COMMON: ([1], [1]),
@@ -978,8 +973,7 @@ DUNGEON_RARITY_MULTIPLIERS = {
     ItemRarity.UNCOMMON: {'difficulty': 1.2, 'rewards': 1.5},
     ItemRarity.RARE: {'difficulty': 1.5, 'rewards': 2.0},
     ItemRarity.EPIC: {'difficulty': 2.0, 'rewards': 3.0},
-    ItemRarity.LEGENDARY: {'difficulty': 3, 'rewards': 5.0},
-    ItemRarity.UNIQUE: {'difficulty': 1.0, 'rewards': 1.0}
+    ItemRarity.LEGENDARY: {'difficulty': 3, 'rewards': 5.0}
 }
 
 class DungeonMap(Item):
@@ -1051,7 +1045,7 @@ RARITY_WEIGHTS = {
     ItemRarity.LEGENDARY: 1
 }
 
-def rollRarity(bonus: int = 0, allowUnique: bool = False) -> ItemRarity:
+def rollRarity(bonus: int = 0) -> ItemRarity:
     weights = RARITY_WEIGHTS.copy()
     if bonus > 0:
         shiftAmount = bonus / 100
@@ -1061,10 +1055,6 @@ def rollRarity(bonus: int = 0, allowUnique: bool = False) -> ItemRarity:
         weights[ItemRarity.RARE] += commonReduction * 0.3
         weights[ItemRarity.EPIC] += commonReduction * 0.25
         weights[ItemRarity.LEGENDARY] += commonReduction * 0.15
-
-    if allowUnique:
-        uniqueChance = 0.5 + (bonus / 200)
-        weights[ItemRarity.UNIQUE] = uniqueChance
 
     totalWeight = round(sum(weights.values()))
     roll = random.randint(1, totalWeight)

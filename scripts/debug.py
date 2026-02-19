@@ -1,5 +1,4 @@
 from .items import Equipment, RESOURCES, CONSUMABLES, ItemRarity
-from .uniques import UniqueTier, Unique
 from .abilities import ABILITIES
 from crafting.base import CraftingItem
 from crafting.chaosRune import CHAOS_RUNES
@@ -44,11 +43,7 @@ SLOTS = {
 }
 
 RARITIES = {
-    1: ItemRarity.COMMON, 2: ItemRarity.UNCOMMON, 3: ItemRarity.RARE, 4: ItemRarity.EPIC, 5: ItemRarity.LEGENDARY, 6: ItemRarity.UNIQUE
-}
-
-TIERS = {
-    1: UniqueTier.COMMON, 2: UniqueTier.RARE, 3: UniqueTier.EPIC, 4: UniqueTier.LEGENDARY, 5: UniqueTier.MYTHIC
+    1: ItemRarity.COMMON, 2: ItemRarity.UNCOMMON, 3: ItemRarity.RARE, 4: ItemRarity.EPIC, 5: ItemRarity.LEGENDARY
 }
 
 class Debugger:
@@ -170,19 +165,6 @@ class Debugger:
             except ValueError:
                 pass
             return ItemRarity.COMMON
-        
-        def _chooseTier() -> UniqueTier:
-            console.print("\n[bold cyan]=== Choose Unique Tier ===[/bold cyan]")
-            for i, rarity in TIERS.items():
-                console.print(f"  [cyan]{i}.[/cyan] {rarity}")
-            choice = console.input("> ").strip()
-            try:
-                choice = int(choice)
-                if choice in TIERS:
-                    return TIERS[choice]
-            except ValueError:
-                pass
-            return UniqueTier.COMMON
 
         while True:
             clearScreen()
@@ -198,12 +180,7 @@ class Debugger:
                 slot = _chooseSlot()
                 level = _chooseLevel()
                 rarity = _chooseRarity()
-                tier = None
-                if rarity == ItemRarity.UNIQUE:
-                    tier = _chooseTier()
-                    equipment = Unique._generateEquipmentPiece(level, slot, rarity, self.game.player.className, tier)
-                else:
-                    equipment = Equipment._generateEquipmentPiece(level, slot, rarity, self.game.player.className, tier)
+                equipment = Equipment._generateEquipmentPiece(level, slot, rarity, self.game.player.className)
                 self.game.player.addEquipmentToStorage(equipment)
                 equipName = formatRarity(equipment.name, equipment.rarity.value)
                 console.print(f"\n[success]Generated equipment![/success]")

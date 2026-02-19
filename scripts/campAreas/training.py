@@ -1,6 +1,6 @@
 from typing import Dict
 from .station import Station
-from scripts.abilities import ABILITIES, MECHANIC_UPGRADES
+from scripts.abilities import ABILITIES
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator, formatDamageType,
     pause, printWarning, printError, printSuccess, printInfo
@@ -200,56 +200,6 @@ class TrainingGrounds(Station):
                     else:
                         printWarning("\nInsufficient skill points.")
         except ValueError:
-            pass
-        pause()
-
-    def upgradeAbilityMechanics(self):
-        if self.level < 3:
-            printWarning(f"Training Grounds Level 3 required to upgrade mechanics. Current level: {self.leve}")
-            pause()
-            return
-        clearScreen()
-        printHeader("Upgrade Ability Mechanics")
-        
-        if not self.player._abilities:
-            printWarning("No abilities to upgrade!")
-            pause()
-            return
-        
-        console.print("\n[gold]Abilities with upgradeable mechanics:[/gold]")
-        upgradeable = []
-        for name, ability in self.player._abilities.items():
-            if ability._mechanics:
-                hasUpgrade = any(m in MECHANIC_UPGRADES for m in ability._mechanics)
-                if hasUpgrade:
-                    upgradeable.append((name, ability))
-        
-        if not upgradeable:
-            printWarning("No abilities have upgradeable mechanics!")
-            pause()
-            return
-        
-        for i, (name, ability) in enumerate(upgradeable, 1):
-            console.print(f"  [cyan]{i}.[/cyan] {name}")
-            console.print(f"     [bold]Mechanics:[/bold] [red]{', '.join(ability._mechanics)}[/red]")
-        
-        choice = console.input("\n[cyan]Choose ability (0 to cancel):\n> [/cyan]").strip()
-        try:
-            index = int(choice) - 1
-            if 0 <= index < len(upgradeable):
-                name, ability = upgradeable[index]
-                cost = 50 + len(ability._mechanics * 3)
-                
-                confirm = console.input(f"\n[cyan]Upgrade first mechanic? Cost: {cost} Skill Points (y/n):\n> [/cyan]").strip().lower()
-                if confirm == 'y':
-                    if self.skillPoints >= cost:
-                        self.skillPoints -= cost
-                        ability._upgradeMechanic()
-                        printSuccess(f"Ability mechanic upgraded! New mechanic list: {ability._mechanics}")
-                    else:
-                        printWarning("\nInsufficient skill points!")
-        except ValueError as e:
-            printError(e)
             pass
         pause()
 

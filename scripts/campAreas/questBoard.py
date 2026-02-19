@@ -19,7 +19,7 @@ class Quest:
         return f"  - {self.name}:\n    - {self.description}"
 
 def _generateQuests() -> Dict[str, Quest]:
-    with open("Korus/data/quests.json", 'r') as file:
+    with open("data/quests.json", 'r') as file:
         quests = load(file)
     qDict = {}
     for quest in quests:

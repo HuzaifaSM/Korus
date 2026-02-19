@@ -6,7 +6,7 @@ from .abilities import ABILITIES
 from json import load
 from .styles import console
 
-with open('Korus/data/names.json', 'r') as file:
+with open('data/names.json', 'r') as file:
     NAMES = load(file)
     NAME_REFERENCES = {
         "prefix": list(NAMES["prefix"].keys()),
@@ -141,8 +141,7 @@ class Enemy(Entity):
                     ItemRarity.UNCOMMON: 0.1 + round(self._level / 600, 4),
                     ItemRarity.RARE: 0.05 + round(self._level / 700, 4),
                     ItemRarity.EPIC: 0.02 + round(self._level / 900, 4),
-                    ItemRarity.LEGENDARY: 0.01 + round(self._level / 1200, 4),
-                    ItemRarity.UNIQUE: 0.025 + round(self._level / 850, 4)
+                    ItemRarity.LEGENDARY: 0.01 + round(self._level / 1200, 4)
                 }
                 finalDropChance = min(0.95, dropChance.get(rarity, 0.3))
                 self._lootTable.addEquipment(equipment, finalDropChance)

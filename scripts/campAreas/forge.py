@@ -121,10 +121,10 @@ class Forge(Station):
                     ItemRarity.UNCOMMON: ("iron_ore", 10),
                     ItemRarity.RARE: ("crystal", 5),
                     ItemRarity.EPIC: ("mana_essence", 3),
-                    ItemRarity.LEGENDARY: ("dragon_scale", 2),
-                    ItemRarity.UNIQUE: ("ascended_essence", 1)
+                    ItemRarity.LEGENDARY: ("dragon_scale", 2)
                 }
                 resource, amount = resourceCost.get(equip.rarity, ("iron_ore", 5))
+                amount *= equip.level
 
                 console.print("\n[yellow]Repair cost:[/yellow]\n"
                       f"  - [white]Fuel: {fuelCost}[/white]\n"

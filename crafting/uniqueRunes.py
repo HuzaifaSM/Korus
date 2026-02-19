@@ -181,7 +181,7 @@ class SoulboundRune(CraftingItem):
         self._loadSoulboundAffixes()
 
     def _loadSoulboundAffixes(self):
-        with open('Korus/crafting/data/soulboundAffixes.json', 'r') as f:
+        with open('crafting/data/soulboundAffixes.json', 'r') as f:
             self.soulboundData = json.load(f)
 
     def getRandomEmptySlot(self, item):

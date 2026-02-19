@@ -51,7 +51,7 @@ class BaseDestabilisationRune(CraftingItem):
         self._loadOutcomes()
 
     def _loadOutcomes(self):
-        with open('Korus/crafting/data/destabilisation.json', 'r') as f:
+        with open('crafting/data/destabilisation.json', 'r') as f:
             self.data = json.load(f)
 
     def apply(self, item) -> CraftResult:

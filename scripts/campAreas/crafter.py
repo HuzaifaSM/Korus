@@ -96,7 +96,7 @@ class Crafter(Station):
             2: {ItemRarity.COMMON: 0.6, ItemRarity.UNCOMMON: 0.3, ItemRarity.RARE: 0.1},
             3: {ItemRarity.COMMON: 0.4, ItemRarity.UNCOMMON: 0.35, ItemRarity.RARE: 0.2, ItemRarity.EPIC: 0.05},
             4: {ItemRarity.UNCOMMON: 0.4, ItemRarity.RARE: 0.35, ItemRarity.EPIC: 0.2, ItemRarity.LEGENDARY: 0.05},
-            5: {ItemRarity.RARE: 0.5, ItemRarity.EPIC: 0.35, ItemRarity.LEGENDARY: 0.1, ItemRarity.UNIQUE: 0.05}
+            5: {ItemRarity.RARE: 0.5, ItemRarity.EPIC: 0.35, ItemRarity.LEGENDARY: 0.15}
         }
 
         rarityBonus = int(self.player._stats['Bonuses']['itemRarity'] * 0.5) # rarity applied at half value

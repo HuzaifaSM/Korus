@@ -1,8 +1,7 @@
 from typing import Dict, Optional, List
 import random
 from copy import deepcopy
-from .items import Equipment, Consumable    
-from .uniques import Unique
+from .items import Equipment, Consumable
 from .abilities import ABILITIES, Ability
 from .runeDrops import getRuneObject
 from .styles import (
@@ -260,41 +259,13 @@ class Entity:
 
         if equipment:
             for slot, eqData in equipment.items():
-                if eqData.get('rarity') == 'unique':
-                    e = Unique(
-                        name=eqData['name'],
-                        slot=eqData['slot'],
-                        stats=eqData['stats'],
-                        level=eqData['level'],
-                        callback=eqData.get('callbackName'),
-                        tier=eqData.get('tier', 'common'),
-                        description=eqData.get('description', ''),
-                        classRestriction=eqData.get('classRestriction')
-                    )
-                    e.durability = eqData.get('durability', e.maxDurability)
-                    e.maxDurability = eqData.get('maxDurability', e.maxDurability)
-                else:
-                    e = Equipment.deserialise(eqData)
+                e = Equipment.deserialise(eqData)
                 self._equipment[slot] = e
 
         equipmentStorage = data.get('equipmentStorage')
         if equipmentStorage:
             for eqData in equipmentStorage:
-                if eqData.get('isUnique'):
-                    e = Unique(
-                        name=eqData['name'],
-                        slot=eqData['slot'],
-                        stats=eqData['stats'],
-                        level=eqData['level'],
-                        callback=eqData.get('callbackName'),
-                        tier=eqData.get('tier', 'common'),
-                        description=eqData.get('description', ''),
-                        classRestriction=eqData.get('classRestriction')
-                    )
-                    e.durability = eqData.get('durability', e.maxDurability)
-                    e.maxDurability = eqData.get('maxDurability', e.maxDurability)
-                else:
-                    e = Equipment.deserialise(eqData)
+                e = Equipment.deserialise(eqData)
                 self._equipmentStorage.append(e)
         
         self._inventory = data.get('inventory', {})

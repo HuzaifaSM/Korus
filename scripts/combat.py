@@ -3,7 +3,6 @@ from enum import Enum
 import random
 from .entities import Entity
 from .abilities import Effects, StatusEffect
-from .uniques import Unique
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo, formatDamageType, pause
 )
@@ -685,7 +684,7 @@ class CombatManager:
 
                     finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self)
                     finalDamage, evaded = self.applyDamageWithDefenses(target, finalDamage, damageType, targetUnit)
-                    finalDamage, damageType = t.onHit(finalDamage, damageType, attacker, self)
+                    finalDamage, damageType = t.onHit(finalDamage, damageType, isCrit, attacker, self)
 
                     if t.className == 'Ranger':
                         if t._subType == 'Sharpshooter' and evaded:

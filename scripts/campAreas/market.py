@@ -3,7 +3,6 @@ import random
 import datetime
 from .station import Station
 from scripts.items import Equipment, ItemRarity, RESOURCES, CONSUMABLES
-from scripts.uniques import UniqueTier
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, printInfo
@@ -37,7 +36,7 @@ class Market(Station):
                 stock[item] = {
                     'amount': data[0],
                     'value': data[1],
-                    'item': data[2]._serialise()
+                    'item': data[2].serialise()
                 }
             else:
                 stock[item] = {
@@ -85,25 +84,15 @@ class Market(Station):
             rarityChances = { #based on market level
                 1: [ItemRarity.COMMON, ItemRarity.UNCOMMON],
                 2: [ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.RARE],
-                3: [ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.UNIQUE],
-                4: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.UNIQUE],
-                5: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.UNIQUE]
-            }
-            uniqueChances = {
-                3: [UniqueTier.COMMON, UniqueTier.RARE, UniqueTier.EPIC],
-                4: [UniqueTier.RARE, UniqueTier.EPIC, UniqueTier.LEGENDARY],
-                5: [UniqueTier.EPIC, UniqueTier.LEGENDARY, UniqueTier.MYTHIC]
+                3: [ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC],
+                4: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY],
+                5: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY]
             }
             possibleRarities = rarityChances.get(self.level, [ItemRarity.COMMON, ItemRarity.UNCOMMON])
             rarity = random.choice(possibleRarities)
-            uniqueTier = None
-            if rarity == ItemRarity.UNIQUE:
-                uniqueTier = random.choices(uniqueChances, weights=[0.6, 0.3, 0.1], k=1)[0]
-            equipment = Equipment._generateEquipmentPiece(equipLevel, slot, rarity, className=self.player.className, uniqueTier=uniqueTier)
-            if rarity != ItemRarity.UNIQUE:
-                price = round((random.uniform(2, 3) * equipment.value * 10) + 5000 * self.level // 5)
-            else:
-                price = equipment.value * random.randint(1, 3)
+            equipment = Equipment._generateEquipmentPiece(equipLevel, slot, rarity, className=self.player.className)
+            price = round((random.uniform(2, 3) * equipment.value * 10) + 5000 * self.level // 5)
+            price = equipment.value * random.randint(1, 3)
             self.stock[equipment.name] = (1, price, equipment) # include equipment object to transfer later
         # consumables
         if self.level >= 2:
@@ -321,11 +310,11 @@ class Market(Station):
         for i, (location, equip) in enumerate(allEq, 1):
             value = equip.value
             console.print(f"  [cyan]{i}.[/cyan] {location} {equip.name} - [gold]{value}g[/gold]")
-        choice = console.input("\n[cyan]Choose equipment to sell (0 to cancel):[/cyan]\n[dim red]'all' to sell everything in inventory (exlcuding epic, legendary and unique items) | 'all2' to sell EVERYTHING[/dim red]:\n> ").strip()
+        choice = console.input("\n[cyan]Choose equipment to sell (0 to cancel):[/cyan]\n[dim red]'all' to sell everything in inventory (exlcuding epic and legendary) | 'all2' to sell EVERYTHING[/dim red]:\n> ").strip()
         if choice.lower() == 'all':
             totalValue = 0
             for _, equip in allEq:
-                if equip.rarity.value not in ['epic', 'legendary', 'unique']:
+                if equip.rarity.value not in ['epic', 'legendary']:
                     totalValue += min(5000, max(100, equip.value // 10))
             confirm = console.input(f"\n[bold]Sell all items in equipment inventory for {totalValue}g? (y/n):\n> ").strip().lower()
             if confirm == 'y':
