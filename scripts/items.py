@@ -157,7 +157,7 @@ class Item:
     def __str__(self):
         return f"{self.name} ({self.rarity.value})"
     
-    def _serialise(self):
+    def serialise(self):
         return {
             "name": self.name,
             "itemType": self.itemType.value,
@@ -260,8 +260,8 @@ class Equipment(Item):
                 return True
         return False
 
-    def _serialise(self):
-        temp = super()._serialise()
+    def serialise(self):
+        temp = super().serialise()
         temp['slot'] = self.slot
         temp['prefixSlots'] = [s.serialise() for s in self.prefixSlots]
         temp['suffixSlots'] = [s.serialise() for s in self.suffixSlots]
@@ -947,8 +947,8 @@ class Consumable(Item):
             return True
         return False
     
-    def _serialise(self):
-        current = super()._serialise()
+    def serialise(self):
+        current = super().serialise()
         current['effect'] = self.effect
         return current
     
@@ -991,8 +991,8 @@ class DungeonMap(Item):
         self.tier = tier
         self.description = description
 
-    def _serialise(self):
-        temp = super()._serialise()
+    def serialise(self):
+        temp = super().serialise()
         temp['level'] = self.level
         temp['waves'] = self.waves
         temp['tier'] = self.tier

@@ -197,22 +197,22 @@ class Entity:
         return baseStr
 
     def __repr__(self):
-        return f"{self._serialise()}"
+        return f"{self.serialise()}"
 
-    def _serialise(self):
+    def serialise(self):
         serialisedAbilities = {}
         for name, ability in self._abilities.items():
-            serialisedAbilities[name] = ability._serialise()
+            serialisedAbilities[name] = ability.serialise()
 
         equipped = {}
         for slot, equip in self._equipment.items():
             if equip:
-                equipped[slot] = equip._serialise()
+                equipped[slot] = equip.serialise()
 
         equipmentStorage = []
         for equipment in self._equipmentStorage:
             if equipment:
-                equipmentStorage.append(equipment._serialise())
+                equipmentStorage.append(equipment.serialise())
 
         return {'maxHealth': self._maxHealth,
                 'baseHealth': self._baseHealth,
@@ -700,7 +700,7 @@ class Entity:
 
         return damageDealt, damageType
 
-    def onHit(self, damageTaken: int, damageType: str, attacker: Entity=None, combatManager=None):
+    def onHit(self, damageTaken: int, damageType: str, crit: bool=False, attacker: Entity=None, combatManager=None):
         durabilityLoss = max(1, damageTaken // 30)
         for slot in ['head', 'chest', 'legs', 'feet']:
             if self._equipment.get(slot):

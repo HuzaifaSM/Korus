@@ -24,8 +24,8 @@ class Player(Entity):
 
         self.consumableUsed = False
 
-    def _serialise(self):
-        temp = super()._serialise()
+    def serialise(self):
+        temp = super().serialise()
         temp['maxLevel'] = self._maxLevel
         return temp
 
