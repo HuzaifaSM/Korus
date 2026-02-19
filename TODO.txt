@@ -25,6 +25,11 @@ OTHER STUFF:
   - more types of consumables as more things get added to the game
 
 CURRENTLY WORKING ON:
+  - updating the older class descriptons in this order:
+    > warrior
+    > fighter
+    > rogue
+    > monk
   - abilities.json and abilities.py
     > abilities.json first, make at least all base class skills
     > rewrite necessary parts of abilities.py to function with new format of json
