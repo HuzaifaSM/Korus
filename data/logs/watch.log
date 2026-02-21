@@ -1,0 +1,2571 @@
+
+[36:25:03] Change Detected: player\warrior.py
+  Line   32  PREV >>         "Upon consuming Phoenix Aspect, consume all Rage and heal 2% Max HP per Rage consumed and gain Phoenix Form for 3 turns\n"
+            NEW  >>         "Upon consuming Phoenix Aspect, consume all Rage and heal 2% Max HP per Rage consumed and gain Phoenix Form for 3 turns.\n"
+  Line   34  PREV >>         "+5 HP. +1 Damage. +20% Fire Resistance.",
+            NEW  >>         "Whilst you are above 40% Max HP: "
+  Line   35  PREV >>     "Annihilist": "Gain 1 Annihilation per 30 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
+            NEW  >>         "+5 HP. +1 Damage. +20% Fire Resistance.",
+  Line   36  PREV >>         "Annihilation: +20% Fire Damage, +0.1 Speed, +5% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
+            NEW  >>     "Annihilist": "Gain 1 Annihilation per 30 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
+  Line   37  PREV >>         "Rage no longer heals you at the end of combat.\n"
+            NEW  >>         "Annihilation: +20% Fire Damage, +0.1 Speed, +5% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
+  Line   38  PREV >>         "-20 HP. +3 Damage. -0.05 Speed. +25% Crit Damage.",
+            NEW  >>         "Rage no longer heals you at the end of combat.\n"
+  Line   39  PREV >>     #subtypes
+            NEW  >>         "-20 HP. +3 Damage. -0.05 Speed. +25% Crit Damage.",
+  Line   40  PREV >>     "Savage": "Rage no longer affects damage. 15% Increased Damage.\n"
+            NEW  >>     #subtypes
+  Line   41  PREV >>         "+25% Crit Chance, +50% Crit Damage against enemies below 20% health."
+            NEW  >>     "Savage": "Rage no longer affects damage. 15% Increased Damage.\n"
+  Line   42  PREV >>         "Whenever a single attack deals more than 10% of your Max HP, permanently gain 1 Scar. +1 Rage Generation per Scar.\n"
+            NEW  >>         "+25% Crit Chance, +50% Crit Damage against enemies below 20% health."
+  Line   43  PREV >>         "-10 HP. +2 Damage. -0.1 Speed. +2% Crit Chance\n",
+            NEW  >>         "Whenever a single attack deals more than 10% of your Max HP, permanently gain 1 Scar. +1 Rage Generation per Scar.\n"
+  Line   44  PREV >>     "Colossus": "Rage has 2x effect on damage. 20% more rage generated. 25% less rage lost.\n"
+            NEW  >>         "-10 HP. +2 Damage. -0.1 Speed. +2% Crit Chance\n",
+  Line   45  PREV >>         "Whenever you take damage, recover 20% of damage taken at the start of your next turn.\n"
+            NEW  >>     "Colossus": "Rage has 2x effect on damage. 20% more rage generated. 25% less rage lost.\n"
+  Line   46  PREV >>         "+15 HP. -1 Damage. -0.3 Speed. +10 Max Rage.",
+            NEW  >>         "Whenever you take damage, recover 20% of damage taken at the start of your next turn.\n"
+  Line   47  PREV >>     "Titan": "10% Increased Health. Rage grants +2 Damage instead of +3.\n"
+            NEW  >>         "+15 HP. -1 Damage. -0.3 Speed. +10 Max Rage.",
+  Line   48  PREV >>         "While at or above 30 Rage, gain 10% Damage Reduction. While below 30 Rage, gain +10% Crit Chance, +25% Crit Damage.\n"
+            NEW  >>     "Titan": "10% Increased Health. Rage grants +2 Damage instead of +3.\n"
+  Line   49  PREV >>         "When you drop below 30% Max HP for the first time each combat, gain Titan's Fury for 4 turns.\n"
+            NEW  >>         "While at or above 30 Rage, gain 10% Damage Reduction. While below 30 Rage, gain +10% Crit Chance, +25% Crit Damage.\n"
+  Line   50  PREV >>         "Titan's Fury: +20% Increased Damage, +10% Lifesteal, +5 Rage Generation.\n"
+            NEW  >>         "When you drop below 30% Max HP for the first time each combat, gain Titan's Fury for 4 turns.\n"
+  Line   51  PREV >>         "+10 HP. -2 Damage. -0.1 Speed. +10% Physical Resistance. +5% Fire Resistance."
+            NEW  >>         "Titan's Fury: +20% Increased Damage, +10% Lifesteal, +5 Rage Generation.\n"
+  Line   52  PREV >> }
+            NEW  >>         "+10 HP. -2 Damage. -0.1 Speed. +10% Physical Resistance. +5% Fire Resistance."
+  Line   53  PREV >> 
+            NEW  >> }
+  Line   54  PREV >> class Warrior(Player): # higher damage, lower speed, fire damage
+            NEW  >> 
+  Line   55  PREV >>     def __init__(self, name, health = 50, damage = 4, damageType = "fire", speed = 0.8,
+            NEW  >> class Warrior(Player): # higher damage, lower speed, fire damage
+  Line   56  PREV >>                  ascendancy = None, ascendancyDescription = None, subType = None):
+            NEW  >>     def __init__(self, name, health = 50, damage = 4, damageType = "fire", speed = 0.8,
+  Line   57  PREV >>         super().__init__(name, health, damage, 0.05, 2.0, damageType, speed,
+            NEW  >>                  ascendancy = None, ascendancyDescription = None, subType = None):
+  Line   58  PREV >>                          className="Warrior", classDescription=WARRIOR_DESCRIPTIONS['Warrior'],
+            NEW  >>         super().__init__(name, health, damage, 0.05, 2.0, damageType, speed,
+  Line   59  PREV >>                          ascendancy=ascendancy, ascendancyDescription=ascendancyDescription, subType=subType)
+            NEW  >>                          className="Warrior", classDescription=WARRIOR_DESCRIPTIONS['Warrior'],
+  Line   60  PREV >>         self._rage = 0 # build rage during combat, 1 rage = +3 damage
+            NEW  >>                          ascendancy=ascendancy, ascendancyDescription=ascendancyDescription, subType=subType)
+  Line   61  PREV >>         self._maxRage = 30
+            NEW  >>         self._rage = 0 # build rage during combat, 1 rage = +3 damage
+  Line   62  PREV >> 
+            NEW  >>         self._maxRage = 30
+  Line   63  PREV >>         self._rageEffect = 1.0 # multiplier on rage effectiveness
+            NEW  >> 
+  Line   64  PREV >>         self._fury = 0
+            NEW  >>         self._rageEffect = 1.0 # multiplier on rage effectiveness
+  Line   65  PREV >>         self._maxFury = 10
+            NEW  >>         self._fury = 0
+  Line   66  PREV >>         self.pyromancerAttacks = 0
+            NEW  >>         self._maxFury = 10
+  Line   67  PREV >>         self.phoenixAspect = False
+            NEW  >>         self.pyromancerAttacks = 0
+  Line   68  PREV >>         self.phoenixUsed = False
+            NEW  >>         self.phoenixAspect = False
+  Line   69  PREV >>         self._fortify = 0
+            NEW  >>         self.phoenixUsed = False
+  Line   70  PREV >>         self._maxFortify = 20
+            NEW  >>         self._fortify = 0
+  Line   71  PREV >>         self.annihilationRage = 0
+            NEW  >>         self._maxFortify = 20
+  Line   72  PREV >>         self.annihilation = 0
+            NEW  >>         self.annihilationRage = 0
+  Line   73  PREV >>         self.annihilationBuffs = {
+            NEW  >>         self.annihilation = 0
+  Line   74  PREV >>             'fire': 0, 'speed': 0, 'critChance': 0
+            NEW  >>         self.annihilationBuffs = {
+  Line   75  PREV >>         }
+            NEW  >>             'fire': 0, 'speed': 0, 'critChance': 0
+  Line   76  PREV >>         self.rageGeneration = 0
+            NEW  >>         }
+  Line   77  PREV >>         self.scars = 0
+            NEW  >>         self.rageGeneration = 0
+  Line   78  PREV >>         self.damageToRecoup = 0
+            NEW  >>         self.scars = 0
+  Line   79  PREV >>         self.titanFuryTurns = 0
+            NEW  >>         self.damageToRecoup = 0
+  Line   80  PREV >>         self.titanFuryUsed = False
+            NEW  >>         self.titanFuryTurns = 0
+  Line   81  PREV >> 
+            NEW  >>         self.titanFuryUsed = False
+  Line   82  PREV >>     def __str__(self):
+            NEW  >> 
+  Line   83  PREV >>         baseStr = super().__str__()
+            NEW  >>     def __str__(self):
+  Line   84  PREV >>         
+            NEW  >>         baseStr = super().__str__()
+  Line   85  PREV >>         if self._subType != "Savage":
+            NEW  >>         
+  Line   86  PREV >>             baseStr += f"\n[damage]Rage:[/damage] {self._rage} / {self._maxRage}"
+            NEW  >>         if self._subType != "Savage":
+  Line   87  PREV >>         
+            NEW  >>             baseStr += f"\n[damage]Rage:[/damage] {self._rage} / {self._maxRage}"
+  Line   88  PREV >>         if self._ascendancy == "Warlord":
+            NEW  >>         
+  Line   89  PREV >>             baseStr += f"\n[gold1]Fury:[/gold1] {self._fury} / {self._maxFury}"
+            NEW  >>         if self._ascendancy == "Warlord":
+  Line   90  PREV >>         elif self._ascendancy == "Juggernaut":
+            NEW  >>             baseStr += f"\n[gold1]Fury:[/gold1] {self._fury} / {self._maxFury}"
+  Line   91  PREV >>             baseStr += f"\n[buff]Fortify:[/buff] {self._fortify} / {self._maxFortify}"
+            NEW  >>         elif self._ascendancy == "Juggernaut":
+  Line   92  PREV >> 
+            NEW  >>             baseStr += f"\n[buff]Fortify:[/buff] {self._fortify} / {self._maxFortify}"
+  Line   93  PREV >>         return baseStr
+            NEW  >> 
+  Line   94  PREV >> 
+            NEW  >>         return baseStr
+  Line   95  PREV >>     def _serialise(self):
+            NEW  >> 
+  Line   96  PREV >>         temp = super()._serialise()
+            NEW  >>     def _serialise(self):
+  Line   97  PREV >>         temp['maxRage'] = self._maxRage
+            NEW  >>         temp = super()._serialise()
+  Line   98  PREV >>         temp['scars'] = self.scars
+            NEW  >>         temp['maxRage'] = self._maxRage
+  Line   99  PREV >>         temp['rageGeneration'] = self.rageGeneration
+            NEW  >>         temp['scars'] = self.scars
+  Line  100  PREV >>         return temp
+            NEW  >>         temp['rageGeneration'] = self.rageGeneration
+  Line  101  PREV >> 
+            NEW  >>         return temp
+  Line  102  PREV >>     def deserialise(self, data):
+            NEW  >> 
+  Line  103  PREV >>         super().deserialise(data)
+            NEW  >>     def deserialise(self, data):
+  Line  104  PREV >>         self._maxRage = data.get('maxRage', 30)
+            NEW  >>         super().deserialise(data)
+  Line  105  PREV >>         self.scars = data.get('scars', 0)
+            NEW  >>         self._maxRage = data.get('maxRage', 30)
+  Line  106  PREV >>         self.rageGeneration = data.get('rageGeneration', 0)
+            NEW  >>         self.scars = data.get('scars', 0)
+  Line  107  PREV >> 
+            NEW  >>         self.rageGeneration = data.get('rageGeneration', 0)
+  Line  108  PREV >>     def rollCritical(self, target):
+            NEW  >> 
+  Line  109  PREV >>         critChance = self._stats['baseCritChance'] + (self._stats['Bonuses']['critChance']) + (self._stats['Permanent']['critChance']) + (self._stats['Temporary']['critChance'])
+            NEW  >>     def rollCritical(self, target):
+  Line  110  PREV >>         critMulti = self._stats['baseCritMulti'] + (self._stats['Bonuses']['critMulti']) + (self._stats['Permanent']['critMulti']) + (self._stats['Temporary']['critMulti'])
+            NEW  >>         critChance = self._stats['baseCritChance'] + (self._stats['Bonuses']['critChance']) + (self._stats['Permanent']['critChance']) + (self._stats['Temporary']['critChance'])
+  Line  111  PREV >>         if self._subType == 'Savage':
+            NEW  >>         critMulti = self._stats['baseCritMulti'] + (self._stats['Bonuses']['critMulti']) + (self._stats['Permanent']['critMulti']) + (self._stats['Temporary']['critMulti'])
+  Line  112  PREV >>             target = target.entity
+            NEW  >>         if self._subType == 'Savage':
+  Line  113  PREV >>             if target._health < (target._maxHealth * 0.2):
+            NEW  >>             target = target.entity
+  Line  114  PREV >>                 critChance += 0.25
+            NEW  >>             if target._health < (target._maxHealth * 0.2):
+  Line  115  PREV >>                 critMulti += 0.5
+            NEW  >>                 critChance += 0.25
+  Line  116  PREV >> 
+            NEW  >>                 critMulti += 0.5
+  Line  117  PREV >>         elif self._subType == 'Colossus' and self._rage < 30:
+            NEW  >> 
+  Line  118  PREV >>             critChance += 0.1
+            NEW  >>         elif self._subType == 'Colossus' and self._rage < 30:
+  Line  119  PREV >>             critMulti += 0.25
+            NEW  >>             critChance += 0.1
+  Line  120  PREV >> 
+            NEW  >>             critMulti += 0.25
+  Line  121  PREV >>         if self._ascendancy == 'Annihilist':
+            NEW  >> 
+  Line  122  PREV >>             critChance += self.annihilationBuffs['critChance']
+            NEW  >>         if self._ascendancy == 'Annihilist':
+  Line  123  PREV >>             if random.random() < critChance:
+            NEW  >>             critChance += self.annihilationBuffs['critChance']
+  Line  124  PREV >>                 return True, critMulti
+            NEW  >>             if random.random() < critChance:
+  Line  125  PREV >>             
+            NEW  >>                 return True, critMulti
+  Line  126  PREV >>         if random.random() < critChance:
+            NEW  >>             
+  Line  127  PREV >>             return True, critMulti
+            NEW  >>         if random.random() < critChance:
+  Line  128  PREV >> 
+            NEW  >>             return True, critMulti
+  Line  129  PREV >>     def damage(self, damage, damageType, combatUnit=None):
+            NEW  >> 
+  Line  130  PREV >>         if self._ascendancy == 'Flamewarden' and self.phoenixAspect and not self.phoenixUsed:
+            NEW  >>     def damage(self, damage, damageType, combatUnit=None):
+  Line  131  PREV >>             if combatUnit:
+            NEW  >>         if self._ascendancy == 'Flamewarden' and self.phoenixAspect and not self.phoenixUsed:
+  Line  132  PREV >>                 resistMod = combatUnit.getResistanceModifier(damageType)
+            NEW  >>             if combatUnit:
+  Line  133  PREV >>             else:
+            NEW  >>                 resistMod = combatUnit.getResistanceModifier(damageType)
+  Line  134  PREV >>                 resistMod = self._stats['Resistances'].get(damageType, 0) / 100
+            NEW  >>             else:
+  Line  135  PREV >>                 if damageType in ELEMENTAL_RES:
+            NEW  >>                 resistMod = self._stats['Resistances'].get(damageType, 0) / 100
+  Line  136  PREV >>                     resistMod += self._stats['Resistances']['elemental'] / 100
+            NEW  >>                 if damageType in ELEMENTAL_RES:
+  Line  137  PREV >>                 elif damageType in DIVINE_RES:
+            NEW  >>                     resistMod += self._stats['Resistances']['elemental'] / 100
+  Line  138  PREV >>                     resistMod += self._stats['Resistances']['divine'] / 100
+            NEW  >>                 elif damageType in DIVINE_RES:
+  Line  139  PREV >>                 resistMod += self._stats['Resistances']['all'] / 100
+            NEW  >>                     resistMod += self._stats['Resistances']['divine'] / 100
+  Line  140  PREV >>                 resistMod = min(0.75, resistMod)
+            NEW  >>                 resistMod += self._stats['Resistances']['all'] / 100
+  Line  141  PREV >>             damage = damage - round(damage * resistMod)
+            NEW  >>                 resistMod = min(0.75, resistMod)
+  Line  142  PREV >>             trueDamage = damage - self._shield
+            NEW  >>             damage = damage - round(damage * resistMod)
+  Line  143  PREV >>             damagePrevented = damage - trueDamage
+            NEW  >>             trueDamage = damage - self._shield
+  Line  144  PREV >>             self._shield -= damagePrevented
+            NEW  >>             damagePrevented = damage - trueDamage
+  Line  145  PREV >>             self._health -= damage
+            NEW  >>             self._shield -= damagePrevented
+  Line  146  PREV >>             damageTypeFormatted = formatDamageType(damageType, damageType)
+            NEW  >>             self._health -= damage
+  Line  147  PREV >>             console.print(f" [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
+            NEW  >>             damageTypeFormatted = formatDamageType(damageType, damageType)
+  Line  148  PREV >>             if self._health <= 0 and not self._isDead: # prevented from phoenix
+            NEW  >>             console.print(f" [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
+  Line  149  PREV >>                 self._health = 1
+            NEW  >>             if self._health <= 0 and not self._isDead: # prevented from phoenix
+  Line  150  PREV >>                 healPercent = min(1, self._rage / 100)
+            NEW  >>                 self._health = 1
+  Line  151  PREV >>                 healAmount = self._maxHealth * healPercent
+            NEW  >>                 healPercent = min(1, self._rage / 100)
+  Line  152  PREV >>                 console.print(f"\n[success] Flamewarden: You were dealt a fatal blow, but your Phoenix Aspect saved you!\n")
+            NEW  >>                 healAmount = self._maxHealth * healPercent
+  Line  153  PREV >>                 self.heal(healAmount)
+            NEW  >>                 console.print(f"\n[success] Flamewarden: You were dealt a fatal blow, but your Phoenix Aspect saved you!\n")
+  Line  154  PREV >>                 self.phoenixUsed = True
+            NEW  >>                 self.heal(healAmount)
+  Line  155  PREV >>                 pause()
+            NEW  >>                 self.phoenixUsed = True
+  Line  156  PREV >>         else:
+            NEW  >>                 pause()
+  Line  157  PREV >>             return super().damage(damage, damageType, combatUnit)
+            NEW  >>         else:
+  Line  158  PREV >> 
+            NEW  >>             return super().damage(damage, damageType, combatUnit)
+  Line  159  PREV >>     def onAttack(self, damageDealt, damageType, target):
+            NEW  >> 
+  Line  160  PREV >>         super().onAttack(damageDealt, damageType)
+            NEW  >>     def onAttack(self, damageDealt, damageType, target):
+  Line  161  PREV >>         rageGain = damageDealt // 8
+            NEW  >>         super().onAttack(damageDealt, damageType)
+  Line  162  PREV >>         if damageType == 'fire':
+            NEW  >>         rageGain = damageDealt // 8
+  Line  163  PREV >>             rageGain += 1
+            NEW  >>         if damageType == 'fire':
+  Line  164  PREV >> 
+            NEW  >>             rageGain += 1
+  Line  165  PREV >>         if self._ascendancy == 'Pyromancer':
+            NEW  >> 
+  Line  166  PREV >>             burnRage = sum(2 for effect in target.statusEffects if effect.name == 'burn')
+            NEW  >>         if self._ascendancy == 'Pyromancer':
+  Line  167  PREV >>             rageGain += burnRage
+            NEW  >>             burnRage = sum(2 for effect in target.statusEffects if effect.name == 'burn')
+  Line  168  PREV >>             self.pyromancerAttacks += 1
+            NEW  >>             rageGain += burnRage
+  Line  169  PREV >> 
+            NEW  >>             self.pyromancerAttacks += 1
+  Line  170  PREV >>         if self._subType == 'Colossus':
+            NEW  >> 
+  Line  171  PREV >>             rageGain = int(rageGain * 1.2)
+            NEW  >>         if self._subType == 'Colossus':
+  Line  172  PREV >> 
+            NEW  >>             rageGain = int(rageGain * 1.2)
+  Line  173  PREV >>         self._rage = min(self._maxRage, self._rage + rageGain)
+            NEW  >> 
+  Line  174  PREV >>         self.annihilationRage += rageGain
+            NEW  >>         self._rage = min(self._maxRage, self._rage + rageGain)
+  Line  175  PREV >>         console.print(f"\n[damage]Your rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/damage]")
+            NEW  >>         self.annihilationRage += rageGain
+  Line  176  PREV >>         
+            NEW  >>         console.print(f"\n[damage]Your rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/damage]")
+  Line  177  PREV >>         if self._ascendancy == 'Annihilist':
+            NEW  >>         
+  Line  178  PREV >>             while self.annihilationRage >= 30:
+            NEW  >>         if self._ascendancy == 'Annihilist':
+  Line  179  PREV >>                 self.annihilationRage -= 30
+            NEW  >>             while self.annihilationRage >= 30:
+  Line  180  PREV >>                 self.annihilation += 1
+            NEW  >>                 self.annihilationRage -= 30
+  Line  181  PREV >> 
+            NEW  >>                 self.annihilation += 1
+  Line  182  PREV >>         if self._ascendancy == 'Annihilist' and damageType == 'fire':
+            NEW  >> 
+  Line  183  PREV >>             damageDealt = round(damageDealt * (1 + self.annihilationBuffs['fire']))
+            NEW  >>         if self._ascendancy == 'Annihilist' and damageType == 'fire':
+  Line  184  PREV >> 
+            NEW  >>             damageDealt = round(damageDealt * (1 + self.annihilationBuffs['fire']))
+  Line  185  PREV >>         if self._ascendancy == 'Flamewarden' and self._rage >= 50 and (not self.phoenixAspect or not self.phoenixUsed):
+            NEW  >> 
+  Line  186  PREV >>             self.phoenixAspect = True
+            NEW  >>         if self._ascendancy == 'Flamewarden' and self._rage >= 50 and (not self.phoenixAspect or not self.phoenixUsed):
+  Line  187  PREV >> 
+            NEW  >>             self.phoenixAspect = True
+  Line  188  PREV >>         if self._ascendancy == 'Warlord' and self._rage >= 30 and self._fury < self._maxFury:
+            NEW  >> 
+  Line  189  PREV >>             self._fury += 1
+            NEW  >>         if self._ascendancy == 'Warlord' and self._rage >= 30 and self._fury < self._maxFury:
+  Line  190  PREV >>             console.print(f"\n[bold damage]Your fury increases! Current Fury: {self._fury} / {self._maxFury}[/bold damage]")
+            NEW  >>             self._fury += 1
+  Line  191  PREV >> 
+            NEW  >>             console.print(f"\n[bold damage]Your fury increases! Current Fury: {self._fury} / {self._maxFury}[/bold damage]")
+  Line  192  PREV >>         if self._subType == 'Savage':
+            NEW  >> 
+  Line  193  PREV >>             damageDealt = int(damageDealt * 1.15)
+            NEW  >>         if self._subType == 'Savage':
+  Line  194  PREV >>         elif self._subType == 'Titan':
+            NEW  >>             damageDealt = int(damageDealt * 1.15)
+  Line  195  PREV >>             damageDealt = damageDealt + ((self._rage * 2) * self._rageEffect)
+            NEW  >>         elif self._subType == 'Titan':
+  Line  196  PREV >>             if self.titanFuryTurns > 0:
+            NEW  >>             damageDealt = damageDealt + ((self._rage * 2) * self._rageEffect)
+  Line  197  PREV >>                 damageDealt = int(damageDealt * 1.2)
+            NEW  >>             if self.titanFuryTurns > 0:
+  Line  198  PREV >>         else:
+            NEW  >>                 damageDealt = int(damageDealt * 1.2)
+  Line  199  PREV >>             damageDealt = damageDealt + ((self._rage * 3) * self._rageEffect)
+            NEW  >>         else:
+  Line  200  PREV >> 
+            NEW  >>             damageDealt = damageDealt + ((self._rage * 3) * self._rageEffect)
+  Line  201  PREV >>         if self._ascendancy == 'Warlord':
+            NEW  >> 
+  Line  202  PREV >>             damageDealt = (damageDealt) * (1 + (0.02 * self._fury))
+            NEW  >>         if self._ascendancy == 'Warlord':
+  Line  203  PREV >>             self.heal(damageDealt * (0.02 * self._fury)) # lifesteal 2% per fury
+            NEW  >>             damageDealt = (damageDealt) * (1 + (0.02 * self._fury))
+  Line  204  PREV >> 
+            NEW  >>             self.heal(damageDealt * (0.02 * self._fury)) # lifesteal 2% per fury
+  Line  205  PREV >>         if self._ascendancy == 'Blood Reaver':
+            NEW  >> 
+  Line  206  PREV >>             healthPercent = (damageDealt // 50) / 100
+            NEW  >>         if self._ascendancy == 'Blood Reaver':
+  Line  207  PREV >>             healthLoss = self._maxHealth * healthPercent
+            NEW  >>             healthPercent = (damageDealt // 50) / 100
+  Line  208  PREV >>             damageMult = 1 + 0.01 * (healthLoss // 20)
+            NEW  >>             healthLoss = self._maxHealth * healthPercent
+  Line  209  PREV >>             dmgPerc = (damageMult - 1) * 100
+            NEW  >>             damageMult = 1 + 0.01 * (healthLoss // 20)
+  Line  210  PREV >>             damageDealt = damageDealt * damageMult
+            NEW  >>             dmgPerc = (damageMult - 1) * 100
+  Line  211  PREV >>             if (self._health - healthLoss) < 1: # not through damage method
+            NEW  >>             damageDealt = damageDealt * damageMult
+  Line  212  PREV >>                 self._health = 1
+            NEW  >>             if (self._health - healthLoss) < 1: # not through damage method
+  Line  213  PREV >>             else:
+            NEW  >>                 self._health = 1
+  Line  214  PREV >>                 self._health -= healthLoss
+            NEW  >>             else:
+  Line  215  PREV >>             console.print(f"\n[warning]You sacrifice {healthPercent} of your life ({healthLoss} HP) to deal {dmgPerc}% More Damage.[/warning]")
+            NEW  >>                 self._health -= healthLoss
+  Line  216  PREV >>             lifestealPercent = min(30, self._rage // 10) / 100
+            NEW  >>             console.print(f"\n[warning]You sacrifice {healthPercent} of your life ({healthLoss} HP) to deal {dmgPerc}% More Damage.[/warning]")
+  Line  217  PREV >>             lifestealHeal = self._maxHealth * lifestealPercent
+            NEW  >>             lifestealPercent = min(30, self._rage // 10) / 100
+  Line  218  PREV >>             console.print(f"\n[success]{lifestealPercent}% Blood Reaver Lifesteal:\n[/success]")
+            NEW  >>             lifestealHeal = self._maxHealth * lifestealPercent
+  Line  219  PREV >>             self.heal(lifestealHeal)
+            NEW  >>             console.print(f"\n[success]{lifestealPercent}% Blood Reaver Lifesteal:\n[/success]")
+  Line  220  PREV >> 
+            NEW  >>             self.heal(lifestealHeal)
+  Line  221  PREV >>         return damageDealt, damageType
+            NEW  >> 
+  Line  222  PREV >>     
+            NEW  >>         return damageDealt, damageType
+  Line  223  PREV >>     def onHit(self, damageTaken, damageType):
+            NEW  >>     
+  Line  224  PREV >>         super().onHit(damageTaken, damageType)
+            NEW  >>     def onHit(self, damageTaken, damageType):
+  Line  225  PREV >>         rageLoss = max(0, damageTaken // 5)
+            NEW  >>         super().onHit(damageTaken, damageType)
+  Line  226  PREV >>         if damageType != 'fire':
+            NEW  >>         rageLoss = max(0, damageTaken // 5)
+  Line  227  PREV >>             rageLoss += 2
+            NEW  >>         if damageType != 'fire':
+  Line  228  PREV >> 
+            NEW  >>             rageLoss += 2
+  Line  229  PREV >>         if self._ascendancy == 'Warlord':
+            NEW  >> 
+  Line  230  PREV >>             rageLoss = rageLoss // 2
+            NEW  >>         if self._ascendancy == 'Warlord':
+  Line  231  PREV >>             if self._rage > 40:
+            NEW  >>             rageLoss = rageLoss // 2
+  Line  232  PREV >>                 damageTaken = int(damageTaken * 0.85)
+            NEW  >>             if self._rage > 40:
+  Line  233  PREV >> 
+            NEW  >>                 damageTaken = int(damageTaken * 0.85)
+  Line  234  PREV >>         if self._subType == 'Colossus':
+            NEW  >> 
+  Line  235  PREV >>             rageLoss = round(rageLoss * 0.75)
+            NEW  >>         if self._subType == 'Colossus':
+  Line  236  PREV >>             recoup = int(damageTaken * 0.2)
+            NEW  >>             rageLoss = round(rageLoss * 0.75)
+  Line  237  PREV >>             self.damageToRecoup += recoup
+            NEW  >>             recoup = int(damageTaken * 0.2)
+  Line  238  PREV >>             console.print(f"  [buff]Colossus: Will recoup {recoup} HP at the start of your turn.[/buff]")
+            NEW  >>             self.damageToRecoup += recoup
+  Line  239  PREV >> 
+            NEW  >>             console.print(f"  [buff]Colossus: Will recoup {recoup} HP at the start of your turn.[/buff]")
+  Line  240  PREV >>         elif self._subType == 'Savage':
+            NEW  >> 
+  Line  241  PREV >>             dmgPercent = damageTaken / self._maxHealth
+            NEW  >>         elif self._subType == 'Savage':
+  Line  242  PREV >>             if dmgPercent > 0.1:
+            NEW  >>             dmgPercent = damageTaken / self._maxHealth
+  Line  243  PREV >>                 self.scars += 1
+            NEW  >>             if dmgPercent > 0.1:
+  Line  244  PREV >>                 self.rageGeneration += 1
+            NEW  >>                 self.scars += 1
+  Line  245  PREV >>                 console.print(f"  [gold1]Savage: Gained 1 Scar! +1 total Rage generation.[/gold1]")
+            NEW  >>                 self.rageGeneration += 1
+  Line  246  PREV >> 
+            NEW  >>                 console.print(f"  [gold1]Savage: Gained 1 Scar! +1 total Rage generation.[/gold1]")
+  Line  247  PREV >>         elif self._subType == 'Titan' and not self.titanFuryUsed:
+            NEW  >> 
+  Line  248  PREV >>             if self._health - damageTaken < self._maxHealth * 0.3:
+            NEW  >>         elif self._subType == 'Titan' and not self.titanFuryUsed:
+  Line  249  PREV >>                 self.titanFuryTurns = 4
+            NEW  >>             if self._health - damageTaken < self._maxHealth * 0.3:
+  Line  250  PREV >>                 self.titanFuryUsed = True
+            NEW  >>                 self.titanFuryTurns = 4
+  Line  251  PREV >>                 console.print(f"\n[gold1]Titan: Dropped below 30% HP! Titan's Fury activated for 4 turns![/gold1]")
+            NEW  >>                 self.titanFuryUsed = True
+  Line  252  PREV >>                 console.print(f"  [gold1]+20% Damage, +10% Lifesteal, +5 Rage Generation![/gold1]")
+            NEW  >>                 console.print(f"\n[gold1]Titan: Dropped below 30% HP! Titan's Fury activated for 4 turns![/gold1]")
+  Line  253  PREV >>                 self._stats['Temporary']['lifesteal'] += 10
+            NEW  >>                 console.print(f"  [gold1]+20% Damage, +10% Lifesteal, +5 Rage Generation![/gold1]")
+  Line  254  PREV >>                 self.rageGeneration += 5
+            NEW  >>                 self._stats['Temporary']['lifesteal'] += 10
+  Line  255  PREV >>                 pause()
+            NEW  >>                 self.rageGeneration += 5
+  Line  256  PREV >>             
+            NEW  >>                 pause()
+  Line  257  PREV >>         if self._subType == 'Titan' and self._rage >= 30:
+            NEW  >>             
+  Line  258  PREV >>             damageTaken = int(damageTaken * 0.9)
+            NEW  >>         if self._subType == 'Titan' and self._rage >= 30:
+  Line  259  PREV >> 
+            NEW  >>             damageTaken = int(damageTaken * 0.9)
+  Line  260  PREV >>         self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
+            NEW  >> 
+  Line  261  PREV >>         console.print(f"\n[warning]Your rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
+            NEW  >>         self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
+  Line  262  PREV >> 
+            NEW  >>         console.print(f"\n[warning]Your rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
+  Line  263  PREV >>         return damageTaken, damageType
+            NEW  >> 
+  Line  264  PREV >> 
+            NEW  >>         return damageTaken, damageType
+  Line  265  PREV >>     def onKill(self, entity):
+            NEW  >> 
+  Line  266  PREV >>         if self._ascendancy == 'Annihilist':
+            NEW  >>     def onKill(self, entity):
+  Line  267  PREV >>             if self.annihilation > 0:
+            NEW  >>         if self._ascendancy == 'Annihilist':
+  Line  268  PREV >>                 self.annihilation -= 1
+            NEW  >>             if self.annihilation > 0:
+  Line  269  PREV >>                 heal = int(self._maxHealth * 0.05)
+            NEW  >>                 self.annihilation -= 1
+  Line  270  PREV >>                 console.print("  [heal]- Annihilist: Consumed 1 Annihilation stack to Heal 5% Max HP![/heal]")
+            NEW  >>                 heal = int(self._maxHealth * 0.05)
+  Line  271  PREV >>                 self.heal(heal)
+            NEW  >>                 console.print("  [heal]- Annihilist: Consumed 1 Annihilation stack to Heal 5% Max HP![/heal]")
+  Line  272  PREV >>         return None
+            NEW  >>                 self.heal(heal)
+  Line  273  PREV >> 
+            NEW  >>         return None
+  Line  274  PREV >>     def onBattleEnd(self):
+            NEW  >> 
+  Line  275  PREV >>         healAmount = self._rage // 2
+            NEW  >>     def onBattleEnd(self):
+  Line  276  PREV >>         if self._ascendancy == 'Blood Reaver':
+            NEW  >>         healAmount = self._rage // 2
+  Line  277  PREV >>             healAmount += self._rage * 2
+            NEW  >>         if self._ascendancy == 'Blood Reaver':
+  Line  278  PREV >>         if self._ascendancy != 'Annihilist':
+            NEW  >>             healAmount += self._rage * 2
+  Line  279  PREV >>             self.heal(healAmount)
+            NEW  >>         if self._ascendancy != 'Annihilist':
+  Line  280  PREV >>         self._rage = 0
+            NEW  >>             self.heal(healAmount)
+  Line  281  PREV >>         self._fury = 0
+            NEW  >>         self._rage = 0
+  Line  282  PREV >>         self._fortify = 0
+            NEW  >>         self._fury = 0
+  Line  283  PREV >>         self.phoenixAspect = False
+            NEW  >>         self._fortify = 0
+  Line  284  PREV >>         self.phoenixUsed = False
+            NEW  >>         self.phoenixAspect = False
+  Line  285  PREV >>         self.annihilationBuffs = {
+            NEW  >>         self.phoenixUsed = False
+  Line  286  PREV >>             'fire': 0, 'speed': 0, 'critChance': 0
+            NEW  >>         self.annihilationBuffs = {
+  Line  287  PREV >>         }
+            NEW  >>             'fire': 0, 'speed': 0, 'critChance': 0
+  Line  288  PREV >>         self.annihilation = 0
+            NEW  >>         }
+  Line  289  PREV >>         self.damageToRecoup = 0
+            NEW  >>         self.annihilation = 0
+  Line  290  PREV >>         if self.titanFuryUsed and self.titanFuryTurns > 0:
+            NEW  >>         self.damageToRecoup = 0
+  Line  291  PREV >>             self.rageGeneration -= 5
+            NEW  >>         if self.titanFuryUsed and self.titanFuryTurns > 0:
+  Line  292  PREV >>             self._Stats['Temporary']['lifesteal'] -= 10
+            NEW  >>             self.rageGeneration -= 5
+  Line  293  PREV >>         self.titanFuryTurns = 0
+            NEW  >>             self._Stats['Temporary']['lifesteal'] -= 10
+  Line  294  PREV >>         self.titanFuryUsed = False
+            NEW  >>         self.titanFuryTurns = 0
+  Line  295  PREV >>         super().onBattleEnd()
+            NEW  >>         self.titanFuryUsed = False
+  Line  296  PREV >> 
+            NEW  >>         super().onBattleEnd()
+  Line  297  PREV >>     def onTurnStart(self):
+            NEW  >> 
+  Line  298  PREV >>         if self.rageGeneration > 0:
+            NEW  >>     def onTurnStart(self):
+  Line  299  PREV >>             self._rage = min(self._maxRage, self._rage + self.rageGeneration)
+            NEW  >>         if self.rageGeneration > 0:
+  Line  300  PREV >>             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
+            NEW  >>             self._rage = min(self._maxRage, self._rage + self.rageGeneration)
+  Line  301  PREV >>         if self._ascendancy == 'Juggernaut':
+            NEW  >>             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
+  Line  302  PREV >>             self._fortify = min(self._maxFortify, self._rage // 10)
+            NEW  >>         if self._ascendancy == 'Juggernaut':
+  Line  303  PREV >>             console.print(f"[gold1]Juggernaut: Fortify set to {self._fortify} stacks. Current rage: {self._rage} / {self._maxRage} Rage.[/gold1]")
+            NEW  >>             self._fortify = min(self._maxFortify, self._rage // 10)
+  Line  304  PREV >>         
+            NEW  >>             console.print(f"[gold1]Juggernaut: Fortify set to {self._fortify} stacks. Current rage: {self._rage} / {self._maxRage} Rage.[/gold1]")
+  Line  305  PREV >>         if self._ascendancy == 'Juggernaut':
+            NEW  >>         
+  Line  306  PREV >>             self._fortify = min(self._maxFortify, self._rage // 10)
+            NEW  >>         if self._ascendancy == 'Juggernaut':
+  Line  307  PREV >>             console.print(f"\n[earth] Juggernaut: You now have {self._fortify} / {self._maxFortify} Fortify Stacks. (+{self._fortify}% All Resistance)")
+            NEW  >>             self._fortify = min(self._maxFortify, self._rage // 10)
+  Line  308  PREV >>         
+            NEW  >>             console.print(f"\n[earth] Juggernaut: You now have {self._fortify} / {self._maxFortify} Fortify Stacks. (+{self._fortify}% All Resistance)")
+  Line  309  PREV >>         elif self._ascendancy == 'Annihilist':
+            NEW  >>         
+  Line  310  PREV >>             self.annihilationBuffs = {
+            NEW  >>         elif self._ascendancy == 'Annihilist':
+  Line  311  PREV >>                 'fire': 0.2 * self.annihilation,
+            NEW  >>             self.annihilationBuffs = {
+  Line  312  PREV >>                 'speed': 0.1 * self.annihilation,
+            NEW  >>                 'fire': 0.2 * self.annihilation,
+  Line  313  PREV >>                 'critChance': 0.05 * self.annihilation
+            NEW  >>                 'speed': 0.1 * self.annihilation,
+  Line  314  PREV >>             }
+            NEW  >>                 'critChance': 0.05 * self.annihilation
+  Line  315  PREV >>             self._stats['Temporary']['speed'] += self.annihilationBuffs['speed']
+            NEW  >>             }
+  Line  316  PREV >>             self._stats['Temporary']['critChance'] += self.annihilationBuffs['critChance']
+            NEW  >>             self._stats['Temporary']['speed'] += self.annihilationBuffs['speed']
+  Line  317  PREV >>         
+            NEW  >>             self._stats['Temporary']['critChance'] += self.annihilationBuffs['critChance']
+  Line  318  PREV >>         if self._subType == 'Colossus':
+            NEW  >>         
+  Line  319  PREV >>             self.heal(self.damageToRecoup)
+            NEW  >>         if self._subType == 'Colossus':
+  Line  320  PREV >>             console.print(f"  [heal]Colossus: Recouped {self.damageToRecoup} HP![/heal]")
+            NEW  >>             self.heal(self.damageToRecoup)
+  Line  321  PREV >>             self.damageToRecoup = 0
+            NEW  >>             console.print(f"  [heal]Colossus: Recouped {self.damageToRecoup} HP![/heal]")
+  Line  322  PREV >> 
+            NEW  >>             self.damageToRecoup = 0
+  Line  323  PREV >>         elif self._subType == 'Titan' and self.titanFuryTurns > 0:
+            NEW  >> 
+  Line  324  PREV >>             self.titanFuryTurns -= 1
+            NEW  >>         elif self._subType == 'Titan' and self.titanFuryTurns > 0:
+  Line  325  PREV >>             if self.titanFuryTurns == 0:
+            NEW  >>             self.titanFuryTurns -= 1
+  Line  326  PREV >>                 self._stats['Temporary']['lifesteal'] -= 10
+            NEW  >>             if self.titanFuryTurns == 0:
+  Line  327  PREV >>                 self.rageGeneration -= 5
+            NEW  >>                 self._stats['Temporary']['lifesteal'] -= 10
+  Line  328  PREV >>                 console.print("\n[warning]Titan: Titan's Fury has worn off.[/warning]")
+            NEW  >>                 self.rageGeneration -= 5
+  Line  329  PREV >> 
+            NEW  >>                 console.print("\n[warning]Titan: Titan's Fury has worn off.[/warning]")
+  Line  330  PREV >>         super().onTurnStart()
+            NEW  >> 
+  Line  331  PREV >> 
+            NEW  >>         super().onTurnStart()
+  Line  332  PREV >>     def _levelUp(self):
+            NEW  >> 
+  Line  333  PREV >>         self._maxRage += 1
+            NEW  >>     def _levelUp(self):
+  Line  334  PREV >>         super()._levelUp()
+            NEW  >>         self._maxRage += 1
+  Line  335  PREV >> 
+            NEW  >>         super()._levelUp()
+  Line  336  PREV >>     def _removeOldAscendancy(self):
+            NEW  >> 
+  Line  337  PREV >>         if self._ascendancy == 'Warlord':
+            NEW  >>     def _removeOldAscendancy(self):
+  Line  338  PREV >>             self._baseHealth -= 10
+            NEW  >>         if self._ascendancy == 'Warlord':
+  Line  339  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth -= 10
+  Line  340  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage -= 1
+  Line  341  PREV >>         elif self._ascendancy == 'Pyromancer':
+            NEW  >>             self._baseSpeed += 0.05
+  Line  342  PREV >>             self._baseHealth += 5
+            NEW  >>         elif self._ascendancy == 'Pyromancer':
+  Line  343  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth += 5
+  Line  344  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage -= 1
+  Line  345  PREV >>             self._stats['Permanent']['fire'] -= 15
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  346  PREV >>         elif self.ascendancy == 'Juggernaut':
+            NEW  >>             self._stats['Permanent']['fire'] -= 15
+  Line  347  PREV >>             self._baseHealth -= 15
+            NEW  >>         elif self.ascendancy == 'Juggernaut':
+  Line  348  PREV >>             self._damage += 1
+            NEW  >>             self._baseHealth -= 15
+  Line  349  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._damage += 1
+  Line  350  PREV >>             self._stats['Permanent']['stunAvoidance'] -= 50
+            NEW  >>             self._baseSpeed += 0.05
+  Line  351  PREV >>         elif self.ascendancy == 'Blood Reaver':
+            NEW  >>             self._stats['Permanent']['stunAvoidance'] -= 50
+  Line  352  PREV >>             self._baseHealth -= 10
+            NEW  >>         elif self.ascendancy == 'Blood Reaver':
+  Line  353  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth -= 10
+  Line  354  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage -= 1
+  Line  355  PREV >>         elif self.ascendancy == 'Flamewarden':
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  356  PREV >>             self._baseHealth -= 5
+            NEW  >>         elif self.ascendancy == 'Flamewarden':
+  Line  357  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth -= 5
+  Line  358  PREV >>             self._stats['Permanent']['fire'] -= 20
+            NEW  >>             self._baseDamage -= 1
+  Line  359  PREV >>         elif self.ascendancy == 'Annihilist':
+            NEW  >>             self._stats['Permanent']['fire'] -= 20
+  Line  360  PREV >>             self._baseHealth += 20
+            NEW  >>         elif self.ascendancy == 'Annihilist':
+  Line  361  PREV >>             self._baseDamage -= 3
+            NEW  >>             self._baseHealth += 20
+  Line  362  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage -= 3
+  Line  363  PREV >>             self._stats['baseCritMulti'] -= 0.25
+            NEW  >>             self._baseSpeed += 0.05
+  Line  364  PREV >> 
+            NEW  >>             self._stats['baseCritMulti'] -= 0.25
+  Line  365  PREV >>     def updateAscendancy(self, ascendancy):
+            NEW  >> 
+  Line  366  PREV >>         if self._ascendancy is not None:
+            NEW  >>     def updateAscendancy(self, ascendancy):
+  Line  367  PREV >>             self._removeOldAscendancy()
+            NEW  >>         if self._ascendancy is not None:
+  Line  368  PREV >>         if ascendancy == 'Warlord':
+            NEW  >>             self._removeOldAscendancy()
+  Line  369  PREV >>             self._baseHealth += 10
+            NEW  >>         if ascendancy == 'Warlord':
+  Line  370  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth += 10
+  Line  371  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage += 1
+  Line  372  PREV >>             self._ascendancy = 'Warlord'
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  373  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Warlord']
+            NEW  >>             self._ascendancy = 'Warlord'
+  Line  374  PREV >>         elif ascendancy == 'Pyromancer':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Warlord']
+  Line  375  PREV >>             self._baseHealth -= 5
+            NEW  >>         elif ascendancy == 'Pyromancer':
+  Line  376  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth -= 5
+  Line  377  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage += 1
+  Line  378  PREV >>             self._stats['Permanent']['fire'] += 15
+            NEW  >>             self._baseSpeed += 0.05
+  Line  379  PREV >>             self._ascendancy = 'Pyromancer'
+            NEW  >>             self._stats['Permanent']['fire'] += 15
+  Line  380  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Pyromancer']
+            NEW  >>             self._ascendancy = 'Pyromancer'
+  Line  381  PREV >>         elif ascendancy == 'Juggernaut':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Pyromancer']
+  Line  382  PREV >>             self._baseHealth += 15
+            NEW  >>         elif ascendancy == 'Juggernaut':
+  Line  383  PREV >>             self._damage -= 1
+            NEW  >>             self._baseHealth += 15
+  Line  384  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._damage -= 1
+  Line  385  PREV >>             self._stats['Permanent']['stunAvoidance'] += 50
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  386  PREV >>             self._ascendancy = 'Juggernaut'
+            NEW  >>             self._stats['Permanent']['stunAvoidance'] += 50
+  Line  387  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Juggernaut']
+            NEW  >>             self._ascendancy = 'Juggernaut'
+  Line  388  PREV >>         elif ascendancy == 'Blood Reaver':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Juggernaut']
+  Line  389  PREV >>             self._baseHealth += 10
+            NEW  >>         elif ascendancy == 'Blood Reaver':
+  Line  390  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth += 10
+  Line  391  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage += 1
+  Line  392  PREV >>             self._ascendancy = 'Blood Reaver'
+            NEW  >>             self._baseSpeed += 0.05
+  Line  393  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Blood Reaver']
+            NEW  >>             self._ascendancy = 'Blood Reaver'
+  Line  394  PREV >>         elif ascendancy == 'Flamewarden':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Blood Reaver']
+  Line  395  PREV >>             self._baseHealth += 5
+            NEW  >>         elif ascendancy == 'Flamewarden':
+  Line  396  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth += 5
+  Line  397  PREV >>             self._stats['Permanent']['fire'] += 20
+            NEW  >>             self._baseDamage += 1
+  Line  398  PREV >>             self._ascendancy = 'Flamewarden'
+            NEW  >>             self._stats['Permanent']['fire'] += 20
+  Line  399  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Flamewarden']
+            NEW  >>             self._ascendancy = 'Flamewarden'
+  Line  400  PREV >>         elif ascendancy == 'Annihilist':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Flamewarden']
+  Line  401  PREV >>             self._baseHealth -= 20
+            NEW  >>         elif ascendancy == 'Annihilist':
+  Line  402  PREV >>             self._baseDamage += 3
+            NEW  >>             self._baseHealth -= 20
+  Line  403  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage += 3
+  Line  404  PREV >>             self._stats['baseCritMulti'] += 0.25
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  405  PREV >>             self._ascendancy = 'Annihilist'
+            NEW  >>             self._stats['baseCritMulti'] += 0.25
+  Line  406  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Annihilist']
+            NEW  >>             self._ascendancy = 'Annihilist'
+  Line  407  PREV >>         self._recalculateStats(False)
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Annihilist']
+  Line  408  PREV >> 
+            NEW  >>         self._recalculateStats(False)
+  Line  409  PREV >>     def _removeOldSubType(self):
+            NEW  >> 
+  Line  410  PREV >>         if self.subType == 'Savage':
+            NEW  >>     def _removeOldSubType(self):
+  Line  411  PREV >>             self._baseHealth += 10
+            NEW  >>         if self.subType == 'Savage':
+  Line  412  PREV >>             self._baseDamage -= 2
+            NEW  >>             self._baseHealth += 10
+  Line  413  PREV >>             self._baseSpeed += 0.1
+            NEW  >>             self._baseDamage -= 2
+  Line  414  PREV >>             self._stats['baseCritChance'] -= 0.02
+            NEW  >>             self._baseSpeed += 0.1
+  Line  415  PREV >>         elif self.subType == 'Colossus':
+            NEW  >>             self._stats['baseCritChance'] -= 0.02
+  Line  416  PREV >>             self._baseHealth -= 15
+            NEW  >>         elif self.subType == 'Colossus':
+  Line  417  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth -= 15
+  Line  418  PREV >>             self._baseSpeed += 0.3
+            NEW  >>             self._baseDamage += 1
+  Line  419  PREV >>             self._maxRage -= 10
+            NEW  >>             self._baseSpeed += 0.3
+  Line  420  PREV >>             self._rageEffect -= 1.0
+            NEW  >>             self._maxRage -= 10
+  Line  421  PREV >>         elif self.subType == 'Titan':
+            NEW  >>             self._rageEffect -= 1.0
+  Line  422  PREV >>             self._baseHealth -= 10
+            NEW  >>         elif self.subType == 'Titan':
+  Line  423  PREV >>             self._baseDamage += 2
+            NEW  >>             self._baseHealth -= 10
+  Line  424  PREV >>             self._baseSpeed += 0.1
+            NEW  >>             self._baseDamage += 2
+  Line  425  PREV >>             self._stats['Permanent']['physical'] -= 10
+            NEW  >>             self._baseSpeed += 0.1
+  Line  426  PREV >>             self._stats['Permanent']['fire'] -= 5
+            NEW  >>             self._stats['Permanent']['physical'] -= 10
+  Line  427  PREV >>             self._stats['Permanent']['increased_health'] -= 10
+            NEW  >>             self._stats['Permanent']['fire'] -= 5
+  Line  428  PREV >> 
+            NEW  >>             self._stats['Permanent']['increased_health'] -= 10
+  Line  429  PREV >>     def updateSubType(self, subType):
+            NEW  >> 
+  Line  430  PREV >>         if self._subType is not None:
+            NEW  >>     def updateSubType(self, subType):
+  Line  431  PREV >>             self._removeOldSubType()
+            NEW  >>         if self._subType is not None:
+  Line  432  PREV >>         if subType == None:
+            NEW  >>             self._removeOldSubType()
+  Line  433  PREV >>             self._subType = None
+            NEW  >>         if subType == None:
+  Line  434  PREV >>             self.subTypeDescription = None
+            NEW  >>             self._subType = None
+  Line  435  PREV >>         if subType == 'Savage':
+            NEW  >>             self.subTypeDescription = None
+  Line  436  PREV >>             self._baseHealth -= 10
+            NEW  >>         if subType == 'Savage':
+  Line  437  PREV >>             self._baseDamage += 2
+            NEW  >>             self._baseHealth -= 10
+  Line  438  PREV >>             self._baseSpeed -= 0.1
+            NEW  >>             self._baseDamage += 2
+  Line  439  PREV >>             self._stats['baseCritChance'] += 0.02
+            NEW  >>             self._baseSpeed -= 0.1
+  Line  440  PREV >>             self._subType = 'Savage'
+            NEW  >>             self._stats['baseCritChance'] += 0.02
+  Line  441  PREV >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Savage']
+            NEW  >>             self._subType = 'Savage'
+  Line  442  PREV >>         elif subType == 'Colossus':
+            NEW  >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Savage']
+  Line  443  PREV >>             self._baseHealth += 15
+            NEW  >>         elif subType == 'Colossus':
+  Line  444  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth += 15
+  Line  445  PREV >>             self._baseSpeed -= 0.3
+            NEW  >>             self._baseDamage -= 1
+  Line  446  PREV >>             self._maxRage += 10
+            NEW  >>             self._baseSpeed -= 0.3
+  Line  447  PREV >>             self._rageEffect += 1.0
+            NEW  >>             self._maxRage += 10
+  Line  448  PREV >>             self._subType = 'Colossus'
+            NEW  >>             self._rageEffect += 1.0
+  Line  449  PREV >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Colossus']
+            NEW  >>             self._subType = 'Colossus'
+  Line  450  PREV >>         elif subType == 'Titan':
+            NEW  >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Colossus']
+  Line  451  PREV >>             self._baseHealth += 10
+            NEW  >>         elif subType == 'Titan':
+  Line  452  PREV >>             self._baseDamage -= 2
+            NEW  >>             self._baseHealth += 10
+  Line  453  PREV >>             self._baseSpeed -= 0.1
+            NEW  >>             self._baseDamage -= 2
+  Line  454  PREV >>             self._stats['Permanent']['physical'] += 10
+            NEW  >>             self._baseSpeed -= 0.1
+  Line  455  PREV >>             self._stats['Permanent']['fire'] += 5
+            NEW  >>             self._stats['Permanent']['physical'] += 10
+  Line  456  PREV >>             self._stats['Permanent']['increased_health'] += 10
+            NEW  >>             self._stats['Permanent']['fire'] += 5
+  Line  457  PREV >>             self._subType = 'Titan'
+            NEW  >>             self._stats['Permanent']['increased_health'] += 10
+  Line  458  PREV >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Titan']
+            NEW  >>             self._subType = 'Titan'
+  Line  459  PREV >>         self._recalculateStats(False)
+            NEW  >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Titan']
+  Line  460  PREV >> 
+            NEW  >>         self._recalculateStats(False)
+  Line  461  ADDED >> 
+
+[36:25:21] Change Detected: player\warrior.py
+  Line   34  PREV >>         "Whilst you are above 40% Max HP: "
+            NEW  >>         "Whilst you are above 40% Max HP: ..."
+
+[36:26:00] Change Detected: player\warrior.py
+  Line   34  PREV >>         "Whilst you are above 40% Max HP: ..."
+            NEW  >>         "Whilst you are above 40% Max HP, gain: 25% Increased Fire damage, +2% Max HP Regenerated at the start of your turn, +0.2 Speed."
+
+[36:28:09] Change Detected: player\warrior.py
+  Line   34  PREV >>         "Whilst you are above 40% Max HP, gain: 25% Increased Fire damage, +2% Max HP Regenerated at the start of your turn, +0.2 Speed."
+            NEW  >>         "Whilst you are above 40% Max HP, gain: 25% Increased Fire damage, +2% Max HP Regenerated at the start of your turn, +0.2 Speed.\n"
+  Line   35  PREV >>         "+5 HP. +1 Damage. +20% Fire Resistance.",
+            NEW  >>         "+5 HP. +1 Damage. -0.1 Speed. +20% Fire Resistance.",
+
+[36:33:11] Change Detected: player\warrior.py
+  Line   35  PREV >>         "+5 HP. +1 Damage. -0.1 Speed. +20% Fire Resistance.",
+            NEW  >>         "If you kill an enemy with a critical hit, regain Phoenix Aspect if it was used up.\n"
+  Line   36  PREV >>     "Annihilist": "Gain 1 Annihilation per 30 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
+            NEW  >>         "+5 HP. +1 Damage. -0.1 Speed. +20% Fire Resistance. +10 HP Regen",
+  Line   37  PREV >>         "Annihilation: +20% Fire Damage, +0.1 Speed, +5% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
+            NEW  >>     "Annihilist": "Gain 1 Annihilation per 30 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
+  Line   38  PREV >>         "Rage no longer heals you at the end of combat.\n"
+            NEW  >>         "Annihilation: +20% Fire Damage, +0.1 Speed, +5% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
+  Line   39  PREV >>         "-20 HP. +3 Damage. -0.05 Speed. +25% Crit Damage.",
+            NEW  >>         "Rage no longer heals you at the end of combat.\n"
+  Line   40  PREV >>     #subtypes
+            NEW  >>         "-20 HP. +3 Damage. -0.05 Speed. +25% Crit Damage.",
+  Line   41  PREV >>     "Savage": "Rage no longer affects damage. 15% Increased Damage.\n"
+            NEW  >>     #subtypes
+  Line   42  PREV >>         "+25% Crit Chance, +50% Crit Damage against enemies below 20% health."
+            NEW  >>     "Savage": "Rage no longer affects damage. 15% Increased Damage.\n"
+  Line   43  PREV >>         "Whenever a single attack deals more than 10% of your Max HP, permanently gain 1 Scar. +1 Rage Generation per Scar.\n"
+            NEW  >>         "+25% Crit Chance, +50% Crit Damage against enemies below 20% health."
+  Line   44  PREV >>         "-10 HP. +2 Damage. -0.1 Speed. +2% Crit Chance\n",
+            NEW  >>         "Whenever a single attack deals more than 10% of your Max HP, permanently gain 1 Scar. +1 Rage Generation per Scar.\n"
+  Line   45  PREV >>     "Colossus": "Rage has 2x effect on damage. 20% more rage generated. 25% less rage lost.\n"
+            NEW  >>         "-10 HP. +2 Damage. -0.1 Speed. +2% Crit Chance\n",
+  Line   46  PREV >>         "Whenever you take damage, recover 20% of damage taken at the start of your next turn.\n"
+            NEW  >>     "Colossus": "Rage has 2x effect on damage. 20% more rage generated. 25% less rage lost.\n"
+  Line   47  PREV >>         "+15 HP. -1 Damage. -0.3 Speed. +10 Max Rage.",
+            NEW  >>         "Whenever you take damage, recover 20% of damage taken at the start of your next turn.\n"
+  Line   48  PREV >>     "Titan": "10% Increased Health. Rage grants +2 Damage instead of +3.\n"
+            NEW  >>         "+15 HP. -1 Damage. -0.3 Speed. +10 Max Rage.",
+  Line   49  PREV >>         "While at or above 30 Rage, gain 10% Damage Reduction. While below 30 Rage, gain +10% Crit Chance, +25% Crit Damage.\n"
+            NEW  >>     "Titan": "10% Increased Health. Rage grants +2 Damage instead of +3.\n"
+  Line   50  PREV >>         "When you drop below 30% Max HP for the first time each combat, gain Titan's Fury for 4 turns.\n"
+            NEW  >>         "While at or above 30 Rage, gain 10% Damage Reduction. While below 30 Rage, gain +10% Crit Chance, +25% Crit Damage.\n"
+  Line   51  PREV >>         "Titan's Fury: +20% Increased Damage, +10% Lifesteal, +5 Rage Generation.\n"
+            NEW  >>         "When you drop below 30% Max HP for the first time each combat, gain Titan's Fury for 4 turns.\n"
+  Line   52  PREV >>         "+10 HP. -2 Damage. -0.1 Speed. +10% Physical Resistance. +5% Fire Resistance."
+            NEW  >>         "Titan's Fury: +20% Increased Damage, +10% Lifesteal, +5 Rage Generation.\n"
+  Line   53  PREV >> }
+            NEW  >>         "+10 HP. -2 Damage. -0.1 Speed. +10% Physical Resistance. +5% Fire Resistance."
+  Line   54  PREV >> 
+            NEW  >> }
+  Line   55  PREV >> class Warrior(Player): # higher damage, lower speed, fire damage
+            NEW  >> 
+  Line   56  PREV >>     def __init__(self, name, health = 50, damage = 4, damageType = "fire", speed = 0.8,
+            NEW  >> class Warrior(Player): # higher damage, lower speed, fire damage
+  Line   57  PREV >>                  ascendancy = None, ascendancyDescription = None, subType = None):
+            NEW  >>     def __init__(self, name, health = 50, damage = 4, damageType = "fire", speed = 0.8,
+  Line   58  PREV >>         super().__init__(name, health, damage, 0.05, 2.0, damageType, speed,
+            NEW  >>                  ascendancy = None, ascendancyDescription = None, subType = None):
+  Line   59  PREV >>                          className="Warrior", classDescription=WARRIOR_DESCRIPTIONS['Warrior'],
+            NEW  >>         super().__init__(name, health, damage, 0.05, 2.0, damageType, speed,
+  Line   60  PREV >>                          ascendancy=ascendancy, ascendancyDescription=ascendancyDescription, subType=subType)
+            NEW  >>                          className="Warrior", classDescription=WARRIOR_DESCRIPTIONS['Warrior'],
+  Line   61  PREV >>         self._rage = 0 # build rage during combat, 1 rage = +3 damage
+            NEW  >>                          ascendancy=ascendancy, ascendancyDescription=ascendancyDescription, subType=subType)
+  Line   62  PREV >>         self._maxRage = 30
+            NEW  >>         self._rage = 0 # build rage during combat, 1 rage = +3 damage
+  Line   63  PREV >> 
+            NEW  >>         self._maxRage = 30
+  Line   64  PREV >>         self._rageEffect = 1.0 # multiplier on rage effectiveness
+            NEW  >> 
+  Line   65  PREV >>         self._fury = 0
+            NEW  >>         self._rageEffect = 1.0 # multiplier on rage effectiveness
+  Line   66  PREV >>         self._maxFury = 10
+            NEW  >>         self._fury = 0
+  Line   67  PREV >>         self.pyromancerAttacks = 0
+            NEW  >>         self._maxFury = 10
+  Line   68  PREV >>         self.phoenixAspect = False
+            NEW  >>         self.pyromancerAttacks = 0
+  Line   69  PREV >>         self.phoenixUsed = False
+            NEW  >>         self.phoenixAspect = False
+  Line   70  PREV >>         self._fortify = 0
+            NEW  >>         self.phoenixUsed = False
+  Line   71  PREV >>         self._maxFortify = 20
+            NEW  >>         self._fortify = 0
+  Line   72  PREV >>         self.annihilationRage = 0
+            NEW  >>         self._maxFortify = 20
+  Line   73  PREV >>         self.annihilation = 0
+            NEW  >>         self.annihilationRage = 0
+  Line   74  PREV >>         self.annihilationBuffs = {
+            NEW  >>         self.annihilation = 0
+  Line   75  PREV >>             'fire': 0, 'speed': 0, 'critChance': 0
+            NEW  >>         self.annihilationBuffs = {
+  Line   76  PREV >>         }
+            NEW  >>             'fire': 0, 'speed': 0, 'critChance': 0
+  Line   77  PREV >>         self.rageGeneration = 0
+            NEW  >>         }
+  Line   78  PREV >>         self.scars = 0
+            NEW  >>         self.rageGeneration = 0
+  Line   79  PREV >>         self.damageToRecoup = 0
+            NEW  >>         self.scars = 0
+  Line   80  PREV >>         self.titanFuryTurns = 0
+            NEW  >>         self.damageToRecoup = 0
+  Line   81  PREV >>         self.titanFuryUsed = False
+            NEW  >>         self.titanFuryTurns = 0
+  Line   82  PREV >> 
+            NEW  >>         self.titanFuryUsed = False
+  Line   83  PREV >>     def __str__(self):
+            NEW  >> 
+  Line   84  PREV >>         baseStr = super().__str__()
+            NEW  >>     def __str__(self):
+  Line   85  PREV >>         
+            NEW  >>         baseStr = super().__str__()
+  Line   86  PREV >>         if self._subType != "Savage":
+            NEW  >>         
+  Line   87  PREV >>             baseStr += f"\n[damage]Rage:[/damage] {self._rage} / {self._maxRage}"
+            NEW  >>         if self._subType != "Savage":
+  Line   88  PREV >>         
+            NEW  >>             baseStr += f"\n[damage]Rage:[/damage] {self._rage} / {self._maxRage}"
+  Line   89  PREV >>         if self._ascendancy == "Warlord":
+            NEW  >>         
+  Line   90  PREV >>             baseStr += f"\n[gold1]Fury:[/gold1] {self._fury} / {self._maxFury}"
+            NEW  >>         if self._ascendancy == "Warlord":
+  Line   91  PREV >>         elif self._ascendancy == "Juggernaut":
+            NEW  >>             baseStr += f"\n[gold1]Fury:[/gold1] {self._fury} / {self._maxFury}"
+  Line   92  PREV >>             baseStr += f"\n[buff]Fortify:[/buff] {self._fortify} / {self._maxFortify}"
+            NEW  >>         elif self._ascendancy == "Juggernaut":
+  Line   93  PREV >> 
+            NEW  >>             baseStr += f"\n[buff]Fortify:[/buff] {self._fortify} / {self._maxFortify}"
+  Line   94  PREV >>         return baseStr
+            NEW  >> 
+  Line   95  PREV >> 
+            NEW  >>         return baseStr
+  Line   96  PREV >>     def _serialise(self):
+            NEW  >> 
+  Line   97  PREV >>         temp = super()._serialise()
+            NEW  >>     def _serialise(self):
+  Line   98  PREV >>         temp['maxRage'] = self._maxRage
+            NEW  >>         temp = super()._serialise()
+  Line   99  PREV >>         temp['scars'] = self.scars
+            NEW  >>         temp['maxRage'] = self._maxRage
+  Line  100  PREV >>         temp['rageGeneration'] = self.rageGeneration
+            NEW  >>         temp['scars'] = self.scars
+  Line  101  PREV >>         return temp
+            NEW  >>         temp['rageGeneration'] = self.rageGeneration
+  Line  102  PREV >> 
+            NEW  >>         return temp
+  Line  103  PREV >>     def deserialise(self, data):
+            NEW  >> 
+  Line  104  PREV >>         super().deserialise(data)
+            NEW  >>     def deserialise(self, data):
+  Line  105  PREV >>         self._maxRage = data.get('maxRage', 30)
+            NEW  >>         super().deserialise(data)
+  Line  106  PREV >>         self.scars = data.get('scars', 0)
+            NEW  >>         self._maxRage = data.get('maxRage', 30)
+  Line  107  PREV >>         self.rageGeneration = data.get('rageGeneration', 0)
+            NEW  >>         self.scars = data.get('scars', 0)
+  Line  108  PREV >> 
+            NEW  >>         self.rageGeneration = data.get('rageGeneration', 0)
+  Line  109  PREV >>     def rollCritical(self, target):
+            NEW  >> 
+  Line  110  PREV >>         critChance = self._stats['baseCritChance'] + (self._stats['Bonuses']['critChance']) + (self._stats['Permanent']['critChance']) + (self._stats['Temporary']['critChance'])
+            NEW  >>     def rollCritical(self, target):
+  Line  111  PREV >>         critMulti = self._stats['baseCritMulti'] + (self._stats['Bonuses']['critMulti']) + (self._stats['Permanent']['critMulti']) + (self._stats['Temporary']['critMulti'])
+            NEW  >>         critChance = self._stats['baseCritChance'] + (self._stats['Bonuses']['critChance']) + (self._stats['Permanent']['critChance']) + (self._stats['Temporary']['critChance'])
+  Line  112  PREV >>         if self._subType == 'Savage':
+            NEW  >>         critMulti = self._stats['baseCritMulti'] + (self._stats['Bonuses']['critMulti']) + (self._stats['Permanent']['critMulti']) + (self._stats['Temporary']['critMulti'])
+  Line  113  PREV >>             target = target.entity
+            NEW  >>         if self._subType == 'Savage':
+  Line  114  PREV >>             if target._health < (target._maxHealth * 0.2):
+            NEW  >>             target = target.entity
+  Line  115  PREV >>                 critChance += 0.25
+            NEW  >>             if target._health < (target._maxHealth * 0.2):
+  Line  116  PREV >>                 critMulti += 0.5
+            NEW  >>                 critChance += 0.25
+  Line  117  PREV >> 
+            NEW  >>                 critMulti += 0.5
+  Line  118  PREV >>         elif self._subType == 'Colossus' and self._rage < 30:
+            NEW  >> 
+  Line  119  PREV >>             critChance += 0.1
+            NEW  >>         elif self._subType == 'Colossus' and self._rage < 30:
+  Line  120  PREV >>             critMulti += 0.25
+            NEW  >>             critChance += 0.1
+  Line  121  PREV >> 
+            NEW  >>             critMulti += 0.25
+  Line  122  PREV >>         if self._ascendancy == 'Annihilist':
+            NEW  >> 
+  Line  123  PREV >>             critChance += self.annihilationBuffs['critChance']
+            NEW  >>         if self._ascendancy == 'Annihilist':
+  Line  124  PREV >>             if random.random() < critChance:
+            NEW  >>             critChance += self.annihilationBuffs['critChance']
+  Line  125  PREV >>                 return True, critMulti
+            NEW  >>             if random.random() < critChance:
+  Line  126  PREV >>             
+            NEW  >>                 return True, critMulti
+  Line  127  PREV >>         if random.random() < critChance:
+            NEW  >>             
+  Line  128  PREV >>             return True, critMulti
+            NEW  >>         if random.random() < critChance:
+  Line  129  PREV >> 
+            NEW  >>             return True, critMulti
+  Line  130  PREV >>     def damage(self, damage, damageType, combatUnit=None):
+            NEW  >> 
+  Line  131  PREV >>         if self._ascendancy == 'Flamewarden' and self.phoenixAspect and not self.phoenixUsed:
+            NEW  >>     def damage(self, damage, damageType, combatUnit=None):
+  Line  132  PREV >>             if combatUnit:
+            NEW  >>         if self._ascendancy == 'Flamewarden' and self.phoenixAspect and not self.phoenixUsed:
+  Line  133  PREV >>                 resistMod = combatUnit.getResistanceModifier(damageType)
+            NEW  >>             if combatUnit:
+  Line  134  PREV >>             else:
+            NEW  >>                 resistMod = combatUnit.getResistanceModifier(damageType)
+  Line  135  PREV >>                 resistMod = self._stats['Resistances'].get(damageType, 0) / 100
+            NEW  >>             else:
+  Line  136  PREV >>                 if damageType in ELEMENTAL_RES:
+            NEW  >>                 resistMod = self._stats['Resistances'].get(damageType, 0) / 100
+  Line  137  PREV >>                     resistMod += self._stats['Resistances']['elemental'] / 100
+            NEW  >>                 if damageType in ELEMENTAL_RES:
+  Line  138  PREV >>                 elif damageType in DIVINE_RES:
+            NEW  >>                     resistMod += self._stats['Resistances']['elemental'] / 100
+  Line  139  PREV >>                     resistMod += self._stats['Resistances']['divine'] / 100
+            NEW  >>                 elif damageType in DIVINE_RES:
+  Line  140  PREV >>                 resistMod += self._stats['Resistances']['all'] / 100
+            NEW  >>                     resistMod += self._stats['Resistances']['divine'] / 100
+  Line  141  PREV >>                 resistMod = min(0.75, resistMod)
+            NEW  >>                 resistMod += self._stats['Resistances']['all'] / 100
+  Line  142  PREV >>             damage = damage - round(damage * resistMod)
+            NEW  >>                 resistMod = min(0.75, resistMod)
+  Line  143  PREV >>             trueDamage = damage - self._shield
+            NEW  >>             damage = damage - round(damage * resistMod)
+  Line  144  PREV >>             damagePrevented = damage - trueDamage
+            NEW  >>             trueDamage = damage - self._shield
+  Line  145  PREV >>             self._shield -= damagePrevented
+            NEW  >>             damagePrevented = damage - trueDamage
+  Line  146  PREV >>             self._health -= damage
+            NEW  >>             self._shield -= damagePrevented
+  Line  147  PREV >>             damageTypeFormatted = formatDamageType(damageType, damageType)
+            NEW  >>             self._health -= damage
+  Line  148  PREV >>             console.print(f" [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
+            NEW  >>             damageTypeFormatted = formatDamageType(damageType, damageType)
+  Line  149  PREV >>             if self._health <= 0 and not self._isDead: # prevented from phoenix
+            NEW  >>             console.print(f" [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
+  Line  150  PREV >>                 self._health = 1
+            NEW  >>             if self._health <= 0 and not self._isDead: # prevented from phoenix
+  Line  151  PREV >>                 healPercent = min(1, self._rage / 100)
+            NEW  >>                 self._health = 1
+  Line  152  PREV >>                 healAmount = self._maxHealth * healPercent
+            NEW  >>                 healPercent = min(1, self._rage / 100)
+  Line  153  PREV >>                 console.print(f"\n[success] Flamewarden: You were dealt a fatal blow, but your Phoenix Aspect saved you!\n")
+            NEW  >>                 healAmount = self._maxHealth * healPercent
+  Line  154  PREV >>                 self.heal(healAmount)
+            NEW  >>                 console.print(f"\n[success] Flamewarden: You were dealt a fatal blow, but your Phoenix Aspect saved you!\n")
+  Line  155  PREV >>                 self.phoenixUsed = True
+            NEW  >>                 self.heal(healAmount)
+  Line  156  PREV >>                 pause()
+            NEW  >>                 self.phoenixUsed = True
+  Line  157  PREV >>         else:
+            NEW  >>                 pause()
+  Line  158  PREV >>             return super().damage(damage, damageType, combatUnit)
+            NEW  >>         else:
+  Line  159  PREV >> 
+            NEW  >>             return super().damage(damage, damageType, combatUnit)
+  Line  160  PREV >>     def onAttack(self, damageDealt, damageType, target):
+            NEW  >> 
+  Line  161  PREV >>         super().onAttack(damageDealt, damageType)
+            NEW  >>     def onAttack(self, damageDealt, damageType, target):
+  Line  162  PREV >>         rageGain = damageDealt // 8
+            NEW  >>         super().onAttack(damageDealt, damageType)
+  Line  163  PREV >>         if damageType == 'fire':
+            NEW  >>         rageGain = damageDealt // 8
+  Line  164  PREV >>             rageGain += 1
+            NEW  >>         if damageType == 'fire':
+  Line  165  PREV >> 
+            NEW  >>             rageGain += 1
+  Line  166  PREV >>         if self._ascendancy == 'Pyromancer':
+            NEW  >> 
+  Line  167  PREV >>             burnRage = sum(2 for effect in target.statusEffects if effect.name == 'burn')
+            NEW  >>         if self._ascendancy == 'Pyromancer':
+  Line  168  PREV >>             rageGain += burnRage
+            NEW  >>             burnRage = sum(2 for effect in target.statusEffects if effect.name == 'burn')
+  Line  169  PREV >>             self.pyromancerAttacks += 1
+            NEW  >>             rageGain += burnRage
+  Line  170  PREV >> 
+            NEW  >>             self.pyromancerAttacks += 1
+  Line  171  PREV >>         if self._subType == 'Colossus':
+            NEW  >> 
+  Line  172  PREV >>             rageGain = int(rageGain * 1.2)
+            NEW  >>         if self._subType == 'Colossus':
+  Line  173  PREV >> 
+            NEW  >>             rageGain = int(rageGain * 1.2)
+  Line  174  PREV >>         self._rage = min(self._maxRage, self._rage + rageGain)
+            NEW  >> 
+  Line  175  PREV >>         self.annihilationRage += rageGain
+            NEW  >>         self._rage = min(self._maxRage, self._rage + rageGain)
+  Line  176  PREV >>         console.print(f"\n[damage]Your rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/damage]")
+            NEW  >>         self.annihilationRage += rageGain
+  Line  177  PREV >>         
+            NEW  >>         console.print(f"\n[damage]Your rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/damage]")
+  Line  178  PREV >>         if self._ascendancy == 'Annihilist':
+            NEW  >>         
+  Line  179  PREV >>             while self.annihilationRage >= 30:
+            NEW  >>         if self._ascendancy == 'Annihilist':
+  Line  180  PREV >>                 self.annihilationRage -= 30
+            NEW  >>             while self.annihilationRage >= 30:
+  Line  181  PREV >>                 self.annihilation += 1
+            NEW  >>                 self.annihilationRage -= 30
+  Line  182  PREV >> 
+            NEW  >>                 self.annihilation += 1
+  Line  183  PREV >>         if self._ascendancy == 'Annihilist' and damageType == 'fire':
+            NEW  >> 
+  Line  184  PREV >>             damageDealt = round(damageDealt * (1 + self.annihilationBuffs['fire']))
+            NEW  >>         if self._ascendancy == 'Annihilist' and damageType == 'fire':
+  Line  185  PREV >> 
+            NEW  >>             damageDealt = round(damageDealt * (1 + self.annihilationBuffs['fire']))
+  Line  186  PREV >>         if self._ascendancy == 'Flamewarden' and self._rage >= 50 and (not self.phoenixAspect or not self.phoenixUsed):
+            NEW  >> 
+  Line  187  PREV >>             self.phoenixAspect = True
+            NEW  >>         if self._ascendancy == 'Flamewarden' and self._rage >= 50 and (not self.phoenixAspect or not self.phoenixUsed):
+  Line  188  PREV >> 
+            NEW  >>             self.phoenixAspect = True
+  Line  189  PREV >>         if self._ascendancy == 'Warlord' and self._rage >= 30 and self._fury < self._maxFury:
+            NEW  >> 
+  Line  190  PREV >>             self._fury += 1
+            NEW  >>         if self._ascendancy == 'Warlord' and self._rage >= 30 and self._fury < self._maxFury:
+  Line  191  PREV >>             console.print(f"\n[bold damage]Your fury increases! Current Fury: {self._fury} / {self._maxFury}[/bold damage]")
+            NEW  >>             self._fury += 1
+  Line  192  PREV >> 
+            NEW  >>             console.print(f"\n[bold damage]Your fury increases! Current Fury: {self._fury} / {self._maxFury}[/bold damage]")
+  Line  193  PREV >>         if self._subType == 'Savage':
+            NEW  >> 
+  Line  194  PREV >>             damageDealt = int(damageDealt * 1.15)
+            NEW  >>         if self._subType == 'Savage':
+  Line  195  PREV >>         elif self._subType == 'Titan':
+            NEW  >>             damageDealt = int(damageDealt * 1.15)
+  Line  196  PREV >>             damageDealt = damageDealt + ((self._rage * 2) * self._rageEffect)
+            NEW  >>         elif self._subType == 'Titan':
+  Line  197  PREV >>             if self.titanFuryTurns > 0:
+            NEW  >>             damageDealt = damageDealt + ((self._rage * 2) * self._rageEffect)
+  Line  198  PREV >>                 damageDealt = int(damageDealt * 1.2)
+            NEW  >>             if self.titanFuryTurns > 0:
+  Line  199  PREV >>         else:
+            NEW  >>                 damageDealt = int(damageDealt * 1.2)
+  Line  200  PREV >>             damageDealt = damageDealt + ((self._rage * 3) * self._rageEffect)
+            NEW  >>         else:
+  Line  201  PREV >> 
+            NEW  >>             damageDealt = damageDealt + ((self._rage * 3) * self._rageEffect)
+  Line  202  PREV >>         if self._ascendancy == 'Warlord':
+            NEW  >> 
+  Line  203  PREV >>             damageDealt = (damageDealt) * (1 + (0.02 * self._fury))
+            NEW  >>         if self._ascendancy == 'Warlord':
+  Line  204  PREV >>             self.heal(damageDealt * (0.02 * self._fury)) # lifesteal 2% per fury
+            NEW  >>             damageDealt = (damageDealt) * (1 + (0.02 * self._fury))
+  Line  205  PREV >> 
+            NEW  >>             self.heal(damageDealt * (0.02 * self._fury)) # lifesteal 2% per fury
+  Line  206  PREV >>         if self._ascendancy == 'Blood Reaver':
+            NEW  >> 
+  Line  207  PREV >>             healthPercent = (damageDealt // 50) / 100
+            NEW  >>         if self._ascendancy == 'Blood Reaver':
+  Line  208  PREV >>             healthLoss = self._maxHealth * healthPercent
+            NEW  >>             healthPercent = (damageDealt // 50) / 100
+  Line  209  PREV >>             damageMult = 1 + 0.01 * (healthLoss // 20)
+            NEW  >>             healthLoss = self._maxHealth * healthPercent
+  Line  210  PREV >>             dmgPerc = (damageMult - 1) * 100
+            NEW  >>             damageMult = 1 + 0.01 * (healthLoss // 20)
+  Line  211  PREV >>             damageDealt = damageDealt * damageMult
+            NEW  >>             dmgPerc = (damageMult - 1) * 100
+  Line  212  PREV >>             if (self._health - healthLoss) < 1: # not through damage method
+            NEW  >>             damageDealt = damageDealt * damageMult
+  Line  213  PREV >>                 self._health = 1
+            NEW  >>             if (self._health - healthLoss) < 1: # not through damage method
+  Line  214  PREV >>             else:
+            NEW  >>                 self._health = 1
+  Line  215  PREV >>                 self._health -= healthLoss
+            NEW  >>             else:
+  Line  216  PREV >>             console.print(f"\n[warning]You sacrifice {healthPercent} of your life ({healthLoss} HP) to deal {dmgPerc}% More Damage.[/warning]")
+            NEW  >>                 self._health -= healthLoss
+  Line  217  PREV >>             lifestealPercent = min(30, self._rage // 10) / 100
+            NEW  >>             console.print(f"\n[warning]You sacrifice {healthPercent} of your life ({healthLoss} HP) to deal {dmgPerc}% More Damage.[/warning]")
+  Line  218  PREV >>             lifestealHeal = self._maxHealth * lifestealPercent
+            NEW  >>             lifestealPercent = min(30, self._rage // 10) / 100
+  Line  219  PREV >>             console.print(f"\n[success]{lifestealPercent}% Blood Reaver Lifesteal:\n[/success]")
+            NEW  >>             lifestealHeal = self._maxHealth * lifestealPercent
+  Line  220  PREV >>             self.heal(lifestealHeal)
+            NEW  >>             console.print(f"\n[success]{lifestealPercent}% Blood Reaver Lifesteal:\n[/success]")
+  Line  221  PREV >> 
+            NEW  >>             self.heal(lifestealHeal)
+  Line  222  PREV >>         return damageDealt, damageType
+            NEW  >> 
+  Line  223  PREV >>     
+            NEW  >>         return damageDealt, damageType
+  Line  224  PREV >>     def onHit(self, damageTaken, damageType):
+            NEW  >>     
+  Line  225  PREV >>         super().onHit(damageTaken, damageType)
+            NEW  >>     def onHit(self, damageTaken, damageType):
+  Line  226  PREV >>         rageLoss = max(0, damageTaken // 5)
+            NEW  >>         super().onHit(damageTaken, damageType)
+  Line  227  PREV >>         if damageType != 'fire':
+            NEW  >>         rageLoss = max(0, damageTaken // 5)
+  Line  228  PREV >>             rageLoss += 2
+            NEW  >>         if damageType != 'fire':
+  Line  229  PREV >> 
+            NEW  >>             rageLoss += 2
+  Line  230  PREV >>         if self._ascendancy == 'Warlord':
+            NEW  >> 
+  Line  231  PREV >>             rageLoss = rageLoss // 2
+            NEW  >>         if self._ascendancy == 'Warlord':
+  Line  232  PREV >>             if self._rage > 40:
+            NEW  >>             rageLoss = rageLoss // 2
+  Line  233  PREV >>                 damageTaken = int(damageTaken * 0.85)
+            NEW  >>             if self._rage > 40:
+  Line  234  PREV >> 
+            NEW  >>                 damageTaken = int(damageTaken * 0.85)
+  Line  235  PREV >>         if self._subType == 'Colossus':
+            NEW  >> 
+  Line  236  PREV >>             rageLoss = round(rageLoss * 0.75)
+            NEW  >>         if self._subType == 'Colossus':
+  Line  237  PREV >>             recoup = int(damageTaken * 0.2)
+            NEW  >>             rageLoss = round(rageLoss * 0.75)
+  Line  238  PREV >>             self.damageToRecoup += recoup
+            NEW  >>             recoup = int(damageTaken * 0.2)
+  Line  239  PREV >>             console.print(f"  [buff]Colossus: Will recoup {recoup} HP at the start of your turn.[/buff]")
+            NEW  >>             self.damageToRecoup += recoup
+  Line  240  PREV >> 
+            NEW  >>             console.print(f"  [buff]Colossus: Will recoup {recoup} HP at the start of your turn.[/buff]")
+  Line  241  PREV >>         elif self._subType == 'Savage':
+            NEW  >> 
+  Line  242  PREV >>             dmgPercent = damageTaken / self._maxHealth
+            NEW  >>         elif self._subType == 'Savage':
+  Line  243  PREV >>             if dmgPercent > 0.1:
+            NEW  >>             dmgPercent = damageTaken / self._maxHealth
+  Line  244  PREV >>                 self.scars += 1
+            NEW  >>             if dmgPercent > 0.1:
+  Line  245  PREV >>                 self.rageGeneration += 1
+            NEW  >>                 self.scars += 1
+  Line  246  PREV >>                 console.print(f"  [gold1]Savage: Gained 1 Scar! +1 total Rage generation.[/gold1]")
+            NEW  >>                 self.rageGeneration += 1
+  Line  247  PREV >> 
+            NEW  >>                 console.print(f"  [gold1]Savage: Gained 1 Scar! +1 total Rage generation.[/gold1]")
+  Line  248  PREV >>         elif self._subType == 'Titan' and not self.titanFuryUsed:
+            NEW  >> 
+  Line  249  PREV >>             if self._health - damageTaken < self._maxHealth * 0.3:
+            NEW  >>         elif self._subType == 'Titan' and not self.titanFuryUsed:
+  Line  250  PREV >>                 self.titanFuryTurns = 4
+            NEW  >>             if self._health - damageTaken < self._maxHealth * 0.3:
+  Line  251  PREV >>                 self.titanFuryUsed = True
+            NEW  >>                 self.titanFuryTurns = 4
+  Line  252  PREV >>                 console.print(f"\n[gold1]Titan: Dropped below 30% HP! Titan's Fury activated for 4 turns![/gold1]")
+            NEW  >>                 self.titanFuryUsed = True
+  Line  253  PREV >>                 console.print(f"  [gold1]+20% Damage, +10% Lifesteal, +5 Rage Generation![/gold1]")
+            NEW  >>                 console.print(f"\n[gold1]Titan: Dropped below 30% HP! Titan's Fury activated for 4 turns![/gold1]")
+  Line  254  PREV >>                 self._stats['Temporary']['lifesteal'] += 10
+            NEW  >>                 console.print(f"  [gold1]+20% Damage, +10% Lifesteal, +5 Rage Generation![/gold1]")
+  Line  255  PREV >>                 self.rageGeneration += 5
+            NEW  >>                 self._stats['Temporary']['lifesteal'] += 10
+  Line  256  PREV >>                 pause()
+            NEW  >>                 self.rageGeneration += 5
+  Line  257  PREV >>             
+            NEW  >>                 pause()
+  Line  258  PREV >>         if self._subType == 'Titan' and self._rage >= 30:
+            NEW  >>             
+  Line  259  PREV >>             damageTaken = int(damageTaken * 0.9)
+            NEW  >>         if self._subType == 'Titan' and self._rage >= 30:
+  Line  260  PREV >> 
+            NEW  >>             damageTaken = int(damageTaken * 0.9)
+  Line  261  PREV >>         self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
+            NEW  >> 
+  Line  262  PREV >>         console.print(f"\n[warning]Your rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
+            NEW  >>         self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
+  Line  263  PREV >> 
+            NEW  >>         console.print(f"\n[warning]Your rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
+  Line  264  PREV >>         return damageTaken, damageType
+            NEW  >> 
+  Line  265  PREV >> 
+            NEW  >>         return damageTaken, damageType
+  Line  266  PREV >>     def onKill(self, entity):
+            NEW  >> 
+  Line  267  PREV >>         if self._ascendancy == 'Annihilist':
+            NEW  >>     def onKill(self, entity):
+  Line  268  PREV >>             if self.annihilation > 0:
+            NEW  >>         if self._ascendancy == 'Annihilist':
+  Line  269  PREV >>                 self.annihilation -= 1
+            NEW  >>             if self.annihilation > 0:
+  Line  270  PREV >>                 heal = int(self._maxHealth * 0.05)
+            NEW  >>                 self.annihilation -= 1
+  Line  271  PREV >>                 console.print("  [heal]- Annihilist: Consumed 1 Annihilation stack to Heal 5% Max HP![/heal]")
+            NEW  >>                 heal = int(self._maxHealth * 0.05)
+  Line  272  PREV >>                 self.heal(heal)
+            NEW  >>                 console.print("  [heal]- Annihilist: Consumed 1 Annihilation stack to Heal 5% Max HP![/heal]")
+  Line  273  PREV >>         return None
+            NEW  >>                 self.heal(heal)
+  Line  274  PREV >> 
+            NEW  >>         return None
+  Line  275  PREV >>     def onBattleEnd(self):
+            NEW  >> 
+  Line  276  PREV >>         healAmount = self._rage // 2
+            NEW  >>     def onBattleEnd(self):
+  Line  277  PREV >>         if self._ascendancy == 'Blood Reaver':
+            NEW  >>         healAmount = self._rage // 2
+  Line  278  PREV >>             healAmount += self._rage * 2
+            NEW  >>         if self._ascendancy == 'Blood Reaver':
+  Line  279  PREV >>         if self._ascendancy != 'Annihilist':
+            NEW  >>             healAmount += self._rage * 2
+  Line  280  PREV >>             self.heal(healAmount)
+            NEW  >>         if self._ascendancy != 'Annihilist':
+  Line  281  PREV >>         self._rage = 0
+            NEW  >>             self.heal(healAmount)
+  Line  282  PREV >>         self._fury = 0
+            NEW  >>         self._rage = 0
+  Line  283  PREV >>         self._fortify = 0
+            NEW  >>         self._fury = 0
+  Line  284  PREV >>         self.phoenixAspect = False
+            NEW  >>         self._fortify = 0
+  Line  285  PREV >>         self.phoenixUsed = False
+            NEW  >>         self.phoenixAspect = False
+  Line  286  PREV >>         self.annihilationBuffs = {
+            NEW  >>         self.phoenixUsed = False
+  Line  287  PREV >>             'fire': 0, 'speed': 0, 'critChance': 0
+            NEW  >>         self.annihilationBuffs = {
+  Line  288  PREV >>         }
+            NEW  >>             'fire': 0, 'speed': 0, 'critChance': 0
+  Line  289  PREV >>         self.annihilation = 0
+            NEW  >>         }
+  Line  290  PREV >>         self.damageToRecoup = 0
+            NEW  >>         self.annihilation = 0
+  Line  291  PREV >>         if self.titanFuryUsed and self.titanFuryTurns > 0:
+            NEW  >>         self.damageToRecoup = 0
+  Line  292  PREV >>             self.rageGeneration -= 5
+            NEW  >>         if self.titanFuryUsed and self.titanFuryTurns > 0:
+  Line  293  PREV >>             self._Stats['Temporary']['lifesteal'] -= 10
+            NEW  >>             self.rageGeneration -= 5
+  Line  294  PREV >>         self.titanFuryTurns = 0
+            NEW  >>             self._Stats['Temporary']['lifesteal'] -= 10
+  Line  295  PREV >>         self.titanFuryUsed = False
+            NEW  >>         self.titanFuryTurns = 0
+  Line  296  PREV >>         super().onBattleEnd()
+            NEW  >>         self.titanFuryUsed = False
+  Line  297  PREV >> 
+            NEW  >>         super().onBattleEnd()
+  Line  298  PREV >>     def onTurnStart(self):
+            NEW  >> 
+  Line  299  PREV >>         if self.rageGeneration > 0:
+            NEW  >>     def onTurnStart(self):
+  Line  300  PREV >>             self._rage = min(self._maxRage, self._rage + self.rageGeneration)
+            NEW  >>         if self.rageGeneration > 0:
+  Line  301  PREV >>             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
+            NEW  >>             self._rage = min(self._maxRage, self._rage + self.rageGeneration)
+  Line  302  PREV >>         if self._ascendancy == 'Juggernaut':
+            NEW  >>             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
+  Line  303  PREV >>             self._fortify = min(self._maxFortify, self._rage // 10)
+            NEW  >>         if self._ascendancy == 'Juggernaut':
+  Line  304  PREV >>             console.print(f"[gold1]Juggernaut: Fortify set to {self._fortify} stacks. Current rage: {self._rage} / {self._maxRage} Rage.[/gold1]")
+            NEW  >>             self._fortify = min(self._maxFortify, self._rage // 10)
+  Line  305  PREV >>         
+            NEW  >>             console.print(f"[gold1]Juggernaut: Fortify set to {self._fortify} stacks. Current rage: {self._rage} / {self._maxRage} Rage.[/gold1]")
+  Line  306  PREV >>         if self._ascendancy == 'Juggernaut':
+            NEW  >>         
+  Line  307  PREV >>             self._fortify = min(self._maxFortify, self._rage // 10)
+            NEW  >>         if self._ascendancy == 'Juggernaut':
+  Line  308  PREV >>             console.print(f"\n[earth] Juggernaut: You now have {self._fortify} / {self._maxFortify} Fortify Stacks. (+{self._fortify}% All Resistance)")
+            NEW  >>             self._fortify = min(self._maxFortify, self._rage // 10)
+  Line  309  PREV >>         
+            NEW  >>             console.print(f"\n[earth] Juggernaut: You now have {self._fortify} / {self._maxFortify} Fortify Stacks. (+{self._fortify}% All Resistance)")
+  Line  310  PREV >>         elif self._ascendancy == 'Annihilist':
+            NEW  >>         
+  Line  311  PREV >>             self.annihilationBuffs = {
+            NEW  >>         elif self._ascendancy == 'Annihilist':
+  Line  312  PREV >>                 'fire': 0.2 * self.annihilation,
+            NEW  >>             self.annihilationBuffs = {
+  Line  313  PREV >>                 'speed': 0.1 * self.annihilation,
+            NEW  >>                 'fire': 0.2 * self.annihilation,
+  Line  314  PREV >>                 'critChance': 0.05 * self.annihilation
+            NEW  >>                 'speed': 0.1 * self.annihilation,
+  Line  315  PREV >>             }
+            NEW  >>                 'critChance': 0.05 * self.annihilation
+  Line  316  PREV >>             self._stats['Temporary']['speed'] += self.annihilationBuffs['speed']
+            NEW  >>             }
+  Line  317  PREV >>             self._stats['Temporary']['critChance'] += self.annihilationBuffs['critChance']
+            NEW  >>             self._stats['Temporary']['speed'] += self.annihilationBuffs['speed']
+  Line  318  PREV >>         
+            NEW  >>             self._stats['Temporary']['critChance'] += self.annihilationBuffs['critChance']
+  Line  319  PREV >>         if self._subType == 'Colossus':
+            NEW  >>         
+  Line  320  PREV >>             self.heal(self.damageToRecoup)
+            NEW  >>         if self._subType == 'Colossus':
+  Line  321  PREV >>             console.print(f"  [heal]Colossus: Recouped {self.damageToRecoup} HP![/heal]")
+            NEW  >>             self.heal(self.damageToRecoup)
+  Line  322  PREV >>             self.damageToRecoup = 0
+            NEW  >>             console.print(f"  [heal]Colossus: Recouped {self.damageToRecoup} HP![/heal]")
+  Line  323  PREV >> 
+            NEW  >>             self.damageToRecoup = 0
+  Line  324  PREV >>         elif self._subType == 'Titan' and self.titanFuryTurns > 0:
+            NEW  >> 
+  Line  325  PREV >>             self.titanFuryTurns -= 1
+            NEW  >>         elif self._subType == 'Titan' and self.titanFuryTurns > 0:
+  Line  326  PREV >>             if self.titanFuryTurns == 0:
+            NEW  >>             self.titanFuryTurns -= 1
+  Line  327  PREV >>                 self._stats['Temporary']['lifesteal'] -= 10
+            NEW  >>             if self.titanFuryTurns == 0:
+  Line  328  PREV >>                 self.rageGeneration -= 5
+            NEW  >>                 self._stats['Temporary']['lifesteal'] -= 10
+  Line  329  PREV >>                 console.print("\n[warning]Titan: Titan's Fury has worn off.[/warning]")
+            NEW  >>                 self.rageGeneration -= 5
+  Line  330  PREV >> 
+            NEW  >>                 console.print("\n[warning]Titan: Titan's Fury has worn off.[/warning]")
+  Line  331  PREV >>         super().onTurnStart()
+            NEW  >> 
+  Line  332  PREV >> 
+            NEW  >>         super().onTurnStart()
+  Line  333  PREV >>     def _levelUp(self):
+            NEW  >> 
+  Line  334  PREV >>         self._maxRage += 1
+            NEW  >>     def _levelUp(self):
+  Line  335  PREV >>         super()._levelUp()
+            NEW  >>         self._maxRage += 1
+  Line  336  PREV >> 
+            NEW  >>         super()._levelUp()
+  Line  337  PREV >>     def _removeOldAscendancy(self):
+            NEW  >> 
+  Line  338  PREV >>         if self._ascendancy == 'Warlord':
+            NEW  >>     def _removeOldAscendancy(self):
+  Line  339  PREV >>             self._baseHealth -= 10
+            NEW  >>         if self._ascendancy == 'Warlord':
+  Line  340  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth -= 10
+  Line  341  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage -= 1
+  Line  342  PREV >>         elif self._ascendancy == 'Pyromancer':
+            NEW  >>             self._baseSpeed += 0.05
+  Line  343  PREV >>             self._baseHealth += 5
+            NEW  >>         elif self._ascendancy == 'Pyromancer':
+  Line  344  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth += 5
+  Line  345  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage -= 1
+  Line  346  PREV >>             self._stats['Permanent']['fire'] -= 15
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  347  PREV >>         elif self.ascendancy == 'Juggernaut':
+            NEW  >>             self._stats['Permanent']['fire'] -= 15
+  Line  348  PREV >>             self._baseHealth -= 15
+            NEW  >>         elif self.ascendancy == 'Juggernaut':
+  Line  349  PREV >>             self._damage += 1
+            NEW  >>             self._baseHealth -= 15
+  Line  350  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._damage += 1
+  Line  351  PREV >>             self._stats['Permanent']['stunAvoidance'] -= 50
+            NEW  >>             self._baseSpeed += 0.05
+  Line  352  PREV >>         elif self.ascendancy == 'Blood Reaver':
+            NEW  >>             self._stats['Permanent']['stunAvoidance'] -= 50
+  Line  353  PREV >>             self._baseHealth -= 10
+            NEW  >>         elif self.ascendancy == 'Blood Reaver':
+  Line  354  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth -= 10
+  Line  355  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage -= 1
+  Line  356  PREV >>         elif self.ascendancy == 'Flamewarden':
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  357  PREV >>             self._baseHealth -= 5
+            NEW  >>         elif self.ascendancy == 'Flamewarden':
+  Line  358  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth -= 5
+  Line  359  PREV >>             self._stats['Permanent']['fire'] -= 20
+            NEW  >>             self._baseDamage -= 1
+  Line  360  PREV >>         elif self.ascendancy == 'Annihilist':
+            NEW  >>             self._stats['Permanent']['fire'] -= 20
+  Line  361  PREV >>             self._baseHealth += 20
+            NEW  >>         elif self.ascendancy == 'Annihilist':
+  Line  362  PREV >>             self._baseDamage -= 3
+            NEW  >>             self._baseHealth += 20
+  Line  363  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage -= 3
+  Line  364  PREV >>             self._stats['baseCritMulti'] -= 0.25
+            NEW  >>             self._baseSpeed += 0.05
+  Line  365  PREV >> 
+            NEW  >>             self._stats['baseCritMulti'] -= 0.25
+  Line  366  PREV >>     def updateAscendancy(self, ascendancy):
+            NEW  >> 
+  Line  367  PREV >>         if self._ascendancy is not None:
+            NEW  >>     def updateAscendancy(self, ascendancy):
+  Line  368  PREV >>             self._removeOldAscendancy()
+            NEW  >>         if self._ascendancy is not None:
+  Line  369  PREV >>         if ascendancy == 'Warlord':
+            NEW  >>             self._removeOldAscendancy()
+  Line  370  PREV >>             self._baseHealth += 10
+            NEW  >>         if ascendancy == 'Warlord':
+  Line  371  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth += 10
+  Line  372  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage += 1
+  Line  373  PREV >>             self._ascendancy = 'Warlord'
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  374  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Warlord']
+            NEW  >>             self._ascendancy = 'Warlord'
+  Line  375  PREV >>         elif ascendancy == 'Pyromancer':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Warlord']
+  Line  376  PREV >>             self._baseHealth -= 5
+            NEW  >>         elif ascendancy == 'Pyromancer':
+  Line  377  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth -= 5
+  Line  378  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage += 1
+  Line  379  PREV >>             self._stats['Permanent']['fire'] += 15
+            NEW  >>             self._baseSpeed += 0.05
+  Line  380  PREV >>             self._ascendancy = 'Pyromancer'
+            NEW  >>             self._stats['Permanent']['fire'] += 15
+  Line  381  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Pyromancer']
+            NEW  >>             self._ascendancy = 'Pyromancer'
+  Line  382  PREV >>         elif ascendancy == 'Juggernaut':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Pyromancer']
+  Line  383  PREV >>             self._baseHealth += 15
+            NEW  >>         elif ascendancy == 'Juggernaut':
+  Line  384  PREV >>             self._damage -= 1
+            NEW  >>             self._baseHealth += 15
+  Line  385  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._damage -= 1
+  Line  386  PREV >>             self._stats['Permanent']['stunAvoidance'] += 50
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  387  PREV >>             self._ascendancy = 'Juggernaut'
+            NEW  >>             self._stats['Permanent']['stunAvoidance'] += 50
+  Line  388  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Juggernaut']
+            NEW  >>             self._ascendancy = 'Juggernaut'
+  Line  389  PREV >>         elif ascendancy == 'Blood Reaver':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Juggernaut']
+  Line  390  PREV >>             self._baseHealth += 10
+            NEW  >>         elif ascendancy == 'Blood Reaver':
+  Line  391  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth += 10
+  Line  392  PREV >>             self._baseSpeed += 0.05
+            NEW  >>             self._baseDamage += 1
+  Line  393  PREV >>             self._ascendancy = 'Blood Reaver'
+            NEW  >>             self._baseSpeed += 0.05
+  Line  394  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Blood Reaver']
+            NEW  >>             self._ascendancy = 'Blood Reaver'
+  Line  395  PREV >>         elif ascendancy == 'Flamewarden':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Blood Reaver']
+  Line  396  PREV >>             self._baseHealth += 5
+            NEW  >>         elif ascendancy == 'Flamewarden':
+  Line  397  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth += 5
+  Line  398  PREV >>             self._stats['Permanent']['fire'] += 20
+            NEW  >>             self._baseDamage += 1
+  Line  399  PREV >>             self._ascendancy = 'Flamewarden'
+            NEW  >>             self._stats['Permanent']['fire'] += 20
+  Line  400  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Flamewarden']
+            NEW  >>             self._ascendancy = 'Flamewarden'
+  Line  401  PREV >>         elif ascendancy == 'Annihilist':
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Flamewarden']
+  Line  402  PREV >>             self._baseHealth -= 20
+            NEW  >>         elif ascendancy == 'Annihilist':
+  Line  403  PREV >>             self._baseDamage += 3
+            NEW  >>             self._baseHealth -= 20
+  Line  404  PREV >>             self._baseSpeed -= 0.05
+            NEW  >>             self._baseDamage += 3
+  Line  405  PREV >>             self._stats['baseCritMulti'] += 0.25
+            NEW  >>             self._baseSpeed -= 0.05
+  Line  406  PREV >>             self._ascendancy = 'Annihilist'
+            NEW  >>             self._stats['baseCritMulti'] += 0.25
+  Line  407  PREV >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Annihilist']
+            NEW  >>             self._ascendancy = 'Annihilist'
+  Line  408  PREV >>         self._recalculateStats(False)
+            NEW  >>             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Annihilist']
+  Line  409  PREV >> 
+            NEW  >>         self._recalculateStats(False)
+  Line  410  PREV >>     def _removeOldSubType(self):
+            NEW  >> 
+  Line  411  PREV >>         if self.subType == 'Savage':
+            NEW  >>     def _removeOldSubType(self):
+  Line  412  PREV >>             self._baseHealth += 10
+            NEW  >>         if self.subType == 'Savage':
+  Line  413  PREV >>             self._baseDamage -= 2
+            NEW  >>             self._baseHealth += 10
+  Line  414  PREV >>             self._baseSpeed += 0.1
+            NEW  >>             self._baseDamage -= 2
+  Line  415  PREV >>             self._stats['baseCritChance'] -= 0.02
+            NEW  >>             self._baseSpeed += 0.1
+  Line  416  PREV >>         elif self.subType == 'Colossus':
+            NEW  >>             self._stats['baseCritChance'] -= 0.02
+  Line  417  PREV >>             self._baseHealth -= 15
+            NEW  >>         elif self.subType == 'Colossus':
+  Line  418  PREV >>             self._baseDamage += 1
+            NEW  >>             self._baseHealth -= 15
+  Line  419  PREV >>             self._baseSpeed += 0.3
+            NEW  >>             self._baseDamage += 1
+  Line  420  PREV >>             self._maxRage -= 10
+            NEW  >>             self._baseSpeed += 0.3
+  Line  421  PREV >>             self._rageEffect -= 1.0
+            NEW  >>             self._maxRage -= 10
+  Line  422  PREV >>         elif self.subType == 'Titan':
+            NEW  >>             self._rageEffect -= 1.0
+  Line  423  PREV >>             self._baseHealth -= 10
+            NEW  >>         elif self.subType == 'Titan':
+  Line  424  PREV >>             self._baseDamage += 2
+            NEW  >>             self._baseHealth -= 10
+  Line  425  PREV >>             self._baseSpeed += 0.1
+            NEW  >>             self._baseDamage += 2
+  Line  426  PREV >>             self._stats['Permanent']['physical'] -= 10
+            NEW  >>             self._baseSpeed += 0.1
+  Line  427  PREV >>             self._stats['Permanent']['fire'] -= 5
+            NEW  >>             self._stats['Permanent']['physical'] -= 10
+  Line  428  PREV >>             self._stats['Permanent']['increased_health'] -= 10
+            NEW  >>             self._stats['Permanent']['fire'] -= 5
+  Line  429  PREV >> 
+            NEW  >>             self._stats['Permanent']['increased_health'] -= 10
+  Line  430  PREV >>     def updateSubType(self, subType):
+            NEW  >> 
+  Line  431  PREV >>         if self._subType is not None:
+            NEW  >>     def updateSubType(self, subType):
+  Line  432  PREV >>             self._removeOldSubType()
+            NEW  >>         if self._subType is not None:
+  Line  433  PREV >>         if subType == None:
+            NEW  >>             self._removeOldSubType()
+  Line  434  PREV >>             self._subType = None
+            NEW  >>         if subType == None:
+  Line  435  PREV >>             self.subTypeDescription = None
+            NEW  >>             self._subType = None
+  Line  436  PREV >>         if subType == 'Savage':
+            NEW  >>             self.subTypeDescription = None
+  Line  437  PREV >>             self._baseHealth -= 10
+            NEW  >>         if subType == 'Savage':
+  Line  438  PREV >>             self._baseDamage += 2
+            NEW  >>             self._baseHealth -= 10
+  Line  439  PREV >>             self._baseSpeed -= 0.1
+            NEW  >>             self._baseDamage += 2
+  Line  440  PREV >>             self._stats['baseCritChance'] += 0.02
+            NEW  >>             self._baseSpeed -= 0.1
+  Line  441  PREV >>             self._subType = 'Savage'
+            NEW  >>             self._stats['baseCritChance'] += 0.02
+  Line  442  PREV >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Savage']
+            NEW  >>             self._subType = 'Savage'
+  Line  443  PREV >>         elif subType == 'Colossus':
+            NEW  >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Savage']
+  Line  444  PREV >>             self._baseHealth += 15
+            NEW  >>         elif subType == 'Colossus':
+  Line  445  PREV >>             self._baseDamage -= 1
+            NEW  >>             self._baseHealth += 15
+  Line  446  PREV >>             self._baseSpeed -= 0.3
+            NEW  >>             self._baseDamage -= 1
+  Line  447  PREV >>             self._maxRage += 10
+            NEW  >>             self._baseSpeed -= 0.3
+  Line  448  PREV >>             self._rageEffect += 1.0
+            NEW  >>             self._maxRage += 10
+  Line  449  PREV >>             self._subType = 'Colossus'
+            NEW  >>             self._rageEffect += 1.0
+  Line  450  PREV >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Colossus']
+            NEW  >>             self._subType = 'Colossus'
+  Line  451  PREV >>         elif subType == 'Titan':
+            NEW  >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Colossus']
+  Line  452  PREV >>             self._baseHealth += 10
+            NEW  >>         elif subType == 'Titan':
+  Line  453  PREV >>             self._baseDamage -= 2
+            NEW  >>             self._baseHealth += 10
+  Line  454  PREV >>             self._baseSpeed -= 0.1
+            NEW  >>             self._baseDamage -= 2
+  Line  455  PREV >>             self._stats['Permanent']['physical'] += 10
+            NEW  >>             self._baseSpeed -= 0.1
+  Line  456  PREV >>             self._stats['Permanent']['fire'] += 5
+            NEW  >>             self._stats['Permanent']['physical'] += 10
+  Line  457  PREV >>             self._stats['Permanent']['increased_health'] += 10
+            NEW  >>             self._stats['Permanent']['fire'] += 5
+  Line  458  PREV >>             self._subType = 'Titan'
+            NEW  >>             self._stats['Permanent']['increased_health'] += 10
+  Line  459  PREV >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Titan']
+            NEW  >>             self._subType = 'Titan'
+  Line  460  PREV >>         self._recalculateStats(False)
+            NEW  >>             self.subTypeDescription = WARRIOR_DESCRIPTIONS['Titan']
+  Line  461  PREV >> 
+            NEW  >>         self._recalculateStats(False)
+  Line  462  ADDED >> 
+
+[48:13:52] Change Detected: player\warrior.py
+  Line   55  ADDED >> x = 1
+
+[48:13:57] Change Detected: player\warrior.py
+  Line   55  REMOVED >> x = 1
+
+[20:04:26] Change Detected: scripts\abilities.py
+  Line    2  ADDED >> from copy import deepcopy
+  Line    6  REMOVED >> 
+  Line    6  REMOVED >> def parseSecondaryCost(costData: Dict, player) -> Tuple[Optional[str], Optional[Any], bool]:
+  Line    6  REMOVED >>     """
+  Line    6  REMOVED >>     Parse secondaryCost field from ability data.
+  Line    6  REMOVED >>     Returns: (resourceType, amount, canAfford)
+  Line    6  REMOVED >>     
+  Line    6  REMOVED >>     Handles:
+  Line    6  REMOVED >>     - rage costs (including "all")
+  Line    6  REMOVED >>     - hp costs (current % or max %, e.g. "10%_current")
+  Line    6  REMOVED >>     - siphon, combo, mana costs
+  Line    6  REMOVED >>     - conditional costs (e.g. ifPhoenixConsumed)
+  Line    6  REMOVED >>     """
+  Line    6  REMOVED >>     if not costData:
+  Line    6  REMOVED >>         return None, None, True
+  Line    6  REMOVED >>     
+  Line    6  REMOVED >>     for resourceType, amount in costData.items():
+  Line    6  REMOVED >>         if resourceType == "rage":
+  Line    6  REMOVED >>             if amount == "all":
+  Line    6  REMOVED >>                 return "rage", player._rage, player._rage > 0
+  Line    6  REMOVED >>             return "rage", amount, player._rage >= amount
+  Line    6  REMOVED >>         
+  Line    6  REMOVED >>         elif resourceType == "hp":
+  Line    6  REMOVED >>             if isinstance(amount, str):
+  Line    6  REMOVED >>                 if "_current" in amount:
+  Line    6  REMOVED >>                     percent = float(amount.replace("%_current", "")) / 100
+  Line    6  REMOVED >>                     hpCost = int(player._health * percent)
+  Line    6  REMOVED >>                     return "hp", hpCost, player._health > hpCost
+  Line    6  REMOVED >>                 elif "_max" in amount:
+  Line    6  REMOVED >>                     percent = float(amount.replace("%_max", "")) / 100
+  Line    6  REMOVED >>                     hpCost = int(player._maxHealth * percent)
+  Line    6  REMOVED >>                     return "hp", hpCost, player._health > hpCost
+  Line    6  REMOVED >>             return "hp", amount, player._health > amount
+  Line    6  REMOVED >>         
+  Line    6  REMOVED >>         elif resourceType == "siphon":
+  Line    6  REMOVED >>             return "siphon", amount, hasattr(player, 'siphon') and player.siphon >= amount
+  Line    6  REMOVED >>         
+  Line    6  REMOVED >>         elif resourceType == "combo":
+  Line    6  REMOVED >>             return "combo", amount, hasattr(player, '_combo') and player._combo >= amount
+  Line    6  REMOVED >>         
+  Line    6  REMOVED >>         elif resourceType == "mana":
+  Line    6  REMOVED >>             return "mana", amount, hasattr(player, '_mana') and player._mana >= amount
+  Line    6  REMOVED >>         
+  Line    6  REMOVED >>         elif resourceType == "ifPhoenixConsumed":
+  Line    6  REMOVED >>             # Special conditional for Flamewarden Solar Flare
+  Line    6  REMOVED >>             if hasattr(player, 'phoenixUsed') and player.phoenixUsed:
+  Line    6  REMOVED >>                 return None, None, True  # No cost if phoenix consumed
+  Line    6  REMOVED >>             continue
+  Line    6  REMOVED >>     
+  Line    6  REMOVED >>     return None, None, True
+  Line    6  REMOVED >> 
+  Line    6  REMOVED >> def parseScalesWithResource(scaleData: Dict, player) -> float:
+  Line    6  REMOVED >>     """
+  Line    6  REMOVED >>     Parse dynamic scaling based on resources.
+  Line    6  REMOVED >>     
+  Line    6  REMOVED >>     Handles:
+  Line    6  REMOVED >>     - scalesWithRage: {baseAmount, perRage, maxRage}
+  Line    6  REMOVED >>     - scalesWithFury: {baseAmount, perFury, maxFury}
+  Line    6  REMOVED >>     - scalesWithMissingHP: {baseAmount, perMissingPercent, maxBonus}
+  Line    6  REMOVED >>     """
+  Line    6  REMOVED >>     if "scalesWithRage" in scaleData:
+  Line    6  REMOVED >>         data = scaleData["scalesWithRage"]
+  Line    6  REMOVED >>         baseAmount = data.get("baseAmount", 0)
+  Line    6  REMOVED >>         perRage = data.get("perRage", 0)
+  Line    6  REMOVED >>         maxRage = data.get("maxRage", 50)
+  Line    6  REMOVED >>         currentRage = min(player._rage, maxRage) if hasattr(player, '_rage') else 0
+  Line    6  REMOVED >>         return baseAmount + (currentRage * perRage)
+  Line    6  REMOVED >>     
+  Line    6  REMOVED >>     elif "scalesWithFury" in scaleData:
+  Line    6  REMOVED >>         data = scaleData["scalesWithFury"]
+  Line    6  REMOVED >>         baseAmount = data.get("baseAmount", 0)
+  Line    6  REMOVED >>         perFury = data.get("perFury", 0)
+  Line    6  REMOVED >>         maxFury = data.get("maxFury", 10)
+  Line    6  REMOVED >>         currentFury = min(player._fury, maxFury) if hasattr(player, '_fury') else 0
+  Line    6  REMOVED >>         return baseAmount + (currentFury * perFury)
+  Line    6  REMOVED >>     
+  Line    6  REMOVED >>     elif "scalesWithMissingHP" in scaleData:
+  Line    6  REMOVED >>         data = scaleData["scalesWithMissingHP"]
+  Line    6  REMOVED >>         baseAmount = data.get("baseAmount", 0)
+  Line    6  REMOVED >>         perMissingPercent = data.get("perMissingPercent", 0)
+  Line    6  REMOVED >>         maxBonus = data.get("maxBonus", 1.0)
+  Line    6  REMOVED >>         missingPercent = 1.0 - (player._health / player._maxHealth)
+  Line    6  REMOVED >>         bonus = min(maxBonus, missingPercent * perMissingPercent * 100)
+  Line    6  REMOVED >>         return baseAmount + bonus
+  Line    6  REMOVED >>     
+  Line    6  REMOVED >>     return 0
+  Line    7  REMOVED >> def parseBonusDamagePerResource(bonusData: Dict, player) -> int:
+  Line    7  REMOVED >>     """
+  Line    7  REMOVED >>     Parse bonus damage that scales with resource stacks.
+  Line    7  REMOVED >>     
+  Line    7  REMOVED >>     Handles resources: rage, fury, fortify, annihilation, combo, prowess
+  Line    7  REMOVED >>     Respects maxStacks unless noMaxStacks=true
+  Line    7  REMOVED >>     """
+  Line    7  REMOVED >>     resource = bonusData.get("resource")
+  Line    7  REMOVED >>     amount = bonusData.get("amount", 0)
+  Line    7  REMOVED >>     maxStacks = bonusData.get("maxStacks")
+  Line    7  REMOVED >>     noMaxStacks = bonusData.get("noMaxStacks", False)
+  Line    7  REMOVED >>     
+  Line    7  REMOVED >>     currentStacks = 0
+  Line    7  REMOVED >>     if resource == "rage" and hasattr(player, '_rage'):
+  Line    7  REMOVED >>         currentStacks = player._rage
+  Line    7  REMOVED >>     elif resource == "fury" and hasattr(player, '_fury'):
+  Line    7  REMOVED >>         currentStacks = player._fury
+  Line    7  REMOVED >>     elif resource == "fortify" and hasattr(player, '_fortify'):
+  Line    7  REMOVED >>         currentStacks = player._fortify
+  Line    7  REMOVED >>     elif resource == "annihilation" and hasattr(player, 'annihilation'):
+  Line    7  REMOVED >>         currentStacks = player.annihilation
+  Line    7  REMOVED >>     elif resource == "combo" and hasattr(player, '_combo'):
+  Line    7  REMOVED >>         currentStacks = player._combo
+  Line    7  REMOVED >>     elif resource == "prowess" and hasattr(player, '_prowess'):
+  Line    7  REMOVED >>         currentStacks = player._prowess
+  Line    7  REMOVED >>     
+  Line    7  REMOVED >>     if not noMaxStacks and maxStacks:
+  Line    7  REMOVED >>         currentStacks = min(currentStacks, maxStacks)
+  Line    7  REMOVED >>     
+  Line    7  REMOVED >>     return int(currentStacks * amount)
+  Line    7  ADDED >> #=========================================================================================#
+  Line    9  REMOVED >> def parseShieldAmount(shieldData, player) -> int:
+  Line    9  REMOVED >>     """
+  Line    9  REMOVED >>     Parse complex shield calculations.
+  Line    9  REMOVED >>     
+  Line    9  REMOVED >>     Handles:
+  Line    9  REMOVED >>     - String format: "100_plus_25%_hp"
+  Line    9  REMOVED >>     - Dict format: {"base": 100, "perRage": 4, "perFortify": 8}
+  Line    9  REMOVED >>     - Simple int
+  Line    9  REMOVED >>     """
+  Line    9  REMOVED >>     if isinstance(shieldData, str):
+  Line    9  REMOVED >>         parts = shieldData.split("_plus_")
+  Line    9  REMOVED >>         baseShield = int(parts[0])
+  Line    9  REMOVED >>         
+  Line    9  REMOVED >>         if len(parts) > 1:
+  Line    9  REMOVED >>             percentPart = parts[1].replace("%_hp", "")
+  Line    9  REMOVED >>             percent = float(percentPart) / 100
+  Line    9  REMOVED >>             return baseShield + int(player._maxHealth * percent)
+  Line    9  REMOVED >>         return baseShield
+  Line    9  REMOVED >>     
+  Line    9  REMOVED >>     elif isinstance(shieldData, dict):
+  Line    9  REMOVED >>         baseShield = shieldData.get("base", 0)
+  Line    9  REMOVED >>         
+  Line    9  REMOVED >>         if "perRage" in shieldData and hasattr(player, '_rage'):
+  Line    9  REMOVED >>             baseShield += player._rage * shieldData["perRage"]
+  Line    9  REMOVED >>         
+  Line    9  REMOVED >>         if "perFortify" in shieldData and hasattr(player, '_fortify'):
+  Line    9  REMOVED >>             baseShield += player._fortify * shieldData["perFortify"]
+  Line    9  REMOVED >>         
+  Line    9  REMOVED >>         return int(baseShield)
+  Line    9  REMOVED >>     
+  Line    9  REMOVED >>     return int(shieldData)
+  Line   10  REMOVED >> def checkConditionalRequirement(condition: str, player, target=None) -> bool:
+  Line   10  REMOVED >>     """
+  Line   10  REMOVED >>     Check if conditional requirements are met.
+  Line   10  REMOVED >>     
+  Line   10  REMOVED >>     Handles:
+  Line   10  REMOVED >>     - fury_above_X
+  Line   10  REMOVED >>     - fortify_above_X
+  Line   10  REMOVED >>     - fortify_at_max
+  Line   10  REMOVED >>     - annihilation_above_X
+  Line   10  REMOVED >>     - target_below_30%
+  Line   10  REMOVED >>     - requiresPhoenixAspect
+  Line   10  REMOVED >>     """
+  Line   10  REMOVED >>     if condition.startswith("fury_above_"):
+  Line   10  REMOVED >>         threshold = int(condition.replace("fury_above_", ""))
+  Line   10  REMOVED >>         return hasattr(player, '_fury') and player._fury > threshold
+  Line   10  REMOVED >>     
+  Line   10  REMOVED >>     elif condition.startswith("fortify_above_"):
+  Line   10  REMOVED >>         threshold = int(condition.replace("fortify_above_", ""))
+  Line   10  REMOVED >>         return hasattr(player, '_fortify') and player._fortify > threshold
+  Line   10  REMOVED >>     
+  Line   10  REMOVED >>     elif condition == "fortify_at_max":
+  Line   10  REMOVED >>         return (hasattr(player, '_fortify') and hasattr(player, '_maxFortify') 
+  Line   10  REMOVED >>                 and player._fortify >= player._maxFortify)
+  Line   10  REMOVED >>     
+  Line   10  REMOVED >>     elif condition.startswith("annihilation_above_"):
+  Line   10  REMOVED >>         threshold = int(condition.replace("annihilation_above_", ""))
+  Line   10  REMOVED >>         return hasattr(player, 'annihilation') and player.annihilation > threshold
+  Line   10  REMOVED >>     
+  Line   10  REMOVED >>     elif condition == "target_below_30%" and target:
+  Line   10  REMOVED >>         return target._health < (target._maxHealth * 0.3)
+  Line   10  REMOVED >>     
+  Line   10  REMOVED >>     elif condition == "requiresPhoenixAspect":
+  Line   10  REMOVED >>         return hasattr(player, 'phoenixAspect') and player.phoenixAspect
+  Line   10  REMOVED >>     
+  Line   10  REMOVED >>     return False
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >> #=========================================================================================#
+  Line  252  REMOVED >> # NEED TO REWRITE ABILITY AND ABILITY TREE CLASSSES
+  Line  252  REMOVED >> class Ability:
+  Line  252  REMOVED >>     def __init__(self, name: str, baseDamage: int, damageScaling: float,
+  Line  252  REMOVED >>                  damageType: str, staminaCost: int, cooldown: int,
+  Line  252  REMOVED >>                  effects: List[StatusEffect], targets: str = "single",
+  Line  252  REMOVED >>                  resourceCost: Optional[Dict] = None,
+  Line  252  REMOVED >>                  secondaryCost: Optional[Dict] = None):
+  Line  252  REMOVED >>         self.name = name
+  Line  252  REMOVED >>         self.baseDamage = baseDamage
+  Line  252  REMOVED >>         self.damageScaling = damageScaling
+  Line  252  REMOVED >>         self.damageType = damageType
+  Line  252  REMOVED >>         self.staminaCost = staminaCost
+  Line  252  REMOVED >>         self.cooldown = cooldown
+  Line  252  REMOVED >>         self.maxCooldown = cooldown
+  Line  252  REMOVED >>         self.currentCooldown = 0
+  Line  252  REMOVED >>         self.effects = effects
+  Line  252  REMOVED >>         self.targets = targets
+  Line  252  REMOVED >>         self.resourceCost = resourceCost
+  Line  252  REMOVED >>         self.secondaryCost = secondaryCost
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def calculateDamage(self, playerDamage: int) -> int:
+  Line  252  REMOVED >>         return int(self.baseDamage + (playerDamage * self.damageScaling))
+  Line  252  REMOVED >>     
+  Line  252  REMOVED >>     def canUse(self, player) -> Tuple[bool, str]:
+  Line  252  REMOVED >>         if self.currentCooldown > 0:
+  Line  252  REMOVED >>             return False, f"On cooldown for {self.currentCooldown} more turns."
+  Line  252  REMOVED >>         
+  Line  252  REMOVED >>         if player._stamina < self.staminaCost:
+  Line  252  REMOVED >>             return False, f"Not enough stamina: {player._stamina} / {self.staminaCost}"
+  Line  252  REMOVED >>         
+  Line  252  REMOVED >>         if self.resourceCost:
+  Line  252  REMOVED >>             resType = self.resourceCost.get('type')
+  Line  252  REMOVED >>             resAmount = self.resourceCost.get('amount')
+  Line  252  REMOVED >>             if resType == 'rage':
+  Line  252  REMOVED >>                 if resAmount == 'all':
+  Line  252  REMOVED >>                     if player._rage == 0:
+  Line  252  REMOVED >>                         return False, "No rage to consume"
+  Line  252  REMOVED >>                 elif player._rage < resAmount:
+  Line  252  REMOVED >>                     return False, f"Not enough rage: {player._rage} / {resAmount}"
+  Line  252  REMOVED >>             elif resType == 'siphon':
+  Line  252  REMOVED >>                 if player.siphon < resAmount:
+  Line  252  REMOVED >>                     return False, f"Not enough siphon: {player.siphon} / {resAmount}"
+  Line  252  REMOVED >>             elif resType == "mana":
+  Line  252  REMOVED >>                 if player._mana < resAmount:
+  Line  252  REMOVED >>                     return False, f"Not enough mana ({player._mana}/{resAmount})"
+  Line  252  REMOVED >>             elif resType == "combo":
+  Line  252  REMOVED >>                 if player._combo < resAmount:
+  Line  252  REMOVED >>                     return False, f"Not enough combo ({player._combo}/{resAmount})"
+  Line  252  REMOVED >>         
+  Line  252  REMOVED >>         if self.secondaryCost:
+  Line  252  REMOVED >>             resType, resAmount, canAfford = parseSecondaryCost(self.secondaryCost, player)
+  Line  252  REMOVED >>             if not canAfford:
+  Line  252  REMOVED >>                 return False, f"Not enough {resType}: cannot afford {resAmount}"
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         return True, ""
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def use(self, player):
+  Line  252  REMOVED >>         player._stamina -= self.staminaCost
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         if self.resourceCost:
+  Line  252  REMOVED >>             resType = self.resourceCost.get('type')
+  Line  252  REMOVED >>             resAmount = self.resourceCost.get('amount')
+  Line  252  REMOVED >>             consume = self.resourceCost.get('consume', True)
+  Line  252  REMOVED >>             
+  Line  252  REMOVED >>             if consume:
+  Line  252  REMOVED >>                 if resType == "rage":
+  Line  252  REMOVED >>                     if resAmount == "all":
+  Line  252  REMOVED >>                         player._rage = 0
+  Line  252  REMOVED >>                     else:
+  Line  252  REMOVED >>                         player._rage -= resAmount
+  Line  252  REMOVED >>                 elif resType == "siphon":
+  Line  252  REMOVED >>                     player.siphon -= resAmount
+  Line  252  REMOVED >>                 elif resType == "mana":
+  Line  252  REMOVED >>                     player._mana -= resAmount
+  Line  252  REMOVED >>                 elif resType == "combo":
+  Line  252  REMOVED >>                     player._combo -= resAmount
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         if self.secondaryCost:
+  Line  252  REMOVED >>             resType, resAmount, _ = parseSecondaryCost(self.secondaryCost, player)
+  Line  252  REMOVED >>             if resType and resAmount:
+  Line  252  REMOVED >>                 if resType == "rage":
+  Line  252  REMOVED >>                     player._rage = max(0, player._rage - resAmount)
+  Line  252  REMOVED >>                 elif resType == "hp":
+  Line  252  REMOVED >>                     player._health = max(1, player._health - resAmount)
+  Line  252  REMOVED >>                 elif resType == "siphon":
+  Line  252  REMOVED >>                     player.siphon = max(0, player.siphon - resAmount)
+  Line  252  REMOVED >>                 elif resType == "combo":
+  Line  252  REMOVED >>                     player._combo = max(0, player._combo - resAmount)
+  Line  252  REMOVED >>                 elif resType == "mana":
+  Line  252  REMOVED >>                     player._mana = max(0, player._mana - resAmount)
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         self.currentCooldown = self.maxCooldown
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def tickCooldown(self):
+  Line  252  REMOVED >>         self.currentCooldown = max(0, self.currentCooldown - 1)
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def __rich__(self):
+  Line  252  REMOVED >>         return self.__str__()
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def __str__(self):
+  Line  252  REMOVED >>         cdText = f"[red]CD: {self.currentCooldown}[/red] | " if self.currentCooldown > 0 else ""
+  Line  252  REMOVED >>         targetText = {"single": "1 enemy", "double": "2 enemies", 
+  Line  252  REMOVED >>                      "triple": "3 enemies", "all": "all enemies"}[self.targets]
+  Line  252  REMOVED >>         return f"{self.name} | {cdText}Stamina: {self.staminaCost} | Targets: {targetText}"
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >> class AbilityTree:
+  Line  252  REMOVED >>     def __init__(self, abilityName: str, level: int, category: str,
+  Line  252  REMOVED >>                  evolutions: Dict[int, Dict], variants: Dict[str, Dict]):
+  Line  252  REMOVED >>         self.abilityName = abilityName
+  Line  252  REMOVED >>         self.level = level
+  Line  252  REMOVED >>         self.category = category
+  Line  252  REMOVED >>         self.evolutions = evolutions
+  Line  252  REMOVED >>         self.variants = variants
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         self.currentEvolutionLevel = None
+  Line  252  REMOVED >>         self.currentVariant = None
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def getCurrentAbility(self, playerLevel: int) -> Optional[Ability]:
+  Line  252  REMOVED >>         availableEvolutions = [lvl for lvl in self.evolutions.keys() if lvl <= playerLevel]
+  Line  252  REMOVED >>         if not availableEvolutions:
+  Line  252  REMOVED >>             return None
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         evolutionLevel = max(availableEvolutions)
+  Line  252  REMOVED >>         self.currentEvolutionLevel = evolutionLevel
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         evoData = self.evolutions[evolutionLevel]
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         if self.currentVariant:
+  Line  252  REMOVED >>             evoData = self._applyVariantMods(evoData, self.currentVariant)
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         return self._buildAbility(evoData)
+  Line  252  REMOVED >>     
+  Line  252  REMOVED >>     def _applyVariantMods(self, baseData: Dict, variantName: str) -> Dict:
+  Line  252  REMOVED >>         if variantName not in self.variants:
+  Line  252  REMOVED >>             return baseData
+  Line  252  REMOVED >>         
+  Line  252  REMOVED >>         variantMods = self.variants[variantName]['mods']
+  Line  252  REMOVED >>         modifiedData = baseData.copy()
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         for mKey, mVal in variantMods.items():
+  Line  252  REMOVED >>             if mKey == 'base':
+  Line  252  REMOVED >>                 if isinstance(mVal, str) and '%' in mVal:
+  Line  252  REMOVED >>                     mult = float(mVal.strip('+-%')) / 100
+  Line  252  REMOVED >>                     if '-' in mVal:
+  Line  252  REMOVED >>                         modifiedData['base'] = int(modifiedData['base'] * (1 - mult))
+  Line  252  REMOVED >>                     else:
+  Line  252  REMOVED >>                         modifiedData['base'] = int(modifiedData['base'] * (1 + mult))
+  Line  252  REMOVED >>                 else:
+  Line  252  REMOVED >>                     modifiedData['base'] = mVal
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>             elif mKey == 'scaling':
+  Line  252  REMOVED >>                 if isinstance(mVal, str) and '%' in mVal:
+  Line  252  REMOVED >>                     mult = float(mVal.strip('+-%')) / 100
+  Line  252  REMOVED >>                     if '-' in mVal:
+  Line  252  REMOVED >>                         modifiedData['scaling'] = modifiedData['scaling'] * (1 - mult)
+  Line  252  REMOVED >>                     else:
+  Line  252  REMOVED >>                         modifiedData['scaling'] = modifiedData['scaling'] * (1 + mult)
+  Line  252  REMOVED >>             
+  Line  252  REMOVED >>             elif mKey == "stamina":
+  Line  252  REMOVED >>                 if isinstance(mVal, str) and '%' in mVal:
+  Line  252  REMOVED >>                     mult = float(mVal.strip('+-%')) / 100
+  Line  252  REMOVED >>                     modifiedData['stamina'] = int(modifiedData['stamina'] * (1 + mult))
+  Line  252  REMOVED >>             
+  Line  252  REMOVED >>             elif mKey == "cd":
+  Line  252  REMOVED >>                 if isinstance(mVal, str):
+  Line  252  REMOVED >>                     if mVal == "0":
+  Line  252  REMOVED >>                         modifiedData['cd'] = 0
+  Line  252  REMOVED >>                     elif '+' in mVal or '-' in mVal:
+  Line  252  REMOVED >>                         change = int(mVal)
+  Line  252  REMOVED >>                         modifiedData['cd'] = max(0, modifiedData['cd'] + change)
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>             elif mKey == "targets":
+  Line  252  REMOVED >>                 modifiedData['targets'] = mVal
+  Line  252  REMOVED >>             
+  Line  252  REMOVED >>             elif mKey == "addEffect":
+  Line  252  REMOVED >>                 if 'effects' not in modifiedData:
+  Line  252  REMOVED >>                     modifiedData['effects'] = []
+  Line  252  REMOVED >>                 modifiedData['effects'].append(mVal)
+  Line  252  REMOVED >>             
+  Line  252  REMOVED >>             elif mKey == "removeEffect":
+  Line  252  REMOVED >>                 if 'effects' in modifiedData:
+  Line  252  REMOVED >>                     modifiedData['effects'] = [e for e in modifiedData['effects'] 
+  Line  252  REMOVED >>                                               if e.get('resourceGain') != mVal]
+  Line  252  REMOVED >>             
+  Line  252  REMOVED >>             elif mKey == "addCost":
+  Line  252  REMOVED >>                 modifiedData['rageCost'] = mVal.get('rage', 0)
+  Line  252  REMOVED >>                 modifiedData['siphonCost'] = mVal.get('siphon', 0)
+  Line  252  REMOVED >>         
+  Line  252  REMOVED >>             elif mKey == "secondaryCost":
+  Line  252  REMOVED >>                 modifiedData['secondaryCost'] = mVal
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>             elif mKey == "guaranteedCrit":
+  Line  252  REMOVED >>                 if 'effects' not in modifiedData:
+  Line  252  REMOVED >>                     modifiedData['effects'] = []
+  Line  252  REMOVED >>                 modifiedData['effects'].append({"guaranteedCrit": True})
+  Line  252  REMOVED >>                 
+  Line  252  REMOVED >>             elif mKey == "requiresResource":
+  Line  252  REMOVED >>                 if 'effects' not in modifiedData:
+  Line  252  REMOVED >>                     modifiedData['effects'] = []
+  Line  252  REMOVED >>                 modifiedData['effects'].append({"requiresResource": mVal})
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>             elif mKey == "consumeResource":
+  Line  252  REMOVED >>                 if 'effects' not in modifiedData:
+  Line  252  REMOVED >>                     modifiedData['effects'] = []
+  Line  252  REMOVED >>                 modifiedData['effects'].append({"consumeResource": mVal})
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         return modifiedData
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def unlockVariant(self, variantName: str) -> bool:
+  Line  252  REMOVED >>         if variantName not in self.variants:
+  Line  252  REMOVED >>             return False
+  Line  252  REMOVED >>         self.variants[variantName]['unlocked'] = True
+  Line  252  REMOVED >>         return True
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     def setActiveVariant(self, variantName: Optional[str]):
+  Line  252  REMOVED >>         if variantName and variantName not in self.variants:
+  Line  252  REMOVED >>             return False
+  Line  252  REMOVED >>         self.currentVariant = variantName
+  Line  252  REMOVED >>         return True
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >> #=========================================================================================#
+  Line  252  REMOVED >> # NEED TO REWRITE LOAD ABILITIES
+  Line  252  REMOVED >> def loadAbilities() -> Dict[str, AbilityTree]:
+  Line  252  REMOVED >>     with open('Korus/data/abilities.json', 'r') as f:
+  Line  252  REMOVED >>         data: Dict[str, Dict[str, Dict]] = load(f)
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     classAbilities = {}
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>     for className, classData in data.items(): # splits by classes
+  Line  252  REMOVED >>         classAbilities[className] = {}
+  Line  252  REMOVED >> 
+  Line  252  REMOVED >>         for ascendancyName, ascendancyAbilities in classData.items(): # splits by ascendancies including 'base'
+  Line  252  REMOVED >>             classAbilities[className][ascendancyName] = {}
+  Line  252  REMOVED >>             for abilityName, abilityData in ascendancyAbilities.items(): # splits by actual abilities
+  Line  252  REMOVED >>                 tree = AbilityTree(
+  Line  252  REMOVED >>                     abilityName=abilityName,
+  Line  252  REMOVED >>                     level=abilityData['level'],
+  Line  252  REMOVED >>                     category=abilityData['category'],
+  Line  252  REMOVED >>                     evolutions=abilityData['evolutions'],
+  Line  252  REMOVED >>                     variants=abilityData.get('variants', {})
+  Line  252  REMOVED >>                 )
+  Line  252  REMOVED >>                 classAbilities[className][abilityName] = tree
+  Line  253  REMOVED >>     return classAbilities
+  Line  254  REMOVED >> ABILITIES = {} # temp
+  Line  254  REMOVED >> CLASS_ABILITIES = {} #loadAbilities()
+
+[20:05:21] Change Detected: scripts\abilities.py
+  Line    8  REMOVED >> 
+  Line    9  ADDED >> class Ability:
+  Line   10  ADDED >>     def __init__(self, name: str, category: str, tags: List[str],
+  Line   11  ADDED >>                  baseDamage: int, damageScaling: float, damageType: str,)
+
+[20:06:01] Change Detected: scripts\abilities.py
+  Line   11  REMOVED >>                  baseDamage: int, damageScaling: float, damageType: str,)
+  Line   11  ADDED >>                  baseDamage: int, damageScaling: float, damageType: str,
+  Line   12  ADDED >>                  healBase: int, healPercent: float,
+  Line   13  ADDED >>                  cooldown: int, targets: int | str,
+  Line   14  ADDED >>                  resources: Dict, effects: Dict, requirements: Dict,
+  Line   15  ADDED >>                  description: str):
+
+[20:06:11] Change Detected: scripts\abilities.py
+  Line   16  ADDED >>         self.name = name
+  Line   17  ADDED >>         self.category = category
+  Line   18  ADDED >>         self.tags = tags
+
+[21:38:05] Change Detected: scripts\abilities.py
+  Line   19  ADDED >>         
+
+[21:39:26] Change Detected: scripts\abilities.py
+  Line   19  REMOVED >>         
+  Line   19  ADDED >> 
+  Line   20  ADDED >>         self.baseDamage = baseDamage
+  Line   21  ADDED >>         self.damageScaling = damageScaling
+  Line   22  ADDED >>         self.damageType = damageType
+  Line   23  ADDED >> 
+  Line   24  ADDED >>         self.healBase = healBase
+  Line   25  ADDED >>         self.healPercent = healPercent
+  Line   26  ADDED >> 
+  Line   27  ADDED >>         self.maxCooldown = cooldown
+  Line   28  ADDED >>         self.cooldown = cooldown
+  Line   29  ADDED >>         self.targets = targets
+  Line   30  ADDED >> 
+  Line   31  ADDED >>         self.resources = resources
+  Line   32  ADDED >>         self.effects = effects
+  Line   33  ADDED >>         self.requirements = requirements
+  Line   34  ADDED >> 
+  Line   35  ADDED >>         self.description = description
+
+[21:41:39] Change Detected: scripts\abilities.py
+  Line   36  ADDED >> 
+  Line   37  ADDED >>     # -- true values -- #
+  Line   38  ADDED >>     def calculateDamage(self, playerDamage: int) -> int:
+  Line   39  ADDED >>         return int(self.baseDamage + (playerDamage * self.damageScaling))
+  Line   40  ADDED >> 
+  Line   41  ADDED >>     def calculateHeal(self, playerMaxHp: int) -> int:
+  Line   42  ADDED >>         return int(self.healBase + (playerMaxHp * self.healPercent))
+  Line   43  ADDED >>     
+  Line   44  ADDED >>     # -- resources -- #
+
+[21:43:18] Change Detected: scripts\abilities.py
+  Line   45  ADDED >>     def canUse(self, player) -> Tuple[bool, str]:
+  Line   46  ADDED >>         if self.cooldown > 0:
+  Line   47  ADDED >>             return False, f"On cooldown for {self.cooldown} more turns."
+  Line   48  ADDED >>         
+  Line   49  ADDED >>         required: Dict = self.resources.get('required', {})
+  Line   50  ADDED >>         for resource, amount in required.items():
+  Line   51  ADDED >>             playerVal = getattr(player, f)
+  Line  294  REMOVED >> 
+
+[21:44:09] Change Detected: scripts\abilities.py
+  Line   49  REMOVED >>         required: Dict = self.resources.get('required', {})
+  Line   49  ADDED >>         required: Dict[str, int] = self.resources.get('required', {})
+  Line   51  REMOVED >>             playerVal = getattr(player, f)
+  Line   51  ADDED >>             playerVal = getattr(player, f'_{resource}', None)
+  Line   52  ADDED >>             if playerVal is None: # check if resource doesn't have underscore before it
+  Line   53  ADDED >>                 playerVal = getattr(player, f'{resource}', None)
+
+[21:44:17] Change Detected: scripts\abilities.py
+  Line   53  REMOVED >>                 playerVal = getattr(player, f'{resource}', None)
+  Line   53  ADDED >>                 playerVal = getattr(player, resource, None)
+
+[21:44:49] Change Detected: scripts\abilities.py
+  Line   53  REMOVED >>                 playerVal = getattr(player, resource, None)
+  Line   53  ADDED >>                 playerVal = getattr(player, resource, 0)
+  Line   54  ADDED >>             if playerVal < amount:
+  Line   55  ADDED >>                 return False, f"Not enough {resource}: {playerVal} / {amount}"
+
+[21:45:54] Change Detected: scripts\abilities.py
+  Line   56  ADDED >>             
+  Line   57  ADDED >>         if hasattr(self, 'requirements') and self.requirements:
+  Line   58  ADDED >>             ok, reason = self._checkRequirements(player)
+  Line   59  ADDED >>             if not ok:
+  Line   60  ADDED >>                 return False, reason
+  Line   61  ADDED >>             
+  Line   62  ADDED >>         return True, ""
+
+[21:47:09] Change Detected: scripts\abilities.py
+  Line   62  ADDED >>         return True, ""
+  Line   63  ADDED >>     
+  Line   64  ADDED >>     def _checkRequirements(self, player) -> Tuple[bool, str]:
+  Line   65  ADDED >>         req = self.requirements
+  Line   66  ADDED >>         if 'form' in req:
+  Line   67  ADDED >>             currentForm = getattr(player, 'form', 'human')
+  Line   68  ADDED >>             if currentForm != req['form']:
+  Line   69  ADDED >>                 return False, f"Requires {req['form']} form."
+
+[21:47:20] Change Detected: scripts\abilities.py
+  Line   70  ADDED >>         # extra checks here when added
+  Line   71  ADDED >>             
+
+[22:13:49] Change Detected: scripts\abilities.py
+  Line   73  ADDED >>     
+  Line   74  ADDED >>     # -- use -- #
+  Line   75  ADDED >>     def applyResourceCosts(self, player):
+  Line   76  ADDED >>         """Deduct required resouces and grant resources"""
+  Line   77  ADDED >>         required = self.resources.get('required', {})
+  Line   78  ADDED >>         for resource, amount in required.items():
+  Line   79  ADDED >>             attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
+  Line   80  ADDED >>             setattr(player, attr, getattr(player, attr) - amount)
+
+[22:14:42] Change Detected: scripts\abilities.py
+  Line   81  ADDED >>         
+  Line   82  ADDED >>         gained = self.resources.get('gain', {})
+  Line   83  ADDED >>         for resource, amount in gained.items():
+  Line   84  ADDED >>             attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
+
+[22:15:28] Change Detected: scripts\abilities.py
+  Line   84  REMOVED >>             attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
+  Line   84  ADDED >>             if resource == 'energy_shield':
+  Line   85  ADDED >>                 player._stats['energyShield'] = min(player.maxEnergyShield, player.energyShield + amount)
+  Line   86  ADDED >>             else:
+  Line   87  ADDED >>                 attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
+
+[22:18:59] Change Detected: scripts\abilities.py
+  Line   88  ADDED >>                 current = getattr(player, attr, 0)
+  Line   89  ADDED >>                 x = attr.lstrip('_')
+  Line   90  ADDED >>                 mAttr = f'_max{x}' if hasattr(player, f'_max{x}') else f'max{x}' if hasattr(player, f'max{x}') else None
+  Line   91  ADDED >>                 if mAttr is not None: # max value
+  Line   92  ADDED >>                     setattr(player, attr, min(getattr(player, mAttr), current + amount))
+  Line   93  ADDED >>                 else:
+  Line   94  ADDED >>                     setattr(player, attr, current + amount)
+
+[22:21:14] Change Detected: scripts\abilities.py
+  Line   95  ADDED >> 
+  Line   96  ADDED >>     # -- display -- #
+  Line   97  ADDED >>     def __str__(self) -> str:
+  Line   98  ADDED >>         cdText = f'[red]Cooldown: {self.cooldown}[/red] | ' if self.cooldown > 0 else ''
+  Line   99  ADDED >>         targetText = str(self.targets) if isinstance(self.targets, int) else self.targets
+  Line  100  ADDED >>         return f'{self.name} | {cdText}Targets: {targetText}'
+
+[22:21:29] Change Detected: scripts\abilities.py
+  Line  101  ADDED >> 
+  Line  102  ADDED >>     def __rich__(self) -> str:
+  Line  103  ADDED >>         return self.__str__()
+
+[22:21:34] Change Detected: scripts\abilities.py
+  Line  104  ADDED >> 
+  Line  105  ADDED >> 
+
+[22:25:59] Change Detected: scripts\abilities.py
+  Line  104  ADDED >> 
+  Line  105  ADDED >> class AbilityTree:
+  Line  106  ADDED >>     def __init__(self, baseData: Dict, evolutions: Dict[int, Dict], variants: Dict[str, Dict]):
+  Line  107  ADDED >>         self.baseData = baseData
+  Line  108  ADDED >>         self.evolutions = evolutions
+  Line  109  ADDED >>         self.variants = variants
+  Line  110  ADDED >>         self.currentVariant = None
+  Line  112  ADDED >>     def getCurrentAbility(self, playerLevel: int) -> Optional[Ability]:
+  Line  113  ADDED >>         available = [lvl for lvl in self.evolutions if lvl <= playerLevel]
+  Line  115  ADDED >>         if available:
+  Line  116  ADDED >>             evoLevel = max(available)
+  Line  117  ADDED >>             data = deepcopy(self.evolutions[evoLevel])
+  Line  118  ADDED >>         else:
+  Line  119  ADDED >>             data = deepcopy(self.baseData)
+
+[22:26:29] Change Detected: scripts\abilities.py
+  Line  113  ADDED >>         if self.baseData['level'] > playerLevel:
+  Line  114  ADDED >>             return None
+  Line  115  ADDED >> 
+
+[22:27:09] Change Detected: scripts\abilities.py
+  Line  123  ADDED >>         
+  Line  124  ADDED >>         if self.currentVariant:
+  Line  125  ADDED >>             data = self._applyVariantMods(data, self.currentVariant)
+  Line  126  ADDED >>         
+  Line  127  ADDED >>         return self._buildAbility(data)
+
+[22:27:44] Change Detected: scripts\abilities.py
+  Line  128  ADDED >>     
+  Line  129  ADDED >>     def _applyVariantMods(self, base: Dict, variantName: str) -> Dict:
+  Line  130  ADDED >>         """
+  Line  131  ADDED >>         Apply a variant's modifications onto the resolved evolution data.
+  Line  132  ADDED >> 
+  Line  133  ADDED >>         Keys ending in + are additive:
+  Line  134  ADDED >>             damage_base+     → base['damage_base'] += value
+  Line  135  ADDED >>             cooldown+        → base['cooldown']    += value
+  Line  136  ADDED >>             effects+         → deep-merge into base['effects']
+  Line  137  ADDED >>             resources+       → deep-merge into base['resources']
+  Line  138  ADDED >>             tags+            → extend base['tags']
+  Line  139  ADDED >> 
+  Line  140  ADDED >>         Keys without + are replacements:
+  Line  141  ADDED >>             targets, cooldown, damage_base, damage_scaling, etc.
+  Line  142  ADDED >>         """
+
+[22:27:54] Change Detected: scripts\abilities.py
+  Line  131  REMOVED >>         Apply a variant's modifications onto the resolved evolution data.
+  Line  131  REMOVED >> 
+  Line  131  ADDED >>         Apply a variant's modifications onto the resolved evolution data.\n
+  Line  138  REMOVED >> 
+  Line  138  ADDED >>         \n
+
+[22:28:09] Change Detected: scripts\abilities.py
+  Line  133  REMOVED >>             damage_base+     → base['damage_base'] += value
+  Line  133  REMOVED >>             cooldown+        → base['cooldown']    += value
+  Line  133  REMOVED >>             effects+         → deep-merge into base['effects']
+  Line  133  REMOVED >>             resources+       → deep-merge into base['resources']
+  Line  133  REMOVED >>             tags+            → extend base['tags']
+  Line  133  ADDED >>             - damage_base+     → base['damage_base'] += value
+  Line  134  ADDED >>             - cooldown+        → base['cooldown']    += value
+  Line  135  ADDED >>             - effects+         → deep-merge into base['effects']
+  Line  136  ADDED >>             - resources+       → deep-merge into base['resources']
+  Line  137  ADDED >>             - tags+            → extend base['tags']
+  Line  140  REMOVED >>             targets, cooldown, damage_base, damage_scaling, etc.
+  Line  140  ADDED >>             - targets, cooldown, damage_base, damage_scaling, etc.
+
+[22:32:59] Change Detected: scripts\abilities.py
+  Line  142  ADDED >>         if variantName not in self.variants:
+  Line  143  ADDED >>             return base
+  Line  144  ADDED >>         
+  Line  145  ADDED >>         result = deepcopy(base)
+  Line  146  ADDED >>         variant = self.variants[variantName]
+  Line  147  ADDED >> 
+  Line  148  ADDED >>         for k, v in variant.items():
+  Line  149  ADDED >>             if k == 'description+':
+  Line  150  ADDED >>                 result['description'] = result.get('description', '') + '\n' + v
+  Line  151  ADDED >>             elif k.endswith('+'):
+  Line  152  ADDED >>                 field = k[:-1]
+  Line  153  ADDED >>                 if field == 'effects':
+  Line  154  ADDED >>                     result['effects'] = _deepMergeEffects(result.get('effects', {}), v)
+  Line  155  ADDED >>                 
+  Line  156  ADDED >>                 elif field == 'resources':
+  Line  157  ADDED >>                     result['resources'] = _deepMergeEffects(result.get('resources', {}), v)
+  Line  158  ADDED >>                 
+  Line  159  ADDED >>                 elif field == 'tags':
+  Line  160  ADDED >>                     existing = result.get('tags', [])
+  Line  161  ADDED >>                     result['tags'] = list(set(existing) | set(v))
+  Line  162  ADDED >> 
+  Line  163  ADDED >>                 elif field == 'damage_base':
+  Line  164  ADDED >>                     result['damage_base'] = result.get('damage_base', 0) + v
+  Line  165  ADDED >>                 elif field == 'damage_scaling':
+  Line  166  ADDED >>                     result['damage_scaling'] = result.get('damage_scaling', 0) + v
+  Line  167  ADDED >>                 
+  Line  168  ADDED >>                 elif field == 'heal_base':
+  Line  169  ADDED >>                     result['heal_base'] = result.get('heal_base', 0) + v
+  Line  170  ADDED >>                 elif field == 'heal_percent':
+  Line  171  ADDED >>                     result['heal_percent'] = result.get('heal_percent', 0) + v
+
+[22:33:24] Change Detected: scripts\abilities.py
+  Line  172  ADDED >> 
+  Line  173  ADDED >>                 elif field == 'cooldown':
+  Line  174  ADDED >>                     result['cooldown'] = max(0, result.get('cooldown', 0) + v)
+
+[22:33:29] Change Detected: scripts\abilities.py
+  Line  175  ADDED >>                 
+  Line  176  ADDED >>             else:
+  Line  177  ADDED >>                 
+
+[22:33:39] Change Detected: scripts\abilities.py
+  Line  177  REMOVED >>                 
+  Line  177  ADDED >>                 result[k] = v
+
+[22:33:44] Change Detected: scripts\abilities.py
+  Line  178  ADDED >> 
+  Line  179  ADDED >>         return result
+
+[22:33:54] Change Detected: scripts\abilities.py
+  Line  180  ADDED >> 
+  Line  181  ADDED >>     def _buildAbility(self, data: Dict) -> Ability:
+
+[22:35:29] Change Detected: scripts\abilities.py
+  Line  182  ADDED >>         dScale = data.get('damage_scaling', 0)
+  Line  183  ADDED >>         dScaling = dScale / 100 if dScale >= 1 else dScale
+  Line  184  ADDED >>         hScale = data.get('heal_percent', 0)
+  Line  185  ADDED >>         hScaling = hScale / 100 if hScale >= 1 else dScale
+
+[22:37:04] Change Detected: scripts\abilities.py
+  Line  186  ADDED >> 
+  Line  187  ADDED >>         return Ability(
+  Line  188  ADDED >>             data['name'], data['category'], data.get('tags', []),
+  Line  189  ADDED >>             data.get('damage_base', 0), dScaling, data.get('damage_type') data.get('heal_base', 0), hScaling,
+  Line  190  ADDED >>         )
+
+[22:37:59] Change Detected: scripts\abilities.py
+  Line  189  REMOVED >>             data.get('damage_base', 0), dScaling, data.get('damage_type') data.get('heal_base', 0), hScaling,
+  Line  189  ADDED >>             data.get('damage_base', 0), dScaling, data.get('damage_type'), data.get('heal_base', 0), hScaling,
+  Line  190  ADDED >>             data.get('cooldown', 0), data.get('targets', 1), data.get('resources', {}), data.get('effects', {}), data.get('requirements', {}),
+  Line  191  ADDED >>             data.get('description', '')
+
+[22:38:04] Change Detected: scripts\abilities.py
+  Line  191  REMOVED >>             data.get('description', '')
+  Line  191  ADDED >>             data.get('description', ''),
+
+[22:39:24] Change Detected: scripts\abilities.py
+  Line  193  ADDED >>     
+  Line  194  ADDED >>     def unlockVariant(self, variantName: str) -> bool:
+  Line  195  ADDED >>         if variantName not in self.variants:
+  Line  196  ADDED >>             return False
+  Line  197  ADDED >>         self.variants[variantName]['unlocked'] = True
+  Line  198  ADDED >>         return True
+  Line  199  ADDED >> 
+  Line  200  ADDED >>     def setActiveVariant(self, variantName: Optional[str]) -> bool:
+  Line  201  ADDED >>         if variantName and variantName not in self.variants:
+  Line  202  ADDED >>             return False
+  Line  203  ADDED >>         self.currentVariant = variantName
+  Line  204  ADDED >>         return True
+
+[22:39:29] Change Detected: scripts\abilities.py
+  Line  205  ADDED >> 
+  Line  206  ADDED >>     # -- helpers -- #
+
+[22:42:30] Change Detected: scripts\abilities.py
+  Line  112  ADDED >>     # -- ability -- #
+  Line  207  REMOVED >>     # -- helpers -- #
+  Line  207  ADDED >> # -- helpers -- #
+  Line  208  ADDED >> def _deepMergeEffects(base: Dict, overlay: Dict) -> Dict:
+  Line  209  ADDED >>     result = deepcopy(base)
+  Line  210  ADDED >>     for k, v in overlay.items():
+  Line  211  ADDED >>         if k.endswith('+'):
+  Line  212  ADDED >>             field = k[:-1]
+  Line  213  ADDED >>             if field in result and isinstance(result[field], (int, float)):
+  Line  214  ADDED >>                 result[field] += v
+  Line  215  ADDED >>             else:
+  Line  216  ADDED >>                 result[field] = v
+  Line  217  ADDED >>         elif isinstance(v, dict) and k in result and isinstance(result[k], dict):
+  Line  218  ADDED >>             result[k] = _deepMergeEffects
+
+[22:43:00] Change Detected: scripts\abilities.py
+  Line  218  REMOVED >>             result[k] = _deepMergeEffects
+  Line  218  ADDED >>             result[k] = _deepMergeEffects(result[k], v)
+  Line  219  ADDED >>         else:
+  Line  220  ADDED >>             result[k] = deepcopy(v)
+  Line  221  ADDED >>     return result
+
+[22:44:00] Change Detected: scripts\abilities.py
+  Line  222  ADDED >> 
+  Line  223  ADDED >> def _buildEvolutions(evoData: Dict[str, Dict], baseName: str) -> Dict[int, Dict]:
+  Line  224  ADDED >>     evolutions = {}
+  Line  225  ADDED >>     for levelStr, data in evoData.items():
+  Line  226  ADDED >>         fullData = deepcopy(data)
+  Line  227  ADDED >>         fullData.setdefault('name', baseName)
+  Line  228  ADDED >>         evolutions[int(levelStr)] = fullData
+  Line  229  ADDED >>     return evolutions
+
+[22:48:40] Change Detected: scripts\abilities.py
+  Line  472  ADDED >> 
+  Line  473  ADDED >> #=========================================================================================#
+  Line  474  ADDED >> 
+  Line  475  ADDED >> def loadAbilities() -> Dict[str, Dict[str, Dict[str, AbilityTree]]]:
+  Line  476  ADDED >>     """
+  Line  477  ADDED >>     Returns:
+  Line  478  ADDED >>         classAbilties[className][ascendancyName][abilityName] = AbilityTree
+  Line  479  ADDED >>     """
+  Line  480  ADDED >>     with open('data/abilities.json', 'r') as f:
+  Line  481  ADDED >>         data: Dict[str, Any] = load(f)
+  Line  482  ADDED >> 
+  Line  483  ADDED >>     classAbilities = {}
+  Line  484  ADDED >> 
+  Line  485  ADDED >>     for className, classData in data.items():
+  Line  486  ADDED >>         classAbilities[className] = {}
+  Line  487  ADDED >> 
+  Line  488  ADDED >>         for ascendancyName, ascendancyAbilities in classData.items():
+  Line  489  ADDED >>             classAbilities[className][ascendancyName] = {}
+  Line  490  ADDED >> 
+  Line  491  ADDED >>             if not ascendancyAbilities:
+  Line  492  ADDED >>                 continue
+  Line  493  ADDED >> 
+  Line  494  ADDED >>             for abilityName, abilityData in ascendancyAbilities.items():
+  Line  495  ADDED >>                 baseData = {
+  Line  496  ADDED >>                     'name': abilityData['name'],
+  Line  497  ADDED >>                     'category': abilityData.get('category', 'damage'),
+  Line  498  ADDED >>                     'tags': abilityData.get('tags', []),
+  Line  499  ADDED >>                     'damage_base': abilityData.get('damage_base', 0),
+  Line  500  ADDED >>                     'damage_scaling': abilityData.get('damage_scaling', 0),
+  Line  501  ADDED >>                     'damage_type': abilityData.get('damage_type'),
+  Line  502  ADDED >>                     'heal_base': abilityData.get('heal_base', 0),
+  Line  503  ADDED >>                     'heal_percent': abilityData.get('heal_percent', 0),
+  Line  504  ADDED >>                     'cooldown': abilityData.get('cooldown', 0),
+  Line  505  ADDED >>                     'targets': abilityData.get('targets', 1),
+  Line  506  ADDED >>                     'resources': abilityData.get('resources', {}),
+  Line  507  ADDED >>                     'effects': abilityData.get('effects', {}),
+  Line  508  ADDED >>                     'requirements': abilityData.get('requirements', {}),
+  Line  509  ADDED >>                     'description': abilityData.get('description', ''),
+  Line  510  ADDED >>                 }
+  Line  511  ADDED >> 
+  Line  512  ADDED >>                 evolutions = _buildEvolutions(abilityData.get('evolutions', {}), abilityName)
+  Line  514  ADDED >>                 tree = AbilityTree(
+  Line  515  ADDED >>                     baseData, evolutions, abilityData.get('variants', {}),
+  Line  516  ADDED >>                 )
+
+[22:49:10] Change Detected: scripts\abilities.py
+  Line  517  ADDED >> 
+  Line  518  ADDED >>                 classAbilities[className][ascendancyName][abilityName] = tree
+  Line  519  ADDED >> 
+  Line  520  ADDED >>     return classAbilities
+
+[22:49:30] Change Detected: scripts\abilities.py
+  Line  521  ADDED >> 
+  Line  522  ADDED >> CLASS_ABILITIES: Dict[str, Dict[str, Dict[str, AbilityTree]]] = loadAbilities()

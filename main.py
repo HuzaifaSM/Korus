@@ -4,6 +4,7 @@ from typing import List, Optional, Dict
 from sys import exit
 import random
 import json
+import subprocess
 
 from scripts.player import Player, selectClass, deserialisePlayer
 from scripts.enemy import Enemy, createEnemy
@@ -1017,6 +1018,13 @@ class Game:
 
 def main():
     try:
+        subprocess.Popen([ # create a korus watcher to track save file changes
+            r"tools\korus_watch.exe",
+            "data/saves",
+            "--log", "data/watch/save_watch.log",
+            "--interval", "10"
+        ])
+
         game = Game()
         game.titleScreen()
     except KeyboardInterrupt:

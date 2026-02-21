@@ -1,191 +1,232 @@
 from json import load
+from copy import deepcopy
 from typing import Optional, List, Dict, Any, Tuple
 from random import random
 from .styles import console
 
-def parseSecondaryCost(costData: Dict, player) -> Tuple[Optional[str], Optional[Any], bool]:
-    """
-    Parse secondaryCost field from ability data.
-    Returns: (resourceType, amount, canAfford)
-    
-    Handles:
-    - rage costs (including "all")
-    - hp costs (current % or max %, e.g. "10%_current")
-    - siphon, combo, mana costs
-    - conditional costs (e.g. ifPhoenixConsumed)
-    """
-    if not costData:
-        return None, None, True
-    
-    for resourceType, amount in costData.items():
-        if resourceType == "rage":
-            if amount == "all":
-                return "rage", player._rage, player._rage > 0
-            return "rage", amount, player._rage >= amount
-        
-        elif resourceType == "hp":
-            if isinstance(amount, str):
-                if "_current" in amount:
-                    percent = float(amount.replace("%_current", "")) / 100
-                    hpCost = int(player._health * percent)
-                    return "hp", hpCost, player._health > hpCost
-                elif "_max" in amount:
-                    percent = float(amount.replace("%_max", "")) / 100
-                    hpCost = int(player._maxHealth * percent)
-                    return "hp", hpCost, player._health > hpCost
-            return "hp", amount, player._health > amount
-        
-        elif resourceType == "siphon":
-            return "siphon", amount, hasattr(player, 'siphon') and player.siphon >= amount
-        
-        elif resourceType == "combo":
-            return "combo", amount, hasattr(player, '_combo') and player._combo >= amount
-        
-        elif resourceType == "mana":
-            return "mana", amount, hasattr(player, '_mana') and player._mana >= amount
-        
-        elif resourceType == "ifPhoenixConsumed":
-            # Special conditional for Flamewarden Solar Flare
-            if hasattr(player, 'phoenixUsed') and player.phoenixUsed:
-                return None, None, True  # No cost if phoenix consumed
-            continue
-    
-    return None, None, True
+#=========================================================================================#
 
-def parseScalesWithResource(scaleData: Dict, player) -> float:
-    """
-    Parse dynamic scaling based on resources.
-    
-    Handles:
-    - scalesWithRage: {baseAmount, perRage, maxRage}
-    - scalesWithFury: {baseAmount, perFury, maxFury}
-    - scalesWithMissingHP: {baseAmount, perMissingPercent, maxBonus}
-    """
-    if "scalesWithRage" in scaleData:
-        data = scaleData["scalesWithRage"]
-        baseAmount = data.get("baseAmount", 0)
-        perRage = data.get("perRage", 0)
-        maxRage = data.get("maxRage", 50)
-        currentRage = min(player._rage, maxRage) if hasattr(player, '_rage') else 0
-        return baseAmount + (currentRage * perRage)
-    
-    elif "scalesWithFury" in scaleData:
-        data = scaleData["scalesWithFury"]
-        baseAmount = data.get("baseAmount", 0)
-        perFury = data.get("perFury", 0)
-        maxFury = data.get("maxFury", 10)
-        currentFury = min(player._fury, maxFury) if hasattr(player, '_fury') else 0
-        return baseAmount + (currentFury * perFury)
-    
-    elif "scalesWithMissingHP" in scaleData:
-        data = scaleData["scalesWithMissingHP"]
-        baseAmount = data.get("baseAmount", 0)
-        perMissingPercent = data.get("perMissingPercent", 0)
-        maxBonus = data.get("maxBonus", 1.0)
-        missingPercent = 1.0 - (player._health / player._maxHealth)
-        bonus = min(maxBonus, missingPercent * perMissingPercent * 100)
-        return baseAmount + bonus
-    
-    return 0
+class Ability:
+    def __init__(self, name: str, category: str, tags: List[str],
+                 baseDamage: int, damageScaling: float, damageType: str,
+                 healBase: int, healPercent: float,
+                 cooldown: int, targets: int | str,
+                 resources: Dict, effects: Dict, requirements: Dict,
+                 description: str):
+        self.name = name
+        self.category = category
+        self.tags = tags
 
-def parseBonusDamagePerResource(bonusData: Dict, player) -> int:
-    """
-    Parse bonus damage that scales with resource stacks.
-    
-    Handles resources: rage, fury, fortify, annihilation, combo, prowess
-    Respects maxStacks unless noMaxStacks=true
-    """
-    resource = bonusData.get("resource")
-    amount = bonusData.get("amount", 0)
-    maxStacks = bonusData.get("maxStacks")
-    noMaxStacks = bonusData.get("noMaxStacks", False)
-    
-    currentStacks = 0
-    if resource == "rage" and hasattr(player, '_rage'):
-        currentStacks = player._rage
-    elif resource == "fury" and hasattr(player, '_fury'):
-        currentStacks = player._fury
-    elif resource == "fortify" and hasattr(player, '_fortify'):
-        currentStacks = player._fortify
-    elif resource == "annihilation" and hasattr(player, 'annihilation'):
-        currentStacks = player.annihilation
-    elif resource == "combo" and hasattr(player, '_combo'):
-        currentStacks = player._combo
-    elif resource == "prowess" and hasattr(player, '_prowess'):
-        currentStacks = player._prowess
-    
-    if not noMaxStacks and maxStacks:
-        currentStacks = min(currentStacks, maxStacks)
-    
-    return int(currentStacks * amount)
+        self.baseDamage = baseDamage
+        self.damageScaling = damageScaling
+        self.damageType = damageType
 
-def parseShieldAmount(shieldData, player) -> int:
-    """
-    Parse complex shield calculations.
-    
-    Handles:
-    - String format: "100_plus_25%_hp"
-    - Dict format: {"base": 100, "perRage": 4, "perFortify": 8}
-    - Simple int
-    """
-    if isinstance(shieldData, str):
-        parts = shieldData.split("_plus_")
-        baseShield = int(parts[0])
-        
-        if len(parts) > 1:
-            percentPart = parts[1].replace("%_hp", "")
-            percent = float(percentPart) / 100
-            return baseShield + int(player._maxHealth * percent)
-        return baseShield
-    
-    elif isinstance(shieldData, dict):
-        baseShield = shieldData.get("base", 0)
-        
-        if "perRage" in shieldData and hasattr(player, '_rage'):
-            baseShield += player._rage * shieldData["perRage"]
-        
-        if "perFortify" in shieldData and hasattr(player, '_fortify'):
-            baseShield += player._fortify * shieldData["perFortify"]
-        
-        return int(baseShield)
-    
-    return int(shieldData)
+        self.healBase = healBase
+        self.healPercent = healPercent
 
-def checkConditionalRequirement(condition: str, player, target=None) -> bool:
-    """
-    Check if conditional requirements are met.
+        self.maxCooldown = cooldown
+        self.cooldown = cooldown
+        self.targets = targets
+
+        self.resources = resources
+        self.effects = effects
+        self.requirements = requirements
+
+        self.description = description
+
+    # -- true values -- #
+    def calculateDamage(self, playerDamage: int) -> int:
+        return int(self.baseDamage + (playerDamage * self.damageScaling))
+
+    def calculateHeal(self, playerMaxHp: int) -> int:
+        return int(self.healBase + (playerMaxHp * self.healPercent))
     
-    Handles:
-    - fury_above_X
-    - fortify_above_X
-    - fortify_at_max
-    - annihilation_above_X
-    - target_below_30%
-    - requiresPhoenixAspect
-    """
-    if condition.startswith("fury_above_"):
-        threshold = int(condition.replace("fury_above_", ""))
-        return hasattr(player, '_fury') and player._fury > threshold
+    # -- resources -- #
+    def canUse(self, player) -> Tuple[bool, str]:
+        if self.cooldown > 0:
+            return False, f"On cooldown for {self.cooldown} more turns."
+        
+        required: Dict[str, int] = self.resources.get('required', {})
+        for resource, amount in required.items():
+            playerVal = getattr(player, f'_{resource}', None)
+            if playerVal is None: # check if resource doesn't have underscore before it
+                playerVal = getattr(player, resource, 0)
+            if playerVal < amount:
+                return False, f"Not enough {resource}: {playerVal} / {amount}"
+            
+        if hasattr(self, 'requirements') and self.requirements:
+            ok, reason = self._checkRequirements(player)
+            if not ok:
+                return False, reason
+            
+        return True, ""
     
-    elif condition.startswith("fortify_above_"):
-        threshold = int(condition.replace("fortify_above_", ""))
-        return hasattr(player, '_fortify') and player._fortify > threshold
+    def _checkRequirements(self, player) -> Tuple[bool, str]:
+        req = self.requirements
+        if 'form' in req:
+            currentForm = getattr(player, 'form', 'human')
+            if currentForm != req['form']:
+                return False, f"Requires {req['form']} form."
+        # extra checks here when added
+            
+        return True, ""
     
-    elif condition == "fortify_at_max":
-        return (hasattr(player, '_fortify') and hasattr(player, '_maxFortify') 
-                and player._fortify >= player._maxFortify)
+    # -- use -- #
+    def applyResourceCosts(self, player):
+        """Deduct required resouces and grant resources"""
+        required = self.resources.get('required', {})
+        for resource, amount in required.items():
+            attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
+            setattr(player, attr, getattr(player, attr) - amount)
+        
+        gained = self.resources.get('gain', {})
+        for resource, amount in gained.items():
+            if resource == 'energy_shield':
+                player._stats['energyShield'] = min(player.maxEnergyShield, player.energyShield + amount)
+            else:
+                attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
+                current = getattr(player, attr, 0)
+                x = attr.lstrip('_')
+                mAttr = f'_max{x}' if hasattr(player, f'_max{x}') else f'max{x}' if hasattr(player, f'max{x}') else None
+                if mAttr is not None: # max value
+                    setattr(player, attr, min(getattr(player, mAttr), current + amount))
+                else:
+                    setattr(player, attr, current + amount)
+
+    # -- display -- #
+    def __str__(self) -> str:
+        cdText = f'[red]Cooldown: {self.cooldown}[/red] | ' if self.cooldown > 0 else ''
+        targetText = str(self.targets) if isinstance(self.targets, int) else self.targets
+        return f'{self.name} | {cdText}Targets: {targetText}'
+
+    def __rich__(self) -> str:
+        return self.__str__()
+
+class AbilityTree:
+    def __init__(self, baseData: Dict, evolutions: Dict[int, Dict], variants: Dict[str, Dict]):
+        self.baseData = baseData
+        self.evolutions = evolutions
+        self.variants = variants
+        self.currentVariant = None
+
+    # -- ability -- #
+    def getCurrentAbility(self, playerLevel: int) -> Optional[Ability]:
+        if self.baseData['level'] > playerLevel:
+            return None
+
+        available = [lvl for lvl in self.evolutions if lvl <= playerLevel]
+
+        if available:
+            evoLevel = max(available)
+            data = deepcopy(self.evolutions[evoLevel])
+        else:
+            data = deepcopy(self.baseData)
+        
+        if self.currentVariant:
+            data = self._applyVariantMods(data, self.currentVariant)
+        
+        return self._buildAbility(data)
     
-    elif condition.startswith("annihilation_above_"):
-        threshold = int(condition.replace("annihilation_above_", ""))
-        return hasattr(player, 'annihilation') and player.annihilation > threshold
+    def _applyVariantMods(self, base: Dict, variantName: str) -> Dict:
+        """
+        Apply a variant's modifications onto the resolved evolution data.\n
+        Keys ending in + are additive:
+            - damage_base+     → base['damage_base'] += value
+            - cooldown+        → base['cooldown']    += value
+            - effects+         → deep-merge into base['effects']
+            - resources+       → deep-merge into base['resources']
+            - tags+            → extend base['tags']
+        \n
+        Keys without + are replacements:
+            - targets, cooldown, damage_base, damage_scaling, etc.
+        """
+        if variantName not in self.variants:
+            return base
+        
+        result = deepcopy(base)
+        variant = self.variants[variantName]
+
+        for k, v in variant.items():
+            if k == 'description+':
+                result['description'] = result.get('description', '') + '\n' + v
+            elif k.endswith('+'):
+                field = k[:-1]
+                if field == 'effects':
+                    result['effects'] = _deepMergeEffects(result.get('effects', {}), v)
+                
+                elif field == 'resources':
+                    result['resources'] = _deepMergeEffects(result.get('resources', {}), v)
+                
+                elif field == 'tags':
+                    existing = result.get('tags', [])
+                    result['tags'] = list(set(existing) | set(v))
+
+                elif field == 'damage_base':
+                    result['damage_base'] = result.get('damage_base', 0) + v
+                elif field == 'damage_scaling':
+                    result['damage_scaling'] = result.get('damage_scaling', 0) + v
+                
+                elif field == 'heal_base':
+                    result['heal_base'] = result.get('heal_base', 0) + v
+                elif field == 'heal_percent':
+                    result['heal_percent'] = result.get('heal_percent', 0) + v
+
+                elif field == 'cooldown':
+                    result['cooldown'] = max(0, result.get('cooldown', 0) + v)
+                
+            else:
+                result[k] = v
+
+        return result
+
+    def _buildAbility(self, data: Dict) -> Ability:
+        dScale = data.get('damage_scaling', 0)
+        dScaling = dScale / 100 if dScale >= 1 else dScale
+        hScale = data.get('heal_percent', 0)
+        hScaling = hScale / 100 if hScale >= 1 else dScale
+
+        return Ability(
+            data['name'], data['category'], data.get('tags', []),
+            data.get('damage_base', 0), dScaling, data.get('damage_type'), data.get('heal_base', 0), hScaling,
+            data.get('cooldown', 0), data.get('targets', 1), data.get('resources', {}), data.get('effects', {}), data.get('requirements', {}),
+            data.get('description', ''),
+        )
     
-    elif condition == "target_below_30%" and target:
-        return target._health < (target._maxHealth * 0.3)
-    
-    elif condition == "requiresPhoenixAspect":
-        return hasattr(player, 'phoenixAspect') and player.phoenixAspect
-    
-    return False
+    def unlockVariant(self, variantName: str) -> bool:
+        if variantName not in self.variants:
+            return False
+        self.variants[variantName]['unlocked'] = True
+        return True
+
+    def setActiveVariant(self, variantName: Optional[str]) -> bool:
+        if variantName and variantName not in self.variants:
+            return False
+        self.currentVariant = variantName
+        return True
+
+# -- helpers -- #
+def _deepMergeEffects(base: Dict, overlay: Dict) -> Dict:
+    result = deepcopy(base)
+    for k, v in overlay.items():
+        if k.endswith('+'):
+            field = k[:-1]
+            if field in result and isinstance(result[field], (int, float)):
+                result[field] += v
+            else:
+                result[field] = v
+        elif isinstance(v, dict) and k in result and isinstance(result[k], dict):
+            result[k] = _deepMergeEffects(result[k], v)
+        else:
+            result[k] = deepcopy(v)
+    return result
+
+def _buildEvolutions(evoData: Dict[str, Dict], baseName: str) -> Dict[int, Dict]:
+    evolutions = {}
+    for levelStr, data in evoData.items():
+        fullData = deepcopy(data)
+        fullData.setdefault('name', baseName)
+        evolutions[int(levelStr)] = fullData
+    return evolutions
 
 #=========================================================================================#
 
@@ -430,252 +471,54 @@ class Effects:
         return StatusEffect(name, effectType, turns, kwargs)
 
 #=========================================================================================#
-# NEED TO REWRITE ABILITY AND ABILITY TREE CLASSSES
-class Ability:
-    def __init__(self, name: str, baseDamage: int, damageScaling: float,
-                 damageType: str, staminaCost: int, cooldown: int,
-                 effects: List[StatusEffect], targets: str = "single",
-                 resourceCost: Optional[Dict] = None,
-                 secondaryCost: Optional[Dict] = None):
-        self.name = name
-        self.baseDamage = baseDamage
-        self.damageScaling = damageScaling
-        self.damageType = damageType
-        self.staminaCost = staminaCost
-        self.cooldown = cooldown
-        self.maxCooldown = cooldown
-        self.currentCooldown = 0
-        self.effects = effects
-        self.targets = targets
-        self.resourceCost = resourceCost
-        self.secondaryCost = secondaryCost
 
-    def calculateDamage(self, playerDamage: int) -> int:
-        return int(self.baseDamage + (playerDamage * self.damageScaling))
-    
-    def canUse(self, player) -> Tuple[bool, str]:
-        if self.currentCooldown > 0:
-            return False, f"On cooldown for {self.currentCooldown} more turns."
-        
-        if player._stamina < self.staminaCost:
-            return False, f"Not enough stamina: {player._stamina} / {self.staminaCost}"
-        
-        if self.resourceCost:
-            resType = self.resourceCost.get('type')
-            resAmount = self.resourceCost.get('amount')
-            if resType == 'rage':
-                if resAmount == 'all':
-                    if player._rage == 0:
-                        return False, "No rage to consume"
-                elif player._rage < resAmount:
-                    return False, f"Not enough rage: {player._rage} / {resAmount}"
-            elif resType == 'siphon':
-                if player.siphon < resAmount:
-                    return False, f"Not enough siphon: {player.siphon} / {resAmount}"
-            elif resType == "mana":
-                if player._mana < resAmount:
-                    return False, f"Not enough mana ({player._mana}/{resAmount})"
-            elif resType == "combo":
-                if player._combo < resAmount:
-                    return False, f"Not enough combo ({player._combo}/{resAmount})"
-        
-        if self.secondaryCost:
-            resType, resAmount, canAfford = parseSecondaryCost(self.secondaryCost, player)
-            if not canAfford:
-                return False, f"Not enough {resType}: cannot afford {resAmount}"
-
-        return True, ""
-
-    def use(self, player):
-        player._stamina -= self.staminaCost
-
-        if self.resourceCost:
-            resType = self.resourceCost.get('type')
-            resAmount = self.resourceCost.get('amount')
-            consume = self.resourceCost.get('consume', True)
-            
-            if consume:
-                if resType == "rage":
-                    if resAmount == "all":
-                        player._rage = 0
-                    else:
-                        player._rage -= resAmount
-                elif resType == "siphon":
-                    player.siphon -= resAmount
-                elif resType == "mana":
-                    player._mana -= resAmount
-                elif resType == "combo":
-                    player._combo -= resAmount
-
-        if self.secondaryCost:
-            resType, resAmount, _ = parseSecondaryCost(self.secondaryCost, player)
-            if resType and resAmount:
-                if resType == "rage":
-                    player._rage = max(0, player._rage - resAmount)
-                elif resType == "hp":
-                    player._health = max(1, player._health - resAmount)
-                elif resType == "siphon":
-                    player.siphon = max(0, player.siphon - resAmount)
-                elif resType == "combo":
-                    player._combo = max(0, player._combo - resAmount)
-                elif resType == "mana":
-                    player._mana = max(0, player._mana - resAmount)
-
-        self.currentCooldown = self.maxCooldown
-
-    def tickCooldown(self):
-        self.currentCooldown = max(0, self.currentCooldown - 1)
-
-    def __rich__(self):
-        return self.__str__()
-
-    def __str__(self):
-        cdText = f"[red]CD: {self.currentCooldown}[/red] | " if self.currentCooldown > 0 else ""
-        targetText = {"single": "1 enemy", "double": "2 enemies", 
-                     "triple": "3 enemies", "all": "all enemies"}[self.targets]
-        return f"{self.name} | {cdText}Stamina: {self.staminaCost} | Targets: {targetText}"
-
-class AbilityTree:
-    def __init__(self, abilityName: str, level: int, category: str,
-                 evolutions: Dict[int, Dict], variants: Dict[str, Dict]):
-        self.abilityName = abilityName
-        self.level = level
-        self.category = category
-        self.evolutions = evolutions
-        self.variants = variants
-
-        self.currentEvolutionLevel = None
-        self.currentVariant = None
-
-    def getCurrentAbility(self, playerLevel: int) -> Optional[Ability]:
-        availableEvolutions = [lvl for lvl in self.evolutions.keys() if lvl <= playerLevel]
-        if not availableEvolutions:
-            return None
-
-        evolutionLevel = max(availableEvolutions)
-        self.currentEvolutionLevel = evolutionLevel
-
-        evoData = self.evolutions[evolutionLevel]
-
-        if self.currentVariant:
-            evoData = self._applyVariantMods(evoData, self.currentVariant)
-
-        return self._buildAbility(evoData)
-    
-    def _applyVariantMods(self, baseData: Dict, variantName: str) -> Dict:
-        if variantName not in self.variants:
-            return baseData
-        
-        variantMods = self.variants[variantName]['mods']
-        modifiedData = baseData.copy()
-
-        for mKey, mVal in variantMods.items():
-            if mKey == 'base':
-                if isinstance(mVal, str) and '%' in mVal:
-                    mult = float(mVal.strip('+-%')) / 100
-                    if '-' in mVal:
-                        modifiedData['base'] = int(modifiedData['base'] * (1 - mult))
-                    else:
-                        modifiedData['base'] = int(modifiedData['base'] * (1 + mult))
-                else:
-                    modifiedData['base'] = mVal
-
-            elif mKey == 'scaling':
-                if isinstance(mVal, str) and '%' in mVal:
-                    mult = float(mVal.strip('+-%')) / 100
-                    if '-' in mVal:
-                        modifiedData['scaling'] = modifiedData['scaling'] * (1 - mult)
-                    else:
-                        modifiedData['scaling'] = modifiedData['scaling'] * (1 + mult)
-            
-            elif mKey == "stamina":
-                if isinstance(mVal, str) and '%' in mVal:
-                    mult = float(mVal.strip('+-%')) / 100
-                    modifiedData['stamina'] = int(modifiedData['stamina'] * (1 + mult))
-            
-            elif mKey == "cd":
-                if isinstance(mVal, str):
-                    if mVal == "0":
-                        modifiedData['cd'] = 0
-                    elif '+' in mVal or '-' in mVal:
-                        change = int(mVal)
-                        modifiedData['cd'] = max(0, modifiedData['cd'] + change)
-
-            elif mKey == "targets":
-                modifiedData['targets'] = mVal
-            
-            elif mKey == "addEffect":
-                if 'effects' not in modifiedData:
-                    modifiedData['effects'] = []
-                modifiedData['effects'].append(mVal)
-            
-            elif mKey == "removeEffect":
-                if 'effects' in modifiedData:
-                    modifiedData['effects'] = [e for e in modifiedData['effects'] 
-                                              if e.get('resourceGain') != mVal]
-            
-            elif mKey == "addCost":
-                modifiedData['rageCost'] = mVal.get('rage', 0)
-                modifiedData['siphonCost'] = mVal.get('siphon', 0)
-        
-            elif mKey == "secondaryCost":
-                modifiedData['secondaryCost'] = mVal
-
-            elif mKey == "guaranteedCrit":
-                if 'effects' not in modifiedData:
-                    modifiedData['effects'] = []
-                modifiedData['effects'].append({"guaranteedCrit": True})
-                
-            elif mKey == "requiresResource":
-                if 'effects' not in modifiedData:
-                    modifiedData['effects'] = []
-                modifiedData['effects'].append({"requiresResource": mVal})
-
-            elif mKey == "consumeResource":
-                if 'effects' not in modifiedData:
-                    modifiedData['effects'] = []
-                modifiedData['effects'].append({"consumeResource": mVal})
-
-        return modifiedData
-
-    def unlockVariant(self, variantName: str) -> bool:
-        if variantName not in self.variants:
-            return False
-        self.variants[variantName]['unlocked'] = True
-        return True
-
-    def setActiveVariant(self, variantName: Optional[str]):
-        if variantName and variantName not in self.variants:
-            return False
-        self.currentVariant = variantName
-        return True
-
-#=========================================================================================#
-# NEED TO REWRITE LOAD ABILITIES
-def loadAbilities() -> Dict[str, AbilityTree]:
-    with open('Korus/data/abilities.json', 'r') as f:
-        data: Dict[str, Dict[str, Dict]] = load(f)
+def loadAbilities() -> Dict[str, Dict[str, Dict[str, AbilityTree]]]:
+    """
+    Returns:
+        classAbilties[className][ascendancyName][abilityName] = AbilityTree
+    """
+    with open('data/abilities.json', 'r') as f:
+        data: Dict[str, Any] = load(f)
 
     classAbilities = {}
 
-    for className, classData in data.items(): # splits by classes
+    for className, classData in data.items():
         classAbilities[className] = {}
 
-        for ascendancyName, ascendancyAbilities in classData.items(): # splits by ascendancies including 'base'
+        for ascendancyName, ascendancyAbilities in classData.items():
             classAbilities[className][ascendancyName] = {}
-            for abilityName, abilityData in ascendancyAbilities.items(): # splits by actual abilities
+
+            if not ascendancyAbilities:
+                continue
+
+            for abilityName, abilityData in ascendancyAbilities.items():
+                baseData = {
+                    'name': abilityData['name'],
+                    'category': abilityData.get('category', 'damage'),
+                    'tags': abilityData.get('tags', []),
+                    'damage_base': abilityData.get('damage_base', 0),
+                    'damage_scaling': abilityData.get('damage_scaling', 0),
+                    'damage_type': abilityData.get('damage_type'),
+                    'heal_base': abilityData.get('heal_base', 0),
+                    'heal_percent': abilityData.get('heal_percent', 0),
+                    'cooldown': abilityData.get('cooldown', 0),
+                    'targets': abilityData.get('targets', 1),
+                    'resources': abilityData.get('resources', {}),
+                    'effects': abilityData.get('effects', {}),
+                    'requirements': abilityData.get('requirements', {}),
+                    'description': abilityData.get('description', ''),
+                }
+
+                evolutions = _buildEvolutions(abilityData.get('evolutions', {}), abilityName)
+
                 tree = AbilityTree(
-                    abilityName=abilityName,
-                    level=abilityData['level'],
-                    category=abilityData['category'],
-                    evolutions=abilityData['evolutions'],
-                    variants=abilityData.get('variants', {})
+                    baseData, evolutions, abilityData.get('variants', {}),
                 )
-                classAbilities[className][abilityName] = tree
+
+                classAbilities[className][ascendancyName][abilityName] = tree
 
     return classAbilities
 
-ABILITIES = {} # temp
-CLASS_ABILITIES = {} #loadAbilities()
+CLASS_ABILITIES: Dict[str, Dict[str, Dict[str, AbilityTree]]] = loadAbilities()
 
 ...
