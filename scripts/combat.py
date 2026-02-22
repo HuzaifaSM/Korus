@@ -2,10 +2,13 @@ from typing import List, Optional, Tuple
 from enum import Enum
 import random
 from .entities import Entity
+from .enemy import Enemy
+from .player import Player
 from .abilities import Effects, StatusEffect
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo, formatDamageType, pause
 )
+from .enemyAi import EnemyAI
 from expansions.bosses.bosses import Boss
 
 class TurnPhase(Enum):
@@ -74,6 +77,7 @@ class CombatUnit:
             return True
         return False
 
+    @property
     def canAct(self) -> bool:
         if not self.isActive:
             return False
@@ -86,11 +90,13 @@ class CombatUnit:
                 else:
                     self.statusEffects.remove(effect)
         return not stunned
-    
+
+    @property
     def isStunned(self) -> bool:
         return any(effect.type == "cc" and effect.data.get('effect') in ['stun', 'immobilize', 'freeze']
                    for effect in self.statusEffects)
-    
+
+    @property
     def isSlowed(self) -> bool:
         return any(effect.type == "slow" for effect in self.statusEffects)
     
@@ -164,6 +170,8 @@ class CombatManager:
         self.currentPhase = TurnPhase.PLAYER_TURN
         self.turnNumber = 0
         self.battleActive = False
+        self._enemyDecisions = {}
+        self._enemyIndexMap = {}
 
     def registerUnit(self, entity: Entity, team: str = "player") -> CombatUnit:
         initiative = int(entity._speed * 10) + random.randint(0, 5)
@@ -234,12 +242,17 @@ class CombatManager:
         nextUnit = self.getCurrentUnit() #get next unit, skip if stunned
         if nextUnit:
             attempts = 0
-            while not nextUnit.canAct() and attempts < len(self.turnOrder):
+            while not nextUnit.canAct and attempts < len(self.turnOrder):
                 console.print(f"[warning]{nextUnit.entity._name} is stunned and cannot act![/warning]")
                 nextUnit.resetTurn()
                 self.currentTurnIndex += 1
                 if self.currentTurnIndex >= len(self.turnOrder):
                     self.currentTurnIndex = 0
+                    self.turnNumber += 1
+                    self._enemyDecisions = {}
+                    for unit in self.turnOrder:
+                        if unit.isActive():
+                            unit.resetTurn()
                 nextUnit = self.getCurrentUnit()
                 attempts += 1
 
@@ -812,45 +825,27 @@ class CombatManager:
             ability.currentCooldown = ability.maxCooldown
             return True
 
-    def enemyTurn(self, enemy: Entity, targets: List[Entity]):
+    def enemyTurn(self, enemy: Enemy, targets: List[Entity]):
         self.checkDead(enemy)
         if not targets or enemy._isDead:
             return
-        
         aliveTargets = [t for t in targets if not t._isDead]
         if not aliveTargets:
             return
 
-        target = random.choice(targets)
+        if isinstance(enemy, Boss):
+            self.performAttack(enemy, random.choice(aliveTargets), enemy.chooseAbility(aliveTargets[0]))
+            return
+        
+        if not self._enemyDecisions: # build snapshot for all enemies this round, cache it
+            allEnemies = [u.entity for u in self.getUnitsInTeam('enemy') if not u.entity._isDead]
+            actionLists = [e.ai.buildActionList() for e in allEnemies]
+            self._enemyDecisions = EnemyAI.decideTurn(allEnemies, aliveTargets[0], actionLists)
+            self._enemyIndexMap = {e: i for i, e in enumerate(allEnemies)}
 
-        availableAbilities = []
-        for abilityName, ability in enemy._abilities.items():
-            if ability.cooldown == 0:
-                availableAbilities.append((abilityName, ability._rollWeight))
-
-        if random.random() < 0.7 - (enemy._level / 200): # chance for basic attack decreases with level
-            self.performAttack(enemy, target)
-        elif availableAbilities:
-            if isinstance(enemy, Boss):
-                chosenAbility = enemy.chooseAbility(target)
-            else:
-                totalWeight = sum(weight for _, weight in availableAbilities)
-                roll = random.randint(1, totalWeight)
-                currentWeight = 0
-                chosenAbility = None
-
-                for abilityName, weight in availableAbilities:
-                    currentWeight += weight
-                    if roll <= currentWeight:
-                        chosenAbility = abilityName
-                        break
-
-            if chosenAbility:
-                self.performAttack(enemy, target, chosenAbility)
-            else:
-                self.performAttack(enemy, target)
-        else: # no abilities
-            self.performAttack(enemy, target)
+        idx = self._enemyIndexMap.get(enemy, 0)
+        decision = self._enemyDecisions.get(idx)
+        enemy.ai.applyDecision(decision, aliveTargets[0], self)
 
     def _setPhaseForUnit(self, unit: CombatUnit):
         if unit.team == "player":

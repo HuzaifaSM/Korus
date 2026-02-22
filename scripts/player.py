@@ -1,17 +1,11 @@
-import random
-from copy import deepcopy
 from typing import Dict
-from .entities import Entity
-from .abilities import ABILITIES, CLASS_ABILITIES, Ability
 
 from scripts.styles import (
-    console, displayLevelUp, formatDamageType, pause,
-    printSuccess, printWarning, printInfo, clearScreen
+    console, pause, printWarning, clearScreen
 )
 
-from player.classes import CLASSES, ASCENDANCIES, SUB_TYPES, DESCRIPTIONS
+from player.classes import CLASSES, DESCRIPTIONS
 from player.base import Player
-
 
 def selectClass(name: str, quick: bool = False) -> Player:
     if quick:
@@ -46,7 +40,7 @@ def deserialisePlayer(data: Dict) -> Player:
         printWarning(f"ERROR LOADING SAVE DATA: {className=}")
         pause()
     else:
-        player = CLASSES[className](playerName)
+        player: Player = CLASSES[className](playerName)
 
     player.deserialise(data)
 

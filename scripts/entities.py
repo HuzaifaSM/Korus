@@ -145,7 +145,6 @@ class Entity:
         self._xp = 0
         self.calcXpRequirement()
         self._name = name
-        self._isDead = False
         self.className = className
         self.classDescription = None
         self._ascendancy = None
@@ -154,27 +153,31 @@ class Entity:
         self.subTypeDescription = None
 
     @property
-    def armour(self):
+    def isDead(self) -> bool:
+        return self._health <= 0
+
+    @property
+    def armour(self) -> int:
         return self._stats['armour']
     
     @property
-    def evasion(self):
+    def evasion(self) -> int:
         return self._stats['evasion']
     
     @property
-    def energyShield(self):
+    def energyShield(self) -> int:
         return self._stats['energyShield']
     
     @property
-    def maxEnergyShield(self):
+    def maxEnergyShield(self) -> int:
         return self._stats['maxEnergyShield']
 
     @property
-    def critChance(self):
+    def critChance(self) -> float:
         return self._stats['baseCritChance'] + self._getExtraBonuses('critChance')
 
     @property
-    def critMulti(self):
+    def critMulti(self) -> float:
         return self._stats['baseCritMulti'] + (self._stats['Bonuses']['critMulti']) + self._getExtraBonuses('critMulti')
 
     def __rich__(self):
@@ -320,8 +323,7 @@ class Entity:
                 console.print(f"  [warning]Non-lethal damage dealt![/warning]")
             damageTypeFormatted = formatDamageType(damageType, damageType)
             console.print(f"  [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
-            if self._health <= 0 and not self._isDead: # dies
-                self._isDead = True
+            if  self._isDead: # dies
                 self.death()
         else:
             console.print("[success]Your Shield prevented any damage being taken![/success]")
@@ -338,8 +340,7 @@ class Entity:
             self._health -= damageTaken
             if doPrint:
                 console.print(f"[error]{self._name}'s negative healing dealt {damageTaken} damage![/error] [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
-            if self._health <= 0 and not self._isDead:
-                self._isDead = True
+            if  self._isDead:
                 self.death()
         else:
             if doPrint:
@@ -408,9 +409,9 @@ class Entity:
     def getRune(self, category: str, runeType: str) -> int:
         key = f'{category}_{runeType}'
         return self._craftingInventory.get(key, 0)
-    
+
     def hasRune(self, category: str, runeType: str) -> bool:
-        return self.getRune(category, str) > 0
+        return self.getRune(category, runeType) > 0
 
     def addItem(self, itemName: str, quantity: int = 1, doPrint: bool = True):
         self._inventory[itemName] = self._inventory.get(itemName, 0) + quantity
@@ -424,7 +425,7 @@ class Entity:
                 del self._inventory[itemName]
             return True
         return False
-    
+
     def hasItem(self, itemName: str, quantity: int = 1) -> bool:
         return self._inventory.get(itemName, 0) >= quantity
 

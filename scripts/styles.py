@@ -18,6 +18,8 @@ KORUS_THEME = Theme({
     "legendary": "gold1 bold",
     "unique": "orange3 bold underline",
 
+    "ability": "dim cyan",
+
     "physical": "white",
     "fire": "dark_red",
     "cold": "cyan",

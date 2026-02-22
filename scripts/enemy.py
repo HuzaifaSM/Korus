@@ -1,10 +1,12 @@
 import random
+from typing import Dict
 from .entities import Entity
 from .items import Equipment, ItemRarity, LootTable, RESOURCES, rollRarity, RARITY_WEIGHTS
 from .runeDrops import rollRuneDrops
-from .abilities import ABILITIES
+from .enemyAbilities import ENEMY_ABILITIES, EnemyAbility
 from json import load
 from .styles import console
+from .enemyAi import EnemyAI
 
 with open('data/names.json', 'r') as file:
     NAMES = load(file)
@@ -29,10 +31,13 @@ class Enemy(Entity):
         scaledCritMulti = round(critMulti + (random.randint(5, 15) + level / 5) / 100, 2)
 
         super().__init__(scaledHealth, scaledDamage, scaledCritChance, scaledCritMulti, damageType, scaledSpeed, name)
+        self._abilities: Dict[str, EnemyAbility] = {}
         self._level = level
         self._experienceReward = max(level * 10, level * (level // 3 + random.randint(5, 15 + level // 5)))
         self._lootTable = lootTable or LootTable()
-        
+
+        self.ai = EnemyAI(self)
+
         self._generateEquipment()
         self._generateInventory()
         self._recalculateStats(False)
@@ -306,7 +311,7 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1,
         enemy._addResistance(res, amount)
 
     possibleAbilities = []
-    for abilityName, ability in ABILITIES.items():
+    for abilityName, ability in ENEMY_ABILITIES.items():
         if level >= ability.levelReq: #pick possible abilities based on level
             possibleAbilities.append(abilityName)
     if possibleAbilities:

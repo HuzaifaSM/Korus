@@ -1,0 +1,968 @@
+{
+    "Rend": {
+        "name": "Rend",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 1,
+        "cooldown": 2,
+        "targets": 1,
+        "damage_base": 5,
+        "damage_scaling": 15,
+        "damage_type": "physical",
+        "effects": {
+            "target": {
+                "bleed": {
+                    "stacks": 1
+                }
+            }
+        },
+        "description": "A vicious slash that opens a bleeding wound.",
+        "weight": 9
+    },
+    "Lunge": {
+        "name": "Lunge",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 1,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 12,
+        "damage_scaling": 20,
+        "damage_type": "physical",
+        "effects": {},
+        "description": "A sudden forward strike with full body weight behind it.",
+        "weight": 10
+    },
+    "Bash": {
+        "name": "Bash",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 5,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 8,
+        "damage_scaling": 10,
+        "damage_type": "physical",
+        "effects": {
+            "target": {
+                "stun": {
+                    "turns": 1,
+                    "chance": 0.25
+                }
+            }
+        },
+        "description": "A heavy blow with a chance to stun.",
+        "weight": 7
+    },
+    "Enfeeble": {
+        "name": "Enfeeble",
+        "category": "utility",
+        "tier": 1,
+        "level_req": 5,
+        "cooldown": 4,
+        "targets": 1,
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "target": {
+                "weaken": {
+                    "turns": 2,
+                    "amount": 0.15
+                }
+            }
+        },
+        "description": "Sap the target's strength, reducing their damage output.",
+        "weight": 6
+    },
+    "Snarl": {
+        "name": "Snarl",
+        "category": "utility",
+        "tier": 1,
+        "level_req": 8,
+        "cooldown": 4,
+        "targets": "all",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "target": {
+                "slow": {
+                    "turns": 2,
+                    "amount": 0.1
+                }
+            }
+        },
+        "description": "An aggressive snarl that momentarily unsettles all enemies.",
+        "weight": 6
+    },
+    "Scavenge": {
+        "name": "Scavenge",
+        "category": "utility",
+        "tier": 1,
+        "level_req": 10,
+        "cooldown": 5,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "spawn_consumable": {
+                    "heal": 25
+                }
+            }
+        },
+        "description": "Frantically scavenges the environment, producing a crude healing salve.",
+        "weight": 5
+    },
+    "Brace": {
+        "name": "Brace",
+        "category": "defensive",
+        "tier": 1,
+        "level_req": 10,
+        "cooldown": 4,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "stoneskin": {
+                    "turns": 2,
+                    "amount": 0.1
+                }
+            }
+        },
+        "description": "Hardens resolve and stance, reducing incoming damage briefly.",
+        "weight": 6
+    },
+    "Mend": {
+        "name": "Mend",
+        "category": "defensive",
+        "tier": 1,
+        "level_req": 12,
+        "cooldown": 5,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "regeneration": {
+                    "turns": 2,
+                    "amount_flat": 15,
+                    "amount_percent": 0
+                }
+            }
+        },
+        "description": "A brief moment of recovery, healing minor wounds.",
+        "weight": 6
+    },
+    "Venomous Bite": {
+        "name": "Venomous Bite",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 15,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 6,
+        "damage_scaling": 12,
+        "damage_type": "chaos",
+        "effects": {
+            "target": {
+                "poison": {
+                    "stacks": 1
+                }
+            }
+        },
+        "description": "A bite that injects slow-acting venom into the bloodstream.",
+        "weight": 7
+    },
+    "Smoulder": {
+        "name": "Smoulder",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 15,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 4,
+        "damage_scaling": 10,
+        "damage_type": "fire",
+        "effects": {
+            "target": {
+                "burn": {
+                    "stacks": 1
+                }
+            }
+        },
+        "description": "Scorching heat applied to a single target, leaving lingering flames.",
+        "weight": 7
+    },
+    "Ravaging Strike": {
+        "name": "Ravaging Strike",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 30,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 25,
+        "damage_scaling": 40,
+        "damage_type": "physical",
+        "effects": {
+            "target": {
+                "bleed": {
+                    "stacks": 2
+                },
+                "weaken": {
+                    "turns": 2,
+                    "amount": 0.1
+                }
+            }
+        },
+        "description": "A frenzied assault that leaves the target both wounded and faltering.",
+        "weight": 7
+    },
+    "Venom Surge": {
+        "name": "Venom Surge",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 30,
+        "cooldown": 4,
+        "targets": 1,
+        "damage_base": 18,
+        "damage_scaling": 30,
+        "damage_type": "chaos",
+        "effects": {
+            "target": {
+                "poison": {
+                    "stacks": 2
+                }
+            }
+        },
+        "description": "An intensified burst of venom that overwhelms natural resistance.",
+        "weight": 6
+    },
+    "Expose Weakness": {
+        "name": "Expose Weakness",
+        "category": "utility",
+        "tier": 2,
+        "level_req": 30,
+        "cooldown": 5,
+        "targets": 1,
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "target": {
+                "exposed": {
+                    "turns": 3,
+                    "amount": 15
+                }
+            }
+        },
+        "description": "Identifies and exploits a gap in the target's defences.",
+        "weight": 5
+    },
+    "Warcry": {
+        "name": "Warcry",
+        "category": "utility",
+        "tier": 2,
+        "level_req": 35,
+        "cooldown": 5,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "haste": {
+                    "turns": 2,
+                    "speed": 0.15,
+                    "damage": 1.15
+                }
+            }
+        },
+        "description": "A battle cry that sharpens focus and surges adrenaline.",
+        "weight": 5
+    },
+    "Bloodletting": {
+        "name": "Bloodletting",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 35,
+        "cooldown": 4,
+        "targets": 1,
+        "damage_base": 20,
+        "damage_scaling": 35,
+        "damage_type": "physical",
+        "effects": {
+            "target": {
+                "bleed": {
+                    "stacks": 3
+                }
+            }
+        },
+        "description": "A precise, deep cut designed to maximise blood loss.",
+        "weight": 6
+    },
+    "Frostbite": {
+        "name": "Frostbite",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 35,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 15,
+        "damage_scaling": 25,
+        "damage_type": "cold",
+        "effects": {
+            "target": {
+                "chill": {
+                    "stacks": 1,
+                    "turns": 3,
+                    "amount": 0.2
+                }
+            }
+        },
+        "description": "A biting cold attack that slows the target's movements.",
+        "weight": 6
+    },
+    "Intimidate": {
+        "name": "Intimidate",
+        "category": "utility",
+        "tier": 2,
+        "level_req": 40,
+        "cooldown": 5,
+        "targets": "all",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "target": {
+                "weaken": {
+                    "turns": 3,
+                    "amount": 0.2
+                },
+                "blind": {
+                    "turns": 2,
+                    "amount": 0.1
+                }
+            }
+        },
+        "description": "An overwhelming display of ferocity that rattles all opponents.",
+        "weight": 4
+    },
+    "Iron Bulwark": {
+        "name": "Iron Bulwark",
+        "category": "defensive",
+        "tier": 2,
+        "level_req": 40,
+        "cooldown": 5,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "stoneskin": {
+                    "turns": 3,
+                    "amount": 0.2
+                },
+                "regeneration": {
+                    "turns": 2,
+                    "amount_flat": 20,
+                    "amount_percent": 1
+                }
+            }
+        },
+        "description": "Becomes a living fortress, shrugging off damage and recovering steadily.",
+        "weight": 5
+    },
+    "Elemental Surge": {
+        "name": "Elemental Surge",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 45,
+        "cooldown": 4,
+        "targets": 1,
+        "damage_base": 30,
+        "damage_scaling": 45,
+        "damage_type": "arcane",
+        "effects": {
+            "target": {
+                "burn": {
+                    "stacks": 1
+                },
+                "elemental_exposure": {
+                    "turns": 2,
+                    "amount": 0.15
+                }
+            }
+        },
+        "description": "Channels raw elemental power into a searing strike, leaving the target exposed.",
+        "weight": 5
+    },
+    "Constrict": {
+        "name": "Constrict",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 45,
+        "cooldown": 4,
+        "targets": 1,
+        "damage_base": 20,
+        "damage_scaling": 30,
+        "damage_type": "physical",
+        "effects": {
+            "target": {
+                "stun": {
+                    "turns": 1,
+                    "chance": 0.35
+                },
+                "slow": {
+                    "turns": 3,
+                    "amount": 0.2
+                }
+            }
+        },
+        "description": "Grabs and crushes the target, potentially stunning and slowing them.",
+        "weight": 5
+    },
+    "Blood Ritual": {
+        "name": "Blood Ritual",
+        "category": "defensive",
+        "tier": 2,
+        "level_req": 50,
+        "cooldown": 6,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "spawn_consumable": {
+                    "heal": 60
+                },
+                "regeneration": {
+                    "turns": 3,
+                    "amount_flat": 10,
+                    "amount_percent": 2
+                }
+            }
+        },
+        "description": "Performs a dark ritual, conjuring a blood potion and beginning to regenerate.",
+        "weight": 4
+    },
+    "Tear Apart": {
+        "name": "Tear Apart",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 60,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 55,
+        "damage_scaling": 70,
+        "damage_type": "physical",
+        "effects": {
+            "target": {
+                "bleed": {
+                    "stacks": 4
+                },
+                "weaken": {
+                    "turns": 3,
+                    "amount": 0.2
+                },
+                "slow": {
+                    "turns": 2,
+                    "amount": 0.15
+                }
+            }
+        },
+        "description": "A savage, all-out assault that shreds defences and leaves devastation in its wake.",
+        "weight": 5
+    },
+    "Death Knell": {
+        "name": "Death Knell",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 60,
+        "cooldown": 5,
+        "targets": 1,
+        "damage_base": 80,
+        "damage_scaling": 90,
+        "damage_type": "dark",
+        "effects": {
+            "target": {
+                "curse": {
+                    "stacks": 2
+                },
+                "exposed": {
+                    "turns": 3,
+                    "amount": 20
+                }
+            }
+        },
+        "description": "A strike laced with dark energy \u2014 it feels like a death sentence.",
+        "weight": 4
+    },
+    "Harrowing Roar": {
+        "name": "Harrowing Roar",
+        "category": "utility",
+        "tier": 3,
+        "level_req": 65,
+        "cooldown": 5,
+        "targets": "all",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "haste": {
+                    "turns": 3,
+                    "speed": 0.2,
+                    "damage": 1.2
+                }
+            },
+            "target": {
+                "weaken": {
+                    "turns": 3,
+                    "amount": 0.25
+                },
+                "blind": {
+                    "turns": 2,
+                    "amount": 0.2
+                }
+            }
+        },
+        "description": "A soul-shaking roar that empowers the creature while demoralising all who hear it.",
+        "weight": 3
+    },
+    "Consuming Darkness": {
+        "name": "Consuming Darkness",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 65,
+        "cooldown": 4,
+        "targets": 1,
+        "damage_base": 50,
+        "damage_scaling": 65,
+        "damage_type": "dark",
+        "effects": {
+            "target": {
+                "curse": {
+                    "stacks": 1
+                },
+                "poison": {
+                    "stacks": 2
+                }
+            }
+        },
+        "description": "Wraps the target in suffocating dark energy that poisons body and soul alike.",
+        "weight": 4
+    },
+    "Rupture": {
+        "name": "Rupture",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 70,
+        "cooldown": 4,
+        "targets": 1,
+        "damage_base": 60,
+        "damage_scaling": 80,
+        "damage_type": "earth",
+        "effects": {
+            "target": {
+                "bleed": {
+                    "stacks": 5
+                },
+                "elemental_exposure": {
+                    "turns": 3,
+                    "amount": 0.25
+                }
+            }
+        },
+        "description": "Tears through armour and flesh \u2014 the wound simply refuses to close.",
+        "weight": 4
+    },
+    "Void Scream": {
+        "name": "Void Scream",
+        "category": "utility",
+        "tier": 3,
+        "level_req": 70,
+        "cooldown": 6,
+        "targets": "all",
+        "damage_base": 20,
+        "damage_scaling": 20,
+        "damage_type": "psychic",
+        "effects": {
+            "target": {
+                "daze": {
+                    "turns": 3,
+                    "speed": -0.2,
+                    "damage": 0.85
+                },
+                "exposed": {
+                    "turns": 2,
+                    "amount": 10
+                }
+            }
+        },
+        "description": "An otherworldly shriek that bypasses physical defences and scrambles the senses.",
+        "weight": 3
+    },
+    "Dark Mending": {
+        "name": "Dark Mending",
+        "category": "defensive",
+        "tier": 3,
+        "level_req": 70,
+        "cooldown": 6,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "regeneration": {
+                    "turns": 4,
+                    "amount_flat": 30,
+                    "amount_percent": 4
+                },
+                "stoneskin": {
+                    "turns": 3,
+                    "amount": 0.25
+                }
+            }
+        },
+        "description": "Draws on dark reserves to rapidly knit wounds and harden the body.",
+        "weight": 4
+    },
+    "Annihilating Blow": {
+        "name": "Annihilating Blow",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 80,
+        "cooldown": 5,
+        "targets": 1,
+        "damage_base": 100,
+        "damage_scaling": 110,
+        "damage_type": "physical",
+        "effects": {
+            "target": {
+                "stun": {
+                    "turns": 1,
+                    "chance": 0.5
+                },
+                "exposed": {
+                    "turns": 3,
+                    "amount": 25
+                },
+                "bleed": {
+                    "stacks": 3
+                }
+            }
+        },
+        "description": "A single, devastating strike with everything behind it. The ground shakes.",
+        "weight": 2
+    },
+    "Soul Leech": {
+        "name": "Soul Leech",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 80,
+        "cooldown": 5,
+        "targets": 1,
+        "damage_base": 70,
+        "damage_scaling": 85,
+        "damage_type": "ethereal",
+        "effects": {
+            "target": {
+                "curse": {
+                    "stacks": 2
+                }
+            },
+            "self": {
+                "regeneration": {
+                    "turns": 3,
+                    "amount_flat": 20,
+                    "amount_percent": 3
+                }
+            }
+        },
+        "description": "Drains life essence from the target, feeding its own recovery.",
+        "weight": 3
+    },
+    "Abyssal Surge": {
+        "name": "Abyssal Surge",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 90,
+        "cooldown": 4,
+        "targets": "all",
+        "damage_base": 60,
+        "damage_scaling": 75,
+        "damage_type": "chaos",
+        "effects": {
+            "target": {
+                "poison": {
+                    "stacks": 2
+                },
+                "curse": {
+                    "stacks": 1
+                }
+            }
+        },
+        "description": "Releases a wave of abyssal energy that corrupts everything it touches.",
+        "weight": 2
+    },
+    "Undying Fury": {
+        "name": "Undying Fury",
+        "category": "defensive",
+        "tier": 3,
+        "level_req": 90,
+        "cooldown": 7,
+        "targets": "self",
+        "damage_base": 0,
+        "damage_scaling": 0,
+        "damage_type": null,
+        "effects": {
+            "self": {
+                "haste": {
+                    "turns": 3,
+                    "speed": 0.3,
+                    "damage": 1.3
+                },
+                "stoneskin": {
+                    "turns": 3,
+                    "amount": 0.2
+                },
+                "regeneration": {
+                    "turns": 3,
+                    "amount_flat": 40,
+                    "amount_percent": 5
+                },
+                "spawn_consumable": {
+                    "heal": 80
+                }
+            }
+        },
+        "description": "Refuses to fall. A burst of raw survival instinct that heals, hardens, and enrages simultaneously.",
+        "weight": 1
+    },
+    "Static Shock": {
+        "name": "Static Shock",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 6,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 7,
+        "damage_scaling": 12,
+        "damage_type": "lightning",
+        "weight": 8,
+        "effects": {
+            "target": {
+                "shock": {
+                    "turns": 2,
+                    "amount": 0.15
+                }
+            }
+        },
+        "description": "A crackling discharge that leaves the target vulnerable to further damage."
+    },
+    "Gale Slash": {
+        "name": "Gale Slash",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 8,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 6,
+        "damage_scaling": 14,
+        "damage_type": "wind",
+        "weight": 8,
+        "effects": {
+            "target": {
+                "blind": {
+                    "turns": 2,
+                    "amount": 0.15
+                }
+            }
+        },
+        "description": "A cutting slash trailing razor wind, obscuring the target's vision."
+    },
+    "Sacred Smite": {
+        "name": "Sacred Smite",
+        "category": "offensive",
+        "tier": 1,
+        "level_req": 10,
+        "cooldown": 3,
+        "targets": 1,
+        "damage_base": 9,
+        "damage_scaling": 16,
+        "damage_type": "holy",
+        "weight": 7,
+        "effects": {
+            "target": {
+                "weaken": {
+                    "turns": 2,
+                    "amount": 0.1
+                }
+            }
+        },
+        "description": "A strike carrying divine condemnation, sapping the target's strength."
+    },
+    "Chain Lightning": {
+        "name": "Chain Lightning",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 38,
+        "cooldown": 4,
+        "targets": "all",
+        "damage_base": 22,
+        "damage_scaling": 32,
+        "damage_type": "lightning",
+        "weight": 5,
+        "effects": {
+            "target": {
+                "shock": {
+                    "turns": 2,
+                    "amount": 0.2
+                }
+            }
+        },
+        "description": "Lightning arcs between all targets, leaving each one rattled and exposed."
+    },
+    "Cyclone": {
+        "name": "Cyclone",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 42,
+        "cooldown": 4,
+        "targets": "all",
+        "damage_base": 18,
+        "damage_scaling": 28,
+        "damage_type": "wind",
+        "weight": 5,
+        "effects": {
+            "target": {
+                "slow": {
+                    "turns": 2,
+                    "amount": 0.2
+                },
+                "blind": {
+                    "turns": 1,
+                    "amount": 0.1
+                }
+            }
+        },
+        "description": "Summons a violent cyclone that batters all enemies and disrupts their footing."
+    },
+    "Divine Judgement": {
+        "name": "Divine Judgement",
+        "category": "offensive",
+        "tier": 2,
+        "level_req": 48,
+        "cooldown": 5,
+        "targets": 1,
+        "damage_base": 35,
+        "damage_scaling": 50,
+        "damage_type": "holy",
+        "weight": 4,
+        "effects": {
+            "target": {
+                "divine_exposure": {
+                    "turns": 3,
+                    "amount": 20
+                },
+                "weaken": {
+                    "turns": 2,
+                    "amount": 0.15
+                }
+            }
+        },
+        "description": "Channels divine wrath into a single condemning blow."
+    },
+    "Thunderclap": {
+        "name": "Thunderclap",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 68,
+        "cooldown": 4,
+        "targets": "all",
+        "damage_base": 55,
+        "damage_scaling": 70,
+        "damage_type": "lightning",
+        "weight": 3,
+        "effects": {
+            "target": {
+                "stun": {
+                    "turns": 1,
+                    "chance": 0.35
+                },
+                "shock": {
+                    "turns": 3,
+                    "amount": 0.25
+                }
+            }
+        },
+        "description": "An explosive burst of thunder that shakes the battlefield and stuns the unprepared."
+    },
+    "Hurricane": {
+        "name": "Hurricane",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 75,
+        "cooldown": 5,
+        "targets": "all",
+        "damage_base": 50,
+        "damage_scaling": 65,
+        "damage_type": "wind",
+        "weight": 3,
+        "effects": {
+            "target": {
+                "slow": {
+                    "turns": 3,
+                    "amount": 0.3
+                },
+                "blind": {
+                    "turns": 2,
+                    "amount": 0.25
+                },
+                "weaken": {
+                    "turns": 2,
+                    "amount": 0.15
+                }
+            }
+        },
+        "description": "A sustained tempest that overwhelms all opponents with relentless force."
+    },
+    "Holy Annihilation": {
+        "name": "Holy Annihilation",
+        "category": "offensive",
+        "tier": 3,
+        "level_req": 85,
+        "cooldown": 5,
+        "targets": 1,
+        "damage_base": 90,
+        "damage_scaling": 100,
+        "damage_type": "holy",
+        "weight": 2,
+        "effects": {
+            "target": {
+                "divine_exposure": {
+                    "turns": 4,
+                    "amount": 30
+                },
+                "exposed": {
+                    "turns": 3,
+                    "amount": 20
+                },
+                "weaken": {
+                    "turns": 3,
+                    "amount": 0.25
+                }
+            }
+        },
+        "description": "An act of pure divine wrath. Those who survive rarely recover."
+    }
+}
