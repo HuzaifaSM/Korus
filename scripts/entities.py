@@ -140,6 +140,9 @@ class Entity:
         self._baseHealth = health
         self._baseDamage = damage
         self._baseSpeed = speed
+        self._baseStamina = 100
+        self._stamina = 100
+        self._maxStamina = 100
         self._gold = 0
         self._level = 1
         self._xp = 0
@@ -377,6 +380,12 @@ class Entity:
             del(self._abilities[ability])
             if doPrint:
                 console.print(f"[warning]{self._name} no longer has the ability: {ability}[/warning]")
+
+    def canUseAbility(self, ability: Ability) -> bool:
+        if self._stamina < ability.staminaCost:
+            return False
+        self._stamina -= ability.staminaCost
+        return False
 
     def displayAbilities(self):
         console.print("\n[bold cyan]=== Abilities ===[/bold cyan]")

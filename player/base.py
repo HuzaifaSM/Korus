@@ -69,6 +69,7 @@ class Player(Entity):
             self._baseHealth += 5
             self._baseDamage += 1
             self._baseSpeed += 0.01
+            self._baseStamina += 4
 
             if self._level == self._maxLevel:
                 console.print("[gold1]Congratulations! You have reached the maximum level![/gold1]")

@@ -7,7 +7,7 @@ from .styles import console
 #=========================================================================================#
 
 class Ability:
-    def __init__(self, name: str, category: str, tags: List[str],
+    def __init__(self, name: str, category: str, tags: List[str], staminaCost: int,
                  baseDamage: int, damageScaling: float, damageType: str,
                  healBase: int, healPercent: float,
                  cooldown: int, targets: int | str,
@@ -16,6 +16,7 @@ class Ability:
         self.name = name
         self.category = category
         self.tags = tags
+        self.staminaCost = staminaCost
 
         self.baseDamage = baseDamage
         self.damageScaling = damageScaling
@@ -25,7 +26,7 @@ class Ability:
         self.healPercent = healPercent
 
         self.maxCooldown = cooldown
-        self.cooldown = cooldown
+        self.cooldown = 0
         self.targets = targets
 
         self.resources = resources
@@ -45,6 +46,9 @@ class Ability:
     def canUse(self, player) -> Tuple[bool, str]:
         if self.cooldown > 0:
             return False, f"On cooldown for {self.cooldown} more turns."
+        
+        if not player.canUseAbility(self):
+            return False, f"{player._name} does not have enough stamina."
         
         required: Dict[str, int] = self.resources.get('required', {})
         for resource, amount in required.items():
@@ -126,7 +130,7 @@ class AbilityTree:
             data = self._applyVariantMods(data, self.currentVariant)
         
         return self._buildAbility(data)
-    
+
     def _applyVariantMods(self, base: Dict, variantName: str) -> Dict:
         """
         Apply a variant's modifications onto the resolved evolution data.\n
@@ -186,12 +190,12 @@ class AbilityTree:
         hScaling = hScale / 100 if hScale >= 1 else dScale
 
         return Ability(
-            data['name'], data['category'], data.get('tags', []),
+            data['name'], data['category'], data.get('tags', []), data.get('stamina_cost'),
             data.get('damage_base', 0), dScaling, data.get('damage_type'), data.get('heal_base', 0), hScaling,
             data.get('cooldown', 0), data.get('targets', 1), data.get('resources', {}), data.get('effects', {}), data.get('requirements', {}),
             data.get('description', ''),
         )
-    
+
     def unlockVariant(self, variantName: str) -> bool:
         if variantName not in self.variants:
             return False
@@ -496,6 +500,7 @@ def loadAbilities() -> Dict[str, Dict[str, Dict[str, AbilityTree]]]:
                     'name': abilityData['name'],
                     'category': abilityData.get('category', 'damage'),
                     'tags': abilityData.get('tags', []),
+                    'stamina_cost': abilityData.get('stamina_cost'),
                     'damage_base': abilityData.get('damage_base', 0),
                     'damage_scaling': abilityData.get('damage_scaling', 0),
                     'damage_type': abilityData.get('damage_type'),

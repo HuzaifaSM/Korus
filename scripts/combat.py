@@ -377,9 +377,15 @@ class CombatManager:
             ability = attacker._abilities[abilityName]
             console.print(f"\n[cyan]{attacker._name}[/cyan] uses [bold]{abilityName}[/bold]")
 
-            if ability.cooldown > 0:
-                printWarning(f"  - {abilityName} is on cooldown for {ability.cooldown} more turn(s).")
-                return False
+            if attackerUnit.team == 'player':
+                canUse, reason = ability.canUse(attacker)
+                if not canUse:
+                    printWarning(f"  - {abilityName} cannot be used: {reason}")
+                    return False
+            else:
+                if ability.cooldown > 0:
+                    printWarning(f"  - {abilityName} is on cooldown for {ability.cooldown} more turn(s).")
+                    return False
 
             mechanics = ability.effects.copy()
 
