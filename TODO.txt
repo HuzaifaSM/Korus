@@ -30,9 +30,13 @@ CURRENTLY WORKING ON:
     > fighter
     > rogue
     > monk
-  - abilities.json and abilities.py
+  - ABILITY REWORK
+    >abilities.json and abilities.py
     > abilities.json first, make at least all base class skills
-    > rewrite necessary parts of abilities.py to function with new format of json
+      > add stamina_cost field to all abilities + their upgrades/evolutions
+    > need to rewrite scripts.py ability tables
+      > add a enemy version of ability table which is more of a list of information
+      > viewed by player in-game by using a free action 'inspect enemy' -> displays relevant enemy information
   - dungeons
     > better modifiers + more modifiers
       > dungeons.json basically needs to be remade
@@ -201,6 +205,26 @@ ITEM REWORK/IMPROVEMENTS
       - enemy affixes should also affect their own item quantity + rarity
         > not abundant levels of rarity/quantity but a noticeable amount still
         > affixes are made/applied before loot table is made so item buffs can be applied correctly
+
+- TEXTUAL OVERHAUL
+  > overhaul all rich with textual integration slowly
+  > will require mid-level system rewrites
+    - closer to pygame structure: act on input rather than wait for action
+  > will take a will, needs to be done all at once, not whilst other things are being done
+    - otherwise it will get lost and systems will be half console-output based and half textual
+  > general layout:
+    +----------------------------------------------------+--------------+
+    | Player Stats |   Main Content Area                 | Additional   |
+    |              |   (combat / menus / inventory)      | Buttons/Info |
+    |              |                                     |              |
+    |              |                                     |              |
+    +----------------------------------------------------+ - Inventory  |
+    | Combat Log / Event Log / Notifications             | - Settings   |
+    |                                                    | - Save/Load  |
+    |                                                    | - Glossary   |
+    +----------------------------------------------------+ - Help       |
+    | Input Line                                         | - Exit       |
+    +----------------------------------------------------+--------------+
 
 - lowest priority: (EXPANSION IDEAS)
 
