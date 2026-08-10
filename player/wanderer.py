@@ -29,17 +29,6 @@ WANDERER_DESCRIPTIONS = {
         "When Lost triggers, 1% Chance per Torture for damage dealt to each individual target to be doubled and apply Otherworld Exposure.\n"
         "Enemies lose all Torture upon critically hitting you.\n"
         "-10 HP. +2 Damage. -0.1 Speed. +3% Crit Chance. +10% Psychic Resistance.",
-    #subtypes
-    "Drifter": "At the start of combat, the Lost threshold is set randomly between 5-15% of Max HP.\n"
-        "On Lost being triggered, gain Momentum: +0.1 Speed, 5% More Damage for the rest of combat. Max 5 Momentum stacks.\n"
-        "+15 HP. -1 Damage. -0.1 Speed",
-    "Vessel": "Lost threshold is set to 25% of Max HP. Lost attack now hits twice for 80% damage each.\n"
-        "Upon taking damage, Lost threshold is reduced by 1% to a minimum of 10%.\n"
-        "Lost attack is unable to be a critical hit.\n"
-        "+10 HP. +2 Damage. -0.05 Speed. -2% Crit Chance, -25% Crit Damage. +5% Lifesteal.",
-    "Shattered": "Lost threshold is set to 15% of Max HP. Lost attacks have a 10% chance to Stun.\n"
-        "When Lost is triggered, gain a random buff for 2 turns: 10% More Damage, +0.3 Speed or +15% Lifesteal.\n"
-        "-10 HP. +2 Damage, +0.05 Speed."
 }
 
 class Wanderer(Player):
@@ -56,10 +45,6 @@ class Wanderer(Player):
         self.abyssalPsychicBuff = 0
         self.warped = False
 
-        self.drifterSet = False
-        self.momentum = 0
-        self.shatteredBuffs = {}
-
     def _recalculateStats(self, doPrint = True):
         super()._recalculateStats(doPrint)
         self.abyssalHealThreshold = self._maxHealth * 2
@@ -69,13 +54,6 @@ class Wanderer(Player):
         if self.lostTrigger and self._ascendancy != 'Abyssal':
             damageDealt = int(damageDealt * 1.5)
             self.lostTrigger = False
-
-        if self._subType == 'Drifter' and self.momentum > 0:
-            damageDealt = int(damageDealt * (1 + (0.05 * self.momentum)))
-
-        elif self._subType == 'Shattered':
-            if 'damage' in self.shatteredBuffs:
-                damageDealt = int(damageDealt * 1.1)
 
         if self._ascendancy == 'Fractured' and self.fracture > 0:
             if damageType == 'psychic':
@@ -106,14 +84,6 @@ class Wanderer(Player):
             self.lostTrigger = True
             console.print(f"\n[buff]Wanderer: Took more than 10% of max health as damage! Lost has been activated.[/buff]")
 
-            if self._subType == 'Drifter':
-                self.momentum = min(5, self.momentum + 1)
-                self._stats['Temporary']['speed'] = 0.1 * self.momentum
-
-            elif self._subType == 'Vessel' and self.lostPercent > 0.1:
-                self.lostPercent = max(0.1, self.lostPercent - 0.01)
-                console.print(f"  [buff]Vessel: Lost Threshold reduced to {int(self.lostPercent*100)}% of Max HP.[/buff]")
-
             if self._ascendancy == 'Fractured':
                 self.fracture = min(5, self.fracture + 1)
                 self._stats['Temporary']['critChance'] = self.fracture * 0.03
@@ -131,9 +101,6 @@ class Wanderer(Player):
 
     def rollCritical(self, target):
         crit, critMulti = super().rollCritical(target)
-        if self._subType == 'Vessel' and self.lostTrigger:
-            crit = False
-
         if self._ascendancy == 'Fractured':
             damageTaken = int(self._maxHealth * 0.02)
             console.print(f"  [warning]- Fractured: Dealt a critical strike. 2% of Max HP lost. -{damageTaken} HP.[/warning]")
@@ -142,10 +109,6 @@ class Wanderer(Player):
         return crit, critMulti
 
     def onTurnStart(self):
-        if self._subType == 'Drifter' and not self.drifterSet:
-            self.lostTrigger = round(random.uniform(0.05, 0.15), 2)
-            console.print(f"[dim]Drifter: Lost Threshold for this combat is {(self.lostTrigger*100)}% of Max HP.[/dim]")
-            pause()
         if self._ascendancy == 'Abyssal' and not self.lostTrigger:
             self.lostTrigger = True
         if self._ascendancy == 'Warper':
@@ -154,22 +117,7 @@ class Wanderer(Player):
                 console.print(f"\n [warning]Warper: Not Warped or Lost! {damage} Damage taken.[/warning]")
                 self.damage(damage, 'psychic')
 
-    def onTurnEnd(self):
-        if self._subType == 'Shattered' and self.shatteredBuffs != {}:
-            for buff, _ in self.shatteredBuffs.items():
-                self.shatteredBuffs[buff] -= 1
-                if self.shatteredBuffs[buff] == 0:
-                    console.print(f'  [warning]Shattered: No longer affected by Shattered {buff} buff.[/warning]')
-                    self.shatteredBuffs.pop(buff)
-                    if buff == 'speed':
-                        self._stats['Temporary']['speed'] -= 0.3
-                    elif buff == 'lifesteal':
-                        self._stats['Temporary']['lifesteal'] -= 15
-
     def onBattleEnd(self):
-        if self._subType == 'Vessel':
-            self.lostPercent = 0.25
-
         if self._ascendancy == 'Abyssal':
             if self.abyssalDamageDealt >= self.abyssalDamageThreshold:
                 self.abyssalDamageDealt -= self.abyssalDamageThreshold
@@ -180,9 +128,6 @@ class Wanderer(Player):
         self.wovenDamage = 0
         self.abyssalPsychicBuff = 0
         self.warped = False
-        self.drifterSet = False
-        self.momentum = 0
-        self.shatteredBuffs = {}
         super().onBattleEnd()
 
     def updateAscendancy(self, ascendancy):
@@ -235,31 +180,4 @@ class Wanderer(Player):
             self._stats['Permanent']['psychic'] += 10
             self._ascendancy = 'Mindbreaker'
             self.ascendancyDescription = WANDERER_DESCRIPTIONS['Mindbreaker']
-        self._recalculateStats(False)
-
-    def updateSubType(self, subType):
-        if subType == 'Drifter':
-            self._baseHealth += 15
-            self._baseDamage -= 1
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['lifesteal'] += 5
-            self._subType = 'Drifter'
-            self.subTypeDescription = WANDERER_DESCRIPTIONS['Drifter']
-        elif subType == 'Vessel':
-            self._baseHealth += 10
-            self._baseDamage += 2
-            self._baseSpeed -= 0.05
-            self.lostPercent = 0.25
-            self._stats['baseCritChance'] -= 0.02
-            self._stats['baseCritMulti'] -= 0.25
-            self._stats['Permanent']['lifesteal'] += 5
-            self._subType = 'Vessel'
-            self.subTypeDescription = WANDERER_DESCRIPTIONS['Vessel']
-        elif subType == 'Shattered':
-            self._baseHealth -= 10
-            self._baseDamage += 2
-            self._baseSpeed += 0.05
-            self.lostPercent = 0.15
-            self._subType == 'Shattered'
-            self.subTypeDescription = WANDERER_DESCRIPTIONS["Shattered"]
         self._recalculateStats(False)

@@ -26,19 +26,6 @@ FIGHTER_DESCRIPTIONS = {
         "Every 5th attack is a guaranteed critical hit. Upon landing a critical hit, gain Momentum for 2 turns. Momentum: +0.15 Speed, +15% Increased Damage.\n"
         "Upon landing a critical hit, reduce all ability cooldowns by 1. On kill, your next ability costs 50% less stamina.\n"
         "+5 HP. +1 Damage. -0.05 Speed. +3% Crit Chance.",
-    #subtypes
-    "Bruiser": "Combo no longer affects damage directly. Instead, combo grants +0.03 speed uncapped and 1% increased damage.\n"
-        "Attacks apply Overwhelmed to targets, up to 10 stacks. Overwhelm: -3% damage dealt and 1% more damage taken.\n"
-        "+10 HP. +5 Damage. -0.05 Speed.",
-    "Samurai": "50% Chance to generate an additional combo. Gain +0.02 speed per combo to a maximum of +0.5.\n"
-        "Attacks have a 15% chance to apply Physical Exposure and Vulernable.\n"
-        "If a single attack deals more than 15% of the target's Max HP, gain 1 stack of Honour, up to a maximum of 10 Honour.\n"
-        "Honour: +2.5% Crit Chance, +10% Crit Damage, -0.05 Speed per Honour."
-        "-5 Health. -1 Damage. +0.1 Speed. +10% Crit Damage.",
-    "Veteran": "Combo is capped at 20. Upon reaching max combo, lose all combo and gain Fatigue for 2 turns. Fatigue: -10% Damage Dealt, -0.2 Speed, +5% Damage Taken.\n"
-        "While you are at or below 10 Combo, you have +10% All Resistance and -0.15 Speed. While you are above 10 Combo, you have -15% All Resistance, +0.1 Speed, +15% Increased Damage.\n"
-        "For each damage type you are attacked by, gain 1 stack of Versatility: +1% Damage Reduction, +2% Increased Damage, for the rest of combat. Versatility has no cap.\n"
-        "+10 HP. +1 Damage. -0.1 Speed. -5% Crit Chance. -25% Crit Damage. +10% Physical Resistance."
 }
 
 class Fighter(Player): # higher speed, lower damage, physical damage
@@ -65,13 +52,6 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.marshalAttackCount = 0
         self.marshalDamageStacks = 0
         self.marshalStaminaReduction = False
-
-        self.veteranComboType = None
-        self.fatigueTurns = 0
-        self.versatilityTypes = []
-
-        self.honour = 0
-        self.maxHonour = 10
 
     def deserialise(self, data):
         super().deserialise(data)
@@ -111,26 +91,8 @@ class Fighter(Player): # higher speed, lower damage, physical damage
     def onAttack(self, damageDealt, damageType, target=None):
         super().onAttack(damageDealt, damageType)
         comboGained = False
-        if self._subType != 'Bruiser':
-            damageDealt += int((2 * self._combo) * self.comboEffect)
-        else:
-            damageDealt = int(damageDealt * (self._combo / 100) * self.comboEffect)
-
-        if self._subType == 'Samurai' and target:
-            honourThreshold = target._maxHealth * 0.15
-            if damageDealt > honourThreshold and self.honour < self.maxHonour:
-                self.honour += 1
-                self._stats['Temporary']['critChance'] += 0.025
-                self._stats['Temporary']['critMulti'] += 0.1
-                self._stats['Temporary']['speed'] -= 0.05
-
-        elif self._subType == 'Veteran':
-            if self._combo > 10:
-                damageDealt = round(damageDealt * 1.15)
-            if self.fatigueTurns > 0:
-                damageDealt = int(damageDealt * 0.9)
-            if len(self.versatilityTypes) > 0:
-                damageDealt = int(damageDealt * (1 + (len(self.versatilityTypes) * 0.02)))
+        bonus = 0
+        damageDealt = int(damageDealt * (self._combo / 100) * self.comboEffect)
 
         if self._ascendancy == 'Bladedancer' and self.flurryTurns > 0 and damageType == 'physical':
             damageDealt = int(damageDealt * 1.15)
@@ -139,7 +101,6 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             bonus = 1 + (min(10, self._combo) * 0.03 + (self.barbarianHits * 0.05))
             damageDealt = int(damageDealt * bonus)
 
-        bonus = 1 if self._subType == 'Samurai' and random.random() < 0.5 else 0
         if not self._maxCombo:
             self._combo += 1 + bonus
             self.totalComboGenerated += 1 + bonus
@@ -199,11 +160,6 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             self.aegisDamage = True
             self.aegis -= 1
 
-        if self._subType == 'Veteran' and damageType not in self.versatilityTypes:
-            self.versatilityTypes.append(damageType)
-        if self._subType == 'Veteran' and len(self.versatilityTypes) > 0:
-            damageTaken = int(damageTaken * (1 - (len(self.versatilityTypes) * 0.01)))
-
         return super().onHit(damageTaken, damageType)
 
     def onKill(self, entity, attackData):
@@ -227,30 +183,6 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         elif self._ascendancy == 'Barbarian' and self._combo > 10:
             self._stats['Temporary']['critChance'] += 0.03
             self._stats['Temporary']['critMulti'] += 0.25
-
-        if self._subType == 'Samurai':
-            self._stats['Temporary']['speed'] = min(0.5, 0.02 * self._combo)
-
-        elif self._subType == 'Bruiser':
-            self._stats['Temporary']['speed'] = 0.03 * self._combo
-
-        elif self._subType == 'Veteran':
-            if self._combo <= 10 and self.veteranComboType != 'defense':
-                if self.veteranComboType is None:
-                    self._stats['Temporary']['all'] += 10
-                    self._stats['Temporary']['speed'] -= 0.15
-                else: # switching from offense to defense
-                    self._stats['Temporary']['all'] += 25
-                    self._stats['Temporary']['speed'] -= 0.25
-                self.veteranComboType = 'defense'
-            elif self._combo > 10 and self.veteranComboType != 'offense':
-                if self.veteranComboType is None:
-                    self._stats['Temporary']['all'] -= 15
-                    self._stats['Temporary']['speed'] += 0.1
-                else:
-                    self._stats['Temporary']['all'] -= 25
-                    self._stats['Temporary']['speed'] += 0.25
-                self.veteranComboType = 'offense'
 
         super().onTurnStart()
 
@@ -309,30 +241,4 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             self._stats['baseCritChance'] += 0.03
             self._ascendancy = 'Marshal'
             self.ascendancyDescription = FIGHTER_DESCRIPTIONS['Marshal']
-        self._recalculateStats(False)
-
-    def updateSubType(self, subType):
-        if subType == 'Bruiser':
-            self._baseHealth += 10
-            self._baseDamage += 5
-            self._baseSpeed -= 0.05
-            self._subType = 'Bruiser'
-            self.subTypeDescription = FIGHTER_DESCRIPTIONS['Bruiser']
-        elif subType == 'Samurai':
-            self._baseHealth -= 5
-            self._baseDamage -= 1
-            self._baseSpeed += 0.1
-            self._stats['baseCritMulti'] += 0.1
-            self._subType = 'Samurai'
-            self.subTypeDescription = FIGHTER_DESCRIPTIONS['Samurai']
-        elif subType == 'Veteran':
-            self._baseHealth += 10
-            self._baseDamage += 1
-            self._baseSpeed -= 0.1
-            self._maxCombo = 20
-            self._stats['baseCritChance'] -= 0.05
-            self._stats['baseCritMulti'] -= 0.25
-            self._stats['Permanent']['physical'] += 10
-            self._subType = 'Veteran'
-            self.subTypeDescription = FIGHTER_DESCRIPTIONS['Veteran']
         self._recalculateStats(False)

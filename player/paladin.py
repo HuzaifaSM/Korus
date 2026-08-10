@@ -41,19 +41,6 @@ PALADIN_DESCRIPTIONS = {
         "Blessing: +5 Favour Generation, +20 HP Regeneration, 10% Increased Holy Damage, 5% Damage Reduction.\n"
         "All Favour buffs have 30% Increased Effect, but have a minimum cost of 20 Favour.\n"
         "+10 HP. +2 Damage. -0.2 Speed. +15% Holy Resistance. +5 HP Regeneration. +100 Armour.",
-    #subtypes
-    "Fanatic": "10% Increased Holy Damage. 10% Otherworldly Damage taken.\n"
-        "At the start of your turn, if you have more than 50% Max Favour, spend 10% of your current Favour and gain 2% Increased Damage per Favour spent for the rest of your turn.\n"
-        "When you spend Favour this way, gain 1 stack of Fanaticism to a maximum of 10. Fanaticism: 5% Increased Holy Damage, +1% Lifesteal, +0.02 Speed."
-        "-10 HP. +2 Damage. +0.05 Speed. +15% Divine Resistance.",
-    "Cleric": "+20 Max Favour. Upon spending Favour on defensive buffs, heal 0.5% Max HP per 2 Favour spent.\n"
-        "Begin combat with 10% Max Favour filled. You have Consecration whilst above 60% Max Favour.\n"
-        "Consecration: 20% Increased Holy Damage, +10% Damage Reduction. If you have Consecration at the start of your turn, heal 2% Max HP.\n"
-        "+10 HP. -2 Damage. +0.05 Speed. +10% Holy Resistance.",
-    "Templar": "Favour buffs have 10% Increased Effect. Gain 0.5% Max HP as Shield per 2 Favour spent on buffs.\n"
-        "Spending Favour on defensive buffs grants +1% Crit Chance to your next attack per 3 Favour spent.\n"
-        "Spending Favour on offensive buffs grants +1% Damage Reduction to the next hit you take per 4 Favour spent.\n"
-        "+5 HP. +1 Damage. -0.1 Speed. +10% Physical Resistance. +5% Holy Resistance."
 }
 
 OTHERWORLDLY = ['psychic', 'chaos', 'ethereal']
@@ -79,11 +66,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.valour = 0
         self.crusaderActiveLastTurn = False
         self.blessingTurns = 0
-        self.fanaticBuff = 0
-        self.fanaticism = 0
-        self.clericFirstTurn = True
-        self.templarCrit = 0
-        self.templarDR = 0
 
     @property
     def zealotActive(self):
@@ -128,13 +110,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self.crusaderActiveLastTurn = False
         return False
 
-    @property
-    def consecration(self):
-        if self._subType == 'Cleric':
-            if self.favour > self.maxFavour * 0.6:
-                return True
-        return False
-
     def _serialise(self):
         temp = super()._serialise()
         temp['maxFavour'] = self.maxFavour
@@ -162,11 +137,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             else:
                 return {}
         
-        if self._subType == 'Templar':
-            sGain = int(self._maxHealth * (0.005 * (amount // 2)))
-            self._shield += sGain
-            self.templarDR = amount // 4 * 0.01
-
         self.favour -= amount
         self.favourSpent += amount
         
@@ -182,8 +152,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             val = 3
             
         favourEffect = self.favourEffect
-        if self._subType == 'Templar':
-            favourEffect += 0.1
         if self._ascendancy == 'Zealot':
             favourEffect += 0.5
         elif self._ascendancy == 'Guardian':
@@ -210,12 +178,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             else:
                 return {}
         
-        if self._subType == 'Templar':
-            sGain = int(self._maxHealth * (0.005 * (amount // 2)))
-            self._shield += sGain
-            self.templarCrit = amount // 4 * 0.01
-            self._stats['Temporary']['critChance'] += self.templarCrit
-
         self.favour -= amount
         self.favourSpent += amount
 
@@ -232,8 +194,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             ex = "% of Max HP gained as"
 
         favourEffect = self.favourEffect
-        if self._subType == 'Templar':
-            favourEffect += 0.1
         if self._ascendancy == 'Zealot':
             favourEffect -= 0.2
         elif self._ascendancy == 'Guardian':
@@ -275,13 +235,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
                     damageDealt = int(damageDealt * (1 + (val / 100)))
                 else: # crit chance/multi
                     self.favourBuffs[buff] += val / 100
-
-        if self._subType == 'Fanatic' and damageType == 'holy':
-            buff = 1.1 + (self.fanaticism * 0.05)
-            damageDealt = int(damageDealt * buff)
-
-        elif self._subType == 'Cleric' and damageType == 'holy':
-            damageDealt = int(damageDealt * 1.2)
 
         if self._ascendancy == 'Zealot':
             if self.zealotry > 0:
@@ -338,10 +291,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
         if self.favourSpendingEnabled and self.favour > 0:
             spent = random.randint(1, self.favour)
 
-            if self._subType == 'Cleric':
-                heal = int(self._maxHealth * (0.005 * (spent // 2)))
-                self.heal(heal)
-
             if self._ascendancy == 'Guardian':
                 spent = int(spent * 1.2) # 20% increased cost, will auto-fail if not enough
             elif self._ascendancy == 'Justicar':
@@ -357,16 +306,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
                     damageTaken = max(0, damageTaken - val)
                 elif buff == 'percent_damage_reduction':
                     damageTaken = int(damageTaken * (1 - val))
-
-        if self._subType == 'Fanatic' and damageType in OTHERWORLDLY:
-            damageTaken = int(damageTaken * 1.1)
-
-        elif self._subType == 'Cleric' and self.consecration:
-            damageTaken = int(damageTaken * 0.9)
-
-        elif self._subType == 'Templar':
-            damageTaken = int(damageTaken * (1 - self.templarDR))
-            self.templarDR = 0
 
         if self._ascendancy == 'Zealot' and self.zealotry > 0:
             bonus = 1 + (self.zealotry * 0.003)
@@ -427,10 +366,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
         if self._ascendancy == 'Zealot' and self.favour >= 50:
             critChance += 0.05
 
-        if self._subType == 'Templar':
-            self._stats['Temporary']['critChance'] -= self.templarCrit
-            self.templarCrit = 0
-
         if random.random() < critChance:
             critMulti = min(1.0, self.critMulti + self.favourBuffs['critMulti'] * (1 - (target._stats['Bonuses']['critResistance'] / 100)))
             return True, critMulti
@@ -439,10 +374,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
     def onTurnStart(self, combatManager=None):
         for k in self.favourBuffs.keys():
             self.favourBuffs[k] = 0
-
-        if self._subType == 'Cleric' and self.clericFirstTurn:
-            self.clericFirstTurn = False
-            self.favour = int(self.maxFavour * 0.1)
 
         fgain = random.randint(self.favourMinGain, self.favourMaxGain)
         if self._ascendancy == 'Crusader':
@@ -464,21 +395,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
 
         self.favour = min(self.favour + fgain, self.maxFavour)
         console.print(f"[gold1]+{fgain} Favour. Current Favour: {self.favour} / {self.maxFavour}")
-
-        if self._subType == 'Fanatic':
-            self.fanaticBuff = 0
-            if self.favour > self.maxFavour * 0.5:
-                spent = self.favour // 10
-                self.fanaticBuff = 0.02 * spent
-                console.print(f"[holy]Fanatic: Spent {spent} Favour to gain {int(self.fanaticBuff*100)}% Increased Holy Damage for this turn![/holy]")
-                if self.fanaticism < 10:
-                    self._stats['Temporary']['lifesteal'] += 1
-                    self._stats['Temporary']['speed'] += 0.02
-                    self.fanaticism += 1
-
-        elif self._subType == 'Cleric' and self.consecration:
-            heal = int(self._maxHealth * 0.02)
-            self.heal(heal)
 
         if self._ascendancy == 'Guardian':
             sGain = self.favour // 20
@@ -576,26 +492,3 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self.maxFavour += 50
             self._ascendancy = 'Inquisitor'
             self.ascendancyDescription = PALADIN_DESCRIPTIONS["Inquisitor"]
-
-    def updateSubType(self, subType):
-        if subType == 'Fanatic':
-            self._baseHealth -= 10
-            self._baseDamage += 2
-            self._baseSpeed += 0.05
-            self._stats['Permanent']['divine'] += 15
-            self._subType = 'Fanatic'
-            self.subTypeDescription = PALADIN_DESCRIPTIONS["Fanatic"]
-        elif subType == 'Cleric':
-            self._baseHealth += 10
-            self._baseDamage -= 2
-            self._baseSpeed += 0.05
-            self._stats['Permanent']['holy'] += 10
-            self._subType = 'Cleric'
-            self.subTypeDescription = PALADIN_DESCRIPTIONS["Cleric"]
-        elif subType == 'Templar':
-            self._baseHealth += 5
-            self._baseDamage += 1
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['physical'] += 10
-            self._stats['Permanent']['holy'] += 5
-

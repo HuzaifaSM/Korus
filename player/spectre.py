@@ -25,19 +25,6 @@ SPECTRE_DESCRIPTIONS = {
         "While your Energy Shield is above 50%: +10% Damage Dealt, +0.2 Speed, +10% Crit Chance. +30% Crit Damage.\n"
         "10% of your Max Health is converted to Energy Shield. 25% of Chaos damage does not bypass Energy Shield."
         "-25 HP. -2 Damage. +0.1 Speed. +5% Crit Chance. +50 Energy Shield. +10% Increased Energy Shield. -250 Armour. -250 Evasion.",
-    #subtypes
-    "Haunt": "Whenever Ghostly triggers, apply a stack of Haunted to the target: +50 Armour.\n"
-        "Attacking a Haunted enemy grants you a stack of Terrifying, to a max of 15. Terrifying: +0.05 Speed, +5% Increased Ethereal Damage, +1% Damage Taken.\n"
-        "Killing a Haunted enemy grants Petrifying: 15% Increased Armour for 3 turns.\n"
-        "Upon dealing damage to Haunted enemies, take Ethereal damage equal to 20 * Haunt stacks applied in combat.\n"
-        "+5 HP. -1 Damage. +0.05 Speed. -5% Ethereal Resistance. +10% Dark Resistance.",
-    "Incorporeal": "Ghostly now heals for 5% of ignored Armour Rating. 20% of Physical Damage taken is negated.\n"
-        "Ethereal damage also deals 30% damage to an additional different target. 10% Increased Arcane damage taken.\n"
-        "-10 HP. +2 Damage. +0.1 Speed. +10% Physical Resistance. -5% Arcane Resistance.",
-    "Cursed": "Ghostly has no effect. Deal 20% Increased Ethereal damage.\n"
-        "On kill, all enemies take Ethereal damage equal to 10% of the killed enemy's Max HP and gain Cursed for 5 turns.\n"
-        "Cursed: -15% All Resistance. Killing a Cursed enemy causes them to explode, dealing an additional 25% of their Max HP to all other enemies.\n"
-        "-10 HP. +3 Damage. -0.05 Speed. +3% Crit Chance. +15% Ethereal Resistance. -10% Holy Resistance."
 }
 
 class Spectre(Player):
@@ -54,9 +41,6 @@ class Spectre(Player):
         self.wraithHealingTotal = 0
         self.lichBuffsActive = False
         self.shiftingTurns = 0
-        self.hauntApplied = 0
-        self.terrifying = 0
-        self.petrifyingTurns = 0
 
     def _recalculateStats(self, doPrint: bool = True, inCombat: bool = False):
         super()._recalculateStats(doPrint, inCombat)
@@ -80,16 +64,8 @@ class Spectre(Player):
             healAmount = int(ignoredArmour * self.ghostlyAmount)
 
             if healAmount > 0:
-                if self._subType == 'Haunt':
-                    target.hauntedStacks += 1
-                    self.hauntApplied += 1
-
-                if self._subType == 'Cursed':
-                    healAmount = 0
-                    pass
-                else:
-                    self.heal(healAmount)
-                    console.print(f"  [heal]Ghostly: Healed {healAmount} HP from ignored armor![/heal]")
+                self.heal(healAmount)
+                console.print(f"  [heal]Ghostly: Healed {healAmount} HP from ignored armor![/heal]")
                 
                 if self._ascendancy == 'Reaper':
                     shieldGain = int(ignoredArmour * 0.05)
@@ -107,22 +83,6 @@ class Spectre(Player):
                     damageDealt = int(damageDealt * 1.5)
                     console.print(f"  [buff]Wraith: Unarmored target! +50% damage![/buff]")
         
-        if self._subType == 'Haunt' and target:
-            if target.hauntedStacks > 0:
-                if self.terrifying < 15:
-                    self.terrifying += 1
-                    self._stats['Temporary']['speed'] += 0.05
-                    console.print(f"  [success]Haunt: Attacked a Haunted enemy! Gained 1 stack of Terrifying. Total stacks: {self.terrifying} / 15[/success]\n"
-                                  f"    [dim]Total buffs: [success]+{self.terrifying * 0.05} Speed. +{self.terrifying * 5}% Increased Ethereal Damage.[/success] [warning]+{self.terrifying}% Damage Taken.[/warning][/dim]")
-                damageTaken = 20 * self.hauntApplied
-                self.damage(damageTaken, 'ethereal')
-                console.print(f"  [warning]Haunt: Attacked a Haunted enemy! Took {damageTaken} Ethereal damage. Total Haunted applied this combat: {self.hauntApplied}[/warning]")
-            if self.terrifying > 0 and damageType == 'ethereal':
-                damageDealt = int(damageDealt * (1 + (0.05 * self.terrifying)))
-
-        elif self._subType == 'Cursed' and damageType == 'ethereal':
-            damageDealt = int(damageDealt * 1.2)
-
         if self._ascendancy == 'Reaper':
             damageDealt += self.reaperDamage
             if target and target._health < (target._maxHealth * 0.3):
@@ -144,11 +104,6 @@ class Spectre(Player):
         return damageDealt, damageType
 
     def onKill(self, entity, attackData, combatManager=None):
-        if self._subType == 'Haunt' and entity.hauntedStacks > 0:
-            self.petrifyingTurns = 3
-            self._stats['Temporary']['increased_armour'] += 15
-            console.print(f"  [success]Haunt: Killed a Haunted enemy! Gained Petrifying for 3 turns. +15% Increased Armour.[/success]")
-
         if self._ascendancy == 'Revenant' and not self.revenantReverseDamage:
             self.revenantReverseDamage = True
 
@@ -168,15 +123,6 @@ class Spectre(Player):
             super().heal(amount)
 
     def onHit(self, damageTaken, damageType, attacker=None, combatManager=None):
-        if self._subType == 'Haunt' and self.terrifying > 0:
-            damageTaken = int(damageTaken * (1 + (0.01 * self.terrifying)))
-
-        elif self._subType == 'Incorporeal':
-            if damageType == 'physical':
-                damageTaken = int(damageTaken * 0.8)
-            elif damageType == 'arcane':
-                damageTaken = int(damageTaken * 1.1)
-
         if self._ascendancy == 'Revenant':
             if self.revenantReverseDamage:
                 self.revenantReverseDamage = False
@@ -219,12 +165,6 @@ class Spectre(Player):
         return super().onHit(damageTaken, damageType, attacker, combatManager)
 
     def onTurnStart(self, combatManager=None):
-        if self._subType == 'Haunt' and self.petrifyingTurns > 0:
-            self.petrifyingTurns -= 1
-            if self.petrifyingTurns == 0:
-                self._stats['Temporary']['increased_armour'] -= 15
-                console.print("[warning]Haunt: Petrifying has worn off![/warning]")
-
         if self._ascendancy == 'Phantasm' and self.shiftingTurns > 0:
             self.shiftingTurns -= 1
             if self.shiftingTurns == 0:
@@ -259,9 +199,6 @@ class Spectre(Player):
         self.wraithHealingTotal = 0
         self.lichBuffsActive = False
         self.shiftingTurns = 0
-        self.hauntApplied = 0
-        self.terrifying = 0
-        self.petrifyingTurns = 0
 
         super().onBattleEnd()
 
@@ -309,33 +246,4 @@ class Spectre(Player):
             self._stats['Permanent']['added_evasion'] -= 250
             self._ascendancy = 'Lich'
             self.ascendancyDescription = SPECTRE_DESCRIPTIONS["Lich"]
-        self._recalculateStats(False)
-
-    def updateSubType(self, subType):
-        if subType == 'Haunt':
-            self._baseHealth += 5
-            self._baseDamage -= 1
-            self._baseSpeed += 0.05
-            self._stats['Permanent']['ethereal'] -= 5
-            self._stats['Permanent']['dark'] += 10
-            self._subType = 'Haunt'
-            self.subTypeDescription = SPECTRE_DESCRIPTIONS["Haunt"]
-        elif subType == 'Incorporeal':
-            self._baseHealth -= 10
-            self._baseDamage += 2
-            self._baseSpeed += 0.1
-            self.ghostlyAmount = 0.05
-            self._stats['Permanent']['physical'] += 10
-            self._stats['Permanent']['arcane'] -= 5
-            self._subType = 'Incorporeal'
-            self.subTypeDescription = SPECTRE_DESCRIPTIONS["Incorporeal"]
-        elif subType == 'Cursed':
-            self._baseHealth -= 10
-            self._baseDamage += 3
-            self._baseSpeed -= 0.05
-            self._stats['baseCritChance'] += 0.03
-            self._stats['Permanent']['ethereal'] += 15
-            self._stats['Permanent']['holy'] -= 10
-            self._subType = 'Cursed'
-            self.subTypeDescription = SPECTRE_DESCRIPTIONS['Cursed']
         self._recalculateStats(False)

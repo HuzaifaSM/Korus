@@ -1,4 +1,4 @@
-from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES
+from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES
 from scripts.styles import (
     console, displayLevelUp, formatDamageType, pause,
     printSuccess, printWarning, printInfo, clearScreen
@@ -10,14 +10,12 @@ from copy import deepcopy
 
 class Player(Entity):
     def __init__(self, name: str, health: int = 50, damage: int = 5, baseCritChance: float = 0.05, baseCritMulti: float = 1.5, damageType: str = "physical", speed: float = 1.0, /,
-                 *, className: str = None, classDescription: str = "Basic Player", ascendancy = None, ascendancyDescription: str = None, subType = None, subTypeDescription: str = None):
+                 *, className: str = None, classDescription: str = "Basic Player", ascendancy = None, ascendancyDescription: str = None):
         super().__init__(health, damage, baseCritChance, baseCritMulti, damageType, speed, name, className)
         self.defaultDamageType = damageType
         self.classDescription = classDescription
         self._ascendancy = ascendancy
         self.ascendancyDescription = ascendancyDescription
-        self._subType = subType
-        self.subTypeDescription = subTypeDescription
         self.dungeonKeys = {}
         self._maxLevel = 100
         self.gainClassAbilities()
@@ -81,7 +79,7 @@ class Player(Entity):
         if not self.className or self.className not in CLASS_ABILITIES:
             return
         
-        classAbilities = CLASS_ABILITIES[self.className]
+        classAbilities = CLASS_ABILITIES[self.className]['base']
 
         for name, ability in classAbilities.items():
             if self._level >= ability.levelReq and name not in self._abilities:
@@ -102,11 +100,11 @@ class Player(Entity):
         if not self._equipment['weapon']:
             self._damageType = self.defaultDamageType
 
-    def updateAscendancy(self, ascendancy):
-        """ascendancy should be full lowercase and no spaces"""
+    def _removeOldAscendancy(self):
+        """rewrite per class"""
         pass
 
-    def updateSubType(self, subType):
-        """subType should be full lowercase and no spaces"""
+    def updateAscendancy(self, ascendancy):
+        """ascendancy should be .title() version"""
         pass
 

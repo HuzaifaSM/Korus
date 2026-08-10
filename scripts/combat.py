@@ -9,7 +9,7 @@ from .styles import (
     console, printSuccess, printWarning, printError, printInfo, formatDamageType, pause
 )
 from .enemyAi import EnemyAI
-from expansions.bosses.bosses import Boss
+#from expansions.bosses.bosses import Boss
 
 class TurnPhase(Enum):
     PLAYER_TURN = "player"
@@ -127,7 +127,7 @@ class CombatUnit:
 
         baseResist += self.entity._stats['Resistances'].get('all', 0)
 
-        ELEMENTAL_TYPES = ['fire', 'cold', 'lightning', 'wind', 'earth']
+        ELEMENTAL_TYPES = ['fire', 'cold', 'lightning', 'earth']
         if damageType in ELEMENTAL_TYPES:
             baseResist += self.entity._stats['Resistances'].get('elemental', 0)
 
@@ -259,15 +259,7 @@ class CombatManager:
             self._setPhaseForUnit(nextUnit)
             nextEntity = nextUnit.entity
             nextEntity.onTurnStart(self)
-            if nextEntity.className == 'Rogue':
-                if nextEntity._subType == 'Vanguard' and not nextEntity.vanguardUsed:
-                    if nextEntity.combatHealthLost >= (nextEntity._maxHealth * 0.3):
-                        console.print(f"\n  [buff]- Vanguard: More than 30% health lost this combat! 50% of remaning health dealt as Dark damage to all enemies.[/buff]")
-                        targets = [u.entity for u in self.getUnitsInTeam('enemy')]
-                        damage = int(nextEntity._health * 0.5)
-                        for target in targets:
-                            target.damage(damage, 'dark')
-
+            
     def getCurrentUnit(self) -> Optional[CombatUnit]:
         if 0 <= self.currentTurnIndex < len(self.turnOrder):
             return self.turnOrder[self.currentTurnIndex]
@@ -297,27 +289,6 @@ class CombatManager:
             if unit.entity == target:
                 targetUnit = unit
                 break
-
-        if targetUnit:
-            if target.className == 'Mutant':
-                enemies = [u.entity for u in self.getUnitsInTeam('enemy') if u.isActive]
-                target.reflectDoTs(attacker, statusEffect, self, enemies)
-
-            avoidChance = target._stats['Bonuses'].get('ailmentAvoidance', 0)
-            if random.random() < avoidChance: # avoided ailment
-                console.print(f"\n  [buff]- {target._name} avoided being afflicted by {statusEffect['name']}! ({avoidChance}% Chance.)[/buff]")
-                if target.className == 'Rogue' and target._ascendancy == 'Trickster':
-                    for unit in self.units: # apply effect back to attacker
-                        if unit.entity == attacker:
-                            attackerUnit = unit
-                            break
-                    attackerUnit.statusEffects.append(statusEffect)
-                    console.print(f"    [buff]- Trickster: Applied {statusEffect.name} to {attacker._name} instead![/buff]")
-            else:
-                if statusEffect.name == 'poison' and attacker.className == 'Rogue' and attacker._ascendancy == 'Shadow':
-                    statusEffect.data['damage'] *= 2
-                targetUnit.statusEffects.append(statusEffect)
-                console.print(f"  [debuff]- {statusEffect.name} applied.[/debuff]")
 
     def checkDead(self, target: Entity):
         if target._isDead:
@@ -430,22 +401,12 @@ class CombatManager:
                     if random.random() < 0.2:
                         freeze = Effects.createFreeze()
                         mechanics.append(freeze)
-                if attacker._subType == 'Manafist':
-                    if damageType == 'lightning':
-                        console.print(f'  [buff]- Manafist: Lightning damage applied chill![/buff]')
-                        chill = Effects.createChill()
-                        mechanics.append(chill)
-                    elif damageType == 'cold':
-                        console.print(f'  [buff]- Manafist: Cold damage applied shock![/buff]')
-                        shock = Effects.createShock()
-                        mechanics.append(shock)
 
                 elif attacker._ascendancy == 'Enlightened':
                     if damageType != attacker._damageType:
-                        allEnemies = [u.entity for u in self.getUnitsInTeam('enemy')]
                         aoeDamage = int(attacker._baseDamage * 1.3)
                         console.print(f'  [gold1]- Enlightened: Element mismatch! {aoeDamage} {attacker._damageType} damage to all enemies![/gold1]')
-                        for enemy in allEnemies:
+                        for enemy in self.allAlive:
                             enemy.damage(aoeDamage, attacker._damageType)
 
             elif attacker.className == 'Wanderer':
@@ -459,22 +420,6 @@ class CombatManager:
                 if attacker.lostTrigger and damageType != 'heal':
                     console.print(f'  [buff]- Wanderer: Lost triggered. Attacking all enemies for 150% damage.[/buff]')
                     targets = [u.entity for u in self.getUnitsInTeam('enemy')]
-
-                    if attacker._subType == 'Shattered' and random.random() <= 0.1:
-                        stun = Effects.createStun()
-                        mechanics.append(stun)
-                        console.print("  [buff]- Shattered: Lost attack applies stun to all enemies![/buff]")
-                        buffs = ['damage', 'speed', 'lifesteal']
-                        buff = random.choice(buffs)
-                        attacker.shatteredBuffs[buff] = min(2, attacker.shatteredBuffs.get(buff, 0) + 2)
-                        buffInfo = ""
-                        if buff == 'damage':
-                            buffInfo = "+10% Damage Dealt"
-                        elif buff == 'speed':
-                            buffInfo = "+0.3 Speed"
-                        elif buff == 'lifesteal':
-                            buffInfo = "+15% Lifesteal"
-                        console.print(f'  [buff]- Shattered: Gained Shattered {buff} buff for 2 turns. ({buffInfo})[/buff]')
 
                     if attacker._ascendancy == 'Weaver':
                         attacker.wovenDamage += 10
@@ -490,19 +435,18 @@ class CombatManager:
                         targets = [u.entity for u in self.getUnitsInTeam('enemy')]
 
             elif attacker.className == 'Mage':
-                if attacker._ascendancy == 'Elementalist' and damageType in ['arcane', 'cold', 'earth', 'fire', 'lightning', 'wind']:
+                if attacker._ascendancy == 'Elementalist' and damageType in ['arcane', 'cold', 'earth', 'fire', 'lightning']:
                     if attacker.elementalistAttackCount % 3 == 0:
-                        allEnemies = [u.entity for u in self.getUnitsInTeam('enemy')]
-                        if len(allEnemies) == 1:
+                        if len(self.allAlive) == 1:
                             damage *= 2
-                            targets = allEnemies
+                            targets = self.allAlive
                             console.print(f'[gold1]Elementalist: 3rd elemental attack! Single target: 200% damage![/gold1]')
                         else:
                             damage = int(damage * 0.6)
-                            targets = allEnemies
+                            targets = self.allAlive
                             console.print(f'[gold1]Elementalist: 3rd elemental attack! Hitting all enemies for 60% damage![/gold1]')
 
-                elif attacker._ascendancy == 'Fluxweaver' and damageType in ['arcane', 'cold', 'earth', 'fire', 'lightning', 'wind']:
+                elif attacker._ascendancy == 'Fluxweaver' and damageType in ['arcane', 'cold', 'earth', 'fire', 'lightning']:
                     if random.random() < 0.3:
                         exposure = Effects.createElementalExposure()
                         mechanics.append(exposure)
@@ -539,52 +483,12 @@ class CombatManager:
                     console.print(f'[gold1]Juggernaut: Max Fortify - Stunning all enemies! -100 Rage.[/gold1]')
                     attacker._rage -= 100
 
-            elif attacker.className == 'Spectre':
-                if attacker._subType == 'Incorporeal' and damageType == 'ethereal':
-                    allTargets = self.getUnitsInTeam('enemy')
-                    allTargets = [t.entity for t in allTargets if t != target]
-                    if allTargets:
-                        extraTarget = random.choice(allTargets)
-                        bonusDamage = int(damage * 0.3)
-                        extraTarget.damage(bonusDamage, damageType)
-                        console.print(f"  [ethereal]Incorporeal: Ethereal form strikes {extraTarget._name} for {bonusDamage} damage![/ethereal]")
-
                 if attacker._ascendancy == 'Phantasm' and damageType == 'ethereal':
                     if random.random() < 0.3:
-                        allEnemies = [u.entity for u in self.getUnitsInTeam('enemy')]
                         phased = Effects.createCustom(name='phased', effectType='special', duration=3, speedBonus=-0.2, damageMultiplier=0.9)
-                        for enemy in allEnemies:
+                        for enemy in self.allAlive:
                             self.addStatusEffect(enemy, phased, attacker)
                             console.print(f"  [ethereal]Phantasm: Applied Phased to {enemy._name}![/ethereal]")
-
-            elif attacker.className == 'Ranger':
-                if attacker._ascendancy == 'Skirmisher' and attacker.skirmisherHits > 0:
-                    allTargets = [u.entity for u in self.getUnitsInTeam('enemy')]
-                    allTargets = [u for u in allTargets if u != target]
-                    if allTargets:
-                        extraTargets = random.sample(allTargets, 2)
-                        bonusDamage = int(damage * 0.3)
-                        for et in extraTargets:
-                            et.damage(bonusDamage, 'wind')
-                            console.print(f"  [wind]Skirmisher: Skirmisher Momentum buff attacks {et._name} for {bonusDamage} damage![/wind]")
-                elif attacker._ascendancy == 'Tempest' and attacker.tailwind >= 12:
-                    if random.random() < 0.3:
-                        ailment = random.choice(['shock', 'chill', 'burn', 'elemental_exposure'])
-                        if ailment == 'shock':
-                            ailment = Effects.createShock(3, 0.2)
-                        elif ailment == 'chill':
-                            ailment = Effects.createChill(1)
-                        elif ailment == 'burn':
-                            ailment = Effects.createBurn(1)
-                        elif ailment == 'elemental_exposure':
-                            ailment = Effects.createElementalExposure(3)
-                        mechanics.append(ailment)
-
-            elif attacker.className == 'Druid':
-                if attacker._subType == 'Feral' and attacker.form == 'beast':
-                    bleed = Effects.createBleed()
-                    for b in bleed:
-                        mechanics.append(b)
 
             elif attacker.className == 'Cultist':
                 if attacker._ascendancy == 'Harbinger' and attacker.insanity == attacker.maxInsanity:
@@ -594,10 +498,9 @@ class CombatManager:
 
                 elif attacker._ascendancy == 'Anarchist':
                     if attacker.volatility == attacker.maxVolatility and attacker.insanity > 0:
-                        allEnemies = [u.entity for u in self.getUnitsInTeam('enemy')]
-                        if allEnemies:
+                        if self.allAlive:
                             aoeDamage = int(attacker._maxHealth * (0.01 * (attacker.insanity // 5)))
-                            for e in allEnemies:
+                            for e in self.allAlive:
                                 e.damage(aoeDamage, 'chaos')
                         attacker.volatility = 0
                         attacker._randomiseInsanity(min=-10, max=30)
@@ -609,36 +512,32 @@ class CombatManager:
                 if isCrit:
                     damage = int(damage * critMult)
                     console.print(f"[bold gold1]✨ CRITICAL HIT! ✨[/bold gold1] [damage]{critMult*100:.0f}%[/damage] damage!")
-                    if attacker.className == 'Monk' and attacker._subType == 'Pugilist':
-                        exposed = Effects.createExposed()
-                        self.addStatusEffect(target, exposed)
-                        console.print(f"  [debuff]- Pugilist: {target._name} is Exposed![/debuff]")
-                    
-                    elif attacker.className == 'Ranger':
-                        if attacker._subType == 'Sharpshooter':
-                            exposure = Effects.createElementalExposure(3)
-                            mechanics.append(exposure)
-                        if attacker._ascendancy == 'Sniper':
-                            if attacker.tailwind >= 7:
-                                vulnerable = Effects.createVulnerable(2, 0.5)
-                                mechanics.append(vulnerable)
 
-                    elif attacker.className == 'Druid':
-                        if attacker._subType == 'Feral' and attacker.form == 'beast':
-                            bleed = Effects.createBleed()
-                            for b in bleed:
-                                mechanics.append(b)
-
-                    elif attacker.className == 'Paladin':
+                    if attacker.className == 'Paladin':
                         if attacker._ascendancy == 'Justicar':
                             living = len([u for u in self.getUnitsInTeam('enemy') if u.isActive])
                             attacker.favour = min(attacker.maxFavour,
                                                   attacker.favour + living * 5)
 
+                    elif attacker.className == 'Wretch':
+                        if attacker._ascendancy == 'Exsanguinator':
+                            target.bloodSpike = 0
+
                     if target.className == 'Wanderer':
                         if target._ascendancy == 'Mindbreaker' and attacker.tortureStacks > 0:
                             attacker.tortureStacks = 0
                             console.print(f"  [warning]- Mindbreaker: {attacker._name} has removed all their torture stacks![/warning]")
+
+                    elif target.className == 'Wretch':
+                        if target._ascendancy == 'Plaguebearer':
+                            target.gainBloodScent()
+
+                        elif target._ascendancy == 'Necrose':
+                            perc = 0.05 * attacker.necrosis
+                            reflect = int(damage * perc)
+                            console.print(f"[dark_olive_green3]Necrose: Reflected [/dark_olive_green3]{int(perc*100)}[dark_olive_green3]% of the damage to the enemy![/dark_olive_green3]")
+                            damage -= reflect
+                            attacker.damage(reflect, damageType)
 
             if damage < 0:
                 healAmount = abs(damage)
@@ -651,132 +550,84 @@ class CombatManager:
                         if unit.entity == t:
                             targetUnit = unit
                             break
-                    
-                    finalDamage = damage
-                    if targetUnit:
-                        vulnMult = targetUnit.getVulnerabilityModifier()
-                        if vulnMult > 1.0:
-                            finalDamage = int(damage * vulnMult)
-                            console.print(f"  [debuff]- {t._name} is vulnerable. Damage increased to {finalDamage}[/debuff]")
 
-                    if len(targets) > 1:
-                        finalDamage = int(damage * 0.8)
-                        console.print(f"  [dim]|- Hitting {t._name}[/dim]")
-                        
-                    if attacker.className == 'Monk':
-                        if attacker._ascendancy == 'Stormwalker':
-                            if any(e.name == 'shock' for e in targetUnit.statusEffects):
-                                attacker._prowess += 1
-                                console.print(f"  [buff]Stormwalker: Hit shocked enemy! +1 Prowess![/buff]")
+                    attacks = 1
+                    if random.random() < attacker._stats['Bonuses']['multihit']:
+                        attacks = attacker.numMultihits
 
-                                allEnemies = [u for u in self.getUnitsInTeam('enemy')]
-                                targetShockValue = [s.amount for s in targetUnit.statusEffects if s.name == 'shock'][0]
-                                otherEnemies = [e for e in allEnemies if e != targetUnit]
-                                if otherEnemies:
-                                    spread = random.choice(otherEnemies)
-                                    shock = Effects.createShock(amount=targetShockValue)
-                                    self.addStatusEffect(t, shock, attacker)
-                                    console.print(f"  [lightning]Stormwalker: Shock spread to {spread._name}![/lightning]")
+                    for _ in range(attacks):
 
-                        if attacker._subType == 'Manafist':
-                            hasChill = any(e.name == 'chill' for e in targetUnit.statusEffects)
-                            hasShock = any(e.name == 'shock' for e in targetUnit.statusEffects)
-                            if hasChill and hasShock:
-                                damage = int(damage * 1.3)
-                                console.print(f"  [gold1]Manafist: {target._name} has both Shock and Chill! +30% damage![/gold1]")
+                        finalDamage = damage * (0.75 if attacks > 1 else 1)
+                        if targetUnit:
+                            vulnMult = targetUnit.getVulnerabilityModifier()
+                            if vulnMult > 1.0:
+                                finalDamage = int(damage * vulnMult)
+                                console.print(f"  [debuff]- {t._name} is vulnerable. Damage increased to {finalDamage}[/debuff]")
 
-                    # BONUS MECHANICS
-
-                    if attacker.className == "Fighter":
-                        if attacker._subType == 'Bruiser':
-                            finalDamage = round(finalDamage * 1 + (0.05 * t.overwhelmStacks))
-                            t.overwhelmStacks = min(10, t.overwhelmStacks + 1)
-
-                    elif attacker.className == 'Wanderer':
-                        if attacker._ascendancy == 'Mindbreaker':
-                            if damageType == 'psychic':
-                                t.tortureStacks += 1
-                            if attacker.lostTrigger and random.random() <= (t.tortureStacks / 100):
-                                finalDamage *= 2
-                                exposure = Effects.createOtherworldExposure()
-                                mechanics.append(exposure)
-
-                    finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self)
-                    finalDamage, evaded = self.applyDamageWithDefenses(target, finalDamage, damageType, targetUnit)
-                    finalDamage, damageType = t.onHit(finalDamage, damageType, isCrit, attacker, self)
-
-                    if t.className == 'Ranger':
-                        if t._subType == 'Sharpshooter' and evaded:
-                            if t.tailwind < t.maxTailwind:
-                                t.tailwind += 1
-                        if t._subType == 'Scout' and not evaded:
-                            t.scoutDodges = 0
-                    
-                    elif t.className == 'Cultist' and t._ascendancy == 'Harbinger':
-                        if attacker.corruption > 0 and t.insanity < 0:
-                            attacker.corruption -= 1
-                            console.print(f"  [chaos]You were attacked while your Insanity is negative! {attacker._name} is cleansed of 1 Corruption.[/chaos]")
-
-                    if attacker._stats['Bonuses']['lifesteal'] > 0:
-                        heal = int(finalDamage * (attacker._stats['Bonuses']['lifesteal'] / 100))
-                        attacker.heal(heal)
-
-                    # MULTI-ATTACK CHECKS
-                    damageDealt = False
-
-                    if attacker.className == 'Rogue':
-                        if attacker._ascendancy == 'Nightblade':
-                            finalDamage = int(finalDamage * 0.75)
-                            for _ in range(2):
-                                t.damage(finalDamage, damageType)
-                            damageDealt = True
-
-                    elif attacker.className == 'Wanderer':
-                        if attacker._subType == 'Vessel' and attacker.lostTrigger:
+                        if len(targets) > 1:
                             finalDamage = int(finalDamage * 0.8)
-                            for _ in range(2):
-                                if attacker._ascendancy == 'Weaver' and damageType != 'psychic':
-                                    psyDam = int(finalDamage * 0.1)
-                                    console.print(f"  [buff]- Weaver: 10% of Non-Psychic attack damage dealt as Extra Psychic! {psyDam} Extra Psychic damage dealt.[/buff]")
-                                    t.damage(finalDamage, damageType)
-                                    t.damage(psyDam, 'psychic')
-                                    damageDealt = True
-                                else:
-                                    t.damage(finalDamage, damageType)
-                                    damageDealt = True
+                            console.print(f"  [dim]|- Hitting {t._name}[/dim]")
+                            
+                        if attacker.className == 'Monk':
+                            if attacker._ascendancy == 'Stormwalker':
+                                if any(e.name == 'shock' for e in targetUnit.statusEffects):
+                                    attacker._prowess += 1
+                                    console.print(f"  [buff]Stormwalker: Hit shocked enemy! +1 Prowess![/buff]")
 
-                    elif attacker.className == 'Ranger':
-                        if attacker._ascendancy == 'Tempest' and damageType == 'wind':
-                            if random.random() < 0.4:
-                                element = random.choice(['wind','earth','fire','cold','lightning'])
-                                extraDamage = int(finalDamage * 0.5)
-                                attacker.mysticism += 1
-                                attacker._stats['Temporary']['increased_evasion'] += 2
-                                attacker._stats['Temporary']['elemental'] += 1
-                                t.damage(finalDamage, damageType)
-                                t.damage(extraDamage, element)
-                                damageDealt = True
+                                    targetShockValue = [s.amount for s in targetUnit.statusEffects if s.name == 'shock'][0]
+                                    otherEnemies = [e for e in self.allAlive if e != targetUnit]
+                                    if otherEnemies:
+                                        spread = random.choice(otherEnemies)
+                                        shock = Effects.createShock(amount=targetShockValue)
+                                        self.addStatusEffect(t, shock, attacker)
+                                        console.print(f"  [lightning]Stormwalker: Shock spread to {spread._name}![/lightning]")
 
-                    if not damageDealt:
-                        t.damage(finalDamage, damageType)
+                        # BONUS MECHANICS
+
+                        if attacker.className == 'Wanderer':
+                            if attacker._ascendancy == 'Mindbreaker':
+                                if damageType == 'psychic':
+                                    t.tortureStacks += 1
+                                if attacker.lostTrigger and random.random() <= (t.tortureStacks / 100):
+                                    finalDamage *= 2
+                                    exposure = Effects.createOtherworldExposure()
+                                    mechanics.append(exposure)
+
+                        elif attacker.className == 'Wretch':
+                            if t.bloodSpike < attacker.maxBloodSpikeStacks:
+                                t.bloodSpike += 1
+                                if attacker._ascendancy == 'Necrose':
+                                    attacker.bloodSpikeApplied += 1
+
+                        finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self)
+                        finalDamage, evaded = self.applyDamageWithDefenses(target, finalDamage, damageType, targetUnit)
+                        finalDamage, damageType = t.onHit(finalDamage, damageType, isCrit, attacker, self)
+
+                        if t.className == 'Cultist' and t._ascendancy == 'Harbinger':
+                            if attacker.corruption > 0 and t.insanity < 0:
+                                attacker.corruption -= 1
+                                console.print(f"  [chaos]You were attacked while your Insanity is negative! {attacker._name} is cleansed of 1 Corruption.[/chaos]")
+
+                        elif t.className == 'Wretch':
+                            if t._ascendancy == 'Bloodletter':
+                                reflect = int(t.healthLost * 0.05)
+                                attacker.damage(reflect, 'dark', attackerUnit)
+                            elif t._ascendancy == 'Plaguebearer' and attacker.bloodSpike == 7:
+                                finalDamage = int(finalDamage * 0.8)
+                            elif t._ascendancy == 'Necrose':
+                                attacker.gainNecrosis()
+                                t.necrosisApplied += 1
+
+                        if attacker._stats['Bonuses']['lifesteal'] > 0:
+                            heal = int(finalDamage * (attacker._stats['Bonuses']['lifesteal'] / 100))
+                            attacker.heal(heal)
+
+                        if not evaded:
+                            t.damage(finalDamage, damageType)
+                        else:
+                            console.print(f'[wind bold]{t._name} dodged the attack![/wind bold]')
 
                     # AFTER-HIT EFFECTS
-
-                    if attacker.className == 'Rogue':
-                        if attacker._ascendancy == 'Shadow': # can only apply poison dots
-                            for mechanic in mechanics:
-                                if mechanic.effectType == 'dot' and mechanic.name in ['bleed', 'burn', 'curse']:
-                                    mechanics.remove(mechanic)
-
-                    if t.className == 'Rogue':
-                        if t._subType == 'Duelist':
-                            if random.random() <= 0.25:
-                                riposteDamage = int(t._damage * 0.5)
-                                attacker.damage(riposteDamage, t._damageType)
-                                console.print(f"\n[buff]Duelist: {t._name} Riposted for {riposteDamage} damage against {attacker._name}[/buff]")
-                                if t.primed:
-                                    weaken = Effects.createWeaken()
-                                    mechanics.append(weaken)
 
                     if mechanics and not t._isDead:
                         for mechanic in mechanics:
@@ -798,38 +649,74 @@ class CombatManager:
                                 for e in remainingEnemies:
                                     e.damage(damageToAll, damageType)
                         
-                        elif attacker.className == 'Spectre' and attacker._subType == 'Cursed':
-                            allAlive = [u.entity for u in self.getUnitsInTeam('enemy')]
-                            if len(allAlive) > 0:
-                                aoeDamage = int(t._maxHealth * 0.1)
-                                if t.cursedTurns > 0:
-                                    aoeDamage += int(t._maxHealth * 0.25)
-                                for e in allAlive:
-                                    e.damage(aoeDamage, 'ethereal')
-                                    e.cursedTurns = 5
-                                console.print(f"  [ethereal]Cursed: Death spreads! {aoeDamage} damage and 5 turns of Cursed to all enemies![/ethereal]")
-
                         elif attacker.className == 'Cultist' and attacker._ascendancy == 'Harbinger':
                             if t.corruption >= 5:
-                                allAlive = [u.entity for u in self.getUnitsInTeam('enemy')]
-                                if len(allAlive) > 0:
+                                if len(self.allAlive) > 0:
                                     aoeDamage = int(t._maxHealth * 0.1)
-                                    for e in allAlive:
+                                    for e in self.allAlive:
                                         e.damage(aoeDamage, 'chaos')
 
-                    if attacker.className == 'Spectre' and attacker._ascendancy == 'Reaper' and not death:
-                        if t._health <= (t._maxHealth * 0.05):
-                            console.print(f"  [gold1 bold]Reaper: EXECUTE![/gold1 bold]")
-                            t.damage(t._health, 'true')
-                            self.checkDead(t)
-                            heal = int(t._maxHealth * 0.1)
-                            dmgBuff = int(target._damage * 0.05)
-                            attacker.heal(heal)
-                            attacker.reaperDamage += dmgBuff
-                            console.print(f"  [gold1]Reaper: Executed {t._name}! Healed for {heal} HP and gained {dmgBuff} Damage permanently.[/gold1]")
+                        elif attacker.className == 'Wretch':
+                            if attacker._ascendancy == 'Exsanguinator':
+                                if len(self.allAlive) > 0:
+                                    dmg = int(t._maxHealth * 0.2)
+                                    pick = random.choice(self.allAlive)
+                                    pick.damage(dmg, 'dark')
+                                else:
+                                    heal = int(attacker._maxHealth * 0.1)
+                                    attacker.heal(heal)
+                            if attacker._ascendancy == 'Plaguebearer':
+                                attacker.gainBloodScent()
+
+                    else:        
+
+                        if attacker.className == 'Spectre' and attacker._ascendancy == 'Reaper':
+                            if t._health <= (t._maxHealth * 0.05):
+                                console.print(f"  [gold1 bold]Reaper: EXECUTE![/gold1 bold]")
+                                t.damage(t._health, 'true')
+                                self.checkDead(t)
+                                heal = int(t._maxHealth * 0.1)
+                                dmgBuff = int(target._damage * 0.05)
+                                attacker.heal(heal)
+                                attacker.reaperDamage += dmgBuff
+                                console.print(f"  [gold1]Reaper: Executed {t._name}! Healed for {heal} HP and gained {dmgBuff} Damage permanently.[/gold1]")
+
+                        elif attacker.className == 'Wretch':
+                            if target.bloodSpike > 0:
+                                if t._health <= (t._maxHealth * (2 * t.bloodSpike)):
+                                    console.print(f"[dark_red bold]Wretch: {t._name} Executed from Blood Spike![/dark_red bold]")
+                                    t.damage(t._health, 'true')
+                                    self.checkDead(t)
+                                    heal = attacker._maxHealth * (0.01 * target.bloodSpike)
+                                    attacker.heal(heal)
+
+                                    if attacker._ascendancy == 'Bloodletter':
+                                        dmgMult = 0.01 * target.bloodSpike
+                                        console.print(f'[dim red1]Bloodletter: All enemies take {int(dmgMult*100)}% of their Max HP as True Damage![/dim red1]')
+                                        for e in self.allAlive:
+                                            dmg = int(e._maxHealth * dmgMult)
+                                            e.damage(dmg, 'true')
+
+                                    elif attacker._ascendancy == 'Plaguebearer':
+                                        spread = t.bloodSpike // 2
+                                        numEnemies = len(self.getUnitsInTeam('enemy'))
+                                        per = int(spread / numEnemies)
+                                        if per > 0:
+                                            for e in self.allAlive:
+                                                e.bloodSpike = min(attacker.maxBloodSpikeStacks, e.bloodSpike + per)
+
+                                    elif attacker._ascendancy == 'Necrose':
+                                        heal = int(attacker._maxHealth * 0.05)
+                                        attacker.heal(heal)
+                                        attacker.gainRot()
 
             ability.currentCooldown = ability.maxCooldown
             return True
+
+    @property
+    def allAlive(self) -> List[Entity]:
+        """returns all living enemies"""
+        return [u.entity for u in self.getUnitsInTeam('enemy')]
 
     def enemyTurn(self, enemy: Enemy, targets: List[Entity]):
         self.checkDead(enemy)
@@ -839,15 +726,14 @@ class CombatManager:
         if not aliveTargets:
             return
 
-        if isinstance(enemy, Boss):
-            self.performAttack(enemy, random.choice(aliveTargets), enemy.chooseAbility(aliveTargets[0]))
-            return
+        # if isinstance(enemy, Boss):
+        #     self.performAttack(enemy, random.choice(aliveTargets), enemy.chooseAbility(aliveTargets[0]))
+        #     return
         
         if not self._enemyDecisions: # build snapshot for all enemies this round, cache it
-            allEnemies = [u.entity for u in self.getUnitsInTeam('enemy') if not u.entity._isDead]
-            actionLists = [e.ai.buildActionList() for e in allEnemies]
-            self._enemyDecisions = EnemyAI.decideTurn(allEnemies, aliveTargets[0], actionLists)
-            self._enemyIndexMap = {e: i for i, e in enumerate(allEnemies)}
+            actionLists = [e.ai.buildActionList() for e in self.allAlive]
+            self._enemyDecisions = EnemyAI.decideTurn(self.allAlive, aliveTargets[0], actionLists)
+            self._enemyIndexMap = {e: i for i, e in enumerate(self.allAlive)}
 
         idx = self._enemyIndexMap.get(enemy, 0)
         decision = self._enemyDecisions.get(idx)

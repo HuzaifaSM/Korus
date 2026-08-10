@@ -1,0 +1,315 @@
+from .base import Player, DIVINE_RES, OTHERWORLD_RES
+from scripts.styles import console
+from copy import deepcopy
+import random
+
+WRETCH_DESCRIPTIONS = {
+    "Wretch": "An outcast mage, revelling in the torture of flesh and blood.\n"
+        "You have no Stamina. All abilities cost Health to use. Gain +1% Lifesteal per 5% Missing Health.\n"
+        "Upon attacking an enemy with an ability, apply 1 stack of Blood Spike, up to 10 stacks.\n"
+        "Each stack of Blood Spike increases the execution threshold on an enemy by 2%. If an enemy's health drops below the execution threshold, they are immediately killed.\n"
+        "When an enemy is executed by Blood Spike, heal for 1% Max HP per stack of Blood Spike on the executed enemy.\n"
+        "Whilst below 40% Health: Gain +0.3 Speed, 10% Increased Dark Damage.\n"
+        "Starting Stats: 60 HP | 4 Damage | 5% Crit Chance | 150% Crit Damage | Dark Damage | 0.95 Speed.",
+    # ascendancies
+    "Exsanguinator": "You can apply up to 15 stacks of Blood Spike on an enemy.\n"
+        "Upon critically striking an enemy with Blood Spike stacks, consume all stacks to deal 5% Increased damage per stack\n."
+        "Whenever an enemy dies to a critical hit, a random enemy takes Dark damage equal to 20% of the killed enemy's Max HP. If there are no more enemies, instead heal for 10% Max HP.\n"
+        "Abilities will consume Energy Shield before Health if it is available. Abilities which use Energy Shield ignore 15% of the target's Armour.\n"
+        "+10 HP. +1 Damage. +5% Crit Chance. -25% Crit Damage. +50 Energy Shield.",
+    "Bloodletter": "Abilities have 50% Increased Health cost. While below 20% Health: Deal 30% Increased Dark Damage, gain +10% Lifesteal.\n"
+        "While above 60% Health: -20% Divine Resistance, +10% Otherworld Resistance. Store all Divine and Otherworld damage taken.\n"
+        "Whenever you are attacked by an enemy, deal Dark Damage to them equal to 5% of Health lost in combat. At the end of combat, heal for 33% of all Divine and Otherworld damage taken.\n"
+        "When an enemy is executed by Blood Spike, all remaining enemies take True damage equal to 1% of their Max HP per stack of Blood Spike on the executed enemy.\n"
+        "+25 HP. +2 Damage. +0.1 Speed. +15% Dark Resistance. +5% Otherworld Resistance.",
+    "Plaguebearer": "You can apply up to 7 stacks of Blood Spike on an enemy. Enemies with 7 stacks of Blood Spike deal 20% Less Damage.\n"
+        "Whenever an enemy is executed by Blood Spike, all remaining enemies gain Blood Spike stacks equal to 50% of the stacks on the executed enemy.\n"
+        "Whenever you are critically hit, or an enemy is killed, you gain 1 stack of Blood Scent, up to a maximum of 5.\n"
+        "Blood Scent: +10% Increased Damage, +2% Lifesteal, +0.05 Speed. At the end of combat, heal 2% Max HP per stack of Blood Scent.\n"
+        "+5 HP. +4 Damage. +0.1 Speed. +25% Crit Damage.",
+    "Necrose": "Whenever an enemy attacks, they gain 1 stack of Necrosis, up to a maximum of 10 stacks. Necrosis: +3% Damage Taken, -0.02 Speed.\n"
+        "You can apply up to 5 stacks of Blood Spike on an enemy. Deal 2% Increased damage per Blood Spike and Necrosis applied in combat.\n"
+        "Whenever an enemy critically hits you, consume all stacks of Necrosis on them and reflect 5% of the damage taken per Necrosis consumed."
+        "Whenever an enemy is executed by Blood Spike, heal for 5% Max HP and gain Rot for 3 turns: +25% Increased Damage, +0.2 Speed, -50% Crit Damage.\n"
+        "While above 60% Health: +10% Crit Chance, +50% Crit Damage. While below 40% Health: +5% Damage Reduction, +5% Lifesteal, -5% All Resistance.\n"
+        "-15 HP. +3 Damage. +0.1 Speed. +15% Dark Resistance. +10% Resistance Penetration",
+    "Necromancer": "Upon killing an enemy, you may choose to convert them into a skeleton for 3 turns.\n"
+        "Skeletons are allies created from the killed enemy, keeping a portion of their stats and items, scaling off of your level.\n"
+        "You can only convert one enemy per battle. If the converted enemy is the final enemy in combat, it will join you for the first 3 turns of your next combat.\n"
+        "Whenever an enemy is executed by Blood Spike, they will use a basic attack on another living enemy before dying.\n"
+        "If an enemy is executed by Blood Spike and converted, it will retain more of its stats and items.\n"
+        "+20 HP. -2 Damage. -0.1 Speed. +5 HP Regen. +10% Otherworld Resistance."
+}
+
+class Wretch(Player):
+    def __init__(self, name, health = 60, damage = 4, damageType = "dark", speed = 0.95):
+        super().__init__(name, health, damage, 0.05, 1.5, damageType, speed, className="Wretch", classDescription=WRETCH_DESCRIPTIONS["Wretch"])
+        self.maxBloodSpikeStacks = 20
+
+        self.under40LastTurn = False
+        self.under20LastTurn = False
+        self.above60LastTurn = True
+
+        self.divineOtherworldDamageTaken = 0
+        self.healthLost = 0
+        self.bloodScent = 0
+        self.bloodSpikeApplied = 0
+        self.necrosisApplied = 0
+        self.rotTurns = 0
+        self.currentSkeleton = None
+        self.skeletonTurns = 0
+        self.pendingSkeleton = None
+        self.skeletonUsedThisBattle = False
+
+    def gainBloodScent(self):
+        if self._ascendancy == 'Plaguebearer':
+            self.bloodScent = min(5, self.bloodScent + 1)
+            self._stats['Temporary']['lifesteal'] += 2
+            self._stats['Temporary']['speed'] += 0.05
+
+    def gainRot(self):
+        if self._ascendancy == 'Necrose':
+            if self.rotTurns == 0:
+                self._stats['Temporary']['speed'] += 0.2
+                self._stats['Temporary']['critMulti'] -= 0.5
+            self.rotTurns = 3
+
+    def _convertToSkeleton(self, enemy, executed=False):
+        skeleton = deepcopy(enemy)
+        skeleton._name = f"{enemy._name}'s Skeleton"
+
+        statsKeptPercent = min(75, self._level + 5) + min(10, enemy._level // 10)
+        itemLossChance = 60 - (self._level // 4) - min(10, enemy._level // 10)
+        if executed:
+            statsKeptPercent += 15
+            itemLossChance -= 20
+        statsKeptPercent = min(100, statsKeptPercent)
+        itemLossChance = max(0, itemLossChance)
+
+        mult = statsKeptPercent / 100
+        skeleton._baseHealth = max(1, int(skeleton._baseHealth * mult))
+        skeleton._baseDamage = max(0, int(skeleton._baseDamage * mult))
+
+        for slot, item in list(skeleton._equipment.items()):
+            if item and random.randint(1, 100) <= itemLossChance:
+                skeleton._equipment[slot] = None
+
+        for itemName in list(skeleton._inventory.keys()):
+            if random.randint(1, 100) <= itemLossChance:
+                del skeleton._inventory[itemName]
+
+        skeleton._recalculateStats(False)
+        skeleton._health = skeleton._maxHealth
+
+        return skeleton
+
+    def onKill(self, entity, attackData, combatManager=None):
+        if self._ascendancy == 'Necromancer':
+            if not self.skeletonUsedThisBattle and self.skeletonTurns <= 0:
+                choice = console.input(
+                    f"[dark_red]Necromancer: Convert {entity._name} into a skeleton to fight alongside you? [/dark_red][dim](y/n)[/dim]\n> "
+                ).strip().lower()
+                if choice == 'y':
+                    executed = attackData.get('executed', False)
+                    skeleton = self._convertToSkeleton(entity, executed)
+                    self.skeletonUsedThisBattle = True
+
+                    if combatManager and len(combatManager.allAlive) == 0:
+                        self.pendingSkeleton = skeleton
+                        console.print(f"[dark_red]{skeleton._name} will join you at the start of your next battle![/dark_red]")
+                    else:
+                        self.currentSkeleton = skeleton
+                        self.skeletonTurns = 3
+                        console.print(f"[dark_red]{skeleton._name} rises to fight alongside you for 3 turns![/dark_red]")
+
+        return {}
+
+    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
+        super().onAttack(damageDealt, damageType)
+
+        if self._ascendancy == 'Plaguebearer' and self.bloodScent > 0:
+            damageDealt = int(damageDealt * (1.1 * self.bloodScent))
+
+        elif self._ascendancy == 'Necrose' and (self.bloodSpikeApplied > 0 or self.necrosisApplied > 0):
+            total = self.bloodSpikeApplied + self.necrosisApplied
+            damageDealt = int(damageDealt * (1.02 * total))
+            if self.rotTurns > 0:
+                damageDealt = int(damageDealt * 1.25)
+
+        return damageDealt, damageType
+
+    def onHit(self, damageTaken, damageType, crit = False, attacker = None, combatManager=None):
+        if self._ascendancy == 'Bloodletter':
+            self.healthLost += damageTaken
+            if damageType in DIVINE_RES or damageType in OTHERWORLD_RES:
+                self.divineOtherworldDamageTaken += damageTaken
+
+        if self._ascendancy == 'Necrose' and self.under40LastTurn:
+            damageTaken = int(damageTaken * 0.95)
+
+        return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
+
+    def onTurnEnd(self):
+        if self._ascendancy == 'Necrose' and self.rotTurns > 0:
+            self.rotTurns -= 1
+            if self.rotTurns == 0:
+                self._stats['Temporary']['speed'] -= 0.2
+                self._stats['Temporary']['critMulti'] += 0.5
+
+        if self._ascendancy == 'Necromancer' and self.skeletonTurns > 0:
+            self.skeletonTurns -= 1
+            if self.skeletonTurns == 0:
+                console.print(f"[dim]{self.currentSkeleton._name} crumbles to dust.[/dim]")
+                self.currentSkeleton = None
+
+    def onBattleEnd(self):
+        if self._ascendancy == 'Bloodletter':
+            heal = int(self.divineOtherworldDamageTaken * 0.33)
+            self.heal(heal)
+        elif self._ascendancy == 'Plaguebearer':
+            heal = int(self._maxHealth * 0.02 * self.bloodScent)
+            self.heal(heal)
+
+        self.divineOtherworldDamageTaken = 0
+        self.healthLost = 0
+        self.bloodScent = 0
+
+        if self._ascendancy == 'Necromancer':
+            self.skeletonUsedThisBattle = False
+            self.skeletonTurns = 0
+            self.currentSkeleton = None
+
+        super().onBattleEnd()
+
+    def onTurnStart(self, combatManager=None):
+        if not self.under40LastTurn and self._health <= (self._maxHealth * 0.4):
+            self._stats['Temporary']['speed'] += 0.3
+            self._stats['Temporary']['increased_dark_damage'] += 10
+            self.under40LastTurn = True
+            if self._ascendancy == 'Necrose':
+                self._stats['Temporary']['lifesteal'] += 5
+                self._stats['Temporary']['all'] -= 5
+        elif self.under40LastTurn and self._health > (self._maxHealth * 0.4):
+            self._stats['Temporary']['speed'] -= 0.3
+            self._stats['Temporary']['increased_dark_damage'] -= 10
+            self.under40LastTurn = False
+            if self._ascendancy == 'Necrose':
+                self._stats['Temporary']['lifesteal'] -= 5
+                self._stats['Temporary']['all'] += 5
+
+        if self._ascendancy == 'Bloodletter':
+            if not self.under20LastTurn and self._health <= (self._maxHealth * 0.2):
+                self._stats['Temporary']['increased_dark_damage'] += 30
+                self.under20LastTurn = True
+                self._stats['Temporary']['lifesteal'] += 10
+            elif self.under20LastTurn and self._health > (self._maxHealth * 0.2):
+                self._stats['Temporary']['increased_dark_resistance'] -= 30
+                self._stats['Temporary']['lifesteal'] -= 10
+                self.under20LastTurn = False
+
+            if not self.above60LastTurn and self._health <= (self._maxHealth * 0.6):
+                self._stats['Temporary']['divine'] -= 20
+                self._stats['Temporary']['otherworld'] += 10
+                self.above60LastTurn = True
+            elif self.above60LastTurn and self._health > (self._maxHealth * 0.6):
+                self._stats['Temporary']['divine'] += 20
+                self._stats['Temporary']['otherworld'] -= 10
+                self.above60LastTurn = False
+
+        elif self._ascendancy == 'Necrose':
+            if not self.above60LastTurn and self._health <= (self._maxHealth * 0.6):
+                self._stats['Temporary']['critChance'] += 0.1
+                self._stats['Temporary']['critMulti'] += 0.5
+                self.above60LastTurn = True
+            elif self.above60LastTurn and self._health > (self._maxHealth * 0.6):
+                self._stats['Temporary']['critChance'] -= 0.1
+                self._stats['Temporary']['critMulti'] -= 0.5
+                self.above60LastTurn = False
+
+        super().onTurnStart(combatManager)
+
+    def rollCritical(self, target, damageDealt = None):
+        crit, damage = super().rollCritical(target, damageDealt)
+        if crit and self._ascendancy == 'Exsanguinator':
+            if target.bloodSpike > 0:
+                damage = int(damage * (1 + (0.05 * target.bloodSpike)))
+
+        return crit, damage
+
+    def _removeOldAscendancy(self):
+        if self._ascendancy == "Exsanguinator":
+            self._baseHealth -= 10
+            self._baseDamage -= 1
+            self._stats['baseCritChance'] -= 0.05
+            self._stats['baseCritMulti'] += 0.25
+            self._stats['Permanent']['added_energy_shield'] -= 50
+            self.maxBloodSpikeStacks -= 5
+        elif self._ascendancy == "Bloodletter":
+            self._health -= 25
+            self._baseDamage -= 2
+            self._baseSpeed -= 0.1
+            self._stats['Permanent']['dark'] -= 15
+            self._stats['Permanent']['otherworld'] -= 5
+        elif self._ascendancy == "Plaguebearer":
+            self._health -= 5
+            self._baseDamage -= 4
+            self._baseSpeed -= 0.1
+            self._stats['baseCritMulti'] -= 0.25
+            self.maxBloodSpikeStacks += 3
+        elif self._ascendancy == 'Necrose':
+            self._baseHealth += 15
+            self._baseDamage -= 3
+            self._baseSpeed -= 0.1
+            self._stats['Permanent']['dark'] -= 15
+            self._stats['Permanent']['resistancePenetration'] -= 10
+            self.maxBloodSpikeStacks += 5
+        elif self._ascendancy == 'Necromancer':
+            self._baseHealth -= 20
+            self._baseDamage += 2
+            self._baseSpeed += 0.1
+            self._stats['Permanent']['hpRegen'] -= 5
+            self._stats['Permanent']['otherworld'] -= 10
+
+    def updateAscendancy(self, ascendancy):
+        if ascendancy == "Exsanguinator":
+            self._baseHealth += 10
+            self._baseDamage += 1
+            self._stats['baseCritChance'] += 0.05
+            self._stats['baseCritMulti'] -= 0.25
+            self._stats['Permanent']['added_energy_shield'] += 50
+            self.maxBloodSpikeStacks += 5
+            self._ascendancy = 'Exsanguinator'
+            self.ascendancyDescription = WRETCH_DESCRIPTIONS["Exsanguinator"]
+        elif ascendancy == "Bloodletter":
+            self._health += 25
+            self._baseDamage += 2
+            self._baseSpeed += 0.1
+            self._stats['Permanent']['dark'] += 15
+            self._stats['Permanent']['otherworld'] += 5
+            self._ascendancy = 'Bloodletter'
+            self.ascendancyDescription = WRETCH_DESCRIPTIONS["Bloodletter"]
+        elif ascendancy == "Plaguebearer":
+            self._health += 5
+            self._baseDamage += 4
+            self._baseSpeed += 0.1
+            self._stats['baseCritMulti'] += 0.25
+            self.maxBloodSpikeStacks -= 3
+            self._ascendancy = 'Plaguebearer'
+            self.ascendancyDescription = WRETCH_DESCRIPTIONS['Plaguebearer']
+        elif ascendancy == "Necrose":
+            self._baseHealth -= 15
+            self._baseDamage += 3
+            self._baseSpeed += 0.1
+            self._stats['Permanent']['dark'] += 15
+            self._stats['Permanent']['resistancePenetration'] += 10
+            self.maxBloodSpikeStacks -= 5
+            self._ascendancy = 'Necrose'
+            self.ascendancyDescription = WRETCH_DESCRIPTIONS['Necrose']
+        elif ascendancy == "Necromancer":
+            self._baseHealth += 20
+            self._baseDamage -= 2
+            self._baseSpeed -= 0.1
+            self._stats['Permanent']['hpRegen'] += 5
+            self._stats['Permanent']['otherworld'] += 10
+            self._ascendancy = 'Necromancer'
+            self.ascendancyDescription = WRETCH_DESCRIPTIONS['Necromancer']

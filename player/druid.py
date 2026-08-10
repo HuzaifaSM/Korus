@@ -34,23 +34,6 @@ DRUID_DESCRIPTIONS = {
         "Whilst at or above 30 Verdance, regenerate 5% of your Energy Shield at the start of your turn.\n"
         "Form bonuses have 50% less Magnitude.\n"
         "-10 HP. +2 Damage. -0.15 Speed. +25% Earth Resistance. +10% Stun Avoidance. +50 Armour. +25 Energy Shield.",
-    #subtypes
-    "Feral": "Beast Form bonuses have 50% Increased Magnitude. Attacks in Beast Form apply Bleed. Critical hits apply an additional stack of bleed.\n"
-        "Human Form no longer grants added speed, and instead grants +2 Damage per level.\n"
-        "Upon taking damage, consume up to 5 Verdance and gain +2% Lifesteal for 1 turn per Verdance consumed.\n"
-        "Gain -2 HP, +1 damage per level.\n"
-        "+10 HP. -2 Damage. +0.1 Speed. +10% DoT Resistance. -10% Earth Resistance.",
-    "Wildling": "At the start of your turn, choose whether you want to shapeshift or not. You cannot shapeshift otherwise.\n"
-        "Upon shapeshifting, heal 3% of your Max HP, and gain +15% Increased Damage for 1 turn.\n"
-        "If you do not shapeshift, gain +15% Damage Reduction and +15 Damage for 1 turn.\n"
-        "When attacking in Beast Form, consume up to 5 Verdance to gain +3% Crit Chance per Verdance consumed.\n"
-        "When taking damage in Human form, consume up to 10 Verdance to gain +1% Damage Reduction per Verdance consumed.\n"
-        "+5 HP. -1 Damage. +0.05 Speed. +10% Physical Resistance.",
-    "Ironbark": "+10 to Max Verdance. Verdance also grants +2% Increased Armour per stack.\n"
-        "Whilst at or above 25 Verdance, gain Overgrowth: +5% Damage Reduction, +10% Increased Damage, -0.1 Speed, 1% Max HP regenerated at the start of your turn.\n"
-        "Upon taking fatal damage for the first time in combat, consume all Verdance to heal 1% Max HP per Verdance consumed.\n"
-        "After triggering this effect, gain for the rest of combat: 75% Less Verdance generated, +10% Damage Reduction, +15% Increased Damage, +10% Increased Armour.\n"
-        "+15 HP. +2 Damage. -0.15 Speed. +50 Armour."
 }
 
 class Druid(Player): # balanced damage and speed, earth damage
@@ -101,11 +84,6 @@ class Druid(Player): # balanced damage and speed, earth damage
         self.lunarFuryTurns = 0
         self.lunarFuryTriggered = False
         self.chimeraActive = False
-        self.feralLifesteal = 0
-        self.wildlingSwapped = False
-        self.overgrowth = False
-        self.overgrowthLastTurn = False
-        self.ironbarkFatalTaken = False
 
     def __str__(self):
         formDisplay = "[green]Human[/green]" if self.form == 'human' else "[yellow]Beast[/yellow]"
@@ -162,12 +140,8 @@ class Druid(Player): # balanced damage and speed, earth damage
             self.formBonuses['critMulti'] = self.chimeraPerLevel['critMulti'] * self._level
             self.formBonuses['earthDamage'] = self.chimeraPerLevel['earthDamage'] * self._level
 
-        if self._subType == 'Feral' and self.form == 'beast':
-            for k, v in self.formBonuses.items():
-                self.formBonuses[k] = int(v * 1.5)
-        else:
-            for k, v in self.formBonuses.items():
-                self.formBonuses[k] = int(v * self.formEffect)
+        for k, v in self.formBonuses.items():
+            self.formBonuses[k] = int(v * self.formEffect)
 
         for k, v in self.formBonuses.items():
             if k in self._stats['Temporary']:
@@ -215,10 +189,6 @@ class Druid(Player): # balanced damage and speed, earth damage
             console.print(f"  [cyan]+{self.formBonuses['damage']} Damage, +{self.formBonuses['speed']} Speed, +{self.formBonuses['critChance']}% Crit Chance, +{self.formBonuses['critMulti']*100:.1f}% Crit Damage.[/cyan]")
 
     def onTurnEnd(self, combatManager=None):
-        if self._subType == 'Feral':
-            self._stats['Temporary']['lifesteal'] -= self.feralLifesteal
-            self.feralLifesteal = 0
-
         if self._ascendancy == 'Primalist' and self.residualTurns > 0:
             self.residualTurns -= 1
             if self.residualTurns == 0:
@@ -268,41 +238,7 @@ class Druid(Player): # balanced damage and speed, earth damage
                 switch = True
             return switch
 
-    def _wildlingSwap(self) -> bool:
-        if self._subType == 'Wildling':
-            switch = False
-            clearScreen()
-            printHeader()
-            console.print("[earth]Wildling: Turn Start! Do you want to Shapeshift? (y/n):[/earth]")
-            choice = console.input("[cyan]> [/cyan]").strip().lower()
-            if choice == 'y':
-                self._shapeShift()
-                switch = True
-            return switch
-
     def onTurnStart(self, combatManager=None):
-        if self._subType == 'Wildling':
-            self.wildlingSwapped = self._wildlingSwap()
-            if self.wildlingSwapped:
-                heal = int(self._maxHealth * 0.03)
-                self.heal(heal)
-                console.print(f"[earth]Wildling: Shapeshifted! Healed 3% Max HP. +{heal} HP.[/earth]")
-
-        elif self._subType == 'Ironbark':
-            if self.verdance >= 25:
-                if not self.overgrowthLastTurn:
-                    self._stats['Temporary']['speed'] -= 0.1
-                self.overgrowth = True
-                self.overgrowthLastTurn = True
-                heal = int(self._maxHealth * 0.01)
-                self.heal(heal)
-                console.print(f"[earth]Ironbark: Overgrowth activated! 1% Max HP healed. +{heal} HP.[/earth]")
-            elif self.verdance < 25:
-                if self.overgrowthLastTurn:
-                    self._stats['Temporary']['speed'] += 0.1
-                self.overgrowth = False
-                self.overgrowthLastTurn = False
-
         if self._ascendancy == 'Arbiter' and not self.arbiterFormChosen:
             self._chooseArbiterForm()
         
@@ -343,22 +279,17 @@ class Druid(Player): # balanced damage and speed, earth damage
         super().onAttack(damageDealt, damageType, target, combatManager)
 
         verdanceGained = damageDealt // 10
-        if self._subType == 'Ironbark' and self.ironbarkFatalTaken:
-            verdanceGained = int(verdanceGained * 0.25)
         if self._ascendancy == 'Arbiter':
             verdanceGained = int(verdanceGained * 1.5)
         realGain = min(verdanceGained, self.maxVerdance - self.verdance)
         self.verdance = min(self.maxVerdance, self.verdance + verdanceGained)
         console.print(f"[earth]Gained {realGain} Verdance. Current: {self.verdance}/{self.maxVerdance}[/earth]")
 
-        if self._subType == 'Ironbark' and realGain > 0:
-            self._stats['Temporary']['increased_armour'] += 2 * realGain
         if self._ascendancy == 'Earthshaper' and realGain > 0:
             self._stats['Temporary']['increased_armour'] += 2 * realGain
 
         if (damageType == 'earth' and
             self._ascendancy not in ['Arbiter', 'Moonkin'] and
-            self._subType != 'Wildling' and
             not self.chimeraActive):
             self._shapeShift()
 
@@ -372,18 +303,6 @@ class Druid(Player): # balanced damage and speed, earth damage
             damageDealt = int(damageDealt * bonus)
         if 'damage' in self.formBonuses and self.formBonuses['damage'] > 0:
             damageDealt += self.formBonuses['damage']
-
-        if self._subType == 'Wildling':
-            if self.wildlingSwapped:
-                damageDealt = int(damageDealt * 1.15)
-            else:
-                damageDealt += 15
-
-        elif self._subType == 'Ironbark':
-            if self.overgrowth:
-                damageDealt = int(damageDealt * 1.1)
-            if self.ironbarkFatalTaken:
-                damageDealt = int(damageDealt * 1.15)
 
         if self._ascendancy == 'Arbiter' and self.form == 'beast' and self.adaptationTurns > 0:
             damageDealt = int(damageDealt * 1.2)
@@ -401,15 +320,6 @@ class Druid(Player): # balanced damage and speed, earth damage
         return damageDealt, damageType
     
     def onHit(self, damageTaken, damageType, attacker = None, combatManager=None):
-        if self._subType == 'Ironbark' and not self.ironbarkFatalTaken:
-            if self._health - damageTaken <= 0:
-                consumed = self.verdance
-                heal = int(self._maxHealth * 0.01 * consumed)
-                self.heal(heal)
-                console.print(f"[warning]Ironbark: Fatal hit taken! Consumed {consumed} Verdance to heal for {consumed}% Max HP. +{heal} HP gained.[/warning]")
-                self.ironbarkFatalTaken = True
-                self._stats['Temporary']['increased_armour'] += 10
-
         if self._ascendancy == 'Arbiter' and self.form == 'human' and self.adaptationTurns > 0:
             damageTaken = int(damageTaken * 0.85)
 
@@ -419,31 +329,7 @@ class Druid(Player): # balanced damage and speed, earth damage
             self._stats['Temporary']['speed'] += 0.3
 
         dr = 0
-        if self._subType == 'Wildling':
-            if self.wildlingSwapped:
-                dr += 0.15
         if self.verdance > 0:
-            if self._subType == 'Feral':
-                consumed = min(5, self.verdance)
-                self.feralLifesteal += 2 * consumed
-                self._stats['Temporary']['lifesteal'] += 2 * consumed
-                self.verdance -= consumed
-                if self._ascendancy == 'Earthshaper':
-                    self._stats['Temporary']['increased_armour'] -= 2 * consumed
-
-            elif self._subType == 'Wildling' and self.form == 'human':
-                consumed = min(10, self.verdance)
-                dr += (0.01 * consumed)
-                self.verdance -= consumed
-                if self._ascendancy == 'Earthshaper':
-                    self._stats['Temporary']['increased_armour'] -= 2 * consumed
-
-            elif self._subType == 'Ironbark':
-                if self.overgrowth:
-                    dr += 0.05
-                if self.ironbarkFatalTaken:
-                    dr += 0.1
-
             if self._ascendancy == 'Earthshaper' and attacker:
                 if attacker.earthboundTurns > 0:
                     dr += 0.1
@@ -493,10 +379,6 @@ class Druid(Player): # balanced damage and speed, earth damage
 
     def _levelUp(self):
         super()._levelUp()
-        if self._subType == 'Feral':
-            self._health -= 2 * self._level
-            self._damage += 1 * self._level
-
         self._applyFormBonuses()
         self._recalculateStats(False)
 
@@ -546,31 +428,3 @@ class Druid(Player): # balanced damage and speed, earth damage
             self._stats['added_energy_shield'] += 25
             self._ascendancy = 'Earthshaper'
             self.ascendancyDescription = DRUID_DESCRIPTIONS["Earthshaper"]
-
-    def updateSubType(self, subType):
-        if subType == 'Feral':
-            self._baseHealth += 10
-            self._baseDamage -= 2
-            self._baseSpeed += 0.1
-            self.humanPerLevel['speed'] = 0
-            self.humanPerLevel['damage'] = 2
-            self._stats['Permanent']['dotResistance'] += 10
-            self._stats['Permanent']['earth'] -= 10
-            self._subType = 'Feral'
-            self.subTypeDescription = DRUID_DESCRIPTIONS["Feral"]
-        elif subType == 'Wildling':
-            self._baseHealth += 5
-            self._baseDamage -= 1
-            self._baseSpeed += 0.05
-            self._stats['Permanent']['physical'] += 10
-            self._subType = 'Wildling'
-            self.subTypeDescription = DRUID_DESCRIPTIONS["Wildling"]
-        elif subType == 'Ironbark':
-            self._baseHealth += 15
-            self._baseDamage += 2
-            self._baseSpeed -= 0.15
-            self.maxVerdance += 10
-            self._stats['Permanent']['added_armour'] += 50
-            self._subType = 'Ironbark'
-            self.subTypeDescription = DRUID_DESCRIPTIONS["Ironbark"]
-        self._recalculateStats(False)

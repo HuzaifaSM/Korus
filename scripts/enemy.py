@@ -19,7 +19,7 @@ with open('data/names.json', 'r') as file:
         }
     }
 
-DAMAGE_TYPES = ['physical', 'fire', 'cold', 'lightning', 'dark', 'holy', 'arcane', 'wind', 'earth']
+DAMAGE_TYPES = ['physical', 'fire', 'cold', 'lightning', 'dark', 'holy', 'arcane', 'earth']
 
 class Enemy(Entity):
     def __init__(self, name: str, level: int = 1, health: int = 20, damage: int = 3, critChance: float = 0.05, critMulti: float = 1.5, damageType: str = "physical",
@@ -52,14 +52,21 @@ class Enemy(Entity):
         self.earthboundLastTurn = False
         self.corruption = 0
         self.ruin = 0
+        self.bloodSpike = 0
+        self.necrosis = 0
 
     @property
     def tainted(self):
         return (not self.desecrated and self.ruin >= 5)
-    
+
     @property
     def desecrated(self):
         return self.ruin >= 10
+
+    def gainNecrosis(self):
+        if self.necrosis < 10:
+            self.necrosis += 1
+            self._stats['Temporary']['speed'] -= 0.02
 
     def _recalculateStats(self, doPrint = True, inCombat = False):
         super()._recalculateStats(doPrint, inCombat)
@@ -88,6 +95,8 @@ class Enemy(Entity):
                 damageTaken = int(damageTaken * 1.1)
             elif self.desecrated:
                 damageTaken = int(damageTaken * 1.2)
+
+        damageTaken = int(damageTaken * 1 + (self.necrosis * 0.03))
 
         return damageTaken, damageType
 
@@ -264,8 +273,7 @@ def _generateName(element: str, level: int = 1) -> dict:
         "health": stats['health'], "damage": stats['damage'], "speed": round(stats['speed'], 2)
     }
 
-def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1,
-                glacierfist: bool = False) -> Enemy:
+def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, glacierfist: bool = False) -> Enemy:
     if rarity != 1:
         rarity += 1
     if quantity != 1:

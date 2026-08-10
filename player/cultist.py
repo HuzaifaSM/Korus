@@ -54,21 +54,6 @@ CULTIST_DESCRIPTIONS = {
         "Negative Insanity: Absorb 1% of damage taken per 5 Insanity if the enemy is Tainted or Desecrated. This absorbed damage is gained as damage on your next attack.\n"
         "Neutral Insanity: When attacked, your attacker loses 3% HP per Ruin affecting them.\n"
         "-10 HP. +2 Damage. -0.05 Speed. -5% Otherworldly Resistance. +15% Dark Resistance, +10% Chaos Resistance.",
-    #subtypes
-    "Acolyte": "Insanity effects attempt to shift towards 0. Whenever Insanity is randomised, the range is always between -20 and 20.\n"
-        "At 0 Insanity: +75% Increased Damage, +35% Damage Reduction.\n"
-        "Whenever the effects of 0 Insanity are triggered, gain 1 Zeal, to a maximum of 5.\n"
-        "Zeal: 5% Increased Chaos Damage, +0.05 Speed. At 5 Zeal: +10% Crit Chance, +30% Crit Damage.\n"
-        "+5 HP. -1 Damage. -0.05 Speed. +15% Crit Resistance.",
-    "Conduit": "At maximum Insanity: 100% Increased Damage instead of 75%. At minimum Insanity: 40% of damage taken is gained as damage instead of 25%.\n"
-        "Whenever a change in Insanity would cause Insanity to surpass your boundaries, gain 1 Overflow, to a maximum of 8.\n"
-        "Overflow: 6% Increased Chaos Damage, -0.05 Speed, +2% Damage Taken, +10% Crit Damage.\n"
-        "-10 HP. +1 Damage. +0.05 Speed. +5% Crit Chance.",
-    "Preacher": "Minimum Insanity is increased by 10. Maximum Insanity is lowered by 10.\n"
-        "Whenever you critically hit, gain 1 Madness, to a maximum of 20 stacks.\n"
-        "Madness: +1% Crit Chance, +5% Crit Damage, -1% Damage Dealt. Upon killing an enemy, heal 1% HP per Madness.\n"
-        "At Maximum Insanity, the downside of Madness is ignored. At minimum Insanity, you negate 10% of damage taken from the next 2 hits.\n"
-        "+5 HP. -1 Damage. +0.1 Speed. +10% Chaos Resistance.",
 }
 
 INSANITY_EFFECTS = {
@@ -94,10 +79,6 @@ class Cultist(Player):
         self.faithless = 0
         self.volatility = 0
         self.maxVolatility = 100
-        self.zeal = 0
-        self.overflow = 0
-        self.madness = 0
-        self.preacherProtectedHits = 0
 
     def __str__(self):
         baseStr = super().__str__()
@@ -143,10 +124,6 @@ class Cultist(Player):
         min = min if min is not None else self.minInsanity
         max = max if max is not None else self.maxInsanity
 
-        if self._subType == 'Acolyte':
-            min = -20
-            max = 20
-
         self.insanity = random.randint(min, max)
         console.print(f"[chaos]Cultist: Insanity randomised! New Insanity: {self.insanity}[/chaos]")
         for k, v in self.insanityBuffs.items():
@@ -154,22 +131,17 @@ class Cultist(Player):
                 self._stats['Temporary'][k] += v
 
     def _shiftInsanity(self, effect: str, val: int):
-        if self._subType == 'Conduit':
-            self._conduitCheckOverflow(effect, val)
-        if self._subType == 'Acolyte':
-            self._acolyteShiftInsanity(effect, val)
+        if effect == 'flat':
+            self.insanity = min(
+                self.maxInsanity,
+                max(self.minInsanity, self.insanity + val)
+            )
         else:
-            if effect == 'flat':
-                self.insanity = min(
-                    self.maxInsanity,
-                    max(self.minInsanity, self.insanity + val)
-                )
-            else:
-                self.insanity = min(
-                    self.maxInsanity,
-                    max(self.minInsanity, int(self.insanity * val))
-                )
-            console.print(f"[chaos]Cultist: Insanity affected by effect: {effect.title()}. Insanity: {self.insanity}[/chaos]")
+            self.insanity = min(
+                self.maxInsanity,
+                max(self.minInsanity, int(self.insanity * val))
+            )
+        console.print(f"[chaos]Cultist: Insanity affected by effect: {effect.title()}. Insanity: {self.insanity}[/chaos]")
 
     def _acolyteShiftInsanity(self, effect: str, val: int):
         if effect == 'flat':
@@ -189,25 +161,6 @@ class Cultist(Player):
                 self.maxInsanity,
                 max(self.minInsanity, int(self.insanity * val))
             )
-
-    def _addZeal(self):
-        if self._subType == 'Acolyte' and self.zeal < 5:
-            self.zeal += 1
-            self._stats['Temporary']['speed'] += 0.05
-            if self.zeal == 5:
-                self._stats['Temporary']['critChance'] += 0.1
-                self._stats['Temporary']['critMulti'] += 0.3
-
-    def _conduitCheckOverflow(self, effect: str, val: int):
-        if self._subType == 'Conduit' and self.overflow < 8:
-            if effect == 'flat':
-                outcome = self.insanity + val
-            else:
-                outcome = self.insanity * val
-            if outcome < self.minInsanity or outcome > self.maxInsanity:
-                self.overflow += 1
-                self._stats['Temporary']['speed'] -= 0.05
-                self._stats['Temporary']['critMulti'] += 0.1
 
     def _doomsayerSkew(self, effect: str, val: int):
         if self._ascendancy == 'Doomsayer':
@@ -292,11 +245,6 @@ class Cultist(Player):
         crit, multi = super().rollCritical(target, damageDealt)
 
         if crit:
-            if self._subType == 'Preacher' and self.madness < 20:
-                self.madness += 1
-                self._stats['Temporary']['critChance'] += 0.01
-                self._stats['Temporary']['critMulti'] += 0.05
-
             if self._ascendancy == 'Doomsayer':
                 multi += (0.2 * self.omen) + (0.1 * self.heresy)
                 if self.heresy > 0:
@@ -310,9 +258,6 @@ class Cultist(Player):
         return crit, multi
 
     def onKill(self, entity, attackData, combatManager=None):
-        if self._subType == 'Preacher' and self.madness > 0:
-            heal = int(self._maxHealth * (self.madness * 0.01))
-            self.heal(heal)
 
         if self._ascendancy == 'Anarchist':
             self.volatility = min(self.maxVolatility, self.volatility + 15)
@@ -327,18 +272,13 @@ class Cultist(Player):
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
         super().onAttack(damageDealt, damageType, target, combatManager)
-        if self._subType == 'Preacher':
-            preachIgnore = (self.insanity == self.maxInsanity)
 
         if self.absorbedToAdd > 0:
             damageDealt += self.absorbedToAdd
             self.absorbedToAdd = 0
 
         if self.insanity == self.maxInsanity:
-            if self._subType != 'Conduit':
-                damageDealt = int(damageDealt * 1.75)
-            else:
-                damageDealt *= 2
+            damageDealt *= 2
             selfDamage = int(damageDealt * 0.1)
 
             if self._ascendancy == 'Doomsayer':
@@ -352,25 +292,8 @@ class Cultist(Player):
             damageDealt = int(damageDealt * bonus)
 
         elif self.insanity == 0:
-            if self._subType != 'Acolyte':
-                damageDealt = int(damageDealt * 1.5)
-            else:
-                damageDealt = int(damageDealt * 1.75)
-                self._addZeal()
+            damageDealt = int(damageDealt * 1.75)
             self._randomiseInsanity()
-
-        if self._subType == 'Acolyte' and self.zeal > 0:
-            bonus = 1 + (0.05 * self.zeal)
-            damageDealt = int(damageDealt * bonus)
-
-        elif self._subType == 'Conduit' and self.overflow > 0 and damageType == 'chaos':
-            bonus = 1 + (0.06 * self.overflow)
-            damageDealt = int(damageDealt * bonus)
-
-        elif self._subType == 'Preacher':
-            if self.madness > 0 and not preachIgnore:
-                reduction = 0.01 * self.madness
-                damageDealt = int(damageDealt * (1 - reduction))
 
         if self._ascendancy == 'Umbralist' and self.shadow > 0 and damageType == 'chaos':
             damageDealt = int(damageDealt * (1 + (self.shadow * 0.03)))
@@ -444,12 +367,6 @@ class Cultist(Player):
         if self.insanity == self.minInsanity:
             self.absorbedToAdd += int(damageTaken * 0.25)
 
-            if self._subType == 'Conduit':
-                self.absorbedToAdd += int(damageTaken * 0.15)
-
-            elif self._subType == 'Preacher':
-                self.preacherProtectedHits = 2
-
             if self._ascendancy == 'Umbralist':
                 self.absorbedToAdd *= 2
 
@@ -470,21 +387,13 @@ class Cultist(Player):
                     damageTaken -= absorb
 
         elif self.insanity == 0:
-            if self._subType != 'Acolyte':
-                damageTaken = int(damageTaken * 0.75)
-            else:
-                damageTaken = int(damageTaken * 0.65)
-                self._addZeal()
+            damageTaken = int(damageTaken * 0.65)
 
             if self._ascendancy == 'Desecrator' and attacker and attacker.ruin > 0:
                 damage = int(attacker._maxHealth * (0.03 * attacker.ruin))
                 attacker.damage(damage, 'true')
 
             self._randomiseInsanity()
-
-        if self._subType == 'Preacher' and self.preacherProtectedHits > 0:
-            damageTaken = int(damageTaken * 0.9)
-            self.preacherProtectedHits -= 1
 
         if self._ascendancy == 'Umbralist' and self.shadow > 0:
             damageTaken = int(damageTaken * (1 - (self.shadow * 0.01)))
@@ -559,10 +468,6 @@ class Cultist(Player):
         self.devotion = 0
         self.faithless = 0
         self.volatility = 0
-        self.zeal = 0
-        self.overflow = 0
-        self.madness = 0
-        self.preacherProtectedHits = 0
 
         super().onBattleEnd()
 
@@ -624,29 +529,4 @@ class Cultist(Player):
             self._stats['Permanent']['chaos'] += 10
             self._ascendancy = 'Desecrator'
             self.ascendancyDescription = CULTIST_DESCRIPTIONS["Desecrator"]
-
-    def updateSubType(self, subType):
-        if subType == 'Acolyte':
-            self._baseHealth += 5
-            self._baseDamage -= 1
-            self._baseSpeed -= 0.05
-            self._stats['Permanent']['critResistance'] += 15
-            self._subType = 'Acolyte'
-            self.subTypeDescription = CULTIST_DESCRIPTIONS["Acolyte"]
-        elif subType == 'Conduit':
-            self._baseHealth -= 10
-            self._baseDamage += 1
-            self._baseSpeed += 0.05
-            self._stats['baseCritChance'] += 0.05
-            self._subType = 'Conduit'
-            self.subTypeDescription = CULTIST_DESCRIPTIONS["Conduit"]
-        elif subType == 'Preacher':
-            self._baseHealth += 5
-            self._baseDamage -= 1
-            self._baseSpeed += 0.1
-            self.minInsanity += 10
-            self.maxInsanity -= 10
-            self._stats['Permanent']['chaos'] += 10
-            self._subType == 'Preacher'
-            self.subTypeDescription = CULTIST_DESCRIPTIONS["Preacher"]
 
