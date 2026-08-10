@@ -71,8 +71,8 @@
                 "isPercent": true,
                 "categories": ["damage", "offensive", "soulbound"],
                 "name": "The Falling Sun,",
-                "min": 10,
-                "max": 20,
+                "min": 5,
+                "max": 15,
                 "levelReq": 90
             }
         },
@@ -100,8 +100,8 @@
                 "isPercent": true,
                 "categories": ["healing", "utility", "soulbound"],
                 "name": ", False Immortality",
-                "min": 4,
-                "max": 10,
+                "min": 2,
+                "max": 7,
                 "levelReq": 85
             },
             "soulbound_item_quantity": {
@@ -130,6 +130,15 @@
                 "min": 100,
                 "max": 180,
                 "levelReq": 75
+            },
+            "soulbound_num_multihits": {
+                "stat": "added_multihits",
+                "isPercent": false,
+                "categories": ["multihit", "offensive", "soulbound"],
+                "name": ", of Fracturing Onslaught",
+                "min": 1,
+                "max": 2,
+                "levelReq": 90
             }
         }
     },

@@ -196,7 +196,7 @@ class UnstableChaosRune(BaseChaosRune):
 
 class AscendantChaosRune(BaseChaosRune):
     name = '[deep_pink4 bold underline]Ascendant Chaos Rune[/deep_pink4 bold underline]'
-    description = 'Removes 1 random affixes and adds 1 new random affix above level 50.'
+    description = 'Removes 1 random affix and adds 1 new random affix above level 50.'
     affixesToAdd = 1
     affixesToRemove = 1
     minAffixLevel = 50

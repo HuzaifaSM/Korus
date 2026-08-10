@@ -176,6 +176,15 @@
                     "6": { "levelReq": 98, "min": 25, "max": 30, "weight": 20, "name": "of Infinite Strikes" }
                 }
             },
+            "added_num_multihits": {
+                "stat": "added_multihits",
+                "isPercent": false,
+                "categories": ["multihit", "offensive"],
+                "tiers": {
+                    "7": { "levelReq": 60, "min": 1, "max": 1, "weight": 60, "name": "of Splintering" },
+                    "8": { "levelReq": 85, "min": 2, "max": 2, "weight": 20, "name": "of Shattering Onslaught" }
+                }
+            },
             "increased_item_quantity": {
                 "stat": "item_quantity",
                 "isPercent": true,
@@ -554,18 +563,6 @@
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
                 }
             },
-            "wind_resistance": {
-                "stat": "wind_resistance",
-                "isPercent": false,
-                "categories": ["resistance", "elemental", "wind", "defensive"],
-                "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
-                }
-            },
             "earth_resistance": {
                 "stat": "earth_resistance",
                 "isPercent": false,
@@ -620,7 +617,7 @@
                 "categories": [
                     "resistance", "elemental", "divine", "defensive",
                     "fire", "cold", "lightning", "dark", "holy",
-                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                    "arcane", "earth", "chaos", "psychic", "ethereal"
                 ],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
@@ -650,7 +647,7 @@
                 "isPercent": false,
                 "categories": [
                     "resistance", "elemental", "defensive",
-                    "fire", "cold", "lightning", "wind", "earth"
+                    "fire", "cold", "lightning", "earth"
                 ],
                 "tiers": {
                     "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
@@ -1063,18 +1060,6 @@
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
                 }
             },
-            "wind_resistance": {
-                "stat": "wind_resistance",
-                "isPercent": false,
-                "categories": ["resistance", "elemental", "wind", "defensive"],
-                "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
-                }
-            },
             "earth_resistance": {
                 "stat": "earth_resistance",
                 "isPercent": false,
@@ -1129,7 +1114,7 @@
                 "categories": [
                     "resistance", "elemental", "divine", "defensive",
                     "fire", "cold", "lightning", "dark", "holy",
-                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                    "arcane", "earth", "chaos", "psychic", "ethereal"
                 ],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
@@ -1159,7 +1144,7 @@
                 "isPercent": false,
                 "categories": [
                     "resistance", "elemental", "defensive",
-                    "fire", "cold", "lightning", "wind", "earth"
+                    "fire", "cold", "lightning", "earth"
                 ],
                 "tiers": {
                     "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
@@ -1544,18 +1529,6 @@
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
                 }
             },
-            "wind_resistance": {
-                "stat": "wind_resistance",
-                "isPercent": false,
-                "categories": ["resistance", "elemental", "wind", "defensive"],
-                "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
-                }
-            },
             "earth_resistance": {
                 "stat": "earth_resistance",
                 "isPercent": false,
@@ -1610,7 +1583,7 @@
                 "categories": [
                     "resistance", "elemental", "divine", "defensive",
                     "fire", "cold", "lightning", "dark", "holy",
-                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                    "arcane", "earth", "chaos", "psychic", "ethereal"
                 ],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
@@ -1640,7 +1613,7 @@
                 "isPercent": false,
                 "categories": [
                     "resistance", "elemental", "defensive",
-                    "fire", "cold", "lightning", "wind", "earth"
+                    "fire", "cold", "lightning", "earth"
                 ],
                 "tiers": {
                     "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
@@ -1995,18 +1968,6 @@
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
                 }
             },
-            "wind_resistance": {
-                "stat": "wind_resistance",
-                "isPercent": false,
-                "categories": ["resistance", "elemental", "wind", "defensive"],
-                "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
-                }
-            },
             "earth_resistance": {
                 "stat": "earth_resistance",
                 "isPercent": false,
@@ -2061,7 +2022,7 @@
                 "categories": [
                     "resistance", "elemental", "divine", "defensive",
                     "fire", "cold", "lightning", "dark", "holy",
-                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                    "arcane", "earth", "chaos", "psychic", "ethereal"
                 ],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
@@ -2091,7 +2052,7 @@
                 "isPercent": false,
                 "categories": [
                     "resistance", "elemental", "defensive",
-                    "fire", "cold", "lightning", "wind", "earth"
+                    "fire", "cold", "lightning", "earth"
                 ],
                 "tiers": {
                     "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },
@@ -2426,16 +2387,6 @@
                     "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of the Archmage" }
                 }
             },
-            "wind_resistance": {
-                "stat": "wind_resistance",
-                "isPercent": false,
-                "categories": ["resistance", "elemental", "wind", "defensive"],
-                "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 15, "weight": 900, "name": "of the Breeze" },
-                    "2": { "levelReq": 18, "min": 16, "max": 30, "weight": 750, "name": "of the Gale" },
-                    "3": { "levelReq": 38, "min": 31, "max": 40, "weight": 550, "name": "of the Cyclone" }
-                }
-            },
             "earth_resistance": {
                 "stat": "earth_resistance",
                 "isPercent": false,
@@ -2482,7 +2433,7 @@
                 "categories": [
                     "resistance", "elemental", "divine", "defensive",
                     "fire", "cold", "lightning", "dark", "holy",
-                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                    "arcane", "earth", "chaos", "psychic", "ethereal"
                 ],
                 "tiers": {
                     "1": { "levelReq": 22, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
@@ -2508,7 +2459,7 @@
                 "isPercent": false,
                 "categories": [
                     "resistance", "elemental", "defensive",
-                    "fire", "cold", "lightning", "wind", "earth"
+                    "fire", "cold", "lightning", "earth"
                 ],
                 "tiers": {
                     "1": { "levelReq": 22, "min": 5, "max": 9, "weight": 450, "name": "of the Elements" },
@@ -2896,18 +2847,6 @@
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Riftwalker" }
                 }
             },
-            "wind_resistance": {
-                "stat": "wind_resistance",
-                "isPercent": false,
-                "categories": ["resistance", "elemental", "wind", "defensive"],
-                "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of the Breeze" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Gale" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Cyclone" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Windbreaker" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Stillness" }
-                }
-            },
             "earth_resistance": {
                 "stat": "earth_resistance",
                 "isPercent": false,
@@ -2962,7 +2901,7 @@
                 "categories": [
                     "resistance", "elemental", "divine", "defensive",
                     "fire", "cold", "lightning", "dark", "holy",
-                    "arcane", "wind", "earth", "chaos", "psychic", "ethereal"
+                    "arcane", "earth", "chaos", "psychic", "ethereal"
                 ],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 3, "max": 5, "weight": 400, "name": "of Balance" },
@@ -2992,7 +2931,7 @@
                 "isPercent": false,
                 "categories": [
                     "resistance", "elemental", "defensive",
-                    "fire", "cold", "lightning", "wind", "earth"
+                    "fire", "cold", "lightning", "earth"
                 ],
                 "tiers": {
                     "1": { "levelReq": 22, "min": 4, "max": 7, "weight": 450, "name": "of the Elements" },

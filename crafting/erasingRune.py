@@ -79,14 +79,14 @@ class BaseErasingRune(CraftingItem):
             )
 
 class ErasingRune(BaseErasingRune):
-    name = '[grey70]Erasing Rune[/grey70]'
+    name = '[grey50]Erasing Rune[/grey50]'
     description = 'Removes 1 random affix.'
     affixesToRemove = 1
     minItemLevel = 10
     successEntropy = 0.05
 
 class GreaterErasingRune(BaseErasingRune):
-    name = '[grey50 bold]Greater Erasing Rune[/grey50 bold]'
+    name = '[bright_black bold]Greater Erasing Rune[/bright_black bold]'
     description = 'Removes 1 random affix below level 60.'
     affixesToRemove = 1
     minItemLevel = 20
@@ -221,7 +221,7 @@ class SuffixErasingRune(BaseErasingRune):
             slots = [s for s in slots if s.affix.levelReq <= self.maxAffixLevel]
         return slots
 
-class GreaterSuffixErasingRune(BaseErasingRune):
+class GreaterSuffixErasingRune(SuffixErasingRune):
     name = '[grey46 bold]Greater Suffix Erasing Rune[/grey46 bold]'
     description = 'Removes 1 random suffix below level 60.'
     affixesToRemove = 1
@@ -229,7 +229,7 @@ class GreaterSuffixErasingRune(BaseErasingRune):
     maxAffixLevel = 60
     successEntropy = 0.12
 
-class PerfectSuffixErasingRune(BaseErasingRune):
+class PerfectSuffixErasingRune(SuffixErasingRune):
     name = '[white bold]Perfect Suffix Erasing Rune[/white bold]'
     description = 'Removes 1 random suffix below level 30.'
     affixesToRemove = 1

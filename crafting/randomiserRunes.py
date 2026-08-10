@@ -56,7 +56,7 @@ class ValueRandomiserRune(BaseRandomiserRune):
             )
         
         for affix in affixes:
-            affix.baseValue = affix.rollValue()
+            affix.rollValue()
 
         item.update()
         item.addEntropy(self.successEntropy)
@@ -160,7 +160,7 @@ class BaseTierRandomiserRune(BaseRandomiserRune):
                 weight=chosen.weight,
                 categories=chosen.categories,
             )
-            newAffix.value = newAffix.rollValue()
+            newAffix.rollValue()
             slot.affix = newAffix
             changed += 1
 
@@ -270,7 +270,7 @@ class AffixRandomiserRune(BaseAffixRandomiserRune):
     minItemLevel = 15
 
 class GreaterAffixRandomiserRune(BaseAffixRandomiserRune):
-    name = '[slate_blue4 bold]Greater Affix Randomiser Rune[/slate_blue4 bold]'
+    name = '[royal_blue1 bold]Greater Affix Randomiser Rune[/royal_blue1 bold]'
     description = 'Replaces each affix on an item with another random affix above level 30.'
     successEntropy = 0.25
     minAffixLevel = 30
@@ -316,7 +316,7 @@ class DefenseRandomiserRune(BaseRandomiserRune):
                 newId = f'{version}_{newDefense}_t{oldAffix.tier}'
                 
                 newAffix = AFFIX_POOL[equipType]['prefixes'][newId]
-                newAffix.baseValue = newAffix.rollValue()
+                newAffix.rollValue()
 
                 slot.affix = newAffix
 

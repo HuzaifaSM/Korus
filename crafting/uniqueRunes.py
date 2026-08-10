@@ -68,6 +68,12 @@ class PreservationRune(CraftingItem):
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item already has an entropy lock applied'
             )
+
+        if not item.preservable:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message='Item has already had the maximum amount of preservation runes applied.'
+            )
         
         if item.level < self.minItemLevel:
             return CraftResult(
@@ -81,7 +87,7 @@ class PreservationRune(CraftingItem):
         item.numPreserved += 1
         return CraftResult(
             outcome=CraftOutcome.SUCCESS,
-            message='Item has gained an entropy lock',
+            message=f'Item has gained an entropy lock. {item.numPreserved}/{item.maxPreservations} Preservation runes used on this item.',
             entropyAdded=self.successEntropy
         )
 

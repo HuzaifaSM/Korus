@@ -150,17 +150,17 @@ class MajesticGrowthRune(BaseGrowthRune):
     affixesToAdd = 2
     minAffixLevel = 25
     minItemLevel = 30
-    successEntropy = 0.15
-    partialSuccessEntropy = 0.0375
+    successEntropy = 0.2
+    partialSuccessEntropy = 0.05
 
 class DivineGrowthRune(BaseGrowthRune):
     name = '[deep_pink3 bold underline]Divine Growth Rune[/deep_pink3 bold underline]'
     description = 'Adds up to 3 random affixes above level 50 to the selected piece of equipment'
     affixesToAdd = 3
-    minAffixLevel = 50
+    minAffixLevel = 45
     minItemLevel = 55
-    successEntropy = 0.35
-    partialSuccessEntropy = 0.08725
+    successEntropy = 0.4
+    partialSuccessEntropy = 0.1
 
 class PrefixGrowthRune(BaseGrowthRune):
     name = '[sea_green2]Prefix Growth Rune[/sea_green2]'
