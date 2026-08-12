@@ -2569,3 +2569,2541 @@
 [22:49:30] Change Detected: scripts\abilities.py
   Line  521  ADDED >> 
   Line  522  ADDED >> CLASS_ABILITIES: Dict[str, Dict[str, Dict[str, AbilityTree]]] = loadAbilities()
+
+[23:49:47] Change Detected: scripts\enemyAbilities.py
+  Line    4  ADDED >> 
+
+[23:51:32] Change Detected: scripts\enemyAbilities.py
+  Line    5  ADDED >> class EnemyAbility:
+  Line    6  ADDED >>     def __init__(self, name: str, category: str, tier: int, levelReq: int,
+  Line    7  ADDED >>                  cooldown: int, targets: int | str,
+  Line    8  ADDED >>                  damageBase: int, damageScaling: float, damageType: Optional[str],
+  Line    9  ADDED >>                  effects: Dict, description: str):
+  Line   10  ADDED >>         self.name = name
+  Line   11  ADDED >>         self.category = category
+  Line   12  ADDED >>         self.tier = tier
+  Line   13  ADDED >>         self.levelReq = levelReq
+  Line   14  ADDED >>         self.maxCooldown = cooldown
+  Line   15  ADDED >>         self.cooldown = 0
+  Line   16  ADDED >>         self.targets = targets
+  Line   17  ADDED >>         self.damageBase = damageBase
+
+[23:51:47] Change Detected: scripts\abilities.py
+  Line   28  REMOVED >>         self.cooldown = cooldown
+  Line   28  ADDED >>         self.cooldown = 0
+
+[23:52:32] Change Detected: scripts\enemyAbilities.py
+  Line   18  ADDED >>         self.damageScaling = damageScaling
+  Line   19  ADDED >>         self.damageType = damageType
+  Line   20  ADDED >>         self.effects = effects
+  Line   21  ADDED >>         self.description = description
+
+[23:53:52] Change Detected: scripts\enemyAbilities.py
+  Line    2  REMOVED >> from typing import Dict, Optional
+  Line    2  ADDED >> from typing import Dict, Optional, Tuple
+  Line   22  ADDED >> 
+  Line   23  ADDED >>     def calculateDamage(self, enemyBaseDamage: int) -> int:
+  Line   24  ADDED >>         return int(self.damageBase + (enemyBaseDamage * self.damageScaling))
+  Line   25  ADDED >>     
+  Line   26  ADDED >>     def canUse(self) -> Tuple[bool, str]:
+  Line   27  ADDED >>         if self.cooldown > 0:
+  Line   28  ADDED >>             return False, f"On cooldown for {self.cooldown} more turns."
+  Line   29  ADDED >>         return True, ""
+
+[23:54:27] Change Detected: scripts\enemyAbilities.py
+  Line   30  ADDED >>     
+  Line   31  ADDED >>     @property
+  Line   32  ADDED >>     def isDamaging(self) -> bool:
+  Line   33  ADDED >>         return self.damageBase > 0 or self.damageScaling > 0
+  Line   34  ADDED >>     
+  Line   35  ADDED >>     def spawnedConsumable(self) -> Optional[int]
+
+[23:54:47] Change Detected: scripts\enemyAbilities.py
+  Line   35  REMOVED >>     def spawnedConsumable(self) -> Optional[int]
+  Line   35  ADDED >>     def spawnedConsumable(self) -> Optional[int]:
+
+[23:54:57] Change Detected: scripts\enemyAbilities.py
+  Line    4  ADDED >> from .items import CONSUMABLES, Consumable
+
+[23:57:32] Change Detected: scripts\enemyAbilities.py
+  Line    4  REMOVED >> from .items import CONSUMABLES, Consumable
+  Line    4  ADDED >> from .items import CONSUMABLES, Consumable, ItemRarity, RARITY_VALUES
+  Line   37  ADDED >>         selfEffects = self.effects.get('self', {})
+  Line   38  ADDED >>         consumable = selfEffects.get('spawn_consumable')
+  Line   39  ADDED >>         if consumable in CONSUMABLES:
+  Line   40  ADDED >>             ind = list(CONSUMABLES.keys()).index(consumable)
+  Line   41  ADDED >>             for k, v in RARITY_VALUES:
+  Line   42  ADDED >>                 if v == ind:
+  Line   43  ADDED >>                     rarity = k
+  Line   44  ADDED >>             c = Consumable(
+  Line   45  ADDED >>                 consumable, 
+  Line   46  ADDED >>             )
+
+[23:57:42] Change Detected: scripts\enemyAbilities.py
+  Line    4  REMOVED >> from .items import CONSUMABLES, Consumable, ItemRarity, RARITY_VALUES
+  Line    4  ADDED >> from .items import CONSUMABLES, Consumable, ItemRarity, RARITY_VALUES, RARITY_SERIALS
+  Line   43  REMOVED >>                     rarity = k
+  Line   43  ADDED >>                     rarity = RARITY_SERIALS[k]
+
+[23:58:12] Change Detected: scripts\enemyAbilities.py
+  Line   45  REMOVED >>                 consumable, 
+  Line   45  ADDED >>                 consumable, rarity, , 
+
+[23:58:37] Change Detected: scripts\enemyAbilities.py
+  Line   45  REMOVED >>                 consumable, rarity, , 
+  Line   45  ADDED >>                 consumable, rarity, effect={'healing': CONSUMABLES[consumable]} 
+
+[23:59:42] Change Detected: scripts\items.py
+  Line  934  REMOVED >>         self.value = effect.get('healing', 20) * 50
+  Line  934  ADDED >>         self.value = effect.get('heal', 20) * 50
+
+[23:59:52] Change Detected: scripts\items.py
+  Line  944  REMOVED >>     
+  Line  944  ADDED >> 
+  Line  949  REMOVED >>     
+  Line  949  ADDED >> 
+
+[24:00:42] Change Detected: scripts\entities.py
+  Line  411  REMOVED >>     
+  Line  411  ADDED >> 
+  Line  427  REMOVED >>     
+  Line  427  ADDED >> 
+
+[24:01:07] Change Detected: scripts\entities.py
+  Line  413  REMOVED >>         return self.getRune(category, str) > 0
+  Line  413  ADDED >>         return self.getRune(category, runeType) > 0
+
+[24:01:37] Change Detected: scripts\enemyAbilities.py
+  Line    4  REMOVED >> from .items import CONSUMABLES, Consumable, ItemRarity, RARITY_VALUES, RARITY_SERIALS
+  Line    4  ADDED >> from .items import CONSUMABLES
+
+[24:01:52] Change Detected: scripts\enemyAbilities.py
+  Line   40  REMOVED >>             ind = list(CONSUMABLES.keys()).index(consumable)
+  Line   40  REMOVED >>             for k, v in RARITY_VALUES:
+  Line   40  REMOVED >>                 if v == ind:
+  Line   40  REMOVED >>                     rarity = RARITY_SERIALS[k]
+  Line   40  REMOVED >>             c = Consumable(
+  Line   40  REMOVED >>                 consumable, rarity, effect={'healing': CONSUMABLES[consumable]} 
+  Line   40  REMOVED >>             )
+  Line   40  ADDED >>             return consumable
+
+[24:02:28] Change Detected: scripts\enemyAbilities.py
+  Line   36  REMOVED >>     def spawnedConsumable(self) -> Optional[int]:
+  Line   36  ADDED >>     def spawnedConsumable(self) -> Optional[str]:
+  Line   37  ADDED >>         """Returns string of consumable name if exists in effects, None otherwise"""
+  Line   42  ADDED >>         return None
+
+[24:03:43] Change Detected: scripts\enemyAbilities.py
+  Line   43  ADDED >>     
+  Line   44  ADDED >>     def __str__(self) -> str:
+  Line   45  ADDED >>         cdText = f"  Cooldown: {self.cooldown}" if self.cooldown > 0 else ""
+  Line   46  ADDED >>         return f"{self.name}{cdText} | Tier: {self.tier} | {self.category}"
+  Line   47  ADDED >>     
+  Line   48  ADDED >>     def __repr__(self) -> str:
+  Line   49  ADDED >>         return f"EnemyAbility({self.name!r}), tier={self.tier}, lvl={self.levelReq}"
+
+[24:03:48] Change Detected: scripts\enemyAbilities.py
+  Line   50  ADDED >>     
+  Line   51  ADDED >>     
+
+[24:07:03] Change Detected: scripts\enemyAbilities.py
+  Line   50  REMOVED >>     
+  Line   51  ADDED >> def _buildEnemyAbility(data: Dict) -> EnemyAbility:
+  Line   52  ADDED >>     rawScaling = data.get('damage_scaling', 0)
+  Line   53  ADDED >>     scaling = rawScaling / 100 if rawScaling > 1 else rawScaling
+  Line   54  ADDED >> 
+  Line   55  ADDED >>     return EnemyAbility(
+  Line   56  ADDED >>         data['name'], data['category'], data['tier'], data['level_req'], data['cooldown'],
+  Line   57  ADDED >>         data['targets'], data.get('damage_base', 0), scaling, data.get('damage_type'),
+  Line   58  ADDED >>         data.get('effects', {}), data['description']
+  Line   59  ADDED >>     )
+  Line   60  ADDED >> 
+  Line   61  ADDED >> def loadEnemyAbilities() -> Dict[str, EnemyAbility]:
+  Line   62  ADDED >>     with open('data/enemyAbilities.json', 'r') as f:
+  Line   63  ADDED >>         data = load(f)
+  Line   64  ADDED >>     return {name: _buildEnemyAbility(ability) for name, ability in data.items()}
+  Line   65  ADDED >> 
+  Line   66  ADDED >> ENEMY_ABILITIES: Dict[str, EnemyAbility] = loadEnemyAbilities()
+
+[24:07:33] Change Detected: scripts\enemyAi.py
+  Line    5  REMOVED >> from .abilities import Ability
+
+[24:08:38] Change Detected: scripts\enemyAi.py
+  Line   10  ADDED >> 
+  Line   11  ADDED >> class EnemyAI:
+  Line   12  ADDED >>     def __init__(self, enemy: Entity):
+  Line   13  ADDED >>         self._enemy = enemy
+  Line   14  ADDED >> 
+  Line   15  ADDED >>     def buildActionList(enemy: Entity) -> list:
+  Line   16  ADDED >>         """
+  Line   17  ADDED >>         Builds action list of available actions for this enemy.\n
+  Line   18  ADDED >>         Call once per enemy at turn start
+  Line   19  ADDED >>         """
+  Line   20  ADDED >>         actions = []
+  Line   21  ADDED >> 
+  Line   22  ADDED >>         # basic attack
+  Line   23  ADDED >>         actions.append({
+  Line   24  ADDED >>             "id": "basic_attack",
+  Line   25  ADDED >>             "category": "attack",
+  Line   26  ADDED >>             "damage": enemy._damage,
+  Line   27  ADDED >>             "damageType": enemy._damageType,
+  Line   28  ADDED >>             "cost": {},
+  Line   29  ADDED >>             "effects": []
+  Line   30  ADDED >>         })
+  Line   31  ADDED >> 
+  Line   32  ADDED >>         # abilities (once added by rework)
+  Line   33  ADDED >>         if hasattr(enemy, '_abilities'):
+  Line   34  ADDED >>             #raise NotImplementedError # <-- remove when enemy abilities are made
+  Line   35  ADDED >>             for _, ability in enemy._abilities.items():
+  Line   36  ADDED >>                 if ability.currentCooldown > 0:
+  Line   37  ADDED >>                     continue
+  Line   38  ADDED >>                 actions.append({
+  Line   39  ADDED >>                     "id": ability.name,
+  Line   40  ADDED >>                     "category": "ability",
+  Line   41  ADDED >>                     "damage": getattr(ability, 'damage', 0),
+  Line   42  ADDED >>                     "damageType": getattr(ability, 'damageType', enemy._damageType),
+  Line   43  ADDED >>                     "cost": ability.resourceCost,
+  Line   44  ADDED >>                     "effects": ability.effects,
+  Line   45  ADDED >>                 })
+  Line   46  ADDED >> 
+  Line   47  ADDED >>         # consumables
+  Line   48  ADDED >>         for itemName, item in enemy._inventory.items():
+  Line   49  ADDED >>             healVal = getattr(item, 'healAmount', None)
+  Line   50  ADDED >>             if healVal:
+  Line   51  ADDED >>                 actions.append({
+  Line   52  ADDED >>                     "id": itemName,
+  Line   53  ADDED >>                     "category": "consumable",
+  Line   54  ADDED >>                     "heal": healVal,
+  Line   55  ADDED >>                     "cost": {},
+  Line   56  ADDED >>                     "effects": []
+  Line   57  ADDED >>                 })
+  Line   58  ADDED >> 
+  Line   59  ADDED >>         return actions
+  Line   85  REMOVED >> 
+  Line   85  REMOVED >> def buildActionList(enemy: Entity) -> list:
+  Line   85  REMOVED >>     """
+  Line   85  REMOVED >>     Builds action list of available actions for an enemy.\n
+  Line   85  REMOVED >>     Call once per enemy at turn start
+  Line   85  REMOVED >>     """
+  Line   85  REMOVED >>     actions = []
+  Line   85  REMOVED >> 
+  Line   85  REMOVED >>     # basic attack
+  Line   85  REMOVED >>     actions.append({
+  Line   85  REMOVED >>         "id": "basic_attack",
+  Line   85  REMOVED >>         "category": "attack",
+  Line   85  REMOVED >>         "damage": enemy._damage,
+  Line   85  REMOVED >>         "damageType": enemy._damageType,
+  Line   85  REMOVED >>         "cost": {},
+  Line   85  REMOVED >>         "effects": []
+  Line   85  REMOVED >>     })
+  Line   85  REMOVED >> 
+  Line   85  REMOVED >>     # abilities (once added by rework)
+  Line   85  REMOVED >>     if hasattr(enemy, '_abilities'):
+  Line   85  REMOVED >>         #raise NotImplementedError # <-- remove when enemy abilities are made
+  Line   85  REMOVED >>         for _, ability in enemy._abilities.items():
+  Line   85  REMOVED >>             if ability.currentCooldown > 0:
+  Line   85  REMOVED >>                 continue
+  Line   85  REMOVED >>             actions.append({
+  Line   85  REMOVED >>                 "id": ability.name,
+  Line   85  REMOVED >>                 "category": "ability",
+  Line   85  REMOVED >>                 "damage": getattr(ability, 'damage', 0),
+  Line   85  REMOVED >>                 "damageType": getattr(ability, 'damageType', enemy._damageType),
+  Line   85  REMOVED >>                 "cost": ability.resourceCost,
+  Line   85  REMOVED >>                 "effects": ability.effects,
+  Line   85  REMOVED >>             })
+  Line   86  REMOVED >>     # consumables
+  Line   86  REMOVED >>     for itemName, item in enemy._inventory.items():
+  Line   86  REMOVED >>         healVal = getattr(item, 'healAmount', None)
+  Line   86  REMOVED >>         if healVal:
+  Line   86  REMOVED >>             actions.append({
+  Line   86  REMOVED >>                 "id": itemName,
+  Line   86  REMOVED >>                 "category": "consumable",
+  Line   86  REMOVED >>                 "heal": healVal,
+  Line   86  REMOVED >>                 "cost": {},
+  Line   86  REMOVED >>                 "effects": []
+  Line   86  REMOVED >>             })
+  Line   87  REMOVED >>     return actions
+
+[24:09:08] Change Detected: scripts\enemyAi.py
+  Line   32  REMOVED >>         # abilities (once added by rework)
+  Line   32  REMOVED >>         if hasattr(enemy, '_abilities'):
+  Line   32  REMOVED >>             #raise NotImplementedError # <-- remove when enemy abilities are made
+  Line   32  REMOVED >>             for _, ability in enemy._abilities.items():
+  Line   32  REMOVED >>                 if ability.currentCooldown > 0:
+  Line   32  REMOVED >>                     continue
+  Line   32  REMOVED >>                 actions.append({
+  Line   32  REMOVED >>                     "id": ability.name,
+  Line   32  REMOVED >>                     "category": "ability",
+  Line   32  REMOVED >>                     "damage": getattr(ability, 'damage', 0),
+  Line   32  REMOVED >>                     "damageType": getattr(ability, 'damageType', enemy._damageType),
+  Line   32  REMOVED >>                     "cost": ability.resourceCost,
+  Line   32  REMOVED >>                     "effects": ability.effects,
+  Line   32  REMOVED >>                 })
+  Line   32  ADDED >>         # abilities
+  Line   33  ADDED >>         for _, ability in enemy._abilities.items():
+  Line   34  ADDED >>             if ability.currentCooldown > 0:
+  Line   35  ADDED >>                 continue
+  Line   36  ADDED >>             actions.append({
+  Line   37  ADDED >>                 "id": ability.name,
+  Line   38  ADDED >>                 "category": "ability",
+  Line   39  ADDED >>                 "damage": getattr(ability, 'damage', 0),
+  Line   40  ADDED >>                 "damageType": getattr(ability, 'damageType', enemy._damageType),
+  Line   41  ADDED >>                 "cost": ability.resourceCost,
+  Line   42  ADDED >>                 "effects": ability.effects,
+  Line   43  ADDED >>             })
+
+[24:09:38] Change Detected: scripts\enemyAi.py
+  Line   15  REMOVED >>     def buildActionList(enemy: Entity) -> list:
+  Line   15  ADDED >>     def buildActionList(self) -> list:
+  Line   26  REMOVED >>             "damage": enemy._damage,
+  Line   26  REMOVED >>             "damageType": enemy._damageType,
+  Line   26  ADDED >>             "damage": self._enemy._damage,
+  Line   27  ADDED >>             "damageType": self._enemy._damageType,
+  Line   33  REMOVED >>         for _, ability in enemy._abilities.items():
+  Line   33  ADDED >>         for _, ability in self._enemy._abilities.items():
+  Line   40  REMOVED >>                 "damageType": getattr(ability, 'damageType', enemy._damageType),
+  Line   40  ADDED >>                 "damageType": getattr(ability, 'damageType', self._enemy._damageType),
+  Line   46  REMOVED >>         for itemName, item in enemy._inventory.items():
+  Line   46  ADDED >>         for itemName, item in self._enemy._inventory.items():
+
+[24:11:08] Change Detected: scripts\enemyAi.py
+  Line   34  REMOVED >>             if ability.currentCooldown > 0:
+  Line   34  ADDED >>             canUse, _ = ability.canUse()
+  Line   35  ADDED >>             if not canUse:
+  Line   37  ADDED >> 
+  Line   38  ADDED >>             rustEffects = _flattenEffects(ability.effects)
+  Line   39  ADDED >> 
+  Line   46  REMOVED >>                 "effects": ability.effects,
+  Line   46  ADDED >>                 "effects": rustEffects,
+  Line   62  ADDED >>     
+  Line   63  ADDED >>     def applyDecision(self, decision: dict, player, combatManager)
+
+[24:12:38] Change Detected: scripts\enemy.py
+  Line    5  REMOVED >> from .abilities import ABILITIES
+  Line    5  ADDED >> from .enemyAbilities import ENEMY_ABILITIES
+  Line  309  REMOVED >>     for abilityName, ability in ABILITIES.items():
+  Line  309  ADDED >>     for abilityName, ability in ENEMY_ABILITIES.items():
+
+[24:13:18] Change Detected: scripts\enemy.py
+  Line    2  ADDED >> from typing import Dict
+  Line    6  REMOVED >> from .enemyAbilities import ENEMY_ABILITIES
+  Line    6  ADDED >> from .enemyAbilities import ENEMY_ABILITIES, EnemyAbility
+  Line   40  ADDED >> 
+  Line   41  ADDED >>         self._abilities: Dict[str, EnemyAbility] = {}
+
+[24:13:28] Change Detected: scripts\enemyAi.py
+  Line   42  REMOVED >>                 "category": "ability",
+  Line   42  REMOVED >>                 "damage": getattr(ability, 'damage', 0),
+  Line   42  REMOVED >>                 "damageType": getattr(ability, 'damageType', self._enemy._damageType),
+  Line   42  REMOVED >>                 "cost": ability.resourceCost,
+  Line   42  ADDED >>                 "category": ability.category,
+  Line   43  ADDED >>                 "damage": ability.calculateDamage(self._enemy._damage) if ability.isDamaging() else 0,
+  Line   44  ADDED >>                 "damageType": ability.damageType or self._enemy._damageType,
+  Line   45  ADDED >>                 "cost": {},
+
+[24:17:36] Change Detected: scripts\enemyAi.py
+  Line   63  REMOVED >>     def applyDecision(self, decision: dict, player, combatManager)
+  Line   63  ADDED >>     def applyDecision(self, decision: dict, player, combatManager):
+  Line   64  ADDED >>         """Executes action Rust engine chose for this enemy"""
+  Line   65  ADDED >>         if not decision:
+  Line   66  ADDED >>             self._doBasicAttack(player, combatManager)
+  Line   67  ADDED >>             return
+  Line   68  ADDED >>         
+  Line   69  ADDED >>         actionId = decision.get('actionId', 'basic_attack')
+  Line   70  ADDED >> 
+  Line   71  ADDED >>         if actionId == 'basic_attack':
+  Line   72  ADDED >>             self._doBasicAttack(player, combatManager)
+  Line   73  ADDED >>             return
+  Line   74  ADDED >>         
+  Line   75  ADDED >>         enemy = self._enemy
+  Line   76  ADDED >>         if actionId in enemy._inventory:
+  Line   77  ADDED >>             self._useConsumable(actionId, combatManager)
+  Line   78  ADDED >>             return
+  Line   79  ADDED >>         
+  Line   80  ADDED >>         if actionId in enemy._abilities:
+  Line   81  ADDED >>             ability = enemy._abilities[actionId]
+  Line   82  ADDED >>             self._useAbility(ability, player, combatManager)
+  Line   83  ADDED >>             return
+  Line   84  ADDED >>         
+  Line   85  ADDED >>         self._doBasicAttack(player, combatManager)
+
+[24:50:52] Change Detected: scripts\enemyAbilities.py
+  Line    3  REMOVED >> from copy import deepcopy
+  Line    3  REMOVED >> from .items import CONSUMABLES
+
+[24:51:07] Change Detected: scripts\enemyAbilities.py
+  Line    8  REMOVED >>                  effects: Dict, description: str):
+  Line    8  ADDED >>                  weights: int, effects: Dict, description: str):
+
+[24:51:23] Change Detected: scripts\enemyAbilities.py
+  Line    8  REMOVED >>                  weights: int, effects: Dict, description: str):
+  Line    8  ADDED >>                  weight: int, effects: Dict, description: str):
+  Line   19  ADDED >>         self.weight = weight
+
+[24:52:27] Change Detected: scripts\enemyAbilities.py
+  Line   34  REMOVED >>     
+  Line   34  REMOVED >>     def spawnedConsumable(self) -> Optional[str]:
+  Line   34  REMOVED >>         """Returns string of consumable name if exists in effects, None otherwise"""
+  Line   34  REMOVED >>         selfEffects = self.effects.get('self', {})
+  Line   34  REMOVED >>         consumable = selfEffects.get('spawn_consumable')
+  Line   34  REMOVED >>         if consumable in CONSUMABLES:
+  Line   34  REMOVED >>             return consumable
+  Line   34  REMOVED >>         return None
+  Line   35  ADDED >>     def spawnedConsumable(self) -> Optional[int]:
+  Line   36  ADDED >>         """Returns heal amount if ability spawns a consumable, else None"""
+  Line   37  ADDED >>         return self.effects.get('self', {}).get('spawn_consumable', {}).get('heal')
+  Line   38  ADDED >> 
+
+[24:52:41] Change Detected: scripts\enemyAbilities.py
+  Line   45  REMOVED >>     
+  Line   45  ADDED >> 
+
+[24:53:39] Change Detected: scripts\enemyAbilities.py
+  Line    3  ADDED >> from .abilities import Effects
+  Line    4  ADDED >> import random
+  Line   47  ADDED >> 
+  Line   48  ADDED >> def resolveEffects(effectsDict: Dict, attacker, target, combatManager):
+  Line   49  ADDED >>     """
+  Line   50  ADDED >>     Converts a raw effects sub-dict into StatusEffect objects and applies via combat manager
+  Line   51  ADDED >>     """
+
+[24:54:46] Change Detected: scripts\enemyAbilities.py
+  Line   49  REMOVED >>     """
+  Line   49  REMOVED >>     Converts a raw effects sub-dict into StatusEffect objects and applies via combat manager
+  Line   49  REMOVED >>     """
+  Line   49  ADDED >>     """Converts a raw effects sub-dict into StatusEffect objects and applies via combat manager"""
+  Line   50  ADDED >>     for effectName, params in effectsDict.items():
+  Line   51  ADDED >>         if effectName == 'spawn_consumable':
+  Line   52  ADDED >>             continue
+  Line   53  ADDED >> 
+  Line   54  ADDED >>         statusEffects = []
+  Line   55  ADDED >>         
+  Line   56  ADDED >>         match effectName:
+  Line   57  ADDED >>             # -- dots -- #
+  Line   58  ADDED >>             case 'bleed':
+
+[25:01:29] Change Detected: scripts\enemyAbilities.py
+  Line   59  ADDED >>                 statusEffects = Effects.createBleed(params.get('stacks', 1))
+  Line   60  ADDED >>             case 'burn':
+  Line   61  ADDED >>                 statusEffects = Effects.createBurn(params.get('stacks', 1))
+  Line   62  ADDED >>             case 'poison':
+  Line   63  ADDED >>                 statusEffects = Effects.createPoison(params.get('stacks', 1))
+  Line   64  ADDED >>             case 'curse':
+  Line   65  ADDED >>                 statusEffects = Effects.createCurse(params.get('curse', 1))
+  Line   66  ADDED >>             # -- cc -- #
+  Line   67  ADDED >>             case 'stun':
+  Line   68  ADDED >>                 if random.random() < params.get('chance', 1.0):
+  Line   69  ADDED >>                     statusEffects = [Effects.createStun(params.get('turns', 1))]
+  Line   70  ADDED >>             case 'freeze':
+  Line   71  ADDED >>                 if random.random() < params.get('chance', 1.0):
+  Line   72  ADDED >>                     statusEffects = [Effects.createFreeze(params.get('turns', 1))]
+  Line   73  ADDED >>             # -- debuffs -- #
+  Line   74  ADDED >>             case 'chill':
+  Line   75  ADDED >>                 statusEffects = Effects.createChill(
+  Line   76  ADDED >>                     params.get('stacks', 1), params.get('turns', 2), params.get('amount', 0.2)
+  Line   77  ADDED >>                 )
+  Line   78  ADDED >>             case 'slow':
+  Line   79  ADDED >>                 statusEffects = [Effects.createSlow(
+  Line   80  ADDED >>                     params.get('turns', 2), params.get('amount', 0.2)
+  Line   81  ADDED >>                 )]
+  Line   82  ADDED >>             case 'blind':
+  Line   83  ADDED >>                 statusEffects = [Effects.createBlind(
+  Line   84  ADDED >>                     params.get('turns', 3), params.get('amount', 0.2)
+  Line   85  ADDED >>                 )]
+  Line   86  ADDED >>             case 'shock':
+  Line   87  ADDED >>                 statusEffects = [Effects.createShock(
+  Line   88  ADDED >>                     params.get('turns', 3), params.get('amount', 0.2)
+  Line   89  ADDED >>                 )]
+  Line   90  ADDED >>             case 'vulnerable':
+  Line   91  ADDED >>                 statusEffects = [Effects.createVulnerable(
+  Line   92  ADDED >>                     params.get('turns', 2), params.get('amount', 0.2)
+  Line   93  ADDED >>                 )]
+
+[25:06:14] Change Detected: scripts\enemyAbilities.py
+  Line   93  ADDED >>                 )]
+  Line   94  ADDED >>             case 'weaken':
+  Line   95  ADDED >>                 statusEffects = [Effects.createWeaken(
+  Line   96  ADDED >>                     params.get('turns', 2), params.get('amount', 0.25)
+
+[25:11:59] Change Detected: scripts\enemyAbilities.py
+  Line   97  ADDED >>                 )]
+  Line   98  ADDED >>             case 'exposed':
+  Line   99  ADDED >>                 statusEffects = [Effects.createExposed(
+  Line  100  ADDED >>                     params.get('turns', 2), params.get('amount', 10)
+  Line  101  ADDED >>                 )]
+  Line  102  ADDED >>             case 'elemental_exposure':
+  Line  103  ADDED >>                 statusEffects = [Effects.createElementalExposure(
+  Line  104  ADDED >>                     params.get('turns', 3), params.get('amount', 30)
+  Line  105  ADDED >>                 )]
+  Line  106  ADDED >>             case 'divine_exposure':
+  Line  107  ADDED >>                 statusEffects = [Effects.createDivineExposure(
+  Line  108  ADDED >>                     params.get('turns', 3), params.get('amount', 30)
+  Line  109  ADDED >>                 )]
+  Line  110  ADDED >>             case 'physical_exposure':
+  Line  111  ADDED >>                 statusEffects = [Effects.createPhysicalExposure(
+  Line  112  ADDED >>                     params.get('turns', 3), params.get('amount', 30)
+  Line  113  ADDED >>                 )]
+  Line  114  ADDED >>             case 'otherworld_exposure':
+  Line  115  ADDED >>                 statusEffects = [Effects.createOtherworldExposure(
+  Line  116  ADDED >>                     params.get('turns', 3), params.get('amount', 30)
+  Line  117  ADDED >>                 )]
+  Line  118  ADDED >>             case 'daze':
+  Line  119  ADDED >>                 statusEffects = [Effects.createDaze(
+  Line  120  ADDED >>                     params.get('turns', 2), abs(params.get('speed', 0.1)), params.get('damage', 0.9)
+  Line  121  ADDED >>                 )]
+  Line  122  ADDED >>             # -- buffs -- #
+  Line  123  ADDED >>             case 'regeneration':
+  Line  124  ADDED >>                 pct = params.get('amount_percent', 0)
+  Line  125  ADDED >>                 statusEffects = [Effects.createRegeneration(
+  Line  126  ADDED >>                     params.get('turns', 2), (pct / 100 if pct > 1 else pct), params.get('amount_flat', 0)
+  Line  127  ADDED >>                 )]
+  Line  128  ADDED >>             case 'stoneskin':
+  Line  129  ADDED >>                 statusEffects = [Effects.createStoneskin(
+  Line  130  ADDED >>                     params.get('turns', 2), params.get('amount', 0.1)
+  Line  131  ADDED >>                 )]
+  Line  132  ADDED >>             case 'haste':
+  Line  133  ADDED >>                 statusEffects = [Effects.createHaste(
+  Line  134  ADDED >>                     params.get('turns', 2), params.get('speed', 0.1), params.get('damage', 1.1)
+
+[25:12:27] Change Detected: scripts\enemyAbilities.py
+  Line  136  ADDED >>         
+  Line  137  ADDED >>         for effect in statusEffects:
+  Line  138  ADDED >>             combatManager.addStatusEffect(target, effect, attacker)
+
+[25:13:08] Change Detected: scripts\enemyAbilities.py
+  Line  147  REMOVED >>         data.get('effects', {}), data['description']
+  Line  147  ADDED >>         data['weight'], data.get('effects', {}), data['description']
+
+[25:15:56] Change Detected: scripts\enemyAi.py
+  Line   62  REMOVED >>     
+  Line   62  ADDED >> 
+
+[25:16:37] Change Detected: scripts\enemyAi.py
+  Line   69  REMOVED >>         actionId = decision.get('actionId', 'basic_attack')
+  Line   69  ADDED >>         actionId = decision.get('actionId', 'basic_attack') if decision else 'basic_attack'
+  Line   72  REMOVED >>             self._doBasicAttack(player, combatManager)
+  Line   72  ADDED >>             combatManager.performAttack(enemy, player)
+
+[25:16:46] Change Detected: scripts\enemyAi.py
+  Line   64  REMOVED >>         """Executes action Rust engine chose for this enemy"""
+  Line   64  REMOVED >>         if not decision:
+  Line   64  REMOVED >>             self._doBasicAttack(player, combatManager)
+  Line   64  REMOVED >>             return
+  Line   64  REMOVED >>         
+  Line   64  ADDED >>         """Executes action Rust engine chose for this enemy"""        
+
+[25:16:53] Change Detected: scripts\enemyAi.py
+  Line   64  REMOVED >>         """Executes action Rust engine chose for this enemy"""        
+  Line   64  ADDED >>         """Executes action Rust engine chose for this enemy"""       
+  Line   65  ADDED >>         enemy = self._enemy 
+
+[25:17:01] Change Detected: scripts\enemyAi.py
+  Line   72  REMOVED >>         enemy = self._enemy
+
+[25:17:02] Change Detected: scripts\enemyAi.py
+  Line   71  REMOVED >>         
+  Line   71  ADDED >> 
+
+[25:17:04] Change Detected: scripts\enemyAi.py
+  Line   75  REMOVED >>         
+  Line   75  ADDED >> 
+
+[25:17:06] Change Detected: scripts\enemyAi.py
+  Line   80  REMOVED >>         
+  Line   80  ADDED >> 
+
+[25:19:57] Change Detected: scripts\styles.py
+  Line   20  ADDED >> 
+  Line   21  ADDED >>     "ability": "dim cyan",
+
+[25:20:46] Change Detected: scripts\enemyAi.py
+  Line   82  REMOVED >> 
+  Line   82  REMOVED >> # public interface
+  Line   82  REMOVED >> def decideActions(enemies: list[Entity], player: Entity, actionLists: list) -> dict:
+  Line   82  REMOVED >>     """
+  Line   82  REMOVED >>     Ask Rust AI engine to decide actions for all enemies this turn\n
+  Line   82  REMOVED >>     Parameters:
+  Line   82  REMOVED >>         enemies: List of enemy instances in combat
+  Line   82  REMOVED >>         player: player instance
+  Line   82  REMOVED >>         actionLists: list of action lists, one per enemy
+  Line   82  REMOVED >>     \n
+  Line   82  REMOVED >>     Returns:
+  Line   82  REMOVED >>         dict mapping enemy index -> decision dict
+  Line   82  REMOVED >>     """
+  Line   82  REMOVED >>     snapshot = _buildSnapshot(enemies, player, actionLists)
+  Line   82  REMOVED >>     response = _callEngine(snapshot)
+  Line   82  REMOVED >> 
+  Line   82  REMOVED >>     if response is None:
+  Line   82  REMOVED >>         return {}
+  Line   82  REMOVED >>     
+  Line   82  REMOVED >>     # reindex by enemy index for easy lookup in combat.py
+  Line   82  REMOVED >>     return {
+  Line   82  REMOVED >>         d['enemyIndex']: d
+  Line   82  REMOVED >>         for d in response.get('decisions', [])
+  Line   82  REMOVED >>         if 'error' not in d
+  Line   82  REMOVED >>     }
+  Line   82  REMOVED >> 
+  Line   83  ADDED >>     # -- ability execution -- #
+  Line   84  ADDED >>     def _useAbility(self, ability, player, combatManager):
+  Line   85  ADDED >>         from .enemyAbilities import resolveEffects
+  Line   86  ADDED >>         enemy = self._enemy
+  Line   88  REMOVED >> # internal helpers
+  Line   88  ADDED >>         console.print(f"\n[ability]{enemy._name}[/ability] uses [bold]{ability.name}[/bold]!")
+  Line   90  REMOVED >> def _buildSnapshot(enemies: list[Entity], player: Entity, actionLists: list) -> dict:
+  Line   90  REMOVED >>     """Serialise full combat + player into the JSON shape Rust engine expects"""
+  Line   90  REMOVED >>     enemyStates = []
+  Line   90  REMOVED >>     for i, (enemy, actions) in enumerate(zip(enemies, actionLists)):
+  Line   90  REMOVED >>         enemyStates.append({
+  Line   90  REMOVED >>             "index": i,
+  Line   90  REMOVED >>             "hp": enemy._health,
+  Line   90  REMOVED >>             "maxHp": enemy._maxHealth,
+  Line   90  REMOVED >>             "damageType": enemy._damageType,
+  Line   90  REMOVED >>             "resources": _getResources(enemy),
+  Line   90  REMOVED >>             "availableActions": actions,
+  Line   90  REMOVED >>             "difficulty": getattr(enemy, 'aiDifficulty', 0.5),
+  Line   90  REMOVED >>             "baseDamage": enemy._damage,
+  Line   90  REMOVED >>         })
+  Line   90  ADDED >>         heal = ability.spawnedConsumableHeal()
+  Line   92  REMOVED >>     return {
+  Line   92  REMOVED >>         "enemy": enemyStates,
+  Line   92  REMOVED >>         "player": {
+  Line   92  REMOVED >>             "hp": player._health,
+  Line   92  REMOVED >>             "maxHp": player._maxHealth,
+  Line   92  REMOVED >>             "resistances": _getResistances(player),
+  Line   92  REMOVED >>             "speed": player._speed,
+  Line   92  REMOVED >>         }
+  Line   92  REMOVED >>     }
+  Line   93  REMOVED >> def _callEngine(snapshot: dict) -> dict:
+  Line   93  REMOVED >>     """Calls korus_enemy_ai.exe via subprocess, returns parsed JSON response"""
+  Line   93  REMOVED >>     try:
+  Line   93  REMOVED >>         result = subprocess.run(
+  Line   93  REMOVED >>             [_AI_EXE],
+  Line   93  REMOVED >>             input=json.dumps(snapshot),
+  Line   93  REMOVED >>             capture_output=True,
+  Line   93  REMOVED >>             timeout=2
+  Line   93  REMOVED >>         )
+  Line   93  REMOVED >>         if result.returncode != 0:
+  Line   93  REMOVED >>             console.print(f"[warning][AI Engine Error] {result.stderr.strip()} [/warning]")
+  Line   93  REMOVED >>             return None
+  Line   93  REMOVED >>         return json.loads(result.stdout.strip())
+  Line   93  REMOVED >>     except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError) as e:
+  Line   93  REMOVED >>         console.print(f"[error][AI Engine Failed: {e}] Falling back to basic attacks")
+  Line   93  REMOVED >>         return None
+  Line   93  REMOVED >>     
+  Line   93  REMOVED >> def _getResistances(player: Entity) -> dict:
+  Line   93  REMOVED >>     damageTypes = [
+  Line   93  REMOVED >>         'physical', 'fire', 'cold', 'lightning', 'wind', 'earth',
+  Line   93  REMOVED >>         'holy', 'dark', 'arcane', 'psychic', 'ethereal', 'chaos'
+  Line   93  REMOVED >>     ]
+  Line   93  REMOVED >>     resistances = {}
+  Line   93  REMOVED >>     for dt in damageTypes:
+  Line   93  REMOVED >>         res = player._stats['Resistances'][dt]
+  Line   93  REMOVED >>         if res != 0:
+  Line   93  REMOVED >>             resistances[dt] = res
+  Line   93  REMOVED >>     return resistances
+  Line   94  REMOVED >> def _getResources(enemy: Entity) -> dict:
+  Line   94  REMOVED >>     resources = {}
+  Line   94  REMOVED >>     for attr in ('_mana', '_rage', '_stamina'):
+  Line   94  REMOVED >>         if hasattr(enemy, attr):
+  Line   94  REMOVED >>             resources[attr.lstrip('_')] = getattr(enemy, attr)
+  Line   94  REMOVED >>     return resources
+
+[25:21:16] Change Detected: scripts\enemyAbilities.py
+  Line   37  REMOVED >>     def spawnedConsumable(self) -> Optional[int]:
+  Line   37  ADDED >>     def spawnedConsumableHeal(self) -> Optional[int]:
+
+[25:23:20] Change Detected: scripts\enemyAi.py
+  Line   91  ADDED >>         if heal:
+  Line   92  ADDED >>             enemy.heal(heal)
+  Line   93  ADDED >> 
+  Line   94  ADDED >>         if ability.targets == 'self':
+  Line   95  ADDED >>             damageTargets = []
+  Line   96  ADDED >>         elif ability.targets == 'all':
+  Line   97  ADDED >>             damageTargets = [u.entity for u in combatManager.getUnitsInTeam('player')]
+  Line   98  ADDED >>         else:
+  Line   99  ADDED >>             damageTargets = [player]
+  Line  101  ADDED >>         if ability.isDamaging and damageTargets:
+  Line  102  ADDED >>             for t in damageTargets:
+  Line  103  ADDED >>                 combatManager.performAttack(enemy, t, abilityName=ability.name)
+
+[25:23:56] Change Detected: scripts\enemyAi.py
+  Line  104  ADDED >> 
+  Line  105  ADDED >>         targetEffectsDict = ability.effects.get('target', {})
+  Line  106  ADDED >>         if targetEffectsDict and damageTargets:
+  Line  107  ADDED >>             for t in targetEffectsDict:
+  Line  108  ADDED >>                 resolveEffects(targetEffectsDict, enemy, t, combatManager)
+
+[25:25:48] Change Detected: scripts\enemyAi.py
+  Line  109  ADDED >> 
+  Line  110  ADDED >>         selfEffectsDict = {k: v for k, v in ability.effects.get('self', {}).items()
+  Line  111  ADDED >>                            if k != 'spawn_consumable'}
+  Line  112  ADDED >>         if selfEffectsDict:
+  Line  113  ADDED >>             resolveEffects(selfEffectsDict, enemy, enemy, combatManager)
+  Line  115  ADDED >>         ability.cooldown = ability.maxCooldown
+
+[25:28:06] Change Detected: scripts\enemyAi.py
+  Line  117  ADDED >>     def _useConsumable(self, itemName: str, combatManager):
+  Line  118  ADDED >>         from .items import CONSUMABLES
+  Line  119  ADDED >>         enemy = self._enemy
+  Line  120  ADDED >>         amount = enemy._inventory.get(itemName)
+  Line  121  ADDED >>         if amount is None or amount <= 0:
+  Line  122  ADDED >>             return
+  Line  123  ADDED >>         heal = CONSUMABLES.get(itemName)
+  Line  124  ADDED >>         if heal:
+  Line  125  ADDED >>             enemy.heal(heal)
+  Line  126  ADDED >>         enemy._inventory[itemName] -= 1
+
+[25:30:45] Change Detected: scripts\enemyAi.py
+  Line  127  ADDED >> 
+  Line  128  ADDED >>     # -- turn-level static method -- #
+  Line  129  ADDED >>     @staticmethod
+  Line  130  ADDED >>     def decideTurn(enemies: list, player, actionLists: list) -> dict:
+  Line  131  ADDED >>         """
+  Line  132  ADDED >>         Sends full round snapshot to Rust Engine.\n
+  Line  133  ADDED >>         Returns: dict { enemyIndex: decision } or empty dict on failure
+  Line  134  ADDED >>         """
+  Line  135  ADDED >>         snapshot = EnemyAI._buildSnapshot(enemies, player, actionLists)
+  Line  136  ADDED >>         response = EnemyAI._callEngine(snapshot)
+  Line  137  ADDED >>         if response is None:
+  Line  138  ADDED >>             return {}
+  Line  139  ADDED >>         return {
+  Line  140  ADDED >>             d['enemyIndex']: d
+  Line  141  ADDED >>             for d in response.get('decisions', [])
+  Line  142  ADDED >>             if 'error' not in d
+  Line  143  ADDED >>         }
+  Line  144  ADDED >>     
+  Line  145  ADDED >>     
+
+[25:31:41] Change Detected: scripts\enemyAi.py
+  Line  144  REMOVED >>     
+  Line  145  ADDED >>     @staticmethod
+  Line  146  ADDED >>     def _buildSnapshot(enemies: list, player, actionLists: list) -> dict:
+  Line  147  ADDED >>         enemyStates = []
+  Line  148  ADDED >>         for i, (enemy, actions) in enumerate(zip(enemies, actionLists)):
+  Line  149  ADDED >>             enemyStates.append({
+  Line  150  ADDED >>                 "index":            i,
+  Line  151  ADDED >>                 "hp":               enemy._health,
+  Line  152  ADDED >>                 "maxHp":            enemy._maxHealth,
+  Line  153  ADDED >>                 "damageType":       enemy._damageType,
+  Line  154  ADDED >>                 "resources":        EnemyAI._getResources(enemy),
+  Line  155  ADDED >>                 "availableActions": actions,
+  Line  156  ADDED >>                 "difficulty":       getattr(enemy, 'aiDifficulty', 0.5),
+  Line  157  ADDED >>                 "baseDamage":       enemy._damage,
+  Line  158  ADDED >>             })
+
+[25:31:53] Change Detected: scripts\enemyAi.py
+  Line  159  ADDED >>         return {
+  Line  160  ADDED >>             "enemies": enemyStates,
+  Line  161  ADDED >>             "player": {
+  Line  162  ADDED >>                 "hp":          player._health,
+  Line  163  ADDED >>                 "maxHp":       player._maxHealth,
+  Line  164  ADDED >>                 "resistances": EnemyAI._getResistances(player),
+  Line  165  ADDED >>                 "speed":       player._speed,
+  Line  166  ADDED >>         }
+
+[25:31:58] Change Detected: scripts\enemyAi.py
+  Line  166  ADDED >>             }
+
+[25:34:19] Change Detected: scripts\enemyAi.py
+  Line  168  ADDED >>     
+  Line  169  ADDED >>     @staticmethod
+  Line  170  ADDED >>     def _callEngine(snapshot: dict) -> dict | None:
+  Line  171  ADDED >>         try:
+  Line  172  ADDED >>             result = subprocess.run(
+  Line  173  ADDED >>                 [_AI_EXE],
+  Line  174  ADDED >>                 input=json.dumps(snapshot),
+  Line  175  ADDED >>                 capture_output=True,
+  Line  176  ADDED >>                 text=True,
+  Line  177  ADDED >>                 timeout=2
+  Line  178  ADDED >>             )
+  Line  179  ADDED >>             if result.returncode != 0:
+  Line  180  ADDED >>                 console.print(f"[warning][AI Engine Error] {result.stderr.strip()}[/warning]")
+  Line  181  ADDED >>                 return None
+  Line  182  ADDED >>             return json.loads(result.stdout.strip())
+  Line  183  ADDED >>         except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError) as e:
+  Line  184  ADDED >>             console.print(f"[warning][AI Engine Failed: {e}] Falling back to basic attacks[/warning]")
+  Line  185  ADDED >>             return None
+  Line  186  ADDED >>         
+  Line  187  ADDED >>     @staticmethod
+  Line  188  ADDED >>     def _getResistance(player) -> dict:
+  Line  189  ADDED >>         
+
+[25:34:44] Change Detected: scripts\enemyAi.py
+  Line  189  REMOVED >>         
+  Line  189  ADDED >>         damageTypes = [
+  Line  190  ADDED >>             'physical', 'fire', 'cold', 'lightning', 'wind', 'earth',
+  Line  191  ADDED >>             'holy', 'dark', 'arcane', 'psychic', 'ethereal', 'chaos'
+  Line  192  ADDED >>         ]
+
+[25:35:11] Change Detected: scripts\enemyAi.py
+  Line  193  ADDED >>         return {
+  Line  194  ADDED >>             dt: res
+  Line  195  ADDED >>             for dt in damageTypes
+  Line  196  ADDED >>             if (res := player._stats['Resistances'].get(dt, 0)) != 0
+  Line  197  ADDED >>         }
+
+[25:35:34] Change Detected: scripts\enemyAi.py
+  Line  188  REMOVED >>     def _getResistance(player) -> dict:
+  Line  188  ADDED >>     def _getResistance(player: Entity) -> dict:
+  Line  198  ADDED >>     
+  Line  199  ADDED >>     @staticmethod
+  Line  200  ADDED >>     def _getResources(enemy: Entity) -> dict:
+
+[25:36:03] Change Detected: scripts\enemyAi.py
+  Line   73  REMOVED >>             self._useConsumable(actionId, combatManager)
+  Line   73  ADDED >>             self._useConsumable(actionId)
+  Line  117  REMOVED >>     def _useConsumable(self, itemName: str, combatManager):
+  Line  117  ADDED >>     def _useConsumable(self, itemName: str):
+  Line  130  REMOVED >>     def decideTurn(enemies: list, player, actionLists: list) -> dict:
+  Line  130  ADDED >>     def decideTurn(enemies: list[Entity], player: Entity, actionLists: list) -> dict:
+  Line  146  REMOVED >>     def _buildSnapshot(enemies: list, player, actionLists: list) -> dict:
+  Line  146  ADDED >>     def _buildSnapshot(enemies: list[Entity], player: Entity, actionLists: list) -> dict:
+
+[25:36:22] Change Detected: scripts\enemyAi.py
+  Line   63  REMOVED >>     def applyDecision(self, decision: dict, player, combatManager):
+  Line   63  ADDED >>     def applyDecision(self, decision: dict, player: Entity, combatManager):
+  Line   84  REMOVED >>     def _useAbility(self, ability, player, combatManager):
+  Line   84  ADDED >>     def _useAbility(self, ability, player: Entity, combatManager):
+
+[25:37:52] Change Detected: scripts\enemyAi.py
+  Line  201  ADDED >>         resources = {}
+  Line  202  ADDED >>         for attr in ('_mana', '_rage', '_stamina'):
+  Line  203  ADDED >>             if hasattr(enemy, attr):
+  Line  204  ADDED >>                 resources[attr.lstrip('_')] = getattr(enemy, attr)
+  Line  205  ADDED >>         return resources
+  Line  206  ADDED >>     
+  Line  207  ADDED >> # -- flatten effects: converts nested effects dict to flat list for rust engine
+  Line  208  ADDED >> 
+  Line  209  ADDED >> EFFECT_TYPES = {
+  Line  210  ADDED >>     'bleed': 'dot', 'burn': 'dot', 'poison': 'dot', 'curse': 'dot',
+  Line  211  ADDED >>     'stun': 'cc', 'freeze': 'cc',
+  Line  212  ADDED >>     'chill': 'debuff', 'slow': 'debuff', 'blind': 'debuff', 'vulnerable': 'debuff',
+  Line  213  ADDED >>     'shock': 'debuff', 'weaken': 'debuff', 'exposed': 'debuff', 'daze': 'debuff',
+  Line  214  ADDED >>     'elemental_exposure': 'debuff', 'physical_exposure': 'debuff',
+  Line  215  ADDED >>     'divine_exposure': 'debuff', 'otherworld_exposure': 'debuff',
+  Line  216  ADDED >>     'haste': 'buff', 'stoneskin': 'buff', 'regeneration': 'buff',
+  Line  217  ADDED >> }
+  Line  218  ADDED >> 
+
+[25:39:08] Change Detected: scripts\enemyAi.py
+  Line  218  ADDED >> 
+  Line  219  ADDED >> def _flattenEffects(effects: dict) -> list:
+  Line  220  ADDED >>     result = []
+  Line  221  ADDED >>     for targetSide, effectDict in effects.items():
+  Line  222  ADDED >>         for effectName, params in effectDict.items():
+  Line  223  ADDED >>             if effectName == 'spawn_consumable':
+  Line  224  ADDED >>                 continue
+  Line  225  ADDED >>             result.append({
+  Line  226  ADDED >>                 'mechanic': effectName, 'effectType': EFFECT_TYPES.get(effectName, 'debuff'), 'target': targetSide, **params
+  Line  227  ADDED >>             })
+
+[25:39:12] Change Detected: scripts\enemyAi.py
+  Line  228  ADDED >>     return result
+
+[25:39:14] Change Detected: scripts\enemyAi.py
+  Line  229  REMOVED >> 
+
+[25:53:27] Change Detected: scripts\enemy.py
+  Line    9  ADDED >> from .enemyAi import EnemyAI
+
+[25:54:15] Change Detected: scripts\enemy.py
+  Line   34  ADDED >>         self._abilities: Dict[str, EnemyAbility] = {}
+  Line   38  ADDED >> 
+  Line   39  ADDED >>         self.ai = EnemyAI(self)
+  Line   44  REMOVED >> 
+  Line   44  REMOVED >>         self._abilities: Dict[str, EnemyAbility] = {}
+
+[25:55:36] Change Detected: scripts\combat.py
+  Line    9  ADDED >> from .enemyAi import EnemyAI
+
+[25:56:22] Change Detected: scripts\combat.py
+  Line    5  ADDED >> from .enemy import Enemy
+  Line  825  REMOVED >> 
+  Line  825  REMOVED >>         target = random.choice(targets)
+  Line  825  REMOVED >> 
+  Line  825  REMOVED >>         availableAbilities = []
+  Line  825  REMOVED >>         for abilityName, ability in enemy._abilities.items():
+  Line  825  REMOVED >>             if ability.cooldown == 0:
+  Line  825  REMOVED >>                 availableAbilities.append((abilityName, ability._rollWeight))
+  Line  825  REMOVED >> 
+  Line  825  REMOVED >>         if random.random() < 0.7 - (enemy._level / 200): # chance for basic attack decreases with level
+  Line  825  REMOVED >>             self.performAttack(enemy, target)
+  Line  825  REMOVED >>         elif availableAbilities:
+  Line  825  REMOVED >>             if isinstance(enemy, Boss):
+  Line  825  REMOVED >>                 chosenAbility = enemy.chooseAbility(target)
+  Line  825  REMOVED >>             else:
+  Line  825  REMOVED >>                 totalWeight = sum(weight for _, weight in availableAbilities)
+  Line  825  REMOVED >>                 roll = random.randint(1, totalWeight)
+  Line  825  REMOVED >>                 currentWeight = 0
+  Line  825  REMOVED >>                 chosenAbility = None
+  Line  825  REMOVED >> 
+  Line  825  REMOVED >>                 for abilityName, weight in availableAbilities:
+  Line  825  REMOVED >>                     currentWeight += weight
+  Line  825  REMOVED >>                     if roll <= currentWeight:
+  Line  825  REMOVED >>                         chosenAbility = abilityName
+  Line  825  REMOVED >>                         break
+  Line  826  REMOVED >>             if chosenAbility:
+  Line  826  REMOVED >>                 self.performAttack(enemy, target, chosenAbility)
+  Line  826  REMOVED >>             else:
+  Line  826  REMOVED >>                 self.performAttack(enemy, target)
+  Line  826  REMOVED >>         else: # no abilities
+  Line  826  REMOVED >>             self.performAttack(enemy, target)
+  Line  826  ADDED >>         actionList = enemy.ai.build
+
+[25:56:33] Change Detected: scripts\combat.py
+  Line  817  REMOVED >>     def enemyTurn(self, enemy: Entity, targets: List[Entity]):
+  Line  817  ADDED >>     def enemyTurn(self, enemy: Enemy, targets: List[Entity]):
+
+[25:57:10] Change Detected: scripts\combat.py
+  Line  826  REMOVED >>         actionList = enemy.ai.build
+  Line  826  ADDED >>         actionList = enemy.ai.buildActionList()
+  Line  827  ADDED >>         decisions = EnemyAI.decideTurn([enemy], aliveTargets[0], actionLists)
+
+[25:57:13] Change Detected: scripts\combat.py
+  Line  827  REMOVED >>         decisions = EnemyAI.decideTurn([enemy], aliveTargets[0], actionLists)
+  Line  827  ADDED >>         decisions = EnemyAI.decideTurn([enemy], aliveTargets[0], actionList)
+
+[25:57:26] Change Detected: scripts\combat.py
+  Line  827  REMOVED >>         decisions = EnemyAI.decideTurn([enemy], aliveTargets[0], actionList)
+  Line  827  ADDED >>         decisions = EnemyAI.decideTurn([enemy], aliveTargets[0], [actionList])
+  Line  828  ADDED >>         decision = decisions.get(0)
+
+[25:57:40] Change Detected: scripts\combat.py
+  Line  829  ADDED >> 
+  Line  830  ADDED >>         enemy.ai.applyDecision(decision, aliveTargets[0], self)
+
+[37:53:48] Change Detected: scripts\combat.py
+  Line  245  ADDED >>                     self.turnNumber += 1
+  Line  246  ADDED >>                     self._enemyDecisions = {}
+
+[37:54:18] Change Detected: scripts\combat.py
+  Line  247  ADDED >>                     for unit in self.turnOrder:
+  Line  248  ADDED >>                         if unit.isActive():
+  Line  249  ADDED >>                             unit.resetTurn()
+
+[37:54:57] Change Detected: scripts\combat.py
+  Line  169  ADDED >>         self._enemyDecisions = {}
+  Line  170  ADDED >>         self._enemyIndexMap = {}
+
+[37:55:11] Change Detected: scripts\combat.py
+  Line  828  REMOVED >>         
+
+[37:55:42] Change Detected: scripts\combat.py
+  Line  831  ADDED >> 
+  Line  832  ADDED >>         if isinstance(enemy, Boss):
+  Line  833  ADDED >>             self.performAttack(enemy, random.choice(aliveTargets), enemy.chooseAbility(aliveTargets[0]))
+
+[37:55:55] Change Detected: scripts\enemy.py
+  Line   40  REMOVED >>         
+  Line   40  ADDED >> 
+
+[37:56:41] Change Detected: scripts\combat.py
+  Line   79  ADDED >>     @property
+  Line   92  REMOVED >>     
+  Line   92  ADDED >> 
+  Line   93  ADDED >>     @property
+  Line   97  REMOVED >>     
+  Line   97  ADDED >> 
+  Line   98  ADDED >>     @property
+
+[37:57:10] Change Detected: scripts\combat.py
+  Line  244  REMOVED >>             while not nextUnit.canAct() and attempts < len(self.turnOrder):
+  Line  244  ADDED >>             while not nextUnit.canAct and attempts < len(self.turnOrder):
+
+[37:57:48] Change Detected: scripts\combat.py
+  Line  837  ADDED >>             return
+
+[37:59:13] Change Detected: scripts\combat.py
+  Line  838  ADDED >>         
+  Line  839  ADDED >>         if not self._enemyDecisions:
+  Line  840  ADDED >>             allEnemies = [u.entity for u in self.getUnitsInTeam('enemy') if not u.entity._isDead]
+
+[37:59:42] Change Detected: scripts\entities.py
+  Line  148  REMOVED >>         self._isDead = False
+  Line  154  ADDED >> 
+  Line  155  ADDED >>     @property
+  Line  156  ADDED >>     def isDead(self) -> bool:
+  Line  157  ADDED >>         return self._health < 0
+
+[37:59:44] Change Detected: scripts\entities.py
+  Line  157  REMOVED >>         return self._health < 0
+  Line  157  ADDED >>         return self._health <= 0
+
+[37:59:56] Change Detected: scripts\entities.py
+  Line  160  REMOVED >>     def armour(self):
+  Line  160  ADDED >>     def armour(self) -> int:
+  Line  164  REMOVED >>     def evasion(self):
+  Line  164  ADDED >>     def evasion(self) -> int:
+  Line  168  REMOVED >>     def energyShield(self):
+  Line  168  ADDED >>     def energyShield(self) -> int:
+  Line  172  REMOVED >>     def maxEnergyShield(self):
+  Line  172  ADDED >>     def maxEnergyShield(self) -> int:
+
+[38:00:05] Change Detected: scripts\entities.py
+  Line  176  REMOVED >>     def critChance(self):
+  Line  176  ADDED >>     def critChance(self) -> float:
+  Line  180  REMOVED >>     def critMulti(self):
+  Line  180  ADDED >>     def critMulti(self) -> float:
+
+[38:00:36] Change Detected: scripts\entities.py
+  Line  326  REMOVED >>             if self._health <= 0 and not self._isDead: # dies
+  Line  326  REMOVED >>                 self._isDead = True
+  Line  326  ADDED >>             if  self._isDead: # dies
+
+[38:00:49] Change Detected: scripts\entities.py
+  Line  343  REMOVED >>             if self._health <= 0 and not self._isDead:
+  Line  343  REMOVED >>                 self._isDead = True
+  Line  343  ADDED >>             if  self._isDead:
+
+[38:02:15] Change Detected: scripts\combat.py
+  Line    6  ADDED >> from .player import Player
+  Line  840  REMOVED >>         if not self._enemyDecisions:
+  Line  840  ADDED >>         if not self._enemyDecisions: # build snapshot for all enemies this round, cache it
+  Line  842  ADDED >>             actionLists = [e.ai.buildActionList() for e in allEnemies]
+
+[38:02:47] Change Detected: scripts\player.py
+  Line    1  REMOVED >> import random
+  Line    1  REMOVED >> from copy import deepcopy
+  Line    2  REMOVED >> from .entities import Entity
+  Line    2  REMOVED >> from .abilities import ABILITIES, CLASS_ABILITIES, Ability
+
+[38:03:01] Change Detected: scripts\player.py
+  Line    4  REMOVED >>     console, displayLevelUp, formatDamageType, pause,
+  Line    4  REMOVED >>     printSuccess, printWarning, printInfo, clearScreen
+  Line    4  ADDED >>     console, pause, printWarning, clearScreen
+
+[38:03:05] Change Detected: scripts\player.py
+  Line    7  REMOVED >> from player.classes import CLASSES, ASCENDANCIES, SUB_TYPES, DESCRIPTIONS
+  Line    7  ADDED >> from player.classes import CLASSES, DESCRIPTIONS
+
+[38:03:11] Change Detected: scripts\player.py
+  Line    9  REMOVED >> 
+
+[38:03:40] Change Detected: scripts\player.py
+  Line   43  REMOVED >>         player = CLASSES[className](playerName)
+  Line   43  ADDED >>         player: Player = CLASSES[className](playerName)
+
+[38:04:36] Change Detected: scripts\combat.py
+  Line  843  ADDED >>             self._enemyDecisions = EnemyAI.decideTurn(allEnemies, aliveTargets[0], actionLists)
+  Line  844  ADDED >>             self._enemyIndexMap = {e: i for i, e in enumerate(allEnemies)}
+
+[38:05:13] Change Detected: scripts\combat.py
+  Line  845  REMOVED >> 
+  Line  845  REMOVED >>         actionList = enemy.ai.buildActionList()
+  Line  845  REMOVED >>         decisions = EnemyAI.decideTurn([enemy], aliveTargets[0], [actionList])
+  Line  845  REMOVED >>         decision = decisions.get(0)
+  Line  846  ADDED >>         idx = self._enemyIndexMap.get(enemy, 0)
+  Line  847  ADDED >>         decision = self._enemyDecisions.get(idx)
+
+[40:11:43] Change Detected: data\abilities.json
+  Line 1331  REMOVED >>                         "tags+": ["physical_exposure", "exposure"],
+  Line 1331  ADDED >>                         "tags+": ["debuff", "physical_exposure", "exposure"],
+  Line 1339  ADDED >>                         },
+  Line 1340  ADDED >>                         "description": "A quick jab to build momentum.\n  - Cooldown: 1 Turn\n  - Deal 20 Damage + 45% of your base damage.\n  - Apply 10% Physical Exposure for 2 turns."
+  Line 1341  ADDED >>                     },
+  Line 1342  ADDED >>                     "50": {
+  Line 1343  ADDED >>                         "damage_base": 60,
+  Line 1344  ADDED >>                         "damage_scaling": 70,
+  Line 1345  ADDED >>                         "level": 50,
+  Line 1346  ADDED >>                         "tags+": ["vulnerable"],
+  Line 1347  ADDED >>                         "effects": {
+  Line 1348  ADDED >>                             
+
+[40:12:31] Change Detected: data\abilities.json
+  Line 1348  REMOVED >>                             
+  Line 1348  ADDED >>                             "target": {
+  Line 1349  ADDED >>                                 "physical_exposure": {
+  Line 1350  ADDED >>                                     "turns": 2,
+  Line 1351  ADDED >>                                     "amount": 15
+  Line 1352  ADDED >>                                 },
+  Line 1353  ADDED >>                                 "vulnerable": {
+  Line 1354  ADDED >>                                     "turns": 2,
+  Line 1355  ADDED >>                                     "amount": 0.15
+  Line 1356  ADDED >>                                 }
+  Line 1357  ADDED >>                             }
+
+[40:12:51] Change Detected: data\abilities.json
+  Line 1358  REMOVED >>                         }
+  Line 1358  ADDED >>                         },
+  Line 1359  ADDED >>                         "description": "A quick jab to build momentum.\n  - Cooldown: 1 Turn\n  - Deal 60 Damage + 70% of your base damage.\n  - Apply 15% Physical Exposure and 15% Vulnerable for 1-2 turns."
+
+[40:13:11] Change Detected: data\abilities.json
+  Line 1360  ADDED >>                     },
+  Line 1361  ADDED >>                     "75": {
+  Line 1362  ADDED >>                         ""
+
+[40:13:30] Change Detected: data\abilities.json
+  Line 1362  REMOVED >>                         ""
+  Line 1362  ADDED >>                         "damage_base": 140,
+  Line 1363  ADDED >>                         "damage_scaling": 100,
+  Line 1364  ADDED >>                         "level": 75,
+  Line 1365  ADDED >>                         
+
+[40:14:25] Change Detected: data\abilities.json
+  Line 1351  REMOVED >>                                     "amount": 15
+  Line 1351  ADDED >>                                     "amount": 20
+  Line 1365  REMOVED >>                         
+  Line 1365  ADDED >>                         "tags+": ["daze"],
+  Line 1366  ADDED >>                         "effects": {
+  Line 1367  ADDED >>                             "target": {
+  Line 1368  ADDED >>                                 "physical_exposure": {
+  Line 1369  ADDED >>                                     "turns": 2,
+  Line 1370  ADDED >>                                     "amount": 30
+  Line 1371  ADDED >>                                 }
+  Line 1372  ADDED >>                             }
+  Line 1373  ADDED >>                         }
+
+[40:14:29] Change Detected: data\abilities.json
+  Line 1359  REMOVED >>                         "description": "A quick jab to build momentum.\n  - Cooldown: 1 Turn\n  - Deal 60 Damage + 70% of your base damage.\n  - Apply 15% Physical Exposure and 15% Vulnerable for 1-2 turns."
+  Line 1359  ADDED >>                         "description": "A quick jab to build momentum.\n  - Cooldown: 1 Turn\n  - Deal 60 Damage + 70% of your base damage.\n  - Apply 20% Physical Exposure and 15% Vulnerable for 1-2 turns."
+
+[40:15:05] Change Detected: data\abilities.json
+  Line 1371  ADDED >>                                 },
+  Line 1372  ADDED >>                                 "vulnerable": {
+  Line 1373  ADDED >>                                     "turns": 2,
+  Line 1374  ADDED >>                                     "amount": 0.2
+  Line 1375  ADDED >>                                 },
+  Line 1376  ADDED >>                                 "daze": {
+  Line 1377  ADDED >>                                     "turns": 1,
+  Line 1378  ADDED >>                                     "speed": -0.1,
+  Line 1379  ADDED >>                                     "damage": 0.95
+
+[40:17:35] Change Detected: data\abilities.json
+  Line 1382  REMOVED >>                         }
+  Line 1382  ADDED >>                         },
+  Line 1383  ADDED >>                         "description": "A quick jab to build momentum.\n  - Cooldown: 1 Turn\n  - Deal 140 Damage + 100% of your base damage.\n  - Apply 20% Physical Exposure, 20% Vulnerable for 2 turns and Daze for 1 turn."
+
+[40:17:48] Change Detected: data\abilities.json
+  Line 1386  REMOVED >>             }
+  Line 1386  ADDED >>             },
+  Line 1387  ADDED >>             "Rally": {}
+
+[40:17:49] Change Detected: data\abilities.json
+  Line 1387  REMOVED >>             "Rally": {}
+  Line 1387  ADDED >>             "Rally": {
+  Line 1388  ADDED >>                 
+  Line 1389  ADDED >>             }
+
+[40:21:23] Change Detected: data\abilities.json
+  Line 1388  REMOVED >>                 
+  Line 1388  ADDED >>                 "name": "Rally",
+  Line 1389  ADDED >>                 "category": "buff",
+  Line 1390  ADDED >>                 "tags": ["buff", "heal", "haste", "stoneskin", "physical", "combo"],
+  Line 1391  ADDED >>                 "heal_base": 5,
+  Line 1392  ADDED >>                 "heal_percent": 1,
+  Line 1393  ADDED >>                 "level": 5,
+  Line 1394  ADDED >>                 "cooldown": 3,
+  Line 1395  ADDED >>                 "effects": {
+  Line 1396  ADDED >>                     "self": {
+  Line 1397  ADDED >>                         "self": {
+  Line 1398  ADDED >>                             "haste": {
+  Line 1399  ADDED >>                                 "turns": 2,
+  Line 1400  ADDED >>                                 "speed": 0.1,
+  Line 1401  ADDED >>                                 "damage": 1.1
+  Line 1402  ADDED >>                             },
+  Line 1403  ADDED >>                             "stoneskin": {
+  Line 1404  ADDED >>                                 "turns": 2,
+  Line 1405  ADDED >>                                 "amount": 0.05
+  Line 1406  ADDED >>                             }
+  Line 1407  ADDED >>                         }
+  Line 1408  ADDED >>                     }
+  Line 1409  ADDED >>                 },
+  Line 1410  ADDED >>                 "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 5 HP + 1% Max HP.\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage.\n  - Gain 5% Damage Reduction for 2 turns."
+
+[40:23:12] Change Detected: data\abilities.json
+  Line 1410  REMOVED >>                 "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 5 HP + 1% Max HP.\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage.\n  - Gain 5% Damage Reduction for 2 turns."
+  Line 1410  ADDED >>                 "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 5 HP + 1% Max HP.\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage.\n  - Gain 5% Damage Reduction for 2 turns.",
+  Line 1411  ADDED >>                 "evolutions": {
+  Line 1412  ADDED >>                     "30": {
+  Line 1413  ADDED >>                         "heal_base": 20,
+  Line 1414  ADDED >>                         "heal_percent": 2,
+  Line 1415  ADDED >>                         "level": 30,
+  Line 1416  ADDED >>                         "tags+": ["renegeration"],
+  Line 1417  ADDED >>                         "effects": {
+  Line 1418  ADDED >>                             "self": {
+  Line 1419  ADDED >>                                 "haste": {
+  Line 1420  ADDED >>                                     "turns": 2,
+  Line 1421  ADDED >>                                     "speed": 0.15,
+  Line 1422  ADDED >>                                     "damage": 1.15
+  Line 1423  ADDED >>                                 },
+  Line 1424  ADDED >>                                 "stoneskin": {
+  Line 1425  ADDED >>                                     "turns": 2,
+  Line 1426  ADDED >>                                     "amount": 0.08
+  Line 1427  ADDED >>                                 },
+  Line 1428  ADDED >>                                 "regeneration": {
+  Line 1429  ADDED >>                                     "turns": 2,
+  Line 1430  ADDED >>                                     "amount_flat": 10,
+  Line 1431  ADDED >>                                     "amount_percent": 1
+  Line 1432  ADDED >>                                 }
+  Line 1433  ADDED >>                             }
+  Line 1434  ADDED >>                         }
+  Line 1435  ADDED >>                     }
+  Line 1436  ADDED >>                 }
+
+[40:23:30] Change Detected: data\abilities.json
+  Line 1434  REMOVED >>                         }
+  Line 1434  ADDED >>                         },
+  Line 1435  ADDED >>                         "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 20 HP + 2% Max HP.\n  - Haste: +0.15 Speed, +15% Damage. 8% Damage Reduction for 2 turns.\n  - 10 HP + 1% Max HP Regen for 2 turns."
+
+[40:25:20] Change Detected: data\abilities.json
+  Line 1436  ADDED >>                     },
+  Line 1437  ADDED >>                     "55": {
+  Line 1438  ADDED >>                         "heal_base": 50,
+  Line 1439  ADDED >>                         "heal_percent": 4,
+  Line 1440  ADDED >>                         "level": 55,
+  Line 1441  ADDED >>                         "tags+": ["speed"],
+  Line 1442  ADDED >>                         "effects": {
+  Line 1443  ADDED >>                             "self": {
+  Line 1444  ADDED >>                                 "haste": {
+  Line 1445  ADDED >>                                     "turns": 2,
+  Line 1446  ADDED >>                                     "speed": 0.2,
+  Line 1447  ADDED >>                                     "damage": 1.2
+  Line 1448  ADDED >>                                 },
+  Line 1449  ADDED >>                                 "stoneskin": {
+  Line 1450  ADDED >>                                     "turns": 3,
+  Line 1451  ADDED >>                                     "amount": 0.1
+  Line 1452  ADDED >>                                 },
+  Line 1453  ADDED >>                                 "regeneration": ""
+  Line 1454  ADDED >>                             }
+  Line 1455  ADDED >>                         }
+
+[40:25:38] Change Detected: data\abilities.json
+  Line 1453  REMOVED >>                                 "regeneration": ""
+  Line 1453  ADDED >>                                 "regeneration": {
+  Line 1454  ADDED >>                                     "turns": 3,
+  Line 1455  ADDED >>                                     "amount_flat": 40,
+  Line 1456  ADDED >>                                     "amount_percent": 2
+  Line 1457  ADDED >>                                 }
+
+[40:26:16] Change Detected: data\abilities.json
+  Line 1457  ADDED >>                                 },
+  Line 1458  ADDED >>                                 "speed": {
+  Line 1459  ADDED >>                                     "turns": 3,
+  Line 1460  ADDED >>                                     "amount": 0.1
+  Line 1463  REMOVED >>                         }
+  Line 1463  ADDED >>                         },
+  Line 1464  ADDED >>                         "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 50 HP + 4% Max HP.\n  - Haste: +0.2 Speed, +20% Damage for 2 turns. 10% Damage Reduction for 3 turns.\n  - 25 HP + 2% Max HP Regen for 3 turns."
+
+[40:26:24] Change Detected: data\abilities.json
+  Line 1464  REMOVED >>                         "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 50 HP + 4% Max HP.\n  - Haste: +0.2 Speed, +20% Damage for 2 turns. 10% Damage Reduction for 3 turns.\n  - 25 HP + 2% Max HP Regen for 3 turns."
+  Line 1464  ADDED >>                         "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 100 HP + 7% Max HP.\n  - Haste: +0.25 Speed, +30% Damage. 15% Damage Reduction, +0.1 Speed for 3 turns.\n  - 40 HP + 3% Max HP Regen for 3 turns."
+
+[40:27:51] Change Detected: data\abilities.json
+  Line 1457  REMOVED >>                                 },
+  Line 1457  REMOVED >>                                 "speed": {
+  Line 1457  REMOVED >>                                     "turns": 3,
+  Line 1457  REMOVED >>                                     "amount": 0.1
+  Line 1460  REMOVED >>                         "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 100 HP + 7% Max HP.\n  - Haste: +0.25 Speed, +30% Damage. 15% Damage Reduction, +0.1 Speed for 3 turns.\n  - 40 HP + 3% Max HP Regen for 3 turns."
+  Line 1460  ADDED >>                         "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 50 HP + 4% Max HP.\n  - Haste: +0.2 Speed, +20% Damage for 2 turns. 10% Damage Reduction for 3 turns.\n  - 25 HP + 2% Max HP Regen for 3 turns."
+  Line 1461  ADDED >>                     "80": {
+  Line 1462  ADDED >>                         "heal_base": 100,
+  Line 1463  ADDED >>                         "heal_percent": 7,
+  Line 1464  ADDED >>                         "level": 80,
+  Line 1465  ADDED >> 
+
+[40:27:57] Change Detected: data\abilities.json
+  Line 1461  ADDED >>                     },
+
+[40:28:29] Change Detected: data\abilities.json
+  Line 1455  REMOVED >>                                     "amount_flat": 40,
+  Line 1455  ADDED >>                                     "amount_flat": 25,
+  Line 1466  REMOVED >> 
+  Line 1466  ADDED >>                         "tags+": ["speed"],
+  Line 1467  ADDED >>                         "effects": {
+  Line 1468  ADDED >>                             ""
+  Line 1469  ADDED >>                         }
+
+[40:29:00] Change Detected: data\abilities.json
+  Line 1468  REMOVED >>                             ""
+  Line 1468  ADDED >>                             "self": {
+  Line 1469  ADDED >>                                 "haste": {
+  Line 1470  ADDED >>                                     "turns": 3,
+  Line 1471  ADDED >>                                     "speed": 0.25,
+  Line 1472  ADDED >>                                     "damage": 1.3
+  Line 1473  ADDED >>                                 }
+  Line 1474  ADDED >>                             }
+
+[40:29:44] Change Detected: data\abilities.json
+  Line 1473  ADDED >>                                 },
+  Line 1474  ADDED >>                                 "stoneskin": {
+  Line 1475  ADDED >>                                     "turns": 3,
+  Line 1476  ADDED >>                                     "amount": 0.15
+  Line 1477  ADDED >>                                 },
+  Line 1478  ADDED >>                                 "regeneration": {
+  Line 1479  ADDED >>                                     "turns": 3,
+  Line 1480  ADDED >>                                     "amount_flat": 40,
+  Line 1481  ADDED >>                                     "amount_percent": 3
+  Line 1482  ADDED >>                                 },
+  Line 1483  ADDED >>                                 "speed": {
+  Line 1484  ADDED >>                                     "turns": 3,
+  Line 1485  ADDED >>                                     "amount": 0.1
+
+[40:30:02] Change Detected: data\abilities.json
+  Line 1488  REMOVED >>                         }
+  Line 1488  ADDED >>                         },
+  Line 1489  ADDED >>                         "description": "Rally yourself, steeling your resolve.\n  - Cooldown: 3 Turns\n  - Heal 100 HP + 7% Max HP.\n  - Haste: +0.25 Speed, +30% Damage. 15% Damage Reduction, +0.1 Speed for 3 turns.\n  - 40 HP + 3% Max HP Regen for 3 turns."
+
+[40:31:30] Change Detected: data\abilities.json
+  Line 1492  ADDED >>             },
+  Line 1493  ADDED >>             "Warcry": {
+  Line 1494  ADDED >>                 "name": "Warcry",
+  Line 1495  ADDED >>                 "category": "buff",
+  Line 1496  ADDED >>                 "tags": ["buff", "debuff", "aoe", "physical", "vulnerable", "combo", "haste", "warcry"]
+
+[40:31:44] Change Detected: data\abilities.json
+  Line  959  REMOVED >>                 "tags": ["buff", "debuff", "beast", "vulnerable", "aoe"],
+  Line  959  ADDED >>                 "tags": ["buff", "debuff", "beast", "vulnerable", "aoe", "warcry"],
+
+[40:33:26] Change Detected: data\abilities.json
+  Line 1496  REMOVED >>                 "tags": ["buff", "debuff", "aoe", "physical", "vulnerable", "combo", "haste", "warcry"]
+  Line 1496  ADDED >>                 "tags": ["buff", "debuff", "aoe", "physical", "vulnerable", "combo", "haste", "warcry"],
+  Line 1497  ADDED >>                 "level": 10,
+  Line 1498  ADDED >>                 "cooldown": 4,
+  Line 1499  ADDED >>                 "targets": "all",
+  Line 1500  ADDED >>                 "effects": {
+  Line 1501  ADDED >>                     "self": {
+  Line 1502  ADDED >>                         "haste": {
+  Line 1503  ADDED >>                             "turns": 2,
+  Line 1504  ADDED >>                             "speed": 0.1,
+  Line 1505  ADDED >>                             "damage": 1.1
+  Line 1506  ADDED >>                         }
+  Line 1507  ADDED >>                     },
+  Line 1508  ADDED >>                     "target": {
+  Line 1509  ADDED >>                         "vulnerable": {
+  Line 1510  ADDED >>                             "turns": 2,
+  Line 1511  ADDED >>                             "amount": 0.15
+  Line 1512  ADDED >>                         }
+  Line 1513  ADDED >>                     }
+  Line 1514  ADDED >>                 }
+
+[40:33:37] Change Detected: data\abilities.json
+  Line 1514  REMOVED >>                 }
+  Line 1514  ADDED >>                 },
+  Line 1515  ADDED >>                 "description": "description": "Let out a commanding warcry.\n  - Cooldown: 4 Turns\n  - Gain Haste: +0.1 Speed, +10% Damage for 2 turns.\n  - All enemies gain 15% Vulnerable for 2 turns."
+
+[40:33:42] Change Detected: data\abilities.json
+  Line 1515  REMOVED >>                 "description": "description": "Let out a commanding warcry.\n  - Cooldown: 4 Turns\n  - Gain Haste: +0.1 Speed, +10% Damage for 2 turns.\n  - All enemies gain 15% Vulnerable for 2 turns."
+  Line 1515  ADDED >>                 "description": "Let out a commanding warcry.\n  - Cooldown: 4 Turns\n  - Gain Haste: +0.1 Speed, +10% Damage for 2 turns.\n  - All enemies gain 15% Vulnerable for 2 turns.",
+  Line 1516  ADDED >>                 "evolutions"
+
+[40:35:07] Change Detected: data\abilities.json
+  Line 1516  REMOVED >>                 "evolutions"
+  Line 1516  ADDED >>                 "evolutions": {
+  Line 1517  ADDED >>                     "35": {
+  Line 1518  ADDED >>                         "level": 35,
+  Line 1519  ADDED >>                         "tags+": ["physical_exposure"],
+  Line 1520  ADDED >>                         "effects": {
+  Line 1521  ADDED >>                             "self": {
+  Line 1522  ADDED >>                                 "haste": {
+  Line 1523  ADDED >>                                     "turns": 2,
+  Line 1524  ADDED >>                                     "speed": 0.15,
+  Line 1525  ADDED >>                                     "damage": 1.2
+  Line 1526  ADDED >>                                 }
+  Line 1527  ADDED >>                             },
+  Line 1528  ADDED >>                             "target": {
+  Line 1529  ADDED >>                                 "vulnerable": {
+  Line 1530  ADDED >>                                     "turns": 2,
+  Line 1531  ADDED >>                                     "amount": 0.25
+  Line 1532  ADDED >>                                 },
+  Line 1533  ADDED >>                                 "physical_exposure": {
+  Line 1534  ADDED >>                                     "turns": 2,
+  Line 1535  ADDED >>                                     "amount": 15
+  Line 1536  ADDED >>                                 }
+  Line 1537  ADDED >>                             }
+  Line 1538  ADDED >>                         },
+  Line 1539  ADDED >>                         "description": "Let out a commanding warcry.\n  - Cooldown: 4 Turns\n  - Haste: +0.15 Speed, +20% Damage for 2 turns.\n  - All enemies gain 25% Vulnerable and 15% Physical Exposure for 2 turns."
+  Line 1540  ADDED >>                     }
+  Line 1541  ADDED >>                 }
+
+[40:38:06] Change Detected: data\abilities.json
+  Line 1540  ADDED >>                     },
+  Line 1541  ADDED >>                     "60": {
+  Line 1542  ADDED >>                         "level": 60,
+  Line 1543  ADDED >>                         "tags+": ["daze", "stoneskin"],
+  Line 1544  ADDED >>                         "effects": {
+  Line 1545  ADDED >>                             "self": {
+  Line 1546  ADDED >>                                 "haste": {
+  Line 1547  ADDED >>                                     "turns": 2,
+  Line 1548  ADDED >>                                     "speed": 0.2,
+  Line 1549  ADDED >>                                     "damage": 1.3
+  Line 1550  ADDED >>                                 },
+  Line 1551  ADDED >>                                 "stoneskin": {
+  Line 1552  ADDED >>                                     "turns": 2,
+  Line 1553  ADDED >>                                     "amount": 0.08
+  Line 1554  ADDED >>                                 }
+  Line 1555  ADDED >>                             },
+  Line 1556  ADDED >>                             "target": {
+  Line 1557  ADDED >>                                 "vulnerable": {
+  Line 1558  ADDED >>                                     "turns": 2,
+  Line 1559  ADDED >>                                     "amount": 0.4
+  Line 1560  ADDED >>                                 },
+  Line 1561  ADDED >>                                 "physical_exposure": {
+  Line 1562  ADDED >>                                     "turns": 2,
+  Line 1563  ADDED >>                                     "amount": 20
+  Line 1564  ADDED >>                                 },
+  Line 1565  ADDED >>                                 "daze": {
+  Line 1566  ADDED >>                                     "turns": 2,
+  Line 1567  ADDED >>                                     "speed": -0.1,
+  Line 1568  ADDED >>                                     "damage": 0.9
+  Line 1569  ADDED >>                                 }
+  Line 1570  ADDED >>                             }
+  Line 1571  ADDED >>                         }
+
+[40:38:51] Change Detected: data\abilities.json
+  Line 1571  REMOVED >>                         }
+  Line 1571  ADDED >>                         },
+  Line 1572  ADDED >>                         "description": "Let out a commanding warcry.\n  - Cooldown: 4 Turns\n  - Haste: +0.2 Speed, +30% Damage. 8% Damage Reduction for 2 turns.\n  - All enemies gain 40% Vulnerable, 20% Physical Exposure and Daze for 2 turns."
+
+[40:42:38] Change Detected: data\abilities.json
+  Line 1573  ADDED >>                     },
+  Line 1574  ADDED >>                     "85": {
+  Line 1575  ADDED >>                         "level": 85,
+  Line 1576  ADDED >>                         "tags+": ["weaken"],
+  Line 1577  ADDED >>                         "effects": {
+  Line 1578  ADDED >>                             "self": {
+  Line 1579  ADDED >>                                 "haste": {
+  Line 1580  ADDED >>                                     "turns": 3,
+  Line 1581  ADDED >>                                     "speed": 0.3,
+  Line 1582  ADDED >>                                     "damage": 1.4
+  Line 1583  ADDED >>                                 },
+  Line 1584  ADDED >>                                 "stoneskin": {
+  Line 1585  ADDED >>                                     "turns": 3,
+  Line 1586  ADDED >>                                     "amount": 0.1
+  Line 1587  ADDED >>                                 }
+  Line 1588  ADDED >>                             },
+  Line 1589  ADDED >>                             "target": {
+  Line 1590  ADDED >>                                 "vulnerable": {
+  Line 1591  ADDED >>                                     "turns": 3,
+  Line 1592  ADDED >>                                     "amount": 25
+  Line 1593  ADDED >>                                 },
+  Line 1594  ADDED >>                                 "physical_exposure": {
+  Line 1595  ADDED >>                                     "turns": 3,
+  Line 1596  ADDED >>                                     "amount": 25
+  Line 1597  ADDED >>                                 },
+  Line 1598  ADDED >>                                 "daze": {
+  Line 1599  ADDED >>                                     "turns": 2,
+  Line 1600  ADDED >>                                     "speed": -0.15,
+  Line 1601  ADDED >>                                     "damage": 0.85
+  Line 1602  ADDED >>                                 },
+  Line 1603  ADDED >>                                 "weaken": {
+  Line 1604  ADDED >>                                     "turns": 2,
+  Line 1605  ADDED >>                                     "amount": 0.2
+  Line 1606  ADDED >>                                 }
+  Line 1607  ADDED >>                             }
+  Line 1608  ADDED >>                         }
+
+[40:42:50] Change Detected: data\abilities.json
+  Line 1608  REMOVED >>                         }
+  Line 1608  ADDED >>                         },
+  Line 1609  ADDED >>                         "description": "Let out a commanding warcry.\n  - Cooldown: 4 Turns\n  - Haste: +0.3 Speed, +40% Damage. 10% Damage Reduction for 3 turns.\n  - All enemies gain 50% Vulnerable, 25% Physical Exposure, 20% Weaken, and Daze for 2-3 turns."
+
+[40:44:28] Change Detected: data\abilities.json
+  Line 1612  ADDED >>             },
+  Line 1613  ADDED >>             "Sweeping Kick": {
+  Line 1614  ADDED >>                 "name": "Sweeping Kick",
+  Line 1615  ADDED >>                 "category": "damage",
+  Line 1616  ADDED >>                 "tags": ["damage", "aoe", "physical", "stun", "slam", "combo"]
+
+[40:45:23] Change Detected: data\abilities.json
+  Line 1616  REMOVED >>                 "tags": ["damage", "aoe", "physical", "stun", "slam", "combo"]
+  Line 1616  ADDED >>                 "tags": ["damage", "aoe", "physical", "stun", "strike", "combo"],
+  Line 1617  ADDED >>                 "damage_base": 20,
+  Line 1618  ADDED >>                 "damage_scaling": 15,
+  Line 1619  ADDED >>                 "damage_type": "physical",
+  Line 1620  ADDED >>                 "level": 15,
+  Line 1621  ADDED >>                 "cooldown": 4,
+  Line 1622  ADDED >>                 "targets": "all"
+
+[40:46:24] Change Detected: data\abilities.json
+  Line 1622  REMOVED >>                 "targets": "all"
+  Line 1622  ADDED >>                 "targets": "all",
+  Line 1623  ADDED >>                 "effects": {
+  Line 1624  ADDED >>                     "target": {
+  Line 1625  ADDED >>                         "stun": {
+  Line 1626  ADDED >>                             "turns": 1,
+  Line 1627  ADDED >>                             "chance": 0.15
+  Line 1628  ADDED >>                         }
+  Line 1629  ADDED >>                     }
+  Line 1630  ADDED >>                 }
+
+[40:46:47] Change Detected: data\abilities.json
+  Line 1630  REMOVED >>                 }
+  Line 1630  ADDED >>                 },
+  Line 1631  ADDED >>                 "description": "Sweep all enemies off their feet with a powerful kick.\n  - Cooldown: 4 Turns\n  - Deal 20 Damage + 15% of your base damage to all enemies.\n  - 15% Chance to Stun all enemies for 1 turn.",
+
+[40:49:14] Change Detected: data\abilities.json
+  Line 1632  ADDED >>                 "evolutions": {
+  Line 1633  ADDED >>                     "40": {
+  Line 1634  ADDED >>                         "damage_base": 50,
+  Line 1635  ADDED >>                         "damage_scaling": 35,
+  Line 1636  ADDED >>                         "level": 40,
+  Line 1637  ADDED >>                         "tags+": ["slow", "bleed", "dot"],
+  Line 1638  ADDED >>                         "effects": {
+  Line 1639  ADDED >>                             "target": {
+  Line 1640  ADDED >>                                 "stun": {
+  Line 1641  ADDED >>                                     "turns": 1,
+  Line 1642  ADDED >>                                     "chance": 0.25
+  Line 1643  ADDED >>                                 },
+  Line 1644  ADDED >>                                 "slow": {
+  Line 1645  ADDED >>                                     "turns": 2,
+  Line 1646  ADDED >>                                     "amount": 0.25
+  Line 1647  ADDED >>                                 },
+  Line 1648  ADDED >>                                 "bleed": {
+  Line 1649  ADDED >>                                     "stacks": 2
+  Line 1650  ADDED >>                                 },
+  Line 1651  ADDED >>                                 "physical_exposure": {
+  Line 1652  ADDED >>                                     "turns": 2,
+  Line 1653  ADDED >>                                     "amount": 0.15
+  Line 1654  ADDED >>                                 }
+  Line 1655  ADDED >>                             }
+  Line 1656  ADDED >>                         },
+  Line 1657  ADDED >>                         "description": "Sweep all enemies off their feet.\n  - Cooldown: 4 Turns\n  - Deal 90 Damage + 60% of your base damage to all enemies.\n  - 35% Stun. 25% Slow, 15% Physical Exposure for 2 turns. 2 Bleed."
+  Line 1658  ADDED >>                     }
+  Line 1659  ADDED >>                 }
+
+[41:08:26] Change Detected: data\abilities.json
+  Line 1658  ADDED >>                     },
+  Line 1659  ADDED >>                     "65": {
+  Line 1660  ADDED >>                         "damage_base": 90,
+  Line 1661  ADDED >>                         "damage_scaling": 60, 
+  Line 1662  ADDED >>                         "level": 65,
+  Line 1663  ADDED >>                         "tags+": ["physical_exposure"],
+  Line 1664  ADDED >>                     "effects": {"target": {"stun": {"turns": 1, "chance": 0.35}, "slow": {"turns": 2, "amount": 0.25}, "bleed": {"stacks": 2}, "physical_exposure": {"turns": 2, "amount": 0.15}}},
+
+[41:08:35] Change Detected: data\abilities.json
+  Line 1665  ADDED >>                     "description": "Sweep all enemies off their feet.\n  - Cooldown: 4 Turns\n  - Deal 90 Damage + 60% of your base damage to all enemies.\n  - 35% Stun. 25% Slow, 15% Physical Exposure for 2 turns. 2 Bleed."
+
+[41:09:20] Change Detected: data\abilities.json
+  Line 1664  REMOVED >>                     "effects": {"target": {"stun": {"turns": 1, "chance": 0.35}, "slow": {"turns": 2, "amount": 0.25}, "bleed": {"stacks": 2}, "physical_exposure": {"turns": 2, "amount": 0.15}}},
+  Line 1664  ADDED >>                     "effects": {
+  Line 1665  ADDED >>                         "target": {
+  Line 1666  ADDED >>                             "stun": {
+  Line 1667  ADDED >>                                 "turns": 1,
+  Line 1668  ADDED >>                                 "chance": 0.35
+  Line 1669  ADDED >>                             },
+  Line 1670  ADDED >>                             "slow": {
+  Line 1671  ADDED >>                                 "turns": 2,
+  Line 1672  ADDED >>                                 "amount": 0.25
+  Line 1673  ADDED >>                             },
+  Line 1674  ADDED >>                             "bleed": {
+  Line 1675  ADDED >>                                 "stacks": 2
+  Line 1676  ADDED >>                             },
+  Line 1677  ADDED >>                             "physical_exposure": {
+  Line 1678  ADDED >>                                 "turns": 2,
+  Line 1679  ADDED >>                                 "amount": 0.15
+  Line 1680  ADDED >>                             }
+  Line 1681  ADDED >>                         }
+  Line 1682  ADDED >>                     },
+
+[41:09:50] Change Detected: data\abilities.json
+  Line 1664  REMOVED >>                     "effects": {
+  Line 1664  REMOVED >>                         "target": {
+  Line 1664  REMOVED >>                             "stun": {
+  Line 1664  REMOVED >>                                 "turns": 1,
+  Line 1664  REMOVED >>                                 "chance": 0.35
+  Line 1664  REMOVED >>                             },
+  Line 1664  REMOVED >>                             "slow": {
+  Line 1664  REMOVED >>                                 "turns": 2,
+  Line 1664  REMOVED >>                                 "amount": 0.25
+  Line 1664  REMOVED >>                             },
+  Line 1664  REMOVED >>                             "bleed": {
+  Line 1664  REMOVED >>                                 "stacks": 2
+  Line 1664  REMOVED >>                             },
+  Line 1664  REMOVED >>                             "physical_exposure": {
+  Line 1664  REMOVED >>                                 "turns": 2,
+  Line 1664  REMOVED >>                                 "amount": 0.15
+  Line 1664  ADDED >>                         "effects": {
+  Line 1665  ADDED >>                             "target": {
+  Line 1666  ADDED >>                                 "stun": {
+  Line 1667  ADDED >>                                     "turns": 1,
+  Line 1668  ADDED >>                                     "chance": 0.35
+  Line 1669  ADDED >>                                 },
+  Line 1670  ADDED >>                                 "slow": {
+  Line 1671  ADDED >>                                     "turns": 2,
+  Line 1672  ADDED >>                                     "amount": 0.25
+  Line 1673  ADDED >>                                 },
+  Line 1674  ADDED >>                                 "bleed": {
+  Line 1675  ADDED >>                                     "stacks": 2
+  Line 1676  ADDED >>                                 },
+  Line 1677  ADDED >>                                 "physical_exposure": {
+  Line 1678  ADDED >>                                     "turns": 2,
+  Line 1679  ADDED >>                                     "amount": 0.15
+  Line 1680  ADDED >>                                 }
+  Line 1682  REMOVED >>                         }
+  Line 1682  ADDED >>                         },
+  Line 1683  ADDED >>                         "description": "Sweep all enemies off their feet.\n  - Cooldown: 4 Turns\n  - Deal 90 Damage + 60% of your base damage to all enemies.\n  - 35% Stun. 25% Slow, 15% Physical Exposure for 2 turns. 2 Bleed."
+  Line 1685  REMOVED >>                     "description": "Sweep all enemies off their feet.\n  - Cooldown: 4 Turns\n  - Deal 90 Damage + 60% of your base damage to all enemies.\n  - 35% Stun. 25% Slow, 15% Physical Exposure for 2 turns. 2 Bleed."
+  Line 1685  ADDED >>                     "90": {
+  Line 1686  ADDED >>                         "damage_base": 180, "damage_scaling": 85, "level": 90,
+  Line 1687  ADDED >>                     "effects": {"target": {"stun": {"turns": 1, "chance": 0.45}, "slow": {"turns": 3, "amount": 0.35}, "bleed": {"stacks": 3}, "physical_exposure": {"turns": 3, "amount": 0.25}}},
+  Line 1688  ADDED >>                     "description": "Sweep all enemies off their feet.\n  - Cooldown: 4 Turns\n  - Deal 180 Damage + 85% of your base damage to all enemies.\n  - 45% Stun. 35% Slow, 25% Physical Exposure for 3 turns. 3 Bleed."
+
+[41:10:42] Change Detected: data\abilities.json
+  Line 1686  REMOVED >>                         "damage_base": 180, "damage_scaling": 85, "level": 90,
+  Line 1686  REMOVED >>                     "effects": {"target": {"stun": {"turns": 1, "chance": 0.45}, "slow": {"turns": 3, "amount": 0.35}, "bleed": {"stacks": 3}, "physical_exposure": {"turns": 3, "amount": 0.25}}},
+  Line 1686  REMOVED >>                     "description": "Sweep all enemies off their feet.\n  - Cooldown: 4 Turns\n  - Deal 180 Damage + 85% of your base damage to all enemies.\n  - 45% Stun. 35% Slow, 25% Physical Exposure for 3 turns. 3 Bleed."
+  Line 1686  REMOVED >>                     }
+  Line 1686  ADDED >>                         "damage_base": 180,
+  Line 1687  ADDED >>                         "damage_scaling": 85,
+  Line 1688  ADDED >>                         "level": 90,
+  Line 1689  ADDED >>                         "effects": {
+  Line 1690  ADDED >>                             "target": {
+  Line 1691  ADDED >>                                 "stun": {
+  Line 1692  ADDED >>                                     "turns": 1, 
+  Line 1693  ADDED >>                                     "chance": 0.45
+  Line 1694  ADDED >>                                 },
+  Line 1695  ADDED >>                                 "slow": {
+  Line 1696  ADDED >>                                     "turns": 3, 
+  Line 1697  ADDED >>                                     "amount": 0.35
+  Line 1698  ADDED >>                                 },
+  Line 1699  ADDED >>                                 "bleed": {
+  Line 1700  ADDED >>                                     "stacks": 3
+  Line 1701  ADDED >>                                 },
+  Line 1702  ADDED >>                                 "physical_exposure": {
+  Line 1703  ADDED >>                                     "turns": 3,
+  Line 1704  ADDED >>                                     "amount": 0.25
+  Line 1705  ADDED >>                                     }
+  Line 1706  ADDED >>                                 }
+  Line 1707  ADDED >>                             },
+  Line 1708  ADDED >>                         "description": "Sweep all enemies off their feet.\n  - Cooldown: 4 Turns\n  - Deal 180 Damage + 85% of your base damage to all enemies.\n  - 45% Stun. 35% Slow, 25% Physical Exposure for 3 turns. 3 Bleed."
+  Line 1709  ADDED >>                         }
+
+[41:10:52] Change Detected: data\abilities.json
+  Line 1705  REMOVED >>                                     }
+  Line 1706  REMOVED >>                             },
+  Line 1706  ADDED >>                             }
+  Line 1707  ADDED >>                         },
+
+[41:10:57] Change Detected: data\abilities.json
+  Line 1709  REMOVED >>                         }
+  Line 1709  ADDED >>                     }
+
+[41:11:26] Change Detected: data\abilities.json
+  Line 1709  ADDED >>                     }
+  Line 1710  ADDED >>                 },
+  Line 1711  ADDED >>                 "variants": {
+  Line 1712  ADDED >>                     "Sweeping Kick of Focus": {
+  Line 1713  ADDED >>                         
+
+[42:06:27] Change Detected: data\abilities.json
+  Line 1713  REMOVED >>                         
+  Line 1713  ADDED >>                         "damage_base+": 60,
+  Line 1714  ADDED >>                         "damage_scaling+": 30,
+  Line 1715  ADDED >>                         "tags+": ["variant"],
+  Line 1716  ADDED >>                         "level": 65,
+  Line 1717  ADDED >>                         "cooldown+": 1,
+  Line 1718  ADDED >>                         "targets": 2,
+  Line 1719  ADDED >>                         "description+": "Sweeping Kick of Focus:\n  - Cooldown: +1 Turn. Only hits up to 2 targets.\n  - +60 Base Damage, +30% Damage Scaling."
+
+[42:06:36] Change Detected: data\abilities.json
+  Line 1722  ADDED >>             },
+  Line 1723  ADDED >>             "Flurry of Blows": {
+  Line 1724  ADDED >>                 
+
+[42:07:43] Change Detected: data\abilities.json
+  Line 1724  REMOVED >>                 
+  Line 1724  ADDED >>                 "name": "Flurry of Blows",
+  Line 1725  ADDED >>                 "category": "damage",
+  Line 1726  ADDED >>                 "tags": ["damage", "physical", "strike", "combo", "bleed", "dot", "daze", "debuff"],
+  Line 1727  ADDED >>             "damage_base": 40, "damage_scaling": 50, "damage_type": "physical",
+  Line 1728  ADDED >>             "level": 20, "cooldown": 3, "targets": 1,
+
+[42:07:50] Change Detected: data\abilities.json
+  Line 1727  REMOVED >>             "damage_base": 40, "damage_scaling": 50, "damage_type": "physical",
+  Line 1727  REMOVED >>             "level": 20, "cooldown": 3, "targets": 1,
+  Line 1727  ADDED >>                 "damage_base": 40, "damage_scaling": 50, "damage_type": "physical",
+  Line 1728  ADDED >>                 "level": 20, "cooldown": 3, "targets": 1,
+
+[42:08:06] Change Detected: data\abilities.json
+  Line 1727  REMOVED >>                 "damage_base": 40, "damage_scaling": 50, "damage_type": "physical",
+  Line 1727  REMOVED >>                 "level": 20, "cooldown": 3, "targets": 1,
+  Line 1727  ADDED >>                 "damage_base": 40,
+  Line 1728  ADDED >>                 "damage_scaling": 50,
+  Line 1729  ADDED >>                 "damage_type": "physical",
+  Line 1730  ADDED >>                 "level": 20,
+  Line 1731  ADDED >>                 "cooldown": 3,
+  Line 1732  ADDED >>                 "targets": 1,
+
+[42:09:52] Change Detected: data\abilities.json
+  Line 1733  ADDED >>                 "effects": {
+  Line 1734  ADDED >>                     "target": {
+  Line 1735  ADDED >>                         "bleed": {
+  Line 1736  ADDED >>                             "stacks": 2
+  Line 1737  ADDED >>                         },
+  Line 1738  ADDED >>                         "daze": {
+  Line 1739  ADDED >>                             "turns": 2,
+  Line 1740  ADDED >>                             "speed": -0.1,
+  Line 1741  ADDED >>                             "damage": 0.95
+  Line 1742  ADDED >>                         }
+  Line 1743  ADDED >>                     }
+  Line 1744  ADDED >>                 },
+  Line 1745  ADDED >>                 "description": "Unleash a rapid flurry of strikes upon your foe.\n  - Cooldown: 3 Turns\n  - Deal 40 Damage + 50% of your base damage.\n  - Apply 2 Bleed. Daze for 2 turns: -0.1 Speed, 5% less damage.",
+
+[42:12:04] Change Detected: data\abilities.json
+  Line 1746  ADDED >>                 "evolutions": {
+  Line 1747  ADDED >>                     "45": {
+  Line 1748  ADDED >>                         "damage_base": 85,
+  Line 1749  ADDED >>                         "damage_scaling": 75,
+  Line 1750  ADDED >>                         "level": 45,
+  Line 1751  ADDED >>                         "effects": {
+  Line 1752  ADDED >>                             "target": {
+  Line 1753  ADDED >>                                 "bleed": {
+  Line 1754  ADDED >>                                     "stacks": 3
+  Line 1755  ADDED >>                                 },
+  Line 1756  ADDED >>                                 "daze": {
+  Line 1757  ADDED >>                                     "turns": 2,
+  Line 1758  ADDED >>                                     "speed": -0.15,
+  Line 1759  ADDED >>                                     "damage": 0.9
+  Line 1760  ADDED >>                                 }
+  Line 1761  ADDED >>                             }
+  Line 1762  ADDED >>                         },
+  Line 1763  ADDED >>                         "description": "Unleash a rapid flurry of strikes upon your foe.\n  - Cooldown: 3 Turns\n  - Deal 85 Damage + 75% of your base damage.\n  - 3 Bleed. Daze: -0.15 Speed, 10% less damage for 2 turns."
+  Line 1764  ADDED >>                     }
+  Line 1765  ADDED >>                 }
+
+[42:28:24] Change Detected: data\abilities.json
+  Line 1764  ADDED >>                     },
+  Line 1765  ADDED >>                     "70": {
+  Line 1766  ADDED >>                         "damage_base": 140,
+  Line 1767  ADDED >>                         "damage_scaling": 100,
+  Line 1768  ADDED >>                         "level": 70,
+  Line 1769  ADDED >>                         "tags+": ["haste", "buff", "vulnerable", "onKill", "renegeration"],
+  Line 1770  ADDED >>                         "effects": {
+  Line 1771  ADDED >>                             "self": {
+  Line 1772  ADDED >>                                 "haste": {
+  Line 1773  ADDED >>                                     "turns": 2,
+  Line 1774  ADDED >>                                     "speed": 0.1,
+  Line 1775  ADDED >>                                     "damage": 1.1
+  Line 1776  ADDED >>                                 }
+  Line 1777  ADDED >>                             },
+  Line 1778  ADDED >>                             "target": {
+  Line 1779  ADDED >>                                 "bleed": {
+  Line 1780  ADDED >>                                     "stacks": 5
+  Line 1781  ADDED >>                                 },
+  Line 1782  ADDED >>                                 "daze": {
+  Line 1783  ADDED >>                                     "turns": 2,
+  Line 1784  ADDED >>                                     "speed": -0.2,
+  Line 1785  ADDED >>                                     "damage": 0.85
+  Line 1786  ADDED >>                                 },
+  Line 1787  ADDED >>                                 "vulnerable": {
+  Line 1788  ADDED >>                                     "turns": 2,
+  Line 1789  ADDED >>                                     "amount": 0.2
+  Line 1790  ADDED >>                                 }
+  Line 1791  ADDED >>                             },
+  Line 1792  ADDED >>                             "onKill"
+  Line 1793  ADDED >>                         }
+
+[42:31:44] Change Detected: data\abilities.json
+  Line 1792  REMOVED >>                             "onKill"
+  Line 1792  ADDED >>                             "onKill": {
+  Line 1793  ADDED >>                                 
+  Line 1794  ADDED >>                             }
+
+[42:32:28] Change Detected: data\abilities.json
+  Line 1793  REMOVED >>                                 
+  Line 1793  ADDED >>                                 "regeneration": {
+  Line 1794  ADDED >>                                     "turns": 3,
+  Line 1795  ADDED >>                                     "amount_flat": 0,
+  Line 1796  ADDED >>                                     "amount_percent": 2
+  Line 1797  ADDED >>                                 }
+  Line 1799  REMOVED >>                         }
+  Line 1799  ADDED >>                         },
+  Line 1800  ADDED >>                         "description": "Unleash a rapid flurry of strikes upon your foe.\n  - Cooldown: 3 Turns\n  - Deal 140 Damage + 100% of your base damage.\n  - Haste: +0.1 Speed, +10% Damage for 2 turns.\n  - 5 Bleed. Daze: -0.2 Speed, 15% less damage. 20% Vulnerable for 2 turns.\n  - On Kill: Regen 2% Max HP for 3 turns."
+
+[42:35:44] Change Detected: data\abilities.json
+  Line 1801  ADDED >>                     },
+  Line 1802  ADDED >>                     "95": {
+  Line 1803  ADDED >>                         "damage_base": 200,
+  Line 1804  ADDED >>                         "damage_scaling": 130,
+  Line 1805  ADDED >>                         "level": 95,
+  Line 1806  ADDED >>                         "tags+": ["weaken"],
+  Line 1807  ADDED >>                         "effects": {
+  Line 1808  ADDED >>                             "self": {
+  Line 1809  ADDED >>                                 "haste": {
+  Line 1810  ADDED >>                                     "turns": 3,
+  Line 1811  ADDED >>                                     "speed": 0.2,
+  Line 1812  ADDED >>                                     "damage": 1.2
+  Line 1813  ADDED >>                                 }
+  Line 1814  ADDED >>                             },
+  Line 1815  ADDED >>                             "target": {
+  Line 1816  ADDED >>                                 "bleed": {
+  Line 1817  ADDED >>                                     "stacks": 7
+  Line 1818  ADDED >>                                 },
+  Line 1819  ADDED >>                                 "daze": {
+  Line 1820  ADDED >>                                     "turns": 3,
+  Line 1821  ADDED >>                                     "speed": -0.3,
+  Line 1822  ADDED >>                                     "damage": 0.8
+  Line 1823  ADDED >>                                 },
+  Line 1824  ADDED >>                                 "vulnerable": {
+  Line 1825  ADDED >>                                     "turns": 3,
+  Line 1826  ADDED >>                                     "amount": 0.3
+  Line 1827  ADDED >>                                 },
+  Line 1828  ADDED >>                                 "weaken": {
+  Line 1829  ADDED >>                                     "turns": 2,
+  Line 1830  ADDED >>                                     "amount": 0.2
+  Line 1831  ADDED >>                                 }
+  Line 1832  ADDED >>                             },
+  Line 1833  ADDED >>                             "onKill": {
+  Line 1834  ADDED >>                                 "regeneration": {
+  Line 1835  ADDED >>                                     "turns": 3,
+  Line 1836  ADDED >>                                     "amount_flat": 0,
+  Line 1837  ADDED >>                                     "amount_percent": 4
+  Line 1838  ADDED >>                                 }
+  Line 1839  ADDED >>                             }
+  Line 1840  ADDED >>                         },
+  Line 1841  ADDED >>                         "description"
+
+[42:39:01] Change Detected: data\abilities.json
+  Line 1841  REMOVED >>                         "description"
+  Line 1841  ADDED >>                         "description": "Unleash a rapid flurry of strikes upon your foe.\n  - Cooldown: 3 Turns\n  - Deal 200 Damage + 130% of your base damage.\n  - Haste: +0.2 Speed, +20% Damage for 3 turns.\n  - 7 Bleed. Daze: -0.3 Speed, 20% less damage. 30% Vulnerable, 20% Weaken for 2-3 turns.\n  - On Kill: Regen 4% Max HP for 3 turns."
+
+[42:40:33] Change Detected: data\abilities.json
+  Line 1864  REMOVED >> 
+  Line 1864  ADDED >>             "Arcane Bolt": {
+  Line 1865  ADDED >>                 "name": "Arcane Bolt",
+  Line 1866  ADDED >>                 "category": "damage",
+  Line 1867  ADDED >>                 "tags": ["damage", "arcane", "magic", "mana", "elemental"],
+  Line 1868  ADDED >>                 "damage_base": 10,
+  Line 1869  ADDED >>                 "damage_scaling": 40
+  Line 1870  ADDED >>             }
+
+[42:40:48] Change Detected: data\abilities.json
+  Line 1869  REMOVED >>                 "damage_scaling": 40
+  Line 1869  ADDED >>                 "damage_scaling": 40,
+  Line 1870  ADDED >>                 
+
+[42:41:34] Change Detected: data\abilities.json
+  Line 1870  REMOVED >>                 
+  Line 1870  ADDED >>                 "damage_type": "arcane",
+  Line 1871  ADDED >>                 "level": 1,
+  Line 1872  ADDED >>                 "cooldown": 2,
+  Line 1873  ADDED >>                 "targets": 1,
+  Line 1874  ADDED >>                 "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 10 Damage + 40% of your base damage.",
+
+[42:43:17] Change Detected: data\abilities.json
+  Line 1875  ADDED >>                 "evolutions": {
+  Line 1876  ADDED >>                     "25": {
+  Line 1877  ADDED >>                         "damage_base": 40,
+  Line 1878  ADDED >>                         "damage_scaling": 65,
+  Line 1879  ADDED >>                         "level": 25,
+  Line 1880  ADDED >>                         "tags+": ["divine_exposure"],
+  Line 1881  ADDED >>                         "effects": {
+  Line 1882  ADDED >>                             "target": {
+  Line 1883  ADDED >>                                 "divine_exposure": {
+  Line 1884  ADDED >>                                     "turns": 2,
+  Line 1885  ADDED >>                                     "amount": 10
+  Line 1886  ADDED >>                                 }
+  Line 1887  ADDED >>                             }
+  Line 1888  ADDED >>                         },
+  Line 1889  ADDED >>                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 40 Damage + 65% of your base damage.\n  - Apply 10% Elemental Exposure for 2 turns."
+  Line 1890  ADDED >>                     }
+  Line 1891  ADDED >>                 }
+
+[42:43:53] Change Detected: data\abilities.json
+  Line 1889  REMOVED >>                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 40 Damage + 65% of your base damage.\n  - Apply 10% Elemental Exposure for 2 turns."
+  Line 1889  ADDED >>                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 40 Damage + 65% of your base damage.\n  - Apply 10% Dvine Exposure for 2 turns."
+  Line 1890  ADDED >>                     },
+  Line 1891  ADDED >>                     "50": {
+  Line 1892  ADDED >>                         "damage_base": 100,
+  Line 1893  ADDED >>                         "damage_scaling": 90,
+  Line 1894  ADDED >>                         "level": 50,
+  Line 1895  ADDED >>                         "tags+": ["vulnerable"],
+  Line 1896  ADDED >>                         "effects": {
+  Line 1897  ADDED >>                             "target": {
+  Line 1898  ADDED >>                                 "divine_exposure": {
+  Line 1899  ADDED >>                                     "turns": 2,
+  Line 1900  ADDED >>                                     "amount": 20
+  Line 1901  ADDED >>                                 }
+  Line 1902  ADDED >>                             }
+  Line 1903  ADDED >>                         }
+
+[42:44:35] Change Detected: data\abilities.json
+  Line 1901  ADDED >>                                 },
+  Line 1902  ADDED >>                                 "vulnerable": {
+  Line 1903  ADDED >>                                     "turns": 2,
+  Line 1904  ADDED >>                                     "amount": 0.2
+  Line 1907  REMOVED >>                         }
+  Line 1907  ADDED >>                         },
+  Line 1908  ADDED >>                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 100 Damage + 90% of your base damage.\n  - 20% Elemental Exposure and 20% Vulnerable for 2 turns."
+
+[42:46:00] Change Detected: data\abilities.json
+  Line 1908  REMOVED >>                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 100 Damage + 90% of your base damage.\n  - 20% Elemental Exposure and 20% Vulnerable for 2 turns."
+  Line 1908  ADDED >>                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 100 Damage + 90% of your base damage.\n  - 20% Divine Exposure and 20% Vulnerable for 2 turns."
+  Line 1909  ADDED >>                     },
+  Line 1910  ADDED >>                     "75": {
+  Line 1911  ADDED >>                         "damage_base": 240,
+  Line 1912  ADDED >>                         "damage_scaling": 145,
+  Line 1913  ADDED >>                         "level": 75,
+  Line 1914  ADDED >>                         "tags+": ["weaken"],
+  Line 1915  ADDED >>                         "effects": {
+  Line 1916  ADDED >>                             "target": {
+  Line 1917  ADDED >>                                 "divine_exposure": {
+  Line 1918  ADDED >>                                     "turns": 3,
+  Line 1919  ADDED >>                                     "amount": 30
+  Line 1920  ADDED >>                                 },
+  Line 1921  ADDED >>                                 "vulnerable": {
+  Line 1922  ADDED >>                                     "turns": 2,
+  Line 1923  ADDED >>                                     "amount": 0.3
+  Line 1924  ADDED >>                                 },
+  Line 1925  ADDED >>                                 "weaken": {
+  Line 1926  ADDED >>                                     "turns": 2,
+  Line 1927  ADDED >>                                     "amount": 0.2
+  Line 1928  ADDED >>                                 }
+  Line 1929  ADDED >>                             }
+  Line 1930  ADDED >>                         }
+
+[42:46:15] Change Detected: data\abilities.json
+  Line 1930  REMOVED >>                         }
+  Line 1930  ADDED >>                         },
+  Line 1931  ADDED >>                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 240 Damage + 145% of your base damage.\n  - 30% Elemental Exposure, 30% Vulnerable and 20% Weaken for 2-3 turns."
+
+[42:47:25] Change Detected: data\abilities.json
+  Line 1871  ADDED >>                 "resources": {
+  Line 1872  ADDED >>                     "cost": {
+  Line 1873  ADDED >>                         "mana": {"amount": 20}
+  Line 1874  ADDED >>                     }
+  Line 1875  ADDED >>                 },
+  Line 1937  ADDED >>                     }
+  Line 1938  ADDED >>                 },
+  Line 1939  ADDED >>                 "variants": {
+  Line 1940  ADDED >>                     "Arcane Bolt of Siphoning": {
+  Line 1941  ADDED >>                         "damage_base+": 20,
+  Line 1942  ADDED >>                         "damage_scaling+": 15,
+  Line 1943  ADDED >>                         "tags+": ["variant", "mana"]
+
+[42:48:28] Change Detected: data\abilities.json
+  Line 1943  REMOVED >>                         "tags+": ["variant", "mana"]
+  Line 1943  ADDED >>                         "tags+": ["variant", "mana"],
+  Line 1944  ADDED >>                         "level": 50,
+  Line 1945  ADDED >>                         "cooldown+": 1,
+  Line 1946  ADDED >>                         "resources+": {
+  Line 1947  ADDED >>                             "gain": {"mana": 10}
+  Line 1948  ADDED >>                         }
+
+[42:48:50] Change Detected: data\abilities.json
+  Line 1948  REMOVED >>                         }
+  Line 1948  ADDED >>                         },
+  Line 1949  ADDED >>                         "description+": "Arcane Bolt of Siphoning:\n  - Cooldown: +1 Turn.\n  - +20 Base Damage, +15% Damage Scaling.\n  - Restore 15 Mana on hit."
+
+[42:48:51] Change Detected: data\abilities.json
+  Line 1949  REMOVED >>                         "description+": "Arcane Bolt of Siphoning:\n  - Cooldown: +1 Turn.\n  - +20 Base Damage, +15% Damage Scaling.\n  - Restore 15 Mana on hit."
+  Line 1949  ADDED >>                         "description+": "Arcane Bolt of Siphoning:\n  - Cooldown: +1 Turn.\n  - +20 Base Damage, +15% Damage Scaling.\n  - Restore 1- Mana on hit."
+
+[42:48:52] Change Detected: data\abilities.json
+  Line 1949  REMOVED >>                         "description+": "Arcane Bolt of Siphoning:\n  - Cooldown: +1 Turn.\n  - +20 Base Damage, +15% Damage Scaling.\n  - Restore 1- Mana on hit."
+  Line 1949  ADDED >>                         "description+": "Arcane Bolt of Siphoning:\n  - Cooldown: +1 Turn.\n  - +20 Base Damage, +15% Damage Scaling.\n  - Restore 10 Mana on hit."
+
+[42:49:05] Change Detected: data\abilities.json
+  Line 1952  ADDED >>             },
+  Line 1953  ADDED >>             "Mana Shield": {
+  Line 1954  ADDED >>                 
+
+[42:49:50] Change Detected: data\abilities.json
+  Line   11  REMOVED >>                 "resources": {},
+  Line   11  ADDED >>                 "resources": {
+  Line   12  ADDED >>                     "cost": {
+  Line   13  ADDED >>                         "stamina": {"amount": 15}
+  Line   14  ADDED >>                     }
+  Line   15  ADDED >>                 },
+  Line 1958  REMOVED >>                 
+  Line 1958  ADDED >> 
+
+[42:50:30] Change Detected: data\abilities.json
+  Line   32  ADDED >>                         "resources": {
+  Line   33  ADDED >>                             "cost": {
+  Line   34  ADDED >>                                 "stamina": {"amount": 35}
+  Line   35  ADDED >>                             }
+  Line   36  ADDED >>                         },
+  Line   55  ADDED >>                         "resources": {
+  Line   56  ADDED >>                             "cost": {
+  Line   57  ADDED >>                                 "stamina": {"amount": 60}
+  Line   58  ADDED >>                             }
+  Line   59  ADDED >>                         },
+  Line   89  ADDED >>                         "resources": {
+  Line   90  ADDED >>                             "cost": {
+  Line   91  ADDED >>                                 "stamina": {"amount": 110}
+  Line   92  ADDED >>                             }
+  Line   93  ADDED >>                         },
+
+[42:57:18] Change Detected: data\abilities.json
+  Line   89  REMOVED >>                         "resources": {
+  Line   89  REMOVED >>                             "cost": {
+  Line   89  REMOVED >>                                 "stamina": {"amount": 110}
+  Line   89  REMOVED >>                             }
+  Line   89  REMOVED >>                         },
+  Line   89  ADDED >>                         "stamina_cost": 110,
+
+[42:57:28] Change Detected: data\abilities.json
+  Line   55  REMOVED >>                         "resources": {
+  Line   55  REMOVED >>                             "cost": {
+  Line   55  REMOVED >>                                 "stamina": {"amount": 60}
+  Line   55  REMOVED >>                             }
+  Line   55  REMOVED >>                         },
+  Line   55  ADDED >>                         "stamina_cost": 60,
+
+[42:57:44] Change Detected: data\abilities.json
+  Line   32  REMOVED >>                         "resources": {
+  Line   32  REMOVED >>                             "cost": {
+  Line   32  REMOVED >>                                 "stamina": {"amount": 35}
+  Line   32  REMOVED >>                             }
+  Line   32  REMOVED >>                         },
+  Line   32  ADDED >>                         "stamina_cost": 40,
+
+[42:57:47] Change Detected: data\abilities.json
+  Line   32  REMOVED >>                         "stamina_cost": 40,
+  Line   32  ADDED >>                         "stamina_cost": 35,
+
+[42:58:08] Change Detected: data\abilities.json
+  Line   11  REMOVED >>                 "resources": {
+  Line   11  REMOVED >>                     "cost": {
+  Line   11  REMOVED >>                         "stamina": {"amount": 15}
+  Line   11  REMOVED >>                     }
+  Line   11  REMOVED >>                 },
+  Line   11  ADDED >>                 "stamina_cost": 15,
+
+[42:58:49] Change Detected: data\abilities.json
+  Line  115  ADDED >>                 "stamina_cost": 20,
+
+[42:59:02] Change Detected: data\abilities.json
+  Line  141  ADDED >>                         "stamina_cost": 60,
+
+[43:05:48] Change Detected: data\abilities.json
+  Line  164  ADDED >>                         "stamina_cost": 95,
+
+[43:05:58] Change Detected: data\abilities.json
+  Line  197  ADDED >>                         "stamina_cost": 150,
+
+[43:06:25] Change Detected: data\abilities.json
+  Line  234  ADDED >>                         "stamina_cost+": 25,
+
+[59:24:30] Change Detected: data\abilities.json
+  Line 1962  REMOVED >> 
+  Line 1962  ADDED >>                 "name": "Mana Shield",
+  Line 1963  ADDED >>                 "category": "buff",
+  Line 1964  ADDED >>                 "tags": ["buff", "mana", "shield", "stoneskin", "arcane"],
+  Line 1965  ADDED >>                 "heal_base": 0,
+  Line 1966  ADDED >>                 "heal_percent": 0,
+  Line 1967  ADDED >>                 "resources": {
+  Line 1968  ADDED >>                     "required": {
+  Line 1969  ADDED >>                         "mana": {"amount": 20}
+  Line 1970  ADDED >>                     }
+  Line 1971  ADDED >>                 }
+
+[59:24:33] Change Detected: data\abilities.json
+  Line 1969  REMOVED >>                         "mana": {"amount": 20}
+  Line 1969  ADDED >>                         "mana": {"amount": 15}
+
+[59:25:12] Change Detected: data\abilities.json
+  Line  267  ADDED >>                 "stamina_cost": 30,
+
+[59:25:27] Change Detected: data\abilities.json
+  Line  291  ADDED >>                         "stamina_cost": 65,
+
+[59:25:37] Change Detected: data\abilities.json
+  Line  316  ADDED >>                         "stamina_cost": 110,
+
+[59:25:52] Change Detected: data\abilities.json
+  Line  349  ADDED >>                         "stamina_cost": 240,
+
+[59:26:09] Change Detected: data\abilities.json
+  Line  395  ADDED >>                 "stamina_cost": 35,
+
+[59:26:27] Change Detected: data\abilities.json
+  Line  415  ADDED >>                         "stamina_cost": 70,
+
+[59:28:42] Change Detected: data\abilities.json
+  Line  437  ADDED >>                         "stamina_cost": 140,
+
+[59:28:59] Change Detected: data\abilities.json
+  Line  466  ADDED >>                         "stamina_cost": 260,
+
+[59:29:29] Change Detected: data\abilities.json
+  Line  525  ADDED >>                 "stamina_cost": 50,
+
+[59:29:44] Change Detected: data\abilities.json
+  Line  498  ADDED >>                         "stamina_cost+": 30,
+
+[59:30:19] Change Detected: data\abilities.json
+  Line  547  ADDED >>                         "stamina_cost": 70,
+
+[59:31:10] Change Detected: data\abilities.json
+  Line  570  ADDED >>                         "stamina_cost": 155,
+
+[59:31:17] Change Detected: data\abilities.json
+  Line  605  ADDED >>                         "stamina_cost": 290,
+
+[59:31:51] Change Detected: data\abilities.json
+  Line  646  ADDED >>                         "stamina_cost+": 20,
+
+[59:31:57] Change Detected: data\abilities.json
+  Line  646  REMOVED >>                         "stamina_cost+": 20,
+  Line  646  ADDED >>                         "stamina_cost+": -5,
+
+[59:32:00] Change Detected: data\abilities.json
+  Line  646  REMOVED >>                         "stamina_cost+": -5,
+  Line  646  ADDED >>                         "stamina_cost+": -10,
+
+[59:32:33] Change Detected: data\abilities.json
+  Line  698  ADDED >>                 "stamina_cost": 15,
+
+[59:32:42] Change Detected: data\abilities.json
+  Line  721  ADDED >>                         "stamina_cost": 45,
+
+[59:32:50] Change Detected: data\abilities.json
+  Line  743  ADDED >>                         "stamina_cost": 75,
+
+[59:32:56] Change Detected: data\abilities.json
+  Line  775  ADDED >>                         "stamina_cost": 120,
+
+[59:33:13] Change Detected: data\abilities.json
+  Line  817  ADDED >>                         "stamina_cost+": 30,
+
+[59:33:40] Change Detected: data\abilities.json
+  Line  846  ADDED >>                 "stamina_cost": 35,
+
+[59:33:47] Change Detected: data\abilities.json
+  Line  877  ADDED >>                         "stamina_cost": 80,
+
+[59:34:02] Change Detected: data\abilities.json
+  Line  904  ADDED >>                         "stamina_cost": 125,
+
+[59:34:10] Change Detected: data\abilities.json
+  Line  936  ADDED >>                         "stamina_cost": 200,
+
+[59:34:23] Change Detected: data\abilities.json
+  Line  969  ADDED >>                         "stamina_cost+": 20,
+
+[59:34:24] Change Detected: data\abilities.json
+  Line  969  REMOVED >>                         "stamina_cost+": 20,
+  Line  969  ADDED >>                         "stamina_cost+": 50,
+
+[59:34:39] Change Detected: data\abilities.json
+  Line  992  ADDED >>                 "stamina_cost": 40,
+
+[59:35:41] Change Detected: data\abilities.json
+  Line 1019  ADDED >>                         "stamina_cost": 70,
+
+[59:35:47] Change Detected: data\abilities.json
+  Line 1044  ADDED >>                         "stamina_cost": 130,
+
+[59:35:52] Change Detected: data\abilities.json
+  Line 1073  ADDED >>                         "stamina_cost": 220,
+
+[59:35:59] Change Detected: data\abilities.json
+  Line 1104  REMOVED >>                 "variants": {
+  Line 1104  REMOVED >> 
+  Line 1104  REMOVED >>                 }
+  Line 1104  ADDED >>                 "variants": {}
+
+[59:36:20] Change Detected: data\abilities.json
+  Line 1113  ADDED >>                 "stamina_cost": 50,
+
+[59:36:59] Change Detected: data\abilities.json
+  Line 1134  ADDED >>                         "stamina_cost": 80,
+
+[59:37:05] Change Detected: data\abilities.json
+  Line 1160  ADDED >>                         "stamina_cost": 155,
+
+[59:37:13] Change Detected: data\abilities.json
+  Line 1189  ADDED >>                         "stamina_cost": 210,
+
+[59:37:17] Change Detected: data\abilities.json
+  Line 1189  REMOVED >>                         "stamina_cost": 210,
+  Line 1189  ADDED >>                         "stamina_cost": 265,
+
+[59:37:33] Change Detected: data\abilities.json
+  Line 1218  ADDED >>                         "stamina_cost+": 30,
+
+[59:38:03] Change Detected: data\abilities.json
+  Line 1233  ADDED >>                 "stamina_cost": 60,
+
+[59:38:27] Change Detected: data\abilities.json
+  Line 1254  ADDED >>                         "stamina_cost": 100,
+
+[59:38:34] Change Detected: data\abilities.json
+  Line 1274  ADDED >>                         "stamina_cost": 190,
+
+[59:38:43] Change Detected: data\abilities.json
+  Line 1307  ADDED >>                         "stamina_cost": 295,
+
+[59:40:24] Change Detected: data\abilities.json
+  Line 1365  ADDED >>                 "stamina_cost": 20,
+  Line 1374  REMOVED >>                         "level": 25,
+  Line 1375  ADDED >>                         "stamina_cost": 90,
+  Line 1376  ADDED >>                         "level": 25,
+  Line 1390  REMOVED >>                         "level": 50,
+  Line 1391  ADDED >>                         "stamina_cost": 160,
+  Line 1392  ADDED >>                         "level": 50,
+
+[59:40:48] Change Detected: data\abilities.json
+  Line 1410  REMOVED >>                         "level": 75,
+  Line 1411  ADDED >>                         "stamina_cost": 255,
+  Line 1412  ADDED >>                         "level": 75,
+
+[59:42:58] Change Detected: data\abilities.json
+  Line 1440  ADDED >>                 "stamina_cost": 35,
+  Line 1465  ADDED >>                         "stamina_cost": 90,
+  Line 1491  ADDED >>                         "stamina_cost": 150,
+  Line 1517  ADDED >>                         "stamina_cost": 210,
+
+[59:45:15] Change Detected: data\abilities.json
+  Line 1548  ADDED >>                 "stamina_cost": 50,
+  Line 1572  ADDED >>                         "stamina_cost": 115,
+  Line 1597  ADDED >>                         "stamina_cost": 
+
+[59:45:19] Change Detected: data\abilities.json
+  Line 1597  REMOVED >>                         "stamina_cost": 
+  Line 1597  ADDED >>                         "stamina_cost": 190,
+
+[59:45:32] Change Detected: data\abilities.json
+  Line 1631  ADDED >>                         "stamina_cost": 270,
+
+[59:47:35] Change Detected: data\abilities.json
+  Line 1675  ADDED >>                 "stamina_cost": 45,
+  Line 1694  ADDED >>                         "stamina_cost": 85,
+  Line 1721  ADDED >>                         "stamina_cost": 160,
+  Line 1747  ADDED >>                         "stamina_cost": 285,
+  Line 1775  ADDED >>                         "stamina_cost+": 15,
+
+[40:39:08] Change Detected: data\abilities.json
+  Line 1790  ADDED >>                 "stamina_cost": 40,
+  Line 1812  ADDED >>                         "stamina_cost": 85,
+
+[40:39:19] Change Detected: data\abilities.json
+  Line 1831  ADDED >>                         "stamina_cost": 150,
+
+[40:39:31] Change Detected: data\abilities.json
+  Line 1869  ADDED >>                         "stamina_cost": 230,
+
+[40:40:00] Change Detected: data\abilities.json
+  Line 1935  ADDED >>                 "stamina_cost": 15,
+  Line 2024  ADDED >>                 "stamina_cost": 30,
+
+[40:40:33] Change Detected: data\abilities.json
+  Line 1950  ADDED >>                         "stamina_cost": 40,
+  Line 1951  ADDED >>                         "resources": {
+  Line 1952  ADDED >>                             "cost": {
+  Line 1953  ADDED >>                                 "mana": {"amount": 40}
+  Line 1954  ADDED >>                             }
+  Line 1955  ADDED >>                         },
+
+[40:40:58] Change Detected: data\abilities.json
+  Line 1971  ADDED >>                         "stamina_cost": 85,
+  Line 1972  ADDED >>                         "resources": {
+  Line 1973  ADDED >>                             "cost": {
+  Line 1974  ADDED >>                                 "mana": {"amount": 70}
+  Line 1975  ADDED >>                             }
+  Line 1976  ADDED >>                         }
+
+[40:41:32] Change Detected: data\abilities.json
+  Line 1996  ADDED >>                         "stamina_cost": 150,
+  Line 1997  ADDED >>                         "resources": {
+  Line 1998  ADDED >>                             "cost": {
+  Line 1999  ADDED >>                                 "mana": {}
+  Line 2000  ADDED >>                             }
+  Line 2001  ADDED >>                         }
+  Line 2044  REMOVED >>                     "required": {
+  Line 2044  ADDED >>                     "cost": {
+
+[40:41:48] Change Detected: data\abilities.json
+  Line 1999  REMOVED >>                                 "mana": {}
+  Line 1999  ADDED >>                                 "mana": {"amount": 105}
+
+[40:41:50] Change Detected: data\abilities.json
+  Line 2001  REMOVED >>                         }
+  Line 2001  ADDED >>                         },
+
+[40:41:54] Change Detected: data\abilities.json
+  Line 1976  REMOVED >>                         }
+  Line 1976  ADDED >>                         },
+
+[40:42:28] Change Detected: data\abilities.json
+  Line 2027  ADDED >>                         "stamina_cost+": 15,
+
+[40:43:29] Change Detected: data\abilities.json
+  Line 2047  ADDED >>                     }
+  Line 2048  ADDED >>                 },
+  Line 2049  ADDED >>                 "effects": {
+  Line 2050  ADDED >>                     "self": {
+  Line 2051  ADDED >>                         "shield_generation": {
+  Line 2052  ADDED >>                             "turns": 2,
+  Line 2053  ADDED >>                             "amount_percent": 0.1
+  Line 2054  ADDED >>                         }
+
+[40:43:50] Change Detected: data\abilities.json
+  Line 2052  ADDED >>                             "turns": 3,
+  Line 2053  ADDED >>                             "amount_percent": 0.05
+  Line 2054  ADDED >>                         },
+  Line 2055  ADDED >>                         "stoneskin": {
+  Line 2057  REMOVED >>                             "amount_percent": 0.1
+  Line 2057  ADDED >>                             "amount": 0.05
+
+[40:44:37] Change Detected: data\abilities.json
+  Line 2059  ADDED >>                     }
+  Line 2060  ADDED >>                 },
+  Line 2061  ADDED >>                 "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 15 Mana.\n  - Gain Shield equal to 5% Max HP for 3 turns.\n  - 5% Damage Reduction for 2 turns.",
+  Line 2062  ADDED >>                 "evolutions": {
+  Line 2063  ADDED >>                     "30": {
+  Line 2064  ADDED >> 
+  Line 2065  ADDED >>                     },
+  Line 2066  ADDED >>                     "55": {
+  Line 2067  ADDED >> 
+  Line 2068  ADDED >>                     },
+  Line 2069  ADDED >>                     "80": {
+  Line 2070  ADDED >>                         
+
+[40:46:30] Change Detected: data\abilities.json
+  Line 2064  REMOVED >> 
+  Line 2064  ADDED >>                         "level": 30,
+  Line 2065  ADDED >>                         "resources": {
+  Line 2066  ADDED >>                             "cost": {
+  Line 2067  ADDED >>                                 "mana": {"amount": 30}
+  Line 2068  ADDED >>                             }
+  Line 2069  ADDED >>                         },
+  Line 2070  ADDED >>                         "tags+": ["renegeration"],
+  Line 2071  ADDED >>                         "effects": {
+  Line 2072  ADDED >>                             "self": {
+  Line 2073  ADDED >>                                 "shield_generation": {
+  Line 2074  ADDED >>                                     "turns": 3,
+  Line 2075  ADDED >>                                     "amount_percent": 0.9
+  Line 2076  ADDED >>                                 },
+  Line 2077  ADDED >>                                 "stoneskin": {
+  Line 2078  ADDED >>                                     "turns": 2,
+  Line 2079  ADDED >>                                     "amount": 0.1
+  Line 2080  ADDED >>                                 },
+  Line 2081  ADDED >>                                 "regeneration": {
+  Line 2082  ADDED >>                                     "turns": 2,
+  Line 2083  ADDED >>                                     "amount_flat": 15,
+  Line 2084  ADDED >>                                     "amount_percent": 1
+  Line 2085  ADDED >>                                 }
+  Line 2086  ADDED >>                             }
+  Line 2087  ADDED >>                         },
+  Line 2088  ADDED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 20 Mana.\n  - 15% Max HP as Shield. 10% Damage Reduction for 2 turns.\n  - 15 HP + 1% Max HP Regen for 2 turns."
+  Line 2094  REMOVED >>                         
+  Line 2094  ADDED >> 
+
+[40:46:33] Change Detected: data\abilities.json
+  Line 2088  REMOVED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 20 Mana.\n  - 15% Max HP as Shield. 10% Damage Reduction for 2 turns.\n  - 15 HP + 1% Max HP Regen for 2 turns."
+  Line 2088  ADDED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 20 Mana.\n  - 9% Max HP as Shield. 10% Damage Reduction for 2 turns.\n  - 15 HP + 1% Max HP Regen for 2 turns."
+
+[40:46:46] Change Detected: data\abilities.json
+  Line 2088  REMOVED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 20 Mana.\n  - 9% Max HP as Shield. 10% Damage Reduction for 2 turns.\n  - 15 HP + 1% Max HP Regen for 2 turns."
+  Line 2088  ADDED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 30 Mana.\n  - 9% Max HP as Shield. 10% Damage Reduction for 2 turns.\n  - 15 HP + 1% Max HP Regen for 2 turns."
+
+[40:48:36] Change Detected: data\abilities.json
+  Line 2091  REMOVED >> 
+  Line 2091  ADDED >>                         "level": 55,
+  Line 2092  ADDED >>                         "resources": {
+  Line 2093  ADDED >>                             "cost": {
+  Line 2094  ADDED >>                                 "mana": {"amount": 50}
+  Line 2095  ADDED >>                             }
+  Line 2096  ADDED >>                         },
+  Line 2097  ADDED >>                         "tags+": ["speed"],
+  Line 2098  ADDED >>                         "effects": {
+  Line 2099  ADDED >>                             "self": {
+  Line 2100  ADDED >>                                 "shield_generation": {
+  Line 2101  ADDED >>                                     "turns": 3,
+  Line 2102  ADDED >>                                     "amount_percent": 0.15
+  Line 2103  ADDED >>                                 },
+  Line 2104  ADDED >>                                 "stoneskin": {
+  Line 2105  ADDED >>                                     "turns": 3,
+  Line 2106  ADDED >>                                     "amount": 0.12
+  Line 2107  ADDED >>                                 },
+  Line 2108  ADDED >>                                 "regeneration": {
+  Line 2109  ADDED >>                                     "turns": 2,
+  Line 2110  ADDED >>                                     "amount_flat": 30,
+  Line 2111  ADDED >>                                     "amount_percent": 2
+  Line 2112  ADDED >>                                 },
+  Line 2113  ADDED >>                                 "speed": {
+  Line 2114  ADDED >>                                     "turns": 2,
+  Line 2115  ADDED >>                                     "amount": 0.15
+  Line 2116  ADDED >>                                 }
+  Line 2117  ADDED >>                             }
+  Line 2118  ADDED >>                         },
+  Line 2119  ADDED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 25 Mana.\n  - 20% Max HP as Shield. 12% Damage Reduction, 30 HP + 2% Max HP Regen for 3 turns.\n  - +0.15 Speed for 2 turns.
+
+[40:48:45] Change Detected: data\abilities.json
+  Line 2119  REMOVED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 25 Mana.\n  - 20% Max HP as Shield. 12% Damage Reduction, 30 HP + 2% Max HP Regen for 3 turns.\n  - +0.15 Speed for 2 turns.
+  Line 2119  ADDED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 25 Mana.\n  - 20% Max HP as Shield. 12% Damage Reduction, 30 HP + 2% Max HP Regen for 3 turns.\n  - +0.15 Speed for 2 turns."
+
+[40:51:00] Change Detected: data\abilities.json
+  Line 2122  REMOVED >> 
+  Line 2122  ADDED >>                         "level": 80,
+  Line 2123  ADDED >>                         "resources": {
+  Line 2124  ADDED >>                             "cost": {
+  Line 2125  ADDED >>                                 "mana": {"amount": 85}
+  Line 2126  ADDED >>                             },
+  Line 2127  ADDED >>                             "gain": {
+  Line 2128  ADDED >>                                 "energy_shield": 50
+  Line 2129  ADDED >>                             }
+  Line 2130  ADDED >>                         },
+  Line 2131  ADDED >>                         "tags+": ["energy_shield", "haste"],
+  Line 2132  ADDED >>                         "effects": {
+  Line 2133  ADDED >>                             "self": {
+  Line 2134  ADDED >>                                 "shield_generation": {
+  Line 2135  ADDED >>                                     "turns": 3,
+  Line 2136  ADDED >>                                     "amount_percent": 0.2
+  Line 2137  ADDED >>                                 },
+  Line 2138  ADDED >>                                 "stoneskin": {
+  Line 2139  ADDED >>                                     "turns": 3,
+  Line 2140  ADDED >>                                     "amount": 0.15
+  Line 2141  ADDED >>                                 },
+  Line 2142  ADDED >>                                 "regeneration": {
+  Line 2143  ADDED >>                                     "turns": 3,
+  Line 2144  ADDED >>                                     "amount_flat": 50,
+  Line 2145  ADDED >>                                     "amount_percent": 3
+  Line 2146  ADDED >>                                 },
+  Line 2147  ADDED >>                                 "haste": {
+  Line 2148  ADDED >>                                     "turns": 2,
+  Line 2149  ADDED >>                                     "speed": 0.2,
+  Line 2150  ADDED >>                                     "damage": 1.15
+  Line 2151  ADDED >>                                 }
+  Line 2152  ADDED >>                             }
+  Line 2153  ADDED >>                         },
+  Line 2154  ADDED >>                         "description": "Convert mana into a protective barrier.\n  - Cooldown: 3 Turns. Requires 30 Mana.\n  - Regain 50 Energy Shield. 25% Max HP as Shield.\n  - 15% Damage Reduction, 50 HP + 3% Max HP Regen for 3 turns.\n  - Haste: +0.2 Speed, +15% Damage for 2 turns."
+
+[40:53:01] Change Detected: data\abilities.json
+  Line 2065  ADDED >>                         "stamina_cost": 60,
+  Line 2093  ADDED >>                         "stamina_cost": 110,
+  Line 2125  ADDED >>                         "stamina_cost": 230,
+
+[40:54:42] Change Detected: data\abilities.json
+  Line 2160  ADDED >>             },
+  Line 2161  ADDED >>             "Arcane Surge": {
+  Line 2162  ADDED >> 
+  Line 2163  ADDED >>             },
+  Line 2164  ADDED >>             "Arcane Barrage": {
+  Line 2165  ADDED >> 
+  Line 2166  ADDED >>             },
+  Line 2167  ADDED >>             "Spellstrike": {
+  Line 2168  ADDED >> 
+  Line 2192  ADDED >>             "Thunder Palm": {
+  Line 2193  ADDED >> 
+  Line 2194  ADDED >>             },
+  Line 2195  ADDED >>             "Inner Focus": {
+  Line 2197  ADDED >>             },
+  Line 2198  ADDED >>             "Kiai": {
+  Line 2199  ADDED >>                 
+  Line 2200  ADDED >>             },
+  Line 2201  ADDED >>             "Cyclone Kick": {
+  Line 2202  ADDED >>                 
+  Line 2203  ADDED >>             },
+  Line 2204  ADDED >>             "Dragon Strike": {
+  Line 2205  ADDED >>                 
+  Line 2206  ADDED >>             }
+
+[40:55:29] Change Detected: data\abilities.json
+  Line 2205  REMOVED >>                 
+  Line 2205  ADDED >> 
+  Line 2226  ADDED >>             "Holy Smite": {
+  Line 2227  ADDED >> 
+  Line 2228  ADDED >>             },
+  Line 2229  ADDED >>             "Blessing": {
+  Line 2230  ADDED >> 
+  Line 2231  ADDED >>             },
+  Line 2232  ADDED >>             "Consecration": {
+  Line 2233  ADDED >> 
+  Line 2234  ADDED >>             },
+  Line 2235  ADDED >>             "Divine Storm": {
+  Line 2237  ADDED >>             },
+  Line 2238  ADDED >>             "Judgement": {
+  Line 2239  ADDED >>                 
+  Line 2240  ADDED >>             }
+
+[40:56:05] Change Detected: data\abilities.json
+  Line 2239  REMOVED >>                 
+  Line 2239  ADDED >> 
+  Line 2260  ADDED >>             "Wind Shot": {
+  Line 2261  ADDED >> 
+  Line 2262  ADDED >>             },
+  Line 2263  ADDED >>             "Evasive Roll": {
+  Line 2264  ADDED >> 
+  Line 2265  ADDED >>             },
+  Line 2266  ADDED >>             "Gale Burst": {
+  Line 2267  ADDED >> 
+  Line 2268  ADDED >>             },
+  Line 2269  ADDED >>             "Arrow Rain": {
+  Line 2271  ADDED >>             },
+  Line 2272  ADDED >>             "Piercing Shot": {
+  Line 2273  ADDED >>                 
+  Line 2274  ADDED >>             }
+
+[40:56:42] Change Detected: data\abilities.json
+  Line 2273  REMOVED >>                 
+  Line 2273  ADDED >> 
+  Line 2297  REMOVED >>             
+  Line 2297  ADDED >>             "Shadow Strike": {
+  Line 2298  ADDED >> 
+  Line 2299  ADDED >>             },
+  Line 2300  ADDED >>             "Shadowmeld": {
+  Line 2301  ADDED >> 
+  Line 2302  ADDED >>             },
+  Line 2303  ADDED >>             "Veil of Darkness": {
+  Line 2304  ADDED >> 
+  Line 2305  ADDED >>             },
+  Line 2306  ADDED >>             "Fan of Knives": {
+  Line 2307  ADDED >> 
+  Line 2308  ADDED >>             },
+  Line 2309  ADDED >>             "Eviscerate": {
+  Line 2310  ADDED >>                 
+  Line 2311  ADDED >>             }
+
+[40:58:44] Change Detected: data\abilities.json
+  Line 2310  REMOVED >>                 
+  Line 2310  ADDED >> 
+  Line 2331  REMOVED >> 
+  Line 2331  ADDED >>             
+
+[41:00:39] Change Detected: data\abilities.json
+  Line 2162  REMOVED >> 
+  Line 2162  ADDED >>                 "name": "Arcane Surge",
+  Line 2163  ADDED >>                 "category": "utility",
+  Line 2164  ADDED >>                 "tags": ["buff", "debuff", "aoe", "arcane", "mana", "elemental_exposure", "haste"],
+  Line 2165  ADDED >>                 "stamina_cost": 45,
+  Line 2166  ADDED >>                 "level": 10,
+  Line 2167  ADDED >>                 "resources": {
+  Line 2168  ADDED >>                     "cost": {
+  Line 2169  ADDED >>                         "mana": {"amount": 25}
+  Line 2170  ADDED >>                     }
+  Line 2171  ADDED >>                 },
+  Line 2172  ADDED >>                 "effects": {
+  Line 2173  ADDED >>                     "self": {
+  Line 2174  ADDED >>                         "haste": {
+  Line 2175  ADDED >>                             "turns": 2,
+  Line 2176  ADDED >>                             "speed": 0.1,
+  Line 2177  ADDED >>                             "damage": 1.1
+  Line 2178  ADDED >>                         }
+  Line 2179  ADDED >>                     },
+  Line 2180  ADDED >>                     "target": {
+  Line 2181  ADDED >>                         "elemental_exposure": {
+  Line 2182  ADDED >>                             "turns": 2,
+  Line 2183  ADDED >>                             "amount": 15
+  Line 2184  ADDED >>                         }
+  Line 2185  ADDED >>                     }
+  Line 2186  ADDED >>                 }
+  Line 2355  REMOVED >>             
+  Line 2355  ADDED >> 
+
+[41:01:47] Change Detected: data\abilities.json
+  Line 2044  ADDED >>                 "level": 5,
+  Line 2045  ADDED >>                 "cooldown": 3,
+  Line 2169  ADDED >>                 "cooldown": 4,
+  Line 2170  ADDED >>                 "targets": "all",
+  Line 2190  REMOVED >>                 }
+  Line 2190  ADDED >>                 },
+  Line 2191  ADDED >>                 "description": "Surge with arcane power, weakening all enemies' elemental defences.\n  - Cooldown: 4 Turns. Requires 10 Mana.\n  - Haste: +0.15 Speed, +15% Damage for 2 turns.\n  - All enemies gain 15% Elemental Exposure for 2 turns.",
+
+[41:02:37] Change Detected: data\abilities.json
+  Line 2191  REMOVED >>                 "description": "Surge with arcane power, weakening all enemies' elemental defences.\n  - Cooldown: 4 Turns. Requires 10 Mana.\n  - Haste: +0.15 Speed, +15% Damage for 2 turns.\n  - All enemies gain 15% Elemental Exposure for 2 turns.",
+  Line 2191  ADDED >>                 "description": "Surge with arcane power, weakening all enemies' elemental defences.\n  - Cooldown: 4 Turns. Requires 25 Mana.\n  - Haste: +0.1 Speed, +10% Damage for 2 turns.\n  - All enemies gain 15% Elemental Exposure for 2 turns.",
+  Line 2192  ADDED >>                 "evolutions": {
+  Line 2193  ADDED >>                     "35": {
+  Line 2194  ADDED >> 
+  Line 2195  ADDED >>                     },
+  Line 2196  ADDED >>                     "60": {
+  Line 2197  ADDED >> 
+  Line 2198  ADDED >>                     },
+  Line 2199  ADDED >>                     "85": {
+  Line 2200  ADDED >> 
+  Line 2201  ADDED >>                     }
+  Line 2202  ADDED >>                 }

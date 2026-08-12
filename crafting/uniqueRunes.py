@@ -9,6 +9,7 @@ class ImmutableRune(CraftingItem):
     description = 'Permanently locks a single random affix. Locked affixes cannot be modified.'
     minItemLevel = 50
     successEntropy = 0.4
+    dropWeight = 15
 
     def apply(self, item):
         if item.entropyLocked or item.destabilised:
@@ -55,6 +56,7 @@ class PreservationRune(CraftingItem):
     description = "Prevents entropy gain on the next crafting attempt. Permanently reduces entropy resistance by 10%"
     minItemLevel = 30
     successEntropy = 0.15
+    dropWeight = 80
 
     def apply(self, item):
         if item.destabilised or item.entropyLocked:
@@ -96,6 +98,7 @@ class EchoingRune(CraftingItem):
     description = 'Adds 1 random affix to the selected piece of equipment. Its value will be copied randomly from an already existing affix.'
     minItemLevel = 30
     successEntropy = 0.15
+    dropWeight = 80
 
     def getRandomEmptySlot(self, item):
         emptyPrefixes = [s for s in item.prefixSlots if s.isEmpty]
@@ -181,6 +184,7 @@ class SoulboundRune(CraftingItem):
     description = 'Adds a powerful unique affix to the item, ignoring affix restrictions. Each item can only have 1 soulbound affix. Permanently reduces entropy resistance by 15%.'
     minItemLevel = 75
     successEntropy = 0.5
+    dropWeight = 6
 
     def __init__(self):
         super().__init__()
@@ -239,10 +243,12 @@ class SoulboundRune(CraftingItem):
                 message='No available affixes'
             )
         
+        defenseStats = ('armour', 'evasion', 'energy_shield')
         validAffixes = {
             affixId: affixData
             for affixId, affixData in availableAffixes.items()
             if affixData.get('levelReq', 0) <= item.level
+            and (affixData.get('stat') not in defenseStats or affixData.get('stat') == item.defenseType)
         }
         if not validAffixes:
             return CraftResult(

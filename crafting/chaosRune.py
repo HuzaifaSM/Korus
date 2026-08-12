@@ -89,6 +89,11 @@ class BaseChaosRune(CraftingItem):
                 continue
 
             slot.affix = affix
+            if affix.stat == 'durability':
+                if affix.isFlat:
+                    item.durability += affix.value
+                else:
+                    item.durability = int(item.durability * (1 + (affix.value / 100)))
             added += 1
 
         item.update()
@@ -121,6 +126,7 @@ class ChaosRune(BaseChaosRune):
     minAffixLevel = 0
     minItemLevel = 10
     successEntropy = 0.06
+    dropWeight = 300
 
 class GreaterChaosRune(BaseChaosRune):
     name = '[dark_magenta bold]Greater Chaos Rune[/dark_magenta bold]'
@@ -130,6 +136,7 @@ class GreaterChaosRune(BaseChaosRune):
     minItemLevel = 30
     minAffixLevel = 30
     successEntropy = 0.12
+    dropWeight = 150
 
 class PerfectChaosRune(BaseChaosRune):
     name = '[magenta bold underline]Perfect Chaos Rune[/magenta bold underline]'
@@ -139,6 +146,7 @@ class PerfectChaosRune(BaseChaosRune):
     minAffixLevel = 60
     minItemLevel = 65
     successEntropy = 0.2
+    dropWeight = 80
 
 class DevouringChaosRune(BaseChaosRune):
     name = '[dark_red on purple4 bold]Devouring Chaos Rune[/dark_red on purple4 bold]'
@@ -149,6 +157,7 @@ class DevouringChaosRune(BaseChaosRune):
     minItemLevel = 30
     successEntropy = 0.2
     partialSuccessEntropy = 0.05
+    dropWeight = 80
 
     def getFilledSlots(self, item):
         slots = super().getFilledSlots(item)
@@ -166,6 +175,7 @@ class SpreadingChaosRune(BaseChaosRune):
     affixesToRemove = 2
     successEntropy = 0.1
     partialSuccessEntropy = 0.025
+    dropWeight = 150
 
 class SplittingChaosRune(BaseChaosRune):
     name = '[orchid bold]Splitting Chaos Rune[/orchid bold]'
@@ -176,6 +186,7 @@ class SplittingChaosRune(BaseChaosRune):
     affixesToRemove = 1
     successEntropy = 0.2
     partialSuccessEntropy = 0.05
+    dropWeight = 80
 
     def getFilledSlots(self, item):
         slots = super().getFilledSlots(item)
@@ -193,6 +204,7 @@ class UnstableChaosRune(BaseChaosRune):
     minItemLevel = 15
     successEntropy = 0.24
     partialSuccessEntropy = 0.06
+    dropWeight = 35
 
 class AscendantChaosRune(BaseChaosRune):
     name = '[deep_pink4 bold underline]Ascendant Chaos Rune[/deep_pink4 bold underline]'
@@ -203,6 +215,7 @@ class AscendantChaosRune(BaseChaosRune):
     minItemLevel = 60
     successEntropy = 0.4
     partialSuccessEntropy = 0.1
+    dropWeight = 15
 
 class SovereignChaosRune(BaseChaosRune):
     name = '[hot_pink bold underline]Sovereign Chaos Rune[/hot_pink bold underline]'
@@ -213,6 +226,7 @@ class SovereignChaosRune(BaseChaosRune):
     minItemLevel = 75
     successEntropy = 0.6
     partialSuccessEntropy = 0.15
+    dropWeight = 6
 
 CHAOS_RUNES: Dict[str, BaseChaosRune] = {
     'chaos': ChaosRune(),

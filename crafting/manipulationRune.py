@@ -27,6 +27,7 @@ class FusionRune(CraftingItem):
     minAffixLevel: int = 10
     successEntropy = 0.15
     tierEfficiency = 0.8
+    dropWeight = 80
 
     def _serialise(self):
         temp = super()._serialise()
@@ -177,6 +178,11 @@ class FusionRune(CraftingItem):
         )
         newAffix.rollValue()
         addSlot.affix = newAffix
+        if newAffix.stat == 'durability':
+            if newAffix.isFlat:
+                item.durability += newAffix.value
+            else:
+                item.durability = int(item.durability * (1 + (newAffix.value / 100)))
 
         item.update()
         item._generateName()
@@ -195,6 +201,7 @@ class GreaterFusionRune(FusionRune):
     minItemLevel = 25
     successEntropy = 0.2
     tierEfficiency = 0.95
+    dropWeight = 80
 
 class PerfectFusionRune(FusionRune):
     name = '[gold1 bold underline]Perfect Fusion Rune[/gold1 bold underline]'
@@ -204,6 +211,7 @@ class PerfectFusionRune(FusionRune):
     minItemLevel = 50
     successEntropy = 0.3
     tierEfficiency = 1.2
+    dropWeight = 35
 
 class HeavyFusionRune(FusionRune):
     name = '[dark_orange3 bold]Heavy Fusion Rune[/dark_orange3 bold]'
@@ -212,6 +220,7 @@ class HeavyFusionRune(FusionRune):
     minItemLevel = 20
     successEntropy = 0.2
     tierEfficiency = 0.85
+    dropWeight = 80
 
 class SolarFusionRune(FusionRune):
     name = '[bright_yellow bold underline]Solar Fusion Rune[/bright_yellow bold underline]'
@@ -221,6 +230,7 @@ class SolarFusionRune(FusionRune):
     minAffixLevel = 60
     successEntropy = 0.5
     tierEfficiency = 1.6
+    dropWeight = 6
 
 class BaseConversionRune(CraftingItem):
     toConvert: str | None = None
@@ -287,11 +297,13 @@ class PrefixConversionRune(BaseConversionRune):
     name = '[deep_sky_blue3]Prefix Conversion Rune[/deep_sky_blue3]'
     description = 'Converts an empty prefix slot into an empty suffix slot'
     toConvert = 'prefix'
+    dropWeight = 300
 
 class SuffixConversionRune(BaseConversionRune):
     name = '[deep_sky_blue4]Suffix Conversion Rune[/deep_sky_blue4]'
     description = 'Converts an empty suffix slot into an empty prefix slot'
     toConvert = 'suffix'
+    dropWeight = 300
 
 class EquilibriumRune(CraftingItem):
     name = '[light_slate_blue]Equilibrium Rune[/light_slate_blue]'
@@ -299,6 +311,7 @@ class EquilibriumRune(CraftingItem):
     minItemLevel = 15
     successEntropy = 0.08
     tierEfficiency: float = 0.9
+    dropWeight = 150
 
     def _serialise(self):
         temp = super()._serialise()
@@ -407,6 +420,7 @@ class GreaterEquilibriumRune(EquilibriumRune):
     minItemLevel = 35
     successEntropy = 0.12
     tierEfficiency = 1.1
+    dropWeight = 150
 
 class PerfectEquilibriumRune(EquilibriumRune):
     name = '[cyan1 bold underline]Perfect Equilibrium Rune[/cyan1 bold underline]'
@@ -414,6 +428,7 @@ class PerfectEquilibriumRune(EquilibriumRune):
     minItemLevel = 65
     successEntropy = 0.2
     tierEfficiency = 1.3
+    dropWeight = 80
 
 class DeceivingEquilibriumRune(EquilibriumRune):
     name = '[medium_purple3 bold italic underline]Deceiving Equilibrium Rune[/medium_purple3 bold italic underline]'
@@ -421,6 +436,7 @@ class DeceivingEquilibriumRune(EquilibriumRune):
     minItemLevel = 85
     successEntropy = 0.4
     tierEfficiency = 1.5
+    dropWeight = 15
 
     def apply(self, item):
         output = super().apply(item)
@@ -455,6 +471,7 @@ class SacrificeRune(CraftingItem):
     minItemLevel = 20
     successEntropy = 0.15
     tierEfficiency: float = 1.0
+    dropWeight = 80
 
     def _serialise(self):
         temp = super()._serialise()
@@ -543,6 +560,11 @@ class SacrificeRune(CraftingItem):
         )
         newAffix.rollValue()
         targetSlot.affix = newAffix
+        if newAffix.stat == 'durability':
+            if newAffix.isFlat:
+                item.durability += newAffix.value
+            else:
+                item.durability = int(item.durability * (1 + (newAffix.value / 100)))
 
         item.update()
         item._generateName()
@@ -560,6 +582,7 @@ class GreaterSacrificeRune(SacrificeRune):
     minItemLevel = 40
     successEntropy = 0.2
     tierEfficiency = 1.3
+    dropWeight = 80
 
 class PerfectSacrificeRune(SacrificeRune):
     name = '[dark_red italic bold underline]Perfect Sacrifice Rune[/dark_red italic bold underline]'
@@ -567,6 +590,7 @@ class PerfectSacrificeRune(SacrificeRune):
     minItemLevel = 55
     successEntropy = 0.3
     tierEfficiency = 1.7
+    dropWeight = 35
 
 MANIPULATION_RUNES: Dict[str, CraftingItem] = {
     'fusion': FusionRune(),

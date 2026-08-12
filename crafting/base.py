@@ -27,12 +27,16 @@ class CraftingItem:
     description: str = "Undefined crafting item"
 
     successEntropy: float = 0.0
-    partialSuccessEntropy: float = 0.0
 
     minAffixLevel: Optional[int] = None
     minAffixTier: Optional[int] = None
     minItemLevel: Optional[int] = None
     maxTierDelta: Optional[int] = None
+
+    # relative weight used when rolling which rune drops (scripts/runeDrops.py) - higher is more
+    # common. Set explicitly per-rune based on power: roughly 300=basic/utility, 150=common,
+    # 80=uncommon, 35=rare, 15=very rare, 6=build-defining/extremely rare
+    dropWeight: float = 100.0
 
     def _serialise(self):
         """covers:\n
@@ -43,7 +47,8 @@ class CraftingItem:
         - minAffixLevel
         - minAffixTier
         - minItemLevel
-        - maxTierDelta"""
+        - maxTierDelta
+        - dropWeight"""
         return {
             'name': self.name,
             'description': self.description,
@@ -52,9 +57,10 @@ class CraftingItem:
             'minAffixLevel': self.minAffixLevel,
             'minAffixTier': self.minAffixTier,
             'minItemLevel': self.minItemLevel,
-            'maxTierDelta': self.maxTierDelta
+            'maxTierDelta': self.maxTierDelta,
+            'dropWeight': self.dropWeight
         }
-    
+
     @classmethod
     def deserialise(cls, data):
         rune = cls()
@@ -66,6 +72,7 @@ class CraftingItem:
         rune.minAffixTier = data.get('minAffixTier', None)
         rune.minItemLevel = data.get('minItemLevel', None)
         rune.maxTierDelta = data.get('maxTierDelta', None)
+        rune.dropWeight = data.get('dropWeight', cls.dropWeight)
         return rune
 
     def __rich__(self):
@@ -73,8 +80,6 @@ class CraftingItem:
 
     def __str__(self) -> str:
         string = f"[cyan bold]Name:[/cyan bold] {self.name}\n[cyan bold]Description:[/cyan bold] {self.description}\n[red3]Entropy Added:[/red3] {self.successEntropy}"
-        if self.partialSuccessEntropy is not None and self.partialSuccessEntropy > 0:
-            string += f' | [red1]Entropy Added on Partial Success:[/red1] {self.partialSuccessEntropy}'
         return string
 
     def apply(self, item) -> CraftResult:

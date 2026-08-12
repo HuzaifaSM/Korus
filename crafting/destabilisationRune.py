@@ -350,12 +350,15 @@ class DestabilisationRune(BaseDestabilisationRune):
     name = '[dark_red bold]Destabilisation Rune[/dark_red bold]'
     description = 'Destabilises an item, making it unmodifiable.'
     minItemLevel = 20
+    dropWeight = 20
 
 class GreaterDestabilisationRune(BaseDestabilisationRune):
     name = '[red3 bold underline]Greater Destabilisation Rune[/red3 bold underline]'
     description = 'Destabilises an item with improved positive outcome weights.'
     minItemLevel = 65
-    
+    dropWeight = 8
+
+
     def __init__(self):
         super().__init__()
         # adjust weights to be slightly more favourable
@@ -375,7 +378,9 @@ class PerfectDestabilisationRune(BaseDestabilisationRune):
     name = '[orange_red1 bold underline]Perfect Destabilisation Rune[/orange_red1 bold underline]'
     description = 'Destabilises an item with heavily weighted positive outcomes.'
     minItemLevel = 80
-    
+    dropWeight = 4
+
+
     def __init__(self):
         super().__init__()
         # heavily favour positive outcomes

@@ -107,6 +107,7 @@ class CommonRarityRune(BaseRarityRune):
     toRarity = ItemRarity.UNCOMMON
     minItemLevel = 1
     successEntropy = 0.05
+    dropWeight = 300
 
 class UncommonRarityRune(BaseRarityRune):
     name = '[dodger_blue2 bold]Rarity Rune: Rare[/dodger_blue2 bold]'
@@ -115,6 +116,7 @@ class UncommonRarityRune(BaseRarityRune):
     toRarity = ItemRarity.RARE
     minItemLevel = 10
     successEntropy = 0.1
+    dropWeight = 150
 
 class RareRarityRune(BaseRarityRune):
     name = '[medium_purple bold]Rarity Rune: Epic[/medium_purple bold]'
@@ -123,6 +125,7 @@ class RareRarityRune(BaseRarityRune):
     toRarity = ItemRarity.EPIC
     minItemLevel = 20
     successEntropy = 0.15
+    dropWeight = 80
 
 class EpicRarityRune(BaseRarityRune):
     name = '[gold1 bold underline]Rarity Rune: Legendary[/gold1 bold underline]'
@@ -131,6 +134,7 @@ class EpicRarityRune(BaseRarityRune):
     toRarity = ItemRarity.LEGENDARY
     minItemLevel = 50
     successEntropy = 0.2
+    dropWeight = 80
 
 class ChaosRarityRune(BaseRarityRune):
     name = '[magenta bold italic]Chaos Rarity Rune[/magenta bold italic]'
@@ -138,6 +142,7 @@ class ChaosRarityRune(BaseRarityRune):
     fromRarity = ItemRarity.COMMON
     minItemLevel = 10
     successEntropy = 0.25
+    dropWeight = 35
     
     def apply(self, item) -> CraftResult:
         if item.entropyLocked or item.destabilised:

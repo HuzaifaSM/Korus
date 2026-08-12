@@ -609,6 +609,42 @@
                 "min": 2,
                 "max": 7,
                 "levelReq": 85
+            },
+            "soulbound_global_increased_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["defensive", "armour", "soulbound"],
+                "name": "Iron Incarnate,",
+                "min": 10,
+                "max": 30,
+                "levelReq": 80
+            },
+            "soulbound_global_increased_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["defensive", "evasion", "soulbound"],
+                "name": "Spirit of the Wind,",
+                "min": 10,
+                "max": 30,
+                "levelReq": 80
+            },
+            "soulbound_global_increased_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["defensive", "energy_shield", "soulbound"],
+                "name": "The High Lich's Keepsake,",
+                "min": 10,
+                "max": 30,
+                "levelReq": 80
+            },
+            "soulbound_global_increased_defenses": {
+                "stat": "defenses",
+                "isPercent": true,
+                "categories": ["defensive", "soulbound"],
+                "name": "The Citadel,",
+                "min": 5,
+                "max": 15,
+                "levelReq": 85
             }
         },
         "suffixes": {

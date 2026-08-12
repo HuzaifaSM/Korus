@@ -144,7 +144,7 @@ def craftingSandbox():
             console.print("[green bold]✓ Rune applied successfully![/green bold]")
         elif result == CraftOutcome.PARTIAL_SUCCESS:
             console.print("[yellow]⚠ Rune partially succeeded[/yellow]")
-        
+
         # Show updated item
         console.print("\n" + "="*50)
         console.print(item)

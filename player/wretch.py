@@ -60,6 +60,20 @@ class Wretch(Player):
         self.skeletonTurns = 0
         self.pendingSkeleton = None
         self.skeletonUsedThisBattle = False
+        self.abilityUsedEnergyShield = False
+
+    def spendHealthForAbility(self, amount):
+        self.abilityUsedEnergyShield = False
+        if self._ascendancy == 'Exsanguinator' and self.energyShield > 0:
+            fromShield = min(self.energyShield, amount)
+            self._stats['energyShield'] -= fromShield
+            amount -= fromShield
+            if fromShield > 0:
+                self.abilityUsedEnergyShield = True
+                console.print(f"[cyan]Exsanguinator: {fromShield} of the ability's Health cost was paid with Energy Shield![/cyan]")
+
+        if amount > 0:
+            super().spendHealthForAbility(amount)
 
     def gainBloodScent(self):
         if self._ascendancy == 'Plaguebearer':

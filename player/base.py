@@ -1,12 +1,11 @@
 from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES
 from scripts.styles import (
     console, displayLevelUp, formatDamageType, pause,
-    printSuccess, printWarning, printInfo, clearScreen
+    printSuccess, printWarning, printInfo, clearScreen, formatEffectsSummary
 )
 import random
 from typing import Dict
 from scripts.abilities import Ability, CLASS_ABILITIES
-from copy import deepcopy
 
 class Player(Entity):
     def __init__(self, name: str, health: int = 50, damage: int = 5, baseCritChance: float = 0.05, baseCritMulti: float = 1.5, damageType: str = "physical", speed: float = 1.0, /,
@@ -78,20 +77,30 @@ class Player(Entity):
     def gainClassAbilities(self):
         if not self.className or self.className not in CLASS_ABILITIES:
             return
-        
-        classAbilities = CLASS_ABILITIES[self.className]['base']
 
-        for name, ability in classAbilities.items():
-            if self._level >= ability.levelReq and name not in self._abilities:
-                self._abilities[name] = deepcopy(ability)
+        treesByName = CLASS_ABILITIES[self.className].get('base', {})
+        ascendancyOverlays = CLASS_ABILITIES[self.className].get(self._ascendancy, {})
+
+        for name, tree in treesByName.items():
+            overlay = ascendancyOverlays.get(name)
+            resolved = tree.getCurrentAbility(self._level, overlay)
+            if not resolved:
+                continue
+
+            isNew = name not in self._abilities
+            self._abilities[name] = resolved
+
+            if isNew:
                 console.print(f"\n[bold]{'='*50}[/bold]")
                 console.print(f"[gold1]🌟 CLASS ABILITY LEARNED: {name} 🌟[/gold1]")
                 console.print(f"[bold]{'='*50}[/bold]")
-                damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
-                console.print(f"[cyan]Damage:[/cyan] {ability.damage} ({damageTypeFormatted})")
-                console.print(f"[cyan]Cooldown:[/cyan] {ability.maxCooldown} turns")
-                if ability._mechanics:
-                    console.print(f"[buff]Effects: {', '.join(ability._mechanics)}[/buff]")
+                if resolved.damageType:
+                    damageTypeFormatted = formatDamageType(resolved.damageType, resolved.damageType)
+                    console.print(f"[cyan]Damage:[/cyan] {resolved.calculateDamage(self._damage)} ({damageTypeFormatted})")
+                console.print(f"[cyan]Cooldown:[/cyan] {resolved.maxCooldown} turns")
+                effectsSummary = formatEffectsSummary(resolved.effects)
+                if effectsSummary:
+                    console.print(f"[buff]Effects: {effectsSummary}[/buff]")
                 console.print(f"[bold]{'='*50}[/bold]\n")
                 pause()
 

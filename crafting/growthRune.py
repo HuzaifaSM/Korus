@@ -73,6 +73,11 @@ class BaseGrowthRune(CraftingItem):
                 continue # pool exhausted, safe fail
 
             slot.affix = affix
+            if affix.stat == 'durability':
+                if affix.isFlat:
+                    item.durability += affix.value
+                else:
+                    item.durability = int(item.durability * (1 + (affix.value / 100)))
             added += 1
 
         if added == 0:
@@ -81,22 +86,20 @@ class BaseGrowthRune(CraftingItem):
                 message='No affixes were added'
             )
         
-        if added < self.affixesToAdd:
-            partialEntropy = self.partialSuccessEntropy * added
-            item.addEntropy(partialEntropy)
-            return CraftResult(
-                outcome=CraftOutcome.PARTIAL_SUCCESS,
-                message=f'Added {added} affixes',
-                entropyAdded=partialEntropy
-            )
-        
         item.update()
         item._generateName()
         item.addEntropy(self.successEntropy)
 
-        return CraftResult(
-                outcome=CraftOutcome.SUCCESS,
-                message=f'Added {added} affixes',
+        if added == self.affixesToAdd:
+            return CraftResult(
+                    outcome=CraftOutcome.SUCCESS,
+                    message=f'Added {added} affixes.',
+                    entropyAdded=self.successEntropy
+                )
+        else:
+            return CraftResult(
+                outcome=CraftOutcome.PARTIAL_SUCCESS,
+                message=f'[warning dim]Added {added} affixes. Expected {self.affixesToAdd}[/warning dim]',
                 entropyAdded=self.successEntropy
             )
 
@@ -106,7 +109,7 @@ class GrowthRune(BaseGrowthRune):
     affixesToAdd = 1
     minAffixLevel = 0
     successEntropy = 0.05
-    partialSuccessEntropy = 0.0125
+    dropWeight = 300
 
 class GreaterGrowthRune(BaseGrowthRune):
     name = '[green4]Greater Growth Rune[/green4]'
@@ -115,7 +118,7 @@ class GreaterGrowthRune(BaseGrowthRune):
     minAffixLevel = 30
     minItemLevel = 30
     successEntropy = 0.1
-    partialSuccessEntropy = 0.025
+    dropWeight = 150
 
 class PerfectGrowthRune(BaseGrowthRune):
     name = '[dark_green bold]Perfect Growth Rune[/dark_green bold]'
@@ -124,7 +127,7 @@ class PerfectGrowthRune(BaseGrowthRune):
     minAffixLevel = 60
     minItemLevel = 60
     successEntropy = 0.2
-    partialSuccessEntropy = 0.05
+    dropWeight = 80
 
 class AbundantGrowthRune(BaseGrowthRune):
     name = '[cyan2]Abundant Growth Rune[/cyan2]'
@@ -133,7 +136,7 @@ class AbundantGrowthRune(BaseGrowthRune):
     minAffixLevel = 0
     minItemLevel = 20
     successEntropy = 0.095
-    partialSuccessEntropy = 0.02375
+    dropWeight = 150
 
 class BranchingGrowthRune(BaseGrowthRune):
     name = '[blue_violet bold]Branching Growth Rune[/blue_violet bold]'
@@ -141,8 +144,8 @@ class BranchingGrowthRune(BaseGrowthRune):
     affixesToAdd = 3
     minAffixLevel = 0
     minItemLevel = 50
-    successEntropy = 0.14
-    partialSuccessEntropy = 0.035
+    successEntropy = 0.15
+    dropWeight = 80
 
 class MajesticGrowthRune(BaseGrowthRune):
     name = '[orange3 bold]Majestic Growth Rune[/orange3 bold]'
@@ -151,7 +154,7 @@ class MajesticGrowthRune(BaseGrowthRune):
     minAffixLevel = 25
     minItemLevel = 30
     successEntropy = 0.2
-    partialSuccessEntropy = 0.05
+    dropWeight = 80
 
 class DivineGrowthRune(BaseGrowthRune):
     name = '[deep_pink3 bold underline]Divine Growth Rune[/deep_pink3 bold underline]'
@@ -160,7 +163,7 @@ class DivineGrowthRune(BaseGrowthRune):
     minAffixLevel = 45
     minItemLevel = 55
     successEntropy = 0.4
-    partialSuccessEntropy = 0.1
+    dropWeight = 15
 
 class PrefixGrowthRune(BaseGrowthRune):
     name = '[sea_green2]Prefix Growth Rune[/sea_green2]'
@@ -168,6 +171,7 @@ class PrefixGrowthRune(BaseGrowthRune):
     affixesToAdd = 1
     minAffixLevel = 0
     successEntropy = 0.07
+    dropWeight = 300
 
     def getRandomEmptySlot(self, item):
         emptyPrefixes = [s for s in item.prefixSlots if s.isEmpty]
@@ -182,6 +186,7 @@ class GreaterPrefixGrowthRune(PrefixGrowthRune):
     minAffixLevel = 25
     minItemLevel = 25
     successEntropy = 0.125
+    dropWeight = 80
 
 class PerfectPrefixGrowthRune(PrefixGrowthRune):
     name = '[chartreuse4 bold]Perfect Prefix Growth Rune[/chartreuse4 bold]'
@@ -190,6 +195,7 @@ class PerfectPrefixGrowthRune(PrefixGrowthRune):
     minAffixLevel = 55
     minItemLevel = 55
     successEntropy = 0.25
+    dropWeight = 35
 
 class SuffixGrowthRune(BaseGrowthRune):
     name = '[sea_green2]Suffix Growth Rune[/sea_green2]'
@@ -197,6 +203,7 @@ class SuffixGrowthRune(BaseGrowthRune):
     affixesToAdd = 1
     minAffixLevel = 0
     successEntropy = 0.07
+    dropWeight = 300
 
     def getRandomEmptySlot(self, item):
         emptySuffixes = [s for s in item.suffixSlots if s.isEmpty]
@@ -211,6 +218,7 @@ class GreaterSuffixGrowthRune(SuffixGrowthRune):
     minAffixLevel = 25
     minItemLevel = 25
     successEntropy = 0.125
+    dropWeight = 80
 
 class PerfectSuffixGrowthRune(SuffixGrowthRune):
     name = '[chartreuse4 bold]Perfect Suffix Growth Rune[/chartreuse4 bold]'
@@ -219,6 +227,7 @@ class PerfectSuffixGrowthRune(SuffixGrowthRune):
     minAffixLevel = 55
     minItemLevel = 55
     successEntropy = 0.25
+    dropWeight = 35
 
 class DuplicatingGrowthRune(BaseGrowthRune):
     name = '[turquoise2 bold]Duplicating Growth Rune[/turquoise2 bold]'
@@ -227,6 +236,7 @@ class DuplicatingGrowthRune(BaseGrowthRune):
     minAffixLevel = 20
     minItemLevel = 20
     successEntropy = 0.2
+    dropWeight = 80
 
     def apply(self, item) -> CraftResult:
         if item.entropyLocked or item.destabilised:
@@ -323,6 +333,7 @@ class ImitatingGrowthRune(BaseGrowthRune):
     affixesToAdd = 1
     minItemLevel = 30
     successEntropy = 0.2
+    dropWeight = 80
 
     def apply(self, item) -> CraftResult:
         if item.entropyLocked or item.destabilised:

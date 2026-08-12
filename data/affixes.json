@@ -24,7 +24,7 @@
                 "isPercent": true,
                 "categories": ["damage", "offensive"],
                 "tiers": {
-                    "1": { "levelReq": 5, "min": 10, "max": 18, "weight": 950, "name": "Striking" },
+                    "1": { "levelReq": 2, "min": 10, "max": 18, "weight": 950, "name": "Striking" },
                     "2": { "levelReq": 15, "min": 19, "max": 32, "weight": 800, "name": "Crushing" },
                     "3": { "levelReq": 28, "min": 33, "max": 50, "weight": 650, "name": "Devastating" },
                     "4": { "levelReq": 42, "min": 51, "max": 72, "weight": 500, "name": "Annihilating" },

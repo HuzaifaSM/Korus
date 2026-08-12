@@ -42,6 +42,7 @@ class ValueRandomiserRune(BaseRandomiserRune):
     description = "Rerolls numeric values of all affixes on an item within its current tier."
     successEntropy = 0.15
     minItemLevel = 15
+    dropWeight = 80
 
     def apply(self, item) -> CraftResult:
         output = super().apply(item)
@@ -72,6 +73,7 @@ class GreaterValueRandomiserRune(BaseRandomiserRune):
     description = 'Rerolls numeric values of all affixes on an item twice within its current tier, keeping the highest roll.'
     successEntropy = 0.25
     minItemLevel = 30
+    dropWeight = 35
 
     def apply(self, item):
         affixes = self.getValidAffixes(item)
@@ -94,6 +96,7 @@ class PerfectValueRandomiserRune(BaseRandomiserRune):
     description = 'Rerolls numeric values of all affixes 5 times within in its current tier, keeping the highest roll.'
     successEntropy = 0.35
     minItemLevel = 50
+    dropWeight = 15
 
     def apply(self, item):
         affixes = self.getValidAffixes(item)
@@ -113,6 +116,7 @@ class PerfectValueRandomiserRune(BaseRandomiserRune):
         return CraftOutcome.SUCCESS
 
 class BaseTierRandomiserRune(BaseRandomiserRune):
+    numRolls: int
 
     def apply(self, item) -> CraftResult:
         output = super().apply(item)
@@ -145,7 +149,13 @@ class BaseTierRandomiserRune(BaseRandomiserRune):
             if not variants:
                 continue
 
-            chosen: Affix = random.choice(variants)
+            affixRolls = []
+            for _ in range(self.numRolls):
+                a: Affix = random.choice(variants)
+                affixRolls.append(a)
+                print(f'{a.stat} rolled tier {a.tier}')
+
+            chosen = sorted(affixRolls, key=lambda a: a.tier)[-1]
 
             newAffix = Affix(
                 id=chosen.id,
@@ -183,29 +193,26 @@ class BaseTierRandomiserRune(BaseRandomiserRune):
 class TierRandomiserRune(BaseTierRandomiserRune):
     name = '[medium_purple]Tier Randomiser Rune[/medium_purple]'
     description = 'Randomises the tiers of all affixes on an item. Cannot roll tiers higher than the item allows.'
+    numRolls = 1
     successEntropy = 0.2
     minItemLevel = 20
+    dropWeight = 80
 
 class GreaterTierRandomiserRune(BaseTierRandomiserRune):
     name = '[dark_magenta bold]Greater Tier Randomiser Rune[/dark_magenta bold]'
-    description = 'Randomises the tiers of all affixes on an item with a minimum of tier 2. Cannot roll tiers higher than the item allows.'
-    minAffixTier = 2
+    description = 'Randomises the tiers of all affixes twice, keeping the highest tier rolled. Cannot roll tiers higher than the item allows.'
+    numRolls = 2
     successEntropy = 0.3
     minItemLevel = 40
+    dropWeight = 35
 
 class PerfectTierRandomiserRune(BaseTierRandomiserRune):
     name = '[plum1 bold underline]Perfect Tier Randomiser Rune[/plum1 bold underline]'
-    description = 'Randomises the tiers of all affixes on an item with a minimum of tier 4. Cannot roll tiers higher than the item allows.'
-    minAffixTier = 4
+    description = 'Randomises the tiers of all affixes 4 times, keeping the highest tier rolled. Cannot roll tiers higher than the item allows.'
+    numRolls = 4
     successEntropy = 0.4
     minItemLevel = 60
-
-class AscendingTierRandomiserRune(BaseTierRandomiserRune):
-    name = '[violet bold underline]Ascending Tier Randomiser Rune[/violet bold underline]'
-    description = 'Randomises the tiers of all affixes on an item, picking only from the 3 highest tiers. Cannot reroll tiers higher than the item allows.'
-    successEntropy = 0.4
-    minItemLevel = 65
-    maxTierDelta = 3
+    dropWeight = 15
 
 class BaseAffixRandomiserRune(BaseRandomiserRune):
 
@@ -268,6 +275,7 @@ class AffixRandomiserRune(BaseAffixRandomiserRune):
     description = 'Replaces each affix on an item with another random affix.'
     successEntropy = 0.15
     minItemLevel = 15
+    dropWeight = 80
 
 class GreaterAffixRandomiserRune(BaseAffixRandomiserRune):
     name = '[royal_blue1 bold]Greater Affix Randomiser Rune[/royal_blue1 bold]'
@@ -275,6 +283,7 @@ class GreaterAffixRandomiserRune(BaseAffixRandomiserRune):
     successEntropy = 0.25
     minAffixLevel = 30
     minItemLevel = 35
+    dropWeight = 35
 
 class PerfectAffixRandomiserRune(BaseAffixRandomiserRune):
     name = '[steel_blue bold underline]Perfect Affix Randomiser Rune[/steel_blue bold underline]'
@@ -282,11 +291,13 @@ class PerfectAffixRandomiserRune(BaseAffixRandomiserRune):
     successEntropy = 0.45
     minAffixLevel = 50
     minItemLevel = 60
+    dropWeight = 15
 
 class DefenseRandomiserRune(BaseRandomiserRune):
     name = '[dodger_blue2]Defense Randomiser Rune[/dodger_blue2]'
     description = 'Randomises the defense type of an item.'
     successEntropy = 0.05
+    dropWeight = 300
 
     def apply(self, item):
         output = super().apply(item)
@@ -334,10 +345,11 @@ class DamageRandomsierRune(BaseRandomiserRune):
     name = '[red]Damage Randomiser Rune[/red]'
     description = 'Randomises the damage type of a weapon.'
     successEntropy = 0.05
+    dropWeight = 300
 
     damageTypes = [
         'physical',
-        'fire', 'cold', 'lightning', 'wind', 'earth',
+        'fire', 'cold', 'lightning', 'earth',
         'dark', 'holy', 'arcane',
         'ethereal', 'psychic', 'chaos',
         'none'
@@ -393,7 +405,6 @@ RANDOMISER_RUNES: Dict[str, BaseRandomiserRune] = {
     'tier': TierRandomiserRune(),
     'greater_tier': GreaterTierRandomiserRune(),
     'perfect_tier': PerfectTierRandomiserRune(),
-    'ascending_tier': AscendingTierRandomiserRune(),
 
     'affix': AffixRandomiserRune(),
     'greater_affix': GreaterAffixRandomiserRune(),

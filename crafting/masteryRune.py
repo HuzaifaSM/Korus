@@ -48,6 +48,7 @@ class MasteryRune(BaseMasteryRune):
     masteryToAdd = 1
     successEntropy = 0.02
     minItemLevel = 5
+    dropWeight = 300
 
 class GreaterMasteryRune(BaseMasteryRune):
     name = '[gold1 bold]Greater Mastery Rune[/gold1 bold]'
@@ -55,6 +56,7 @@ class GreaterMasteryRune(BaseMasteryRune):
     masteryToAdd = 2
     successEntropy = 0.035
     minItemLevel = 20
+    dropWeight = 300
 
 class PerfectMassteryRune(BaseMasteryRune):
     name = '[yellow1 bold underline]Perfect Mastery Rune[/yellow1 bold underline]'
@@ -62,6 +64,7 @@ class PerfectMassteryRune(BaseMasteryRune):
     masteryToAdd = 5
     successEntropy = 0.09
     minItemLevel = 35
+    dropWeight = 150
 
 class DivineMasteryRune(BaseMasteryRune):
     name = '[light_goldenrod1 bold underline]Divine Mastery Rune[/light_goldenrod1 bold underline]'
@@ -69,6 +72,7 @@ class DivineMasteryRune(BaseMasteryRune):
     masteryToAdd = 10
     minItemLevel = 60
     successEntropy = 0.18
+    dropWeight = 80
 
 MASTERY_RUNES: Dict[str, BaseMasteryRune] = {
     'mastery': MasteryRune(),

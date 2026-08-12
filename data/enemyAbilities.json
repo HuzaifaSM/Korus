@@ -769,8 +769,8 @@
         },
         "description": "A crackling discharge that leaves the target vulnerable to further damage."
     },
-    "Gale Slash": {
-        "name": "Gale Slash",
+    "Fire and Smoke": {
+        "name": "Fire and Smoke",
         "category": "offensive",
         "tier": 1,
         "level_req": 8,
@@ -778,7 +778,7 @@
         "targets": 1,
         "damage_base": 6,
         "damage_scaling": 14,
-        "damage_type": "wind",
+        "damage_type": "fire",
         "weight": 8,
         "effects": {
             "target": {
@@ -788,7 +788,7 @@
                 }
             }
         },
-        "description": "A cutting slash trailing razor wind, obscuring the target's vision."
+        "description": "A flash of flames, spewing smoke and obscuring the target's vision."
     },
     "Sacred Smite": {
         "name": "Sacred Smite",
@@ -841,21 +841,17 @@
         "targets": "all",
         "damage_base": 18,
         "damage_scaling": 28,
-        "damage_type": "wind",
+        "damage_type": "physical",
         "weight": 5,
         "effects": {
             "target": {
                 "slow": {
                     "turns": 2,
                     "amount": 0.2
-                },
-                "blind": {
-                    "turns": 1,
-                    "amount": 0.1
                 }
             }
         },
-        "description": "Summons a violent cyclone that batters all enemies and disrupts their footing."
+        "description": "Spin in a violent cyclone, battering all enemies and distrupting their balance."
     },
     "Divine Judgement": {
         "name": "Divine Judgement",
@@ -907,8 +903,8 @@
         },
         "description": "An explosive burst of thunder that shakes the battlefield and stuns the unprepared."
     },
-    "Hurricane": {
-        "name": "Hurricane",
+    "Tempest": {
+        "name": "Tempest",
         "category": "offensive",
         "tier": 3,
         "level_req": 75,
@@ -916,7 +912,7 @@
         "targets": "all",
         "damage_base": 50,
         "damage_scaling": 65,
-        "damage_type": "wind",
+        "damage_type": "lightning",
         "weight": 3,
         "effects": {
             "target": {
