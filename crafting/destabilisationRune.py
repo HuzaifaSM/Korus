@@ -350,7 +350,7 @@ class DestabilisationRune(BaseDestabilisationRune):
     name = '[dark_red bold]Destabilisation Rune[/dark_red bold]'
     description = 'Destabilises an item, making it unmodifiable.'
     minItemLevel = 20
-    dropWeight = 20
+    dropWeight = 100
 
 class GreaterDestabilisationRune(BaseDestabilisationRune):
     name = '[red3 bold underline]Greater Destabilisation Rune[/red3 bold underline]'

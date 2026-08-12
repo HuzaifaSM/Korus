@@ -164,7 +164,7 @@
                 }
             },
             "added_multihit_chance": {
-                "stat": "multihit",
+                "stat": "chance_to_multihit",
                 "isPercent": false,
                 "categories": ["multihit", "offensive"],
                 "tiers": {
@@ -176,7 +176,7 @@
                     "6": { "levelReq": 98, "min": 25, "max": 30, "weight": 20, "name": "of Infinite Strikes" }
                 }
             },
-            "added_num_multihits": {
+            "added_multihits": {
                 "stat": "added_multihits",
                 "isPercent": false,
                 "categories": ["multihit", "offensive"],
@@ -1383,7 +1383,7 @@
         },
         "suffixes": {
             "added_multihit_chance": {
-                "stat": "multihit",
+                "stat": "chance_to_multihit",
                 "isPercent": false,
                 "categories": ["multihit", "offensive"],
                 "tiers": {

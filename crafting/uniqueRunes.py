@@ -56,7 +56,7 @@ class PreservationRune(CraftingItem):
     description = "Prevents entropy gain on the next crafting attempt. Permanently reduces entropy resistance by 10%"
     minItemLevel = 30
     successEntropy = 0.15
-    dropWeight = 80
+    dropWeight = 65
 
     def apply(self, item):
         if item.destabilised or item.entropyLocked:
@@ -98,7 +98,7 @@ class EchoingRune(CraftingItem):
     description = 'Adds 1 random affix to the selected piece of equipment. Its value will be copied randomly from an already existing affix.'
     minItemLevel = 30
     successEntropy = 0.15
-    dropWeight = 80
+    dropWeight = 50
 
     def getRandomEmptySlot(self, item):
         emptyPrefixes = [s for s in item.prefixSlots if s.isEmpty]

@@ -27,7 +27,7 @@ class FusionRune(CraftingItem):
     minAffixLevel: int = 10
     successEntropy = 0.15
     tierEfficiency = 0.8
-    dropWeight = 80
+    dropWeight = 90
 
     def _serialise(self):
         temp = super()._serialise()
@@ -201,7 +201,7 @@ class GreaterFusionRune(FusionRune):
     minItemLevel = 25
     successEntropy = 0.2
     tierEfficiency = 0.95
-    dropWeight = 80
+    dropWeight = 65
 
 class PerfectFusionRune(FusionRune):
     name = '[gold1 bold underline]Perfect Fusion Rune[/gold1 bold underline]'
@@ -234,7 +234,7 @@ class SolarFusionRune(FusionRune):
 
 class BaseConversionRune(CraftingItem):
     toConvert: str | None = None
-    successEntropy: float = 0.05
+    successEntropy: float = 0.04
 
     def _serialise(self):
         temp = super()._serialise()
@@ -297,13 +297,13 @@ class PrefixConversionRune(BaseConversionRune):
     name = '[deep_sky_blue3]Prefix Conversion Rune[/deep_sky_blue3]'
     description = 'Converts an empty prefix slot into an empty suffix slot'
     toConvert = 'prefix'
-    dropWeight = 300
+    dropWeight = 150
 
 class SuffixConversionRune(BaseConversionRune):
     name = '[deep_sky_blue4]Suffix Conversion Rune[/deep_sky_blue4]'
     description = 'Converts an empty suffix slot into an empty prefix slot'
     toConvert = 'suffix'
-    dropWeight = 300
+    dropWeight = 150
 
 class EquilibriumRune(CraftingItem):
     name = '[light_slate_blue]Equilibrium Rune[/light_slate_blue]'
@@ -416,7 +416,7 @@ class EquilibriumRune(CraftingItem):
 
 class GreaterEquilibriumRune(EquilibriumRune):
     name = '[cornflower_blue bold underline]Greater Equilibrium Rune[/cornflower_blue bold underline]'
-    description = 'More efficiently rebalances affix tiers.'
+    description = 'Balances the tiers of all affixes on an item efficiently, making them as equal as possible.'
     minItemLevel = 35
     successEntropy = 0.12
     tierEfficiency = 1.1
@@ -424,7 +424,7 @@ class GreaterEquilibriumRune(EquilibriumRune):
 
 class PerfectEquilibriumRune(EquilibriumRune):
     name = '[cyan1 bold underline]Perfect Equilibrium Rune[/cyan1 bold underline]'
-    description = 'Balances all affix tiers on an item with extreme efficiency.'
+    description = 'Balances the tiers of all affixes on an item very efficiently, making them as equal as possible'
     minItemLevel = 65
     successEntropy = 0.2
     tierEfficiency = 1.3
@@ -432,7 +432,7 @@ class PerfectEquilibriumRune(EquilibriumRune):
 
 class DeceivingEquilibriumRune(EquilibriumRune):
     name = '[medium_purple3 bold italic underline]Deceiving Equilibrium Rune[/medium_purple3 bold italic underline]'
-    description = 'Balances all affix tiers on an item with enough efficiency to occasionally grant additional tiers.'
+    description = 'Balances all affix tiers on an item, occasionally grants additional tiers.'
     minItemLevel = 85
     successEntropy = 0.4
     tierEfficiency = 1.5
@@ -471,7 +471,7 @@ class SacrificeRune(CraftingItem):
     minItemLevel = 20
     successEntropy = 0.15
     tierEfficiency: float = 1.0
-    dropWeight = 80
+    dropWeight = 90
 
     def _serialise(self):
         temp = super()._serialise()
@@ -582,7 +582,7 @@ class GreaterSacrificeRune(SacrificeRune):
     minItemLevel = 40
     successEntropy = 0.2
     tierEfficiency = 1.3
-    dropWeight = 80
+    dropWeight = 65
 
 class PerfectSacrificeRune(SacrificeRune):
     name = '[dark_red italic bold underline]Perfect Sacrifice Rune[/dark_red italic bold underline]'

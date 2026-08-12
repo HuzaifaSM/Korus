@@ -55,7 +55,7 @@ class Entity:
                 'critMulti': 0,
                 'critResistance': 0,
                 'resistancePenetration': 0,
-                'multihit': 0,
+                'chance_to_multihit': 0,
                 'lifesteal': 0,
                 'added_multihits': 0,
                 'hpRegen': 0,

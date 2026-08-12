@@ -179,9 +179,9 @@ class SpreadingChaosRune(BaseChaosRune):
 
 class SplittingChaosRune(BaseChaosRune):
     name = '[orchid bold]Splitting Chaos Rune[/orchid bold]'
-    description = 'Removes 1 random affix above level 30 and adds 2 new random affixes above level 20.'
+    description = 'Removes 1 random affix above level 35 and adds 2 new random affixes above level 20.'
     minAffixLevel = 20
-    minItemLevel = 30
+    minItemLevel = 3
     affixesToAdd = 2
     affixesToRemove = 1
     successEntropy = 0.2
@@ -192,7 +192,7 @@ class SplittingChaosRune(BaseChaosRune):
         slots = super().getFilledSlots(item)
         if not slots:
             return []
-        slots = [s for s in slots if s.affix.levelReq >= 30]
+        slots = [s for s in slots if s.affix.levelReq >= 35]
         return slots
 
 class UnstableChaosRune(BaseChaosRune):
@@ -204,7 +204,7 @@ class UnstableChaosRune(BaseChaosRune):
     minItemLevel = 15
     successEntropy = 0.24
     partialSuccessEntropy = 0.06
-    dropWeight = 35
+    dropWeight = 80
 
 class AscendantChaosRune(BaseChaosRune):
     name = '[deep_pink4 bold underline]Ascendant Chaos Rune[/deep_pink4 bold underline]'

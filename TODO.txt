@@ -2,9 +2,7 @@ NOTES:
   - resolveEffects() in abilities.py is where an ability's effects dict (target/self) gets turned into StatusEffect objects; performAttack() in combat.py is what actually applies them
   - make sure all 'crit damage' or similar is variable named to critMulti
 
-- erasing runes should have significantly lower entropy costs
 - double check all rune drop weights
-- rename 'multihit' stats and affixes to 'multihit chance' or 'chance to multihit'
 
 BUGS:
 
@@ -15,10 +13,15 @@ NEW AFFIXES:
 - +x to max y resistance suffix (rings, amulet, armour)
   > move off of armour and onto sigils and shields once they exist
   > needs a new section in Entity._stats['Resistances']
-    - Entity._stats['Resistances']['max'] per resistance, default 75, increased by affix
-  > +1 to +10 across 7-8 tiers
-  > multi-res roll +1 to +8 across 7 tiers (t7 is 7-8)
-  > all res rolls +1 to +5 across 5 tiers
+    - Entity._stats['Resistances']['max'] per resistance, default 75, increased by affix, final cap at 90%
+    > +1 to +10 across 7 tiers
+      > t1-3 are static 1/2/3 resistance, t4 = 4-5, t5 = 6-7, t6 = 7-8, t7 = 9-10
+    > multi-res roll +1 to +8 across 7 tiers (t7 is 7-8)
+    > all res rolls +1 to +5 across 5 tiers
+    > soulbound suffixes on chestplate, legs and amulet
+      > 1 res roll 10-15
+      > multi-res roll 9-12
+      > all res roll 7-10
 - thorns damage: head, feet, legs, boots - prefix
 - otherworld resistance: same as divine but for psychic, ethereal and chaos damage
 - all affixes should have a minimum of 6 tiers, preferably 7+

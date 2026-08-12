@@ -129,7 +129,7 @@ class RevealingRune(BaseRevealingRune):
     minAffixLevel = 0
     minItemLevel = 15
     successEntropy = 0.15
-    dropWeight = 80
+    dropWeight = 100
 
 class GreaterRevealingRune(BaseRevealingRune):
     name = '[deep_sky_blue1 bold]Greater Revealing Rune[/deep_sky_blue1 bold]'
@@ -156,7 +156,7 @@ class AbundantRevealingRune(BaseRevealingRune):
     minAffixLevel = 10
     minItemLevel = 25
     successEntropy = 0.2
-    dropWeight = 80
+    dropWeight = 65
 
 class DivineRevealingRune(BaseRevealingRune):
     name = '[light_cyan1 bold underline]Divine Revealing Rune[/light_cyan1 bold underline]'

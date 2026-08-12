@@ -584,7 +584,7 @@ class CombatManager:
                             break
 
                     attacks = 1
-                    if random.random() < attacker._stats['Bonuses']['multihit']:
+                    if random.random() < attacker._stats['Bonuses']['chance_to_multihit']:
                         attacks = attacker.numMultihits
 
                     for _ in range(attacks):

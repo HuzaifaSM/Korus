@@ -10,8 +10,8 @@ class ItemRarity(Enum):
     RARE = "rare"
     EPIC = "epic"
     LEGENDARY = "legendary"
-    #MYTHIC = "mythic"
-    #BLANK = "blank"
+    MYTHIC = "mythic"
+    BLANK = "blank"
     QUEST = "quest"
 
 class AffixSlot:
@@ -87,6 +87,8 @@ RARITY_SERIALS = {
     "rare": ItemRarity.RARE,
     "epic": ItemRarity.EPIC,
     "legendary": ItemRarity.LEGENDARY,
+    "mythic": ItemRarity.MYTHIC,
+    "blank": ItemRarity.BLANK,
     "quest": ItemRarity.QUEST
 }
 

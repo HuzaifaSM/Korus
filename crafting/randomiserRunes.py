@@ -42,7 +42,7 @@ class ValueRandomiserRune(BaseRandomiserRune):
     description = "Rerolls numeric values of all affixes on an item within its current tier."
     successEntropy = 0.15
     minItemLevel = 15
-    dropWeight = 80
+    dropWeight = 150
 
     def apply(self, item) -> CraftResult:
         output = super().apply(item)
@@ -73,7 +73,7 @@ class GreaterValueRandomiserRune(BaseRandomiserRune):
     description = 'Rerolls numeric values of all affixes on an item twice within its current tier, keeping the highest roll.'
     successEntropy = 0.25
     minItemLevel = 30
-    dropWeight = 35
+    dropWeight = 65
 
     def apply(self, item):
         output = super().apply(item)
@@ -279,7 +279,7 @@ class AffixRandomiserRune(BaseAffixRandomiserRune):
     description = 'Replaces each affix on an item with another random affix.'
     successEntropy = 0.15
     minItemLevel = 15
-    dropWeight = 80
+    dropWeight = 150
 
 class GreaterAffixRandomiserRune(BaseAffixRandomiserRune):
     name = '[royal_blue1 bold]Greater Affix Randomiser Rune[/royal_blue1 bold]'
@@ -287,7 +287,7 @@ class GreaterAffixRandomiserRune(BaseAffixRandomiserRune):
     successEntropy = 0.25
     minAffixLevel = 30
     minItemLevel = 35
-    dropWeight = 35
+    dropWeight = 85
 
 class PerfectAffixRandomiserRune(BaseAffixRandomiserRune):
     name = '[steel_blue bold underline]Perfect Affix Randomiser Rune[/steel_blue bold underline]'
@@ -301,7 +301,7 @@ class DefenseRandomiserRune(BaseRandomiserRune):
     name = '[dodger_blue2]Defense Randomiser Rune[/dodger_blue2]'
     description = 'Randomises the defense type of an item.'
     successEntropy = 0.05
-    dropWeight = 300
+    dropWeight = 150
 
     def apply(self, item):
         output = super().apply(item)
@@ -349,7 +349,7 @@ class DamageRandomsierRune(BaseRandomiserRune):
     name = '[red]Damage Randomiser Rune[/red]'
     description = 'Randomises the damage type of a weapon.'
     successEntropy = 0.05
-    dropWeight = 300
+    dropWeight = 150
 
     damageTypes = [
         'physical',

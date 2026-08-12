@@ -32,7 +32,7 @@ class Affix:
 
     @property
     def isMaxTier(self) -> bool:
-        return self.name.startswith('[orange_red1 bold underline]')
+        return self.name.startswith('[orange_red1 bold underline]') or self.soulbound or self.isMythic
 
     def rollValue(self):
         """Sets value of an affix between min and max roll range, also returns value"""

@@ -107,7 +107,7 @@ class CommonRarityRune(BaseRarityRune):
     toRarity = ItemRarity.UNCOMMON
     minItemLevel = 1
     successEntropy = 0.05
-    dropWeight = 300
+    dropWeight = 175
 
 class UncommonRarityRune(BaseRarityRune):
     name = '[dodger_blue2 bold]Rarity Rune: Rare[/dodger_blue2 bold]'
@@ -116,7 +116,7 @@ class UncommonRarityRune(BaseRarityRune):
     toRarity = ItemRarity.RARE
     minItemLevel = 10
     successEntropy = 0.1
-    dropWeight = 150
+    dropWeight = 100
 
 class RareRarityRune(BaseRarityRune):
     name = '[medium_purple bold]Rarity Rune: Epic[/medium_purple bold]'
@@ -125,16 +125,25 @@ class RareRarityRune(BaseRarityRune):
     toRarity = ItemRarity.EPIC
     minItemLevel = 20
     successEntropy = 0.15
-    dropWeight = 80
+    dropWeight = 65
 
 class EpicRarityRune(BaseRarityRune):
     name = '[gold1 bold underline]Rarity Rune: Legendary[/gold1 bold underline]'
     description = 'Upgrades an epic item to legendary rarity.'
     fromRarity = ItemRarity.EPIC
     toRarity = ItemRarity.LEGENDARY
-    minItemLevel = 50
+    minItemLevel = 40
     successEntropy = 0.2
-    dropWeight = 80
+    dropWeight = 35
+
+class LegendaryRarityRune(BaseRarityRune):
+    name = '[red3 bold underline]Rarity Rune: Mythic[/red3 bold underline]'
+    description = 'Upgrades a legendary item to mythic rarity and removes some entropy from the item.'
+    fromRarity = ItemRarity.LEGENDARY
+    toRarity = ItemRarity.MYTHIC
+    minItemLevel = 65
+    successEntropy = -0.1
+    dropWeight = 2
 
 class ChaosRarityRune(BaseRarityRune):
     name = '[magenta bold italic]Chaos Rarity Rune[/magenta bold italic]'
@@ -142,34 +151,32 @@ class ChaosRarityRune(BaseRarityRune):
     fromRarity = ItemRarity.COMMON
     minItemLevel = 10
     successEntropy = 0.25
-    dropWeight = 35
-    
+    dropWeight = 80
+
     def apply(self, item) -> CraftResult:
         if item.entropyLocked or item.destabilised:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'
             )
-        
+
         if item.level < self.minItemLevel:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item level too low'
             )
-        
+
         if item.rarity != ItemRarity.COMMON:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item rarity is not common'
             )
-        
-        # roll random rarity with weighted chances
+
         rarities = [ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY]
         weights = [50, 30, 15, 5]
 
         self.toRarity = random.choices(rarities, weights=weights)[0]
 
-        # call parent apply
         return super().apply(item)
 
 RARITY_RUNES: Dict[str, BaseRarityRune] = {

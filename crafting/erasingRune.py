@@ -87,7 +87,7 @@ class ErasingRune(BaseErasingRune):
     description = 'Removes 1 random affix.'
     affixesToRemove = 1
     minItemLevel = 10
-    successEntropy = 0.05
+    successEntropy = 0.035
     dropWeight = 300
 
 class GreaterErasingRune(BaseErasingRune):
@@ -96,7 +96,7 @@ class GreaterErasingRune(BaseErasingRune):
     affixesToRemove = 1
     minItemLevel = 20
     maxAffixLevel = 60
-    successEntropy = 0.1
+    successEntropy = 0.7
     dropWeight = 150
 
 class PerfectErasingRune(BaseErasingRune):
@@ -105,7 +105,7 @@ class PerfectErasingRune(BaseErasingRune):
     affixesToRemove = 1
     minItemLevel = 30
     maxAffixLevel = 30
-    successEntropy = 0.175
+    successEntropy = 0.12
     dropWeight = 80
 
 class PredatoryErasingRune(BaseErasingRune):
@@ -113,7 +113,7 @@ class PredatoryErasingRune(BaseErasingRune):
     description = 'Removes the lowest level affix.'
     affixesToRemove = 1
     minItemLevel = 40
-    successEntropy = 0.25
+    successEntropy = 0.2
     dropWeight = 35
 
     def getRemovableSlots(self, item):
@@ -128,7 +128,7 @@ class ConsumingErasingRune(BaseErasingRune):
     description = 'Removes the two lowest level affixes.'
     affixesToRemove = 2
     minItemLevel = 50
-    successEntropy = 0.4
+    successEntropy = 0.35
     dropWeight = 15
 
     def getRemovableSlots(self, item):
@@ -152,7 +152,7 @@ class RuinousErasingRune(BaseErasingRune):
     description = 'Removes up to 3 random affixes.'
     affixesToRemove = 3
     minItemLevel = 30
-    successEntropy = 0.25
+    successEntropy = 0.22
     dropWeight = 35
 
 class BlankErasingRune(BaseErasingRune):
