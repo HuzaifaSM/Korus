@@ -9,7 +9,8 @@ class Affix:
     def __init__(self, id: str, name: str, levelReq: int, tier: int, stat: str,
                  minVal: float, maxVal: float,
                  isPercent: bool = False, kind: str = "prefix",
-                 weight: int = 100, categories: list[str] | None = None, **kwargs):
+                 weight: int = 100, categories: list[str] | None = None, isMythic: bool = False,
+                 isGlobal: bool = False, **kwargs):
         self.id = id
         self.name = name
         self.levelReq = levelReq
@@ -26,12 +27,15 @@ class Affix:
         self.data = kwargs
         self.locked = False
         self.soulbound = False
+        self.isMythic = isMythic
+        self.isGlobal = isGlobal
 
     @property
     def isMaxTier(self) -> bool:
         return self.name.startswith('[orange_red1 bold underline]')
 
     def rollValue(self):
+        """Sets value of an affix between min and max roll range, also returns value"""
         if self.minVal is None or self.maxVal is None:
             printError(f"Cannot roll value for {self.id} {self.name}: min/max not set.")
 
@@ -66,7 +70,10 @@ class Affix:
     def __str__(self):
         if self.value is not None:
             prefix = "+" if self.value > 0 else ""
-            suffix = "%" if self.isPercent else ""
+            if self.isPercent:
+                suffix = "% Global Increased" if self.isGlobal else "% Increased"
+            else:
+                suffix = ""
             value = self.value
         else:
             prefix = ""
@@ -79,14 +86,17 @@ class Affix:
         soulStr = ""
         if self.soulbound:
             soulStr = "[gold3 bold underline]SOULBOUND[/gold3 bold underline] "
-        return f"{lockedStr}{soulStr}{prefix}{value}{suffix} {statDisplay}"
+        mythicStr = ""
+        if self.isMythic:
+           mythicStr = "[indian_red bold underline]MYTHIC[/indian_red bold unerline]"
+        return f"{lockedStr}{soulStr}{mythicStr}{prefix}{value}{suffix} {statDisplay} | [dim]Tier {self.tier}[/dim]"
 
-    def detailed(self):
-        string = self.__rich__()
-        ranges = f"Range: {self.minVal} - {self.maxVal}"
-        bonusInfo = f"[dim][bold]Roll Range:[/bold] {ranges} | [bold]Tier:[/bold] {self.tier} | [bold]Level Requirement:[/bold] {self.levelReq} | [bold]Tags:[/bold] {self.categories}[/dim]"
-        string += f"\n{bonusInfo}"
-        return string
+    # def detailed(self): # not used anywhere
+    #     string = self.__rich__()
+    #     ranges = f"Range: {self.minVal} - {self.maxVal}"
+    #     bonusInfo = f"[dim][bold]Roll Range:[/bold] {ranges} | [bold]Tier:[/bold] {self.tier} | [bold]Level Requirement:[/bold] {self.levelReq} | [bold]Tags:[/bold] {self.categories}[/dim]"
+    #     string += f"\n{bonusInfo}"
+    #     return string
 
     def _serialise(self):
         return {
@@ -104,7 +114,9 @@ class Affix:
             'weight': self.weight,
             'categories': self.categories,
             'locked': self.locked,
-            'soulbound': self.soulbound
+            'soulbound': self.soulbound,
+            'isMythic': self.isMythic,
+            'isGlobal': self.isGlobal
         }
 
     @classmethod
@@ -121,7 +133,8 @@ class Affix:
                 isPercent=data.get('isPercent', False),
                 kind=data.get('kind', 'prefix'),
                 weight=data.get('weight', 100),
-                categories=data.get('categories', [])
+                categories=data.get('categories', []),
+                isGlobal=data.get('isGlobal', False)
             )
         else: # soulbound
             affix = cls(
@@ -135,7 +148,8 @@ class Affix:
                 isPercent=data.get('isPercent', False),
                 kind=data.get('kind', 'prefix'),
                 weight=0,
-                categories=data.get('categories', [])
+                categories=data.get('categories', []),
+                isGlobal=data.get('isGlobal', False)
             )
         affix.baseValue = data.get('baseValue')
         affix.mastery = data.get('mastery', 0)
@@ -143,7 +157,7 @@ class Affix:
         return affix
 
 def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
-    fp = 'Korus/data/affixes.json' if exists ('Korus') else 'data/affixes.json'
+    fp = 'Korus/data/affixes.json' if exists('Korus') else 'data/affixes.json'
     with open(fp, 'r') as f:
         affixData = json.load(f)
 
@@ -210,6 +224,7 @@ def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
                         kind=affixType[:-2], #prefixes => prefix
                         weight=tierData.get('weight', 100),
                         categories=affixInfo['categories'],
+                        isGlobal=affixInfo.get('isGlobal', False),
                     )
 
                     affixPool[equipType][affixType][uniqueId] = affix
@@ -303,7 +318,8 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
         isPercent=chosenAffix.isPercent,
         kind=chosenAffix.kind,
         weight=chosenAffix.weight,
-        categories=list(chosenAffix.categories)
+        categories=list(chosenAffix.categories),
+        isGlobal=chosenAffix.isGlobal
     )
     rolledAffix.rollValue()
 

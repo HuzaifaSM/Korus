@@ -1,4 +1,4 @@
-from typing import Dict, Optional
+from typing import Dict
 from scripts.styles import console, printWarning, pause, displayResourceCost, printError, printSuccess
 
 class Station:
@@ -59,38 +59,3 @@ class Station:
             "resourcesNeeded": self.resourcesNeeded,
             "level": self.level,
         }
-
-    def _hasPlayerAbilities(self) -> bool:
-        return len(self.player._abilities) > 0
-
-    def _selectPlayerAbility(self, filterFunc=None) -> Optional[tuple]:
-        if not self._hasPlayerAbilities():
-            printWarning("No abilities available!")
-            pause()
-            return None
-        
-        abList = list(self.player._abilities.items())
-        if filterFunc:
-            abList = [(name, ab) for name, ab in abList if filterFunc(ab)]
-        
-        if not abList:
-            printWarning("No abilities match the criteria!")
-            pause()
-            return None
-        
-        console.print(f"\n[bold cyan]Your Abilities:[/bold cyan]")
-        for i, (name, ability) in enumerate(abList, 1):
-            console.print(f"  [cyan]{i}.[/cyan] {name}")
-            console.print(f"     [dim]Damage: {ability.damage} | Cooldown: {ability.maxCooldown}[/dim]")
-            if ability._mechanics:
-                console.print(f"     [dim]Mechanics: {', '.join(ability._mechanics)}[/dim]")
-        
-        choice = console.input("\n[cyan]Choose ability (0 to cancel):\n> [/cyan]").strip()
-        try:
-            index = int(choice) - 1
-            if 0 <= index < len(abList):
-                return abList[index]
-        except ValueError:
-            pass
-        
-        return None

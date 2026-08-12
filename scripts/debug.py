@@ -1,5 +1,5 @@
 from .items import Equipment, RESOURCES, CONSUMABLES, ItemRarity
-from .abilities import ABILITIES
+from .abilities import CLASS_ABILITIES
 from crafting.base import CraftingItem
 from crafting.chaosRune import CHAOS_RUNES
 from crafting.erasingRune import ERASING_RUNES
@@ -202,12 +202,12 @@ class Debugger:
                 break
             elif choice == "1":
                 console.print("\n[bold cyan]=== Available Abilities ===[/bold cyan]")
-                for i, name in enumerate(ABILITIES.keys(), 1):
+                for i, name in enumerate(CLASS_ABILITIES.keys(), 1):
                     console.print(f"  [dim]{i}.[/dim] {name}")
                 pause()
             else:
                 choice = choice[0].upper() + choice[1:]
-                if choice in ABILITIES:
+                if choice in CLASS_ABILITIES:
                     self.game.player.gainAbility(choice)
                     printSuccess(f"Gained {choice}")
                     pause()

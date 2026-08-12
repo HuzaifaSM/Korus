@@ -7,7 +7,7 @@ from rich.progress import BarColumn, Progress, TextColumn
 from rich.text import Text
 from rich.align import Align
 from rich import box
-from typing import List
+from typing import List, Dict
 
 # custom theme for game
 KORUS_THEME = Theme({
@@ -110,6 +110,16 @@ def formatDamageType(text: str, damageType: str) -> str:
     colour = DAMAGE_TYPE_COLOURS.get(damageType.lower(), "white")
     return f"[{colour}]{text}[/{colour}]"
 
+def formatEffectsSummary(effects: Dict) -> str:
+    """Short human-readable summary of an ability's effects dict,
+    e.g. 'curse, otherworld exposure (target); haste (self)'"""
+    parts = []
+    for side in ('target', 'self'):
+        names = [name for name in effects.get(side, {}).keys() if name != 'spawn_consumable']
+        if names:
+            parts.append(f"{', '.join(n.replace('_', ' ') for n in names)} ({side})")
+    return '; '.join(parts)
+
 def formatStatChange(value: float) -> str:
     if value > 0:
         return f"[success]+{value}[/success]"
@@ -159,10 +169,10 @@ def createAbilityTable(abilities: dict) -> Table:
     table.add_column("Effects", style="dim")
 
     for i, (name, ability) in enumerate(abilities.items(), 1):
-        damageStr = str(ability.damage) if ability.damage >= 0 else f"[green]{-ability.damage} HP[/green]"
-        damageType = formatDamageType(ability.damageType, ability.damageType)
+        damageStr = str(ability.baseDamage) if ability.baseDamage >= 0 else f"[green]{-ability.baseDamage} HP[/green]"
+        damageType = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else "-"
         cooldownStr = f"[red]{ability.cooldown}[/red]" if ability.cooldown > 0 else f"[green]0[/green]"
-        effects = ", ".join(ability._mechanics) if ability._mechanics else ""
+        effects = formatEffectsSummary(ability.effects)
         table.add_row(str(i), name, damageStr, damageType, cooldownStr, effects)
 
     return table
@@ -325,7 +335,8 @@ def createEnemyPreview(enemies: List) -> Table:
         if enemy._abilities:
             col.append("[bold cyan]Abilities:[/bold cyan]")
             for name, ability in enemy._abilities.items():
-                mechText = f" [dim]({', '.join(ability._mechanics)})[/dim]" if ability._mechanics else ""
+                effectsSummary = formatEffectsSummary(ability.effects)
+                mechText = f" [dim]({effectsSummary})[/dim]" if effectsSummary else ""
                 col.append(f"  [cyan]•[/cyan] {name}{mechText}")
             col.append("")
 
@@ -477,16 +488,16 @@ def createAbilityTables(abilities: dict, maxPerTable: int = 10) -> Columns:
         for j, (name, ability) in enumerate(chunk, start=i+1):
             cdText = str(ability.cooldown) if ability.cooldown > 0 else "✓"
             cdStyle = "red" if ability.cooldown > 0 else "green"
-            effectsText = ", ".join(ability._mechanics[:1]) if ability._mechanics else ""
-            if len(ability._mechanics) > 1:
-                effectsText += "..."
-            
-            dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
-            
+            effectsText = formatEffectsSummary(ability.effects)
+            if len(effectsText) > 15:
+                effectsText = effectsText[:14] + "..."
+
+            dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else "-"
+
             table.add_row(
                 str(j),
                 name[:16] + ".." if len(name) > 16 else name,
-                str(ability.damage),
+                str(ability.baseDamage),
                 dmgTypeFormatted,
                 f"[{cdStyle}]{cdText}[/{cdStyle}]",
                 effectsText

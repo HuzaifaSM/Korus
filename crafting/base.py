@@ -25,6 +25,7 @@ class CraftResult:
 class CraftingItem:
     name: str = "Unnamed crafting item"
     description: str = "Undefined crafting item"
+    minItemLevel: int
 
     successEntropy: float = 0.0
 
@@ -79,7 +80,7 @@ class CraftingItem:
         return self.__str__()
 
     def __str__(self) -> str:
-        string = f"[cyan bold]Name:[/cyan bold] {self.name}\n[cyan bold]Description:[/cyan bold] {self.description}\n[red3]Entropy Added:[/red3] {self.successEntropy}"
+        string = f"[cyan bold]Name:[/cyan bold] {self.name}\n[cyan bold]Description:[/cyan bold] {self.description}\n[red3]Entropy Added:[/red3] {self.successEntropy} | [dim]Minimum Item Level: {self.minItemLevel}[/dim]"
         return string
 
     def apply(self, item) -> CraftResult:

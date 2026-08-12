@@ -94,7 +94,7 @@ def _rollSingleRune(level: int) -> Tuple[str, str]:
         for runeType, rune in runeDict.items():
             runeMinLevel = getattr(rune, 'minItemLevel', 1)
 
-            weight = calculateRuneWeight(runeMinLevel, level)
+            weight = calculateRuneWeight(runeMinLevel, level, baseWeight=rune.dropWeight)
 
             if weight > 0:
                 validRunes.append((category, runeType))

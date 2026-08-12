@@ -1,7 +1,7 @@
 from json import load
 from copy import deepcopy
 from typing import Optional, List, Dict, Any, Tuple
-from random import random
+import random
 from .styles import console
 
 #=========================================================================================#
@@ -46,23 +46,24 @@ class Ability:
     def canUse(self, player) -> Tuple[bool, str]:
         if self.cooldown > 0:
             return False, f"On cooldown for {self.cooldown} more turns."
-        
+
         if not player.canUseAbility(self):
             return False, f"{player._name} does not have enough stamina."
-        
-        required: Dict[str, int] = self.resources.get('required', {})
+
+        required: Dict[str, Any] = self.resources.get('required', {})
         for resource, amount in required.items():
+            resolved = _resolveResourceAmount(player, resource, amount)
             playerVal = getattr(player, f'_{resource}', None)
             if playerVal is None: # check if resource doesn't have underscore before it
                 playerVal = getattr(player, resource, 0)
-            if playerVal < amount:
-                return False, f"Not enough {resource}: {playerVal} / {amount}"
-            
+            if playerVal < resolved:
+                return False, f"Not enough {resource}: {playerVal} / {resolved}"
+
         if hasattr(self, 'requirements') and self.requirements:
             ok, reason = self._checkRequirements(player)
             if not ok:
                 return False, reason
-            
+
         return True, ""
     
     def _checkRequirements(self, player) -> Tuple[bool, str]:
@@ -80,9 +81,13 @@ class Ability:
         """Deduct required resouces and grant resources"""
         required = self.resources.get('required', {})
         for resource, amount in required.items():
+            resolved = _resolveResourceAmount(player, resource, amount)
+            if resource == 'health':
+                player.spendHealthForAbility(resolved)
+                continue
             attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
-            setattr(player, attr, getattr(player, attr) - amount)
-        
+            setattr(player, attr, getattr(player, attr) - resolved)
+
         gained = self.resources.get('gain', {})
         for resource, amount in gained.items():
             if resource == 'energy_shield':
@@ -90,8 +95,7 @@ class Ability:
             else:
                 attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
                 current = getattr(player, attr, 0)
-                x = attr.lstrip('_')
-                mAttr = f'_max{x}' if hasattr(player, f'_max{x}') else f'max{x}' if hasattr(player, f'max{x}') else None
+                mAttr = _findMaxAttr(player, attr)
                 if mAttr is not None: # max value
                     setattr(player, attr, min(getattr(player, mAttr), current + amount))
                 else:
@@ -107,81 +111,23 @@ class Ability:
         return self.__str__()
 
 class AbilityTree:
-    def __init__(self, baseData: Dict, evolutions: Dict[int, Dict], variants: Dict[str, Dict]):
+    def __init__(self, baseData: Dict, evolutions: Dict[int, Dict]):
         self.baseData = baseData
         self.evolutions = evolutions
-        self.variants = variants
-        self.currentVariant = None
 
     # -- ability -- #
-    def getCurrentAbility(self, playerLevel: int) -> Optional[Ability]:
+    def getCurrentAbility(self, playerLevel: int, ascendancyOverlay: Optional[Dict] = None) -> Optional[Ability]:
         if self.baseData['level'] > playerLevel:
             return None
 
-        available = [lvl for lvl in self.evolutions if lvl <= playerLevel]
+        data = deepcopy(self.baseData)
+        for lvl in sorted(lvl for lvl in self.evolutions if lvl <= playerLevel):
+            data = _mergeAbilityData(data, self.evolutions[lvl])
 
-        if available:
-            evoLevel = max(available)
-            data = deepcopy(self.evolutions[evoLevel])
-        else:
-            data = deepcopy(self.baseData)
-        
-        if self.currentVariant:
-            data = self._applyVariantMods(data, self.currentVariant)
-        
+        if ascendancyOverlay:
+            data = _mergeAbilityData(data, ascendancyOverlay)
+
         return self._buildAbility(data)
-
-    def _applyVariantMods(self, base: Dict, variantName: str) -> Dict:
-        """
-        Apply a variant's modifications onto the resolved evolution data.\n
-        Keys ending in + are additive:
-            - damage_base+     → base['damage_base'] += value
-            - cooldown+        → base['cooldown']    += value
-            - effects+         → deep-merge into base['effects']
-            - resources+       → deep-merge into base['resources']
-            - tags+            → extend base['tags']
-        \n
-        Keys without + are replacements:
-            - targets, cooldown, damage_base, damage_scaling, etc.
-        """
-        if variantName not in self.variants:
-            return base
-        
-        result = deepcopy(base)
-        variant = self.variants[variantName]
-
-        for k, v in variant.items():
-            if k == 'description+':
-                result['description'] = result.get('description', '') + '\n' + v
-            elif k.endswith('+'):
-                field = k[:-1]
-                if field == 'effects':
-                    result['effects'] = _deepMergeEffects(result.get('effects', {}), v)
-                
-                elif field == 'resources':
-                    result['resources'] = _deepMergeEffects(result.get('resources', {}), v)
-                
-                elif field == 'tags':
-                    existing = result.get('tags', [])
-                    result['tags'] = list(set(existing) | set(v))
-
-                elif field == 'damage_base':
-                    result['damage_base'] = result.get('damage_base', 0) + v
-                elif field == 'damage_scaling':
-                    result['damage_scaling'] = result.get('damage_scaling', 0) + v
-                
-                elif field == 'heal_base':
-                    result['heal_base'] = result.get('heal_base', 0) + v
-                elif field == 'heal_percent':
-                    result['heal_percent'] = result.get('heal_percent', 0) + v
-
-                elif field == 'cooldown':
-                    result['cooldown'] = max(0, result.get('cooldown', 0) + v)
-                
-            else:
-                result[k] = v
-
-        return result
 
     def _buildAbility(self, data: Dict) -> Ability:
         dScale = data.get('damage_scaling', 0)
@@ -196,19 +142,31 @@ class AbilityTree:
             data.get('description', ''),
         )
 
-    def unlockVariant(self, variantName: str) -> bool:
-        if variantName not in self.variants:
-            return False
-        self.variants[variantName]['unlocked'] = True
-        return True
-
-    def setActiveVariant(self, variantName: Optional[str]) -> bool:
-        if variantName and variantName not in self.variants:
-            return False
-        self.currentVariant = variantName
-        return True
-
 # -- helpers -- #
+def _mergeAbilityData(base: Dict, overlay: Dict) -> Dict:
+    result = deepcopy(base)
+
+    for k, v in overlay.items():
+        if k == 'description+':
+            result['description'] = result.get('description', '') + '\n' + v
+        elif k.endswith('+'):
+            field = k[:-1]
+            if field in ('effects', 'resources'):
+                result[field] = _deepMergeEffects(result.get(field, {}), v)
+            elif field == 'tags':
+                existing = result.get('tags', [])
+                result['tags'] = list(set(existing) | set(v))
+            elif field == 'cooldown':
+                result['cooldown'] = max(0, result.get('cooldown', 0) + v)
+            elif isinstance(result.get(field), (int, float)):
+                result[field] = result.get(field, 0) + v
+            else:
+                result[field] = v
+        else:
+            result[k] = v
+
+    return result
+
 def _deepMergeEffects(base: Dict, overlay: Dict) -> Dict:
     result = deepcopy(base)
     for k, v in overlay.items():
@@ -224,6 +182,29 @@ def _deepMergeEffects(base: Dict, overlay: Dict) -> Dict:
             result[k] = deepcopy(v)
     return result
 
+def _findMaxAttr(player, attr: str) -> Optional[str]:
+    x = attr.lstrip('_')
+    capitalised = x[0].upper() + x[1:]
+    for candidate in (f'_max{capitalised}', f'max{capitalised}', f'_max{x}', f'max{x}'):
+        if hasattr(player, candidate):
+            return candidate
+    return None
+
+def _resolveResourceAmount(player, resource: str, amount) -> int:
+    if not isinstance(amount, dict):
+        return amount
+    if 'damage_type' not in amount:
+        return int(amount.get('amount', 0))
+
+    pct = amount.get('amount', 0)
+    pct = pct / 100 if pct >= 1 else pct
+
+    attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
+    maxAttr = _findMaxAttr(player, attr)
+    maxVal = getattr(player, maxAttr, 0) if maxAttr else 0
+
+    return int(maxVal * pct)
+
 def _buildEvolutions(evoData: Dict[str, Dict], baseName: str) -> Dict[int, Dict]:
     evolutions = {}
     for levelStr, data in evoData.items():
@@ -236,7 +217,7 @@ def _buildEvolutions(evoData: Dict[str, Dict], baseName: str) -> Dict[int, Dict]
 
 DAMAGE_TYPES = [
     'physical', 'fire', 'cold', 'lightning', 'dark', 'holy', 'arcane',
-    'wind', 'earth', 'psychic', 'ethereal', 'chaos'
+    'earth', 'psychic', 'ethereal', 'chaos'
 ]
 
 #=========================================================================================#
@@ -476,11 +457,7 @@ class Effects:
 
 #=========================================================================================#
 
-def loadAbilities() -> Dict[str, Dict[str, Dict[str, AbilityTree]]]:
-    """
-    Returns:
-        classAbilties[className][ascendancyName][abilityName] = AbilityTree
-    """
+def loadAbilities() -> Dict[str, Dict[str, Dict]]:
     with open('data/abilities.json', 'r') as f:
         data: Dict[str, Any] = load(f)
 
@@ -490,8 +467,12 @@ def loadAbilities() -> Dict[str, Dict[str, Dict[str, AbilityTree]]]:
         classAbilities[className] = {}
 
         for ascendancyName, ascendancyAbilities in classData.items():
-            classAbilities[className][ascendancyName] = {}
+            if ascendancyName != 'base':
+                # ascendancy sections are flat {baseAbilityName: alterationData} maps, not trees
+                classAbilities[className][ascendancyName] = ascendancyAbilities or {}
+                continue
 
+            classAbilities[className]['base'] = {}
             if not ascendancyAbilities:
                 continue
 
@@ -507,6 +488,7 @@ def loadAbilities() -> Dict[str, Dict[str, Dict[str, AbilityTree]]]:
                     'heal_base': abilityData.get('heal_base', 0),
                     'heal_percent': abilityData.get('heal_percent', 0),
                     'cooldown': abilityData.get('cooldown', 0),
+                    'level': abilityData.get('level', 1),
                     'targets': abilityData.get('targets', 1),
                     'resources': abilityData.get('resources', {}),
                     'effects': abilityData.get('effects', {}),
@@ -516,14 +498,171 @@ def loadAbilities() -> Dict[str, Dict[str, Dict[str, AbilityTree]]]:
 
                 evolutions = _buildEvolutions(abilityData.get('evolutions', {}), abilityName)
 
-                tree = AbilityTree(
-                    baseData, evolutions, abilityData.get('variants', {}),
-                )
+                tree = AbilityTree(baseData, evolutions)
 
-                classAbilities[className][ascendancyName][abilityName] = tree
+                classAbilities[className]['base'][abilityName] = tree
 
     return classAbilities
 
-CLASS_ABILITIES: Dict[str, Dict[str, Dict[str, AbilityTree]]] = loadAbilities()
+CLASS_ABILITIES: Dict[str, Dict[str, Dict]] = loadAbilities()
+
+#=========================================================================================#
+# -- shared effect resolution (used by both player Ability and EnemyAbility effects) -- #
+
+def resolveEffects(effectsDict: Dict) -> List[StatusEffect]:
+    result: List[StatusEffect] = []
+
+    for effectName, params in effectsDict.items():
+        if effectName == 'spawn_consumable':
+            continue
+
+        statusEffects = []
+
+        match effectName:
+            # -- dots -- #
+            case 'bleed':
+                statusEffects = Effects.createBleed(params.get('stacks', 1))
+            case 'burn':
+                statusEffects = Effects.createBurn(params.get('stacks', 1))
+            case 'poison':
+                statusEffects = Effects.createPoison(params.get('stacks', 1))
+            case 'curse':
+                statusEffects = Effects.createCurse(params.get('stacks', 1))
+            # -- cc -- #
+            case 'stun':
+                if random.random() < params.get('chance', 1.0):
+                    statusEffects = [Effects.createStun(params.get('turns', 1))]
+            case 'freeze':
+                if random.random() < params.get('chance', 1.0):
+                    statusEffects = [Effects.createFreeze(params.get('turns', 1))]
+            # -- debuffs -- #
+            case 'chill':
+                statusEffects = Effects.createChill(
+                    params.get('stacks', 1), params.get('turns', 2), params.get('amount', 0.2)
+                )
+            case 'slow':
+                statusEffects = [Effects.createSlow(
+                    params.get('turns', 2), params.get('amount', 0.2)
+                )]
+            case 'blind':
+                statusEffects = [Effects.createBlind(
+                    params.get('turns', 3), params.get('amount', 0.2)
+                )]
+            case 'shock':
+                statusEffects = [Effects.createShock(
+                    params.get('turns', 3), params.get('amount', 0.2)
+                )]
+            case 'vulnerable':
+                statusEffects = [Effects.createVulnerable(
+                    params.get('turns', 2), params.get('amount', 0.2)
+                )]
+            case 'weaken':
+                statusEffects = [Effects.createWeaken(
+                    params.get('turns', 2), params.get('amount', 0.25)
+                )]
+            case 'exposed':
+                statusEffects = [Effects.createExposed(
+                    params.get('turns', 2), params.get('amount', 10)
+                )]
+            case 'elemental_exposure':
+                statusEffects = [Effects.createElementalExposure(
+                    params.get('turns', 3), params.get('amount', 30)
+                )]
+            case 'divine_exposure':
+                statusEffects = [Effects.createDivineExposure(
+                    params.get('turns', 3), params.get('amount', 30)
+                )]
+            case 'physical_exposure':
+                statusEffects = [Effects.createPhysicalExposure(
+                    params.get('turns', 3), params.get('amount', 30)
+                )]
+            case 'otherworld_exposure':
+                statusEffects = [Effects.createOtherworldExposure(
+                    params.get('turns', 3), params.get('amount', 30)
+                )]
+            case 'daze':
+                statusEffects = [Effects.createDaze(
+                    params.get('turns', 2), abs(params.get('speed', 0.1)), params.get('damage', 0.9)
+                )]
+            # -- buffs -- #
+            case 'regeneration':
+                pct = params.get('amount_percent', 0)
+                statusEffects = [Effects.createRegeneration(
+                    params.get('turns', 2), (pct / 100 if pct > 1 else pct), params.get('amount_flat', 0)
+                )]
+            case 'stoneskin':
+                statusEffects = [Effects.createStoneskin(
+                    params.get('turns', 2), params.get('amount', 0.1)
+                )]
+            case 'haste':
+                statusEffects = [Effects.createHaste(
+                    params.get('turns', 2), params.get('speed', 0.1), params.get('damage', 1.1)
+                )]
+
+        result.extend(statusEffects)
+
+    return result
+
+#=========================================================================================#
+# -- enemy abilities -- #
+
+class EnemyAbility:
+    def __init__(self, name: str, category: str, tier: int, levelReq: int,
+                 cooldown: int, targets: int | str,
+                 damageBase: int, damageScaling: float, damageType: Optional[str],
+                 weight: int, effects: Dict, description: str):
+        self.name = name
+        self.category = category
+        self.tier = tier
+        self.levelReq = levelReq
+        self.maxCooldown = cooldown
+        self.cooldown = 0
+        self.targets = targets
+        self.damageBase = damageBase
+        self.damageScaling = damageScaling
+        self.damageType = damageType
+        self.weight = weight
+        self.effects = effects
+        self.description = description
+
+    def calculateDamage(self, enemyBaseDamage: int) -> int:
+        return int(self.damageBase + (enemyBaseDamage * self.damageScaling))
+
+    def canUse(self) -> Tuple[bool, str]:
+        if self.cooldown > 0:
+            return False, f"On cooldown for {self.cooldown} more turns."
+        return True, ""
+
+    @property
+    def isDamaging(self) -> bool:
+        return self.damageBase > 0 or self.damageScaling > 0
+
+    def spawnedConsumableHeal(self) -> Optional[int]:
+        """Returns heal amount if ability spawns a consumable, else None"""
+        return self.effects.get('self', {}).get('spawn_consumable', {}).get('heal')
+
+    def __str__(self) -> str:
+        cdText = f"  Cooldown: {self.cooldown}" if self.cooldown > 0 else ""
+        return f"{self.name}{cdText} | Tier: {self.tier} | {self.category}"
+
+    def __repr__(self) -> str:
+        return f"EnemyAbility({self.name!r}), tier={self.tier}, lvl={self.levelReq}"
+
+def _buildEnemyAbility(data: Dict) -> EnemyAbility:
+    rawScaling = data.get('damage_scaling', 0)
+    scaling = rawScaling / 100 if rawScaling > 1 else rawScaling
+
+    return EnemyAbility(
+        data['name'], data['category'], data['tier'], data['level_req'], data['cooldown'],
+        data['targets'], data.get('damage_base', 0), scaling, data.get('damage_type'),
+        data['weight'], data.get('effects', {}), data['description']
+    )
+
+def loadEnemyAbilities() -> Dict[str, EnemyAbility]:
+    with open('data/enemyAbilities.json', 'r') as f:
+        data = load(f)
+    return {name: _buildEnemyAbility(ability) for name, ability in data.items()}
+
+ENEMY_ABILITIES: Dict[str, EnemyAbility] = loadEnemyAbilities()
 
 ...

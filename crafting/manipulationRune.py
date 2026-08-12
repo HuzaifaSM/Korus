@@ -477,7 +477,7 @@ class SacrificeRune(CraftingItem):
         temp = super()._serialise()
         temp['tierEfficiency'] = self.tierEfficiency
         return temp
-    
+
     @classmethod
     def deserialise(cls, data):
         rune = super().deserialise(data)
@@ -527,7 +527,7 @@ class SacrificeRune(CraftingItem):
             maxTier = MAX_TIERS.get((equipType, baseId))
             if maxTier is None:
                 continue
-            if affix.tier < maxTier:
+            if affix.tier < maxTier and powerToTier(totalPower, list(range(1, maxTier + 1))) > affix.tier: # if affix isn't max tier, and if the result will actually increase the affix's tier
                 candidates.append(s)
         if not candidates:
             return CraftResult(
@@ -589,7 +589,7 @@ class PerfectSacrificeRune(SacrificeRune):
     description = 'Removes 1 affix and adds its tiers very efficiently to another random affix'
     minItemLevel = 55
     successEntropy = 0.3
-    tierEfficiency = 1.7
+    tierEfficiency = 1.9
     dropWeight = 35
 
 MANIPULATION_RUNES: Dict[str, CraftingItem] = {

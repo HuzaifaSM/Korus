@@ -8,7 +8,6 @@ from .styles import (
 from .campAreas.campfire import Campfire
 from .campAreas.crafter import Crafter
 from .campAreas.forge import Forge
-from .campAreas.training import TrainingGrounds
 from .campAreas.market import Market
 from .campAreas.questBoard import QuestBoard
 
@@ -19,9 +18,8 @@ def printChoices():
         "[dim]1)[/dim] [red]Campfire[/red]",
         "[dim]2)[/dim] [cyan]Crafter[/cyan]",
         "[dim]3)[/dim] [yellow]Forge[/yellow]",
-        "[dim]4)[/dim] [magenta]Training Grounds[/magenta]",
-        "[dim]5)[/dim] [green]Market[/green]",
-        "[dim]6)[/dim] [blue]Quest Board[/blue]"
+        "[dim]4)[/dim] [green]Market[/green]",
+        "[dim]5)[/dim] [blue]Quest Board[/blue]"
     ]
     for line in choices:
         console.print(line)
@@ -31,7 +29,6 @@ class Camp:
         - Campfire
         - Crafter
         - Forge
-        - Training Grounds
         - Market
         - Quest Board"""
     def __init__(self, player):
@@ -39,16 +36,14 @@ class Camp:
         self.campfire = Campfire(self.player) #1
         self.crafter = Crafter(self.player) #2
         self.forge = Forge(self.player) #3
-        self.trainingGrounds = TrainingGrounds(self.player) #4
-        self.market = Market(self.player) #5
-        self.questBoard = QuestBoard(self.player) #6
+        self.market = Market(self.player) #4
+        self.questBoard = QuestBoard(self.player) #5
 
     def _serialiseAll(self):
         return {
             'campfire': self.campfire._serialise(),
             'crafter': self.crafter._serialise(),
             'forge': self.forge._serialise(),
-            'trainingGrounds': self.trainingGrounds._serialise(),
             'market': self.market._serialise(),
             'questBoard': self.questBoard._serialise()
         }
@@ -59,35 +54,27 @@ class Camp:
         self.campfire.player = player
         self.crafter.player = player
         self.forge.player = player
-        self.trainingGrounds.player = player
         self.market.player = player
         self.questBoard.player = player
-        
+
         campfire = data['campfire']
         self.campfire.name = campfire.get('name', 'Campfire')
         self.campfire.resourcesNeeded = campfire.get('resourcesNeeded', {})
         self.campfire.level = campfire.get('level', 1)
         self.campfire.supplies = campfire.get('supplies', 0)
-        
+
         crafter = data['crafter']
         self.crafter.name = crafter.get('name', 'Crafter')
         self.crafter.resourcesNeeded = crafter.get('resourcesNeeded', {})
         self.crafter.level = crafter.get('level', 1)
         self.crafter.blueprints = crafter.get('blueprints', 0)
-        
+
         forge = data['forge']
         self.forge.name = forge.get('name', 'Forge')
         self.forge.resourcesNeeded = forge.get('resourcesNeeded', {})
         self.forge.level = forge.get('level', 1)
         self.forge.fuel = forge.get('fuel', 0)
-        
-        training = data['trainingGrounds']
-        self.trainingGrounds.name = training.get('name', 'trainingGrounds')
-        self.trainingGrounds.resourcesNeeded = training.get('resourcesNeeded', {})
-        self.trainingGrounds.level = training.get('level', 1)
-        self.trainingGrounds.skillPoints = training.get('skillPoints', 1)
-        self.trainingGrounds.trainingPoints = training.get('trainingPoints', 1)
-        
+
         market = data['market']
         self.market.name = market.get('name', 'trainingGrounds')
         self.market.resourcesNeeded = market.get('resourcesNeeded', {})
@@ -131,10 +118,8 @@ class Camp:
                     case 3:
                         self.forge.mainMenu()
                     case 4:
-                        self.trainingGrounds.mainMenu()
-                    case 5:
                         self.market.mainMenu()
-                    case 6:
+                    case 5:
                         self.questBoard.mainMenu()
                     case _:
                         printWarning("\nInvalid choice.")

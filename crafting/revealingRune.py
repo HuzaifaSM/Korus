@@ -164,16 +164,16 @@ class DivineRevealingRune(BaseRevealingRune):
     numChoices = 4
     minAffixLevel = 40
     minItemLevel = 50
-    successEntropy = 0.45
+    successEntropy = 0.5
     dropWeight = 15
 
 class FocusedRevealingRune(BaseRevealingRune):
     name = '[steel_blue1 bold]Focused Revealing Rune[/steel_blue1 bold]'
-    description = 'Reveals 2 affixes above level 60.'
+    description = 'Reveals 2 affixes above level 55.'
     numChoices = 2
-    minAffixLevel = 60
+    minAffixLevel = 55
     minItemLevel = 70
-    successEntropy = 0.5
+    successEntropy = 0.45
     dropWeight = 6
 
 class PinpointRevealingRune(BaseRevealingRune):
@@ -183,7 +183,7 @@ class PinpointRevealingRune(BaseRevealingRune):
     minAffixLevel = 75
     minItemLevel = 80
     successEntropy = 0.6
-    dropWeight = 6
+    dropWeight = 2
 
 REVEALING_RUNES: Dict[str, BaseRevealingRune] = {
     'revealing': RevealingRune(),

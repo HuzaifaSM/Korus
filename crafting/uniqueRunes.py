@@ -248,7 +248,11 @@ class SoulboundRune(CraftingItem):
             affixId: affixData
             for affixId, affixData in availableAffixes.items()
             if affixData.get('levelReq', 0) <= item.level
-            and (affixData.get('stat') not in defenseStats or affixData.get('stat') == item.defenseType)
+            and (
+                affixData.get('stat') not in defenseStats
+                or affixData.get('isGlobal', False) # global defense affixes ignore the item's own defense type
+                or affixData.get('stat') == item.defenseType
+            )
         }
         if not validAffixes:
             return CraftResult(
@@ -278,7 +282,8 @@ class SoulboundRune(CraftingItem):
             isPercent=affixData.get('isPercent', False),
             kind=slot.kind,
             weight=0,
-            categories=affixData.get('categories', ['soulbound'])
+            categories=affixData.get('categories', ['soulbound']),
+            isGlobal=affixData.get('isGlobal', False)
         )
         soulboundAffix.baseValue = value
         soulboundAffix.soulbound = True

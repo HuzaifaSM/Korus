@@ -3,7 +3,7 @@ from typing import Dict
 from .entities import Entity
 from .items import Equipment, ItemRarity, LootTable, RESOURCES, rollRarity, RARITY_WEIGHTS
 from .runeDrops import rollRuneDrops
-from .enemyAbilities import ENEMY_ABILITIES, EnemyAbility
+from .abilities import ENEMY_ABILITIES, EnemyAbility
 from json import load
 from .styles import console
 from .enemyAi import EnemyAI
@@ -38,10 +38,6 @@ class Enemy(Entity):
 
         self.ai = EnemyAI(self)
 
-        self._generateEquipment()
-        self._generateInventory()
-        self._recalculateStats(False)
-
         self.overwhelmStacks = 0
         self.tortureStacks = 0
         self.hauntedStacks = 0
@@ -54,6 +50,10 @@ class Enemy(Entity):
         self.ruin = 0
         self.bloodSpike = 0
         self.necrosis = 0
+
+        self._generateEquipment()
+        self._generateInventory()
+        self._recalculateStats(False)
 
     @property
     def tainted(self):
@@ -82,8 +82,8 @@ class Enemy(Entity):
 
         return damageDealt, damageType
     
-    def onHit(self, damageTaken, damageType, attacker = None, combatManager=None):
-        super().onHit(damageTaken, damageType, attacker, combatManager)
+    def onHit(self, damageTaken, damageType, crit = False, attacker = None, combatManager=None):
+        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
         damageTaken = int(damageTaken * (1 + (self.tortureStacks * 0.01)))
 

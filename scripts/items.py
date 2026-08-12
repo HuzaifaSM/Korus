@@ -10,6 +10,8 @@ class ItemRarity(Enum):
     RARE = "rare"
     EPIC = "epic"
     LEGENDARY = "legendary"
+    #MYTHIC = "mythic"
+    #BLANK = "blank"
     QUEST = "quest"
 
 class AffixSlot:
@@ -104,6 +106,14 @@ ENTROPY_RESISTANCE = {
     ItemRarity.LEGENDARY: 0.35 #35%
 }
 
+MAX_PRESERVATIONS = {
+    ItemRarity.COMMON: 1,
+    ItemRarity.UNCOMMON: 1,
+    ItemRarity.RARE: 2,
+    ItemRarity.EPIC: 2,
+    ItemRarity.LEGENDARY: 3
+}
+
 class ItemType(Enum):
     RESOURCE = "resource"
     CONSUMABLE = "consumable"
@@ -132,7 +142,7 @@ CONSUMABLES = {
 
 DAMAGE_TYPES = [
     'physical',
-    'fire', 'cold', 'lightning', 'wind', 'earth',
+    'fire', 'cold', 'lightning', 'earth',
     'dark', 'holy', 'arcane',
     'ethereal', 'psychic', 'chaos'
 ]
@@ -215,6 +225,7 @@ class Equipment(Item):
         self.entropy = 0
         self.entropyPreserved = False
         self.numPreserved = 0
+        self.maxPreservations = MAX_PRESERVATIONS[rarity]
         self.maxEntropy = maxEntropy if maxEntropy is not None else 1.0
         self.baseEntropyResistance = ENTROPY_RESISTANCE[rarity]
         self.destabilised = False
@@ -227,34 +238,40 @@ class Equipment(Item):
         self.durability = self.maxDurability
 
     @property
-    def prefixes(self):
+    def prefixes(self) -> List[Affix]:
         return [s.affix for s in self.prefixSlots if s.affix]
     
     @property
-    def suffixes(self):
+    def suffixes(self) -> List[Affix]:
         return [s.affix for s in self.suffixSlots if s.affix]
 
     @property
-    def stats(self):
+    def stats(self) -> List[Affix]:
         return self.prefixes + self.suffixes
 
     @property
-    def locked(self):
+    def locked(self) -> bool:
         for affix in self.suffixes + self.prefixes:
             if affix.locked:
                 return True
         return False
 
     @property
-    def entropyLocked(self):
+    def entropyLocked(self) -> bool:
         return self.entropy >= self.maxEntropy
 
     @property
-    def soulbound(self):
+    def soulbound(self) -> bool:
         for slot in self.prefixSlots + self.suffixSlots:
             if slot.soulbound:
                 return True
         return False
+
+    @property
+    def preservable(self) -> bool:
+        if self.numPreserved >= self.maxPreservations:
+            return False
+        return True
 
     def serialise(self):
         temp = super().serialise()
@@ -401,6 +418,11 @@ class Equipment(Item):
                 typeStr = f" | [cyan]Damage Type:[/cyan] [{dType}]{dType.title()}[/{dType}]"
             damageString = f"\n[cyan]Damage:[/cyan] {self.damage} (Base: {self.baseDamage}){typeStr}"
         entropyString = f"\n[red3 bold]Entropy:[/red3 bold] {self.entropy} / {self.maxEntropy} | [hot_pink]Entropy Resistance:[/hot_pink] {round(self.entropyResistance * 100)}%"
+        if self.numPreserved > 0:
+            if self.preservable:
+                entropyString += f" | [spring_green3 bold]Preservation Uses Remaining:[/spring_green3 bold] {self.maxPreservations - self.numPreserved}"
+            else:
+                entropyString += " | [dim green]Out of Preservations[/dim green]"
         if self.entropyLocked:
             entropyString += " | [red3 bold]ENTROPY LOCKED[/red3 bold]"
         if self.entropyPreserved:
@@ -443,10 +465,9 @@ class Equipment(Item):
             self.durability = min(self.durability, self.maxDurability)
 
     def gainMastery(self, amount: int):
-        if self.mastery >= 20:
+        if self.mastery >= 20: # max mastery is 20
             return
-        cap = 20
-        maxGain = cap - self.mastery
+        maxGain = 20 - self.mastery
         gained = amount
         if amount > maxGain:
             gained = maxGain
@@ -778,6 +799,10 @@ class Equipment(Item):
                 numSuffixes,
                 equipment['level']
             )
+
+        e.update()
+        e.durability = e.maxDurability
+
         return e
 
     def _generateName(self):
@@ -789,18 +814,17 @@ class Equipment(Item):
             'dark': 'Corrupt',
             'holy': 'Radiant',
             'arcane': 'Mystic',
-            'wind': 'Tempest',
             'earth': 'Stone',
             'chaos': 'Chaotic',
             'ethereal': 'Phasing',
             'psychic': 'Imaginary'
         }
 
-        prefixAffixes = []
+        prefixAffixes: List[Affix] = []
         for slot in self.prefixSlots:
             if slot.affix:
                 prefixAffixes.append(slot.affix)
-        suffixAffixes = []
+        suffixAffixes: List[Affix] = []
         for slot in self.suffixSlots:
             if slot.affix:
                 suffixAffixes.append(slot.affix)
@@ -813,7 +837,7 @@ class Equipment(Item):
         if len(suffixAffixes) > 0:
             highestSuffixAffix = max(suffixAffixes, key=lambda a: a.tier)
             suffix = f" {highestSuffixAffix.name}"
-        
+
         if hasattr(self, 'destabilisedAffixes') and len(self.destabilisedAffixes) > 0:
             affix = random.choice(self.destabilisedAffixes)
             afName = affix.name
@@ -899,7 +923,7 @@ class Equipment(Item):
         globalIncrease = 0
 
         for affix in self.stats:
-            if affix.stat.startswith('global_increased'):
+            if affix.isGlobal and affix.isPercent and affix.stat in (stat, 'defenses'):
                 globalIncrease += affix.value / 100
             elif affix.stat == stat and affix.isFlat:
                 totalBonus += affix.value
@@ -931,7 +955,7 @@ class Consumable(Item):
                  effect: Dict = None):
         super().__init__(name, "consumable", rarity, value, stackable=True, maxStack=999)
         self.effect = effect or {}
-        self.value = effect.get('healing', 20) * 50
+        self.value = effect.get('heal', 20) * 50
 
     def use(self, target):
         if "heal" in self.effect:
@@ -941,12 +965,12 @@ class Consumable(Item):
             console.print(f"Healed for {actualHeal} HP")
             return True
         return False
-    
+
     def serialise(self):
         current = super().serialise()
         current['effect'] = self.effect
         return current
-    
+
     @classmethod
     def deserialise(cls, data):
         cls = Consumable(

@@ -2,21 +2,21 @@ from typing import Dict, Optional, List
 import random
 from copy import deepcopy
 from .items import Equipment, Consumable
-from .abilities import ABILITIES, Ability
+from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, EnemyAbility, resolveEffects
 from .runeDrops import getRuneObject
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo,
-    formatDamageType, formatRarity, createHealthBar
+    formatDamageType, formatRarity, createHealthBar, formatEffectsSummary
 )
 
-ELEMENTAL_RES = ['fire', 'wind', 'earth', 'cold', 'lightning']
+ELEMENTAL_RES = ['fire', 'earth', 'cold', 'lightning']
 DIVINE_RES = ['holy', 'dark', 'arcane']
 OTHERWORLD_RES = ['chaos', 'ethereal', 'psychic']
 
 class Entity:
     def __init__(self, health: int, damage: int, baseCritChance: float, baseCritMulti: float,
                  damageType: str, speed: float,
-                 name: str, className: str = None):
+                 name: str, className: str = None, isPlayer: bool = False):
         self._maxHealth = health
         self._health = health
         self._shield = 0
@@ -32,7 +32,6 @@ class Entity:
                 'dark': 0,
                 'holy': 0,
                 'arcane': 0,
-                'wind': 0,
                 'earth': 0,
                 'psychic': 0,
                 'ethereal': 0,
@@ -58,6 +57,7 @@ class Entity:
                 'resistancePenetration': 0,
                 'multihit': 0,
                 'lifesteal': 0,
+                'added_multihits': 0,
                 'hpRegen': 0,
                 'increased_defenses': 0,
             },
@@ -66,7 +66,6 @@ class Entity:
                 'fire': 0,
                 'earth': 0,
                 'lightning': 0,
-                'wind': 0,
                 'cold': 0,
                 'holy': 0,
                 'dark': 0,
@@ -75,12 +74,14 @@ class Entity:
                 'divine': 0,
                 'otherworld': 0,
                 'all': 0,
+                'resistancePenetration': 0,
                 'stunAvoidance': 0,
                 'dotResistance': 0,
                 'ailmentAvoidance': 0,
                 'critResistance': 0,
                 'lifesteal': 0,
                 'hpRegen': 0,
+                'added_multihits': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
                 'added_evasion': 0,
@@ -99,13 +100,13 @@ class Entity:
                 'healingMagnitude': 0,
                 'stunAvoidance': 0,
                 'dotResistance': 0,
-                'increased_evasion': 0,
                 'speed': 0,
                 'critChance': 0,
                 'critMulti': 0,
                 'resistancePeneration': 0,
                 'lifesteal': 0,
                 'hpRegen': 0,
+                'added_multihits': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
                 'added_evasion': 0,
@@ -113,8 +114,7 @@ class Entity:
                 'increased_armour': 0,
                 'increased_evasion': 0,
                 'increased_energy_shield': 0,
-                # for combat buffs that need to be removed at the end of combat
-                # e.g. monk prowess, fighter combo, rogue siphon
+                'increased_dark_damage': 0,
             },
             'baseCritChance': baseCritChance or 0.05,
             'baseCritMulti': baseCritMulti or 1.5,
@@ -152,11 +152,10 @@ class Entity:
         self.classDescription = None
         self._ascendancy = None
         self.ascendancyDescription = None
-        self._subType = None
-        self.subTypeDescription = None
+        self.isPlayer = isPlayer
 
     @property
-    def isDead(self) -> bool:
+    def _isDead(self) -> bool:
         return self._health <= 0
 
     @property
@@ -183,6 +182,10 @@ class Entity:
     def critMulti(self) -> float:
         return self._stats['baseCritMulti'] + (self._stats['Bonuses']['critMulti']) + self._getExtraBonuses('critMulti')
 
+    @property
+    def numMultihits(self) -> int:
+        return 2 + self._getExtraBonuses('added_multihits')
+
     def __rich__(self):
         return self.__str__()
 
@@ -205,10 +208,6 @@ class Entity:
         return f"{self.serialise()}"
 
     def serialise(self):
-        serialisedAbilities = {}
-        for name, ability in self._abilities.items():
-            serialisedAbilities[name] = ability.serialise()
-
         equipped = {}
         for slot, equip in self._equipment.items():
             if equip:
@@ -226,7 +225,6 @@ class Entity:
                 'damageType': self._damageType,
                 'baseSpeed': self._baseSpeed,
                 'stats': self._stats,
-                'abilities': serialisedAbilities,
                 'name': self._name,
                 'level': self._level,
                 'xp': self._xp,
@@ -240,8 +238,6 @@ class Entity:
                 'classDescription': self.classDescription,
                 'ascendancy': self._ascendancy,
                 'ascendancyDescription': self.ascendancyDescription,
-                'subType': self._subType,
-                'subTypeDescription': self.subTypeDescription
         }
 
     def deserialise(self, data: Dict):
@@ -260,7 +256,6 @@ class Entity:
         self.classDescription = data.get('classDescription', 'Basic Player')
         self._ascendancy = data.get('ascendancy', None)
         self.ascendancyDescription = data.get('ascendancyDescription', None)
-        self._subType = data.get('subType', None)
         equipment = data.get('equipped')
 
         if equipment:
@@ -278,13 +273,6 @@ class Entity:
         self._craftingInventory = data.get('craftingInventory', {})
         print(self._craftingInventory)
         self._abilities = {}
-        abilityData = data.get('abilities', {})
-        if type(abilityData) == dict:
-            for name, ability in abilityData.items():
-                self._abilities[name] = Ability._deserialise(ability)
-        elif type(abilityData) == list:
-            for ability in abilityData:
-                self.gainAbility(ability, False)
 
         self._recalculateStats()
 
@@ -315,7 +303,7 @@ class Entity:
             resistMod = min(0.75, resistMod)
         if damageType == 'true':
             resistMod = 0
-        damage = int(damage - round(damage * (1 - resistMod)))
+        damage = int(round(damage * (1 - resistMod)))
         trueDamage = max(0, damage - self._shield)
         damagePrevented = damage - trueDamage
         self._shield -= damagePrevented
@@ -366,18 +354,32 @@ class Entity:
         console.print(f"[gold]{self._name} got +{amount}g.[/gold] [dim]Total gold: {self._gold}[/dim]")
 
     def gainAbility(self, ability: str, doPrint: bool = True):
-        if ability in ABILITIES:
-            self._abilities[ability] = deepcopy(ABILITIES[ability]) # used to separate references
-            if doPrint:
-                damageTypeFormatted = formatDamageType(ABILITIES[ability].damageType, ABILITIES[ability].damageType)
-                console.print(f"[success]{self._name} Learnt {ability}![/success]")
-                console.print(f"[dim]Stats: Damage = {ABILITIES[ability].damage} / Type = {damageTypeFormatted}[/dim]")
-                if ABILITIES[ability]._mechanics:
-                    console.print(f"  [buff]- Effects: {ABILITIES[ability]._mechanics}[/buff]")
+        if self.isPlayer:
+            tree = CLASS_ABILITIES.get(self.className, {}).get('base', {}).get(ability)
+            if not tree:
+                return
+            overlay = CLASS_ABILITIES.get(self.className, {}).get(self._ascendancy, {}).get(ability)
+            resolved = tree.getCurrentAbility(self._level, overlay)
+            if not resolved:
+                return
+        else:
+            if ability not in ENEMY_ABILITIES:
+                return
+            resolved = deepcopy(ENEMY_ABILITIES[ability]) # used to separate references
+
+        self._abilities[ability] = resolved
+        if doPrint:
+            console.print(f"[success]{self._name} Learnt {ability}![/success]")
+            if resolved.damageType:
+                damageTypeFormatted = formatDamageType(resolved.damageType, resolved.damageType)
+                console.print(f"[dim]Stats: Base Damage = {resolved.baseDamage} / Type = {damageTypeFormatted}[/dim]")
+            effectsSummary = formatEffectsSummary(resolved.effects)
+            if effectsSummary:
+                console.print(f"  [buff]- Effects: {effectsSummary}[/buff]")
 
     def removeAbility(self, ability: str, doPrint: bool = True):
-        if ability in ABILITIES:
-            del(self._abilities[ability])
+        if ability in self._abilities:
+            del self._abilities[ability]
             if doPrint:
                 console.print(f"[warning]{self._name} no longer has the ability: {ability}[/warning]")
 
@@ -385,16 +387,24 @@ class Entity:
         if self._stamina < ability.staminaCost:
             return False
         self._stamina -= ability.staminaCost
-        return False
+        return True
+
+    def spendHealthForAbility(self, amount: int):
+        """Default: abilities that cost Health draw straight from Health. Rewrite per class for alternate payment sources."""
+        self._health = max(0, self._health - amount)
+        if self._isDead:
+            self.death()
 
     def displayAbilities(self):
         console.print("\n[bold cyan]=== Abilities ===[/bold cyan]")
-        for ability in self._abilities.values():
-            console.print(f"  [cyan]- {ability._name}[/cyan]")
-            damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
-            console.print(f"    [dim]Damage: {ability.damage} | Type: {damageTypeFormatted}[/dim]")
-            if ability._mechanics:
-                console.print(f"    [buff]Effects: {', '.join(ability._mechanics)}[/buff]")
+        for name, ability in self._abilities.items():
+            console.print(f"  [cyan]- {name}[/cyan]")
+            if ability.damageType:
+                damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
+                console.print(f"    [dim]Damage: {ability.calculateDamage(self._damage)} | Type: {damageTypeFormatted}[/dim]")
+            effectsSummary = formatEffectsSummary(ability.effects)
+            if effectsSummary:
+                console.print(f"    [buff]Effects: {effectsSummary}[/buff]")
 
     def addRune(self, category: str, runeType: str, quantity: int = 1):
         key = f'{category}_{runeType}'
@@ -637,17 +647,19 @@ class Entity:
                 console.print(f"  [cyan]{slot.capitalize()}:[/cyan] [dim]Empty[/dim]")
 
     def showAbilities(self):
-        console.print("\n[bold cyan]=== ABILITIES ===[/bold cyan]")
+        console.print("\n[bold cyan]=== abilities ===[/bold cyan]")
         if not self._abilities:
             printWarning("No abilities learnt yet!")
             return
         for name, ability in self._abilities.items():
-            damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
             console.print(f" [bold]= {name} =[/bold]")
-            console.print(f"  [dim]- Damage: {ability.damage} | Type: {damageTypeFormatted}[/dim]")
+            if ability.damageType:
+                damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
+                console.print(f"  [dim]- Damage: {ability.calculateDamage(self._damage)} | Type: {damageTypeFormatted}[/dim]")
             console.print(f"  [dim]- Cooldown: {ability.maxCooldown} turns[/dim]")
-            if ability._mechanics:
-                console.print(f"  [buff]- Effects: {', '.join(ability._mechanics)}[/buff]")
+            effectsSummary = formatEffectsSummary(ability.effects)
+            if effectsSummary:
+                console.print(f"  [buff]- Effects: {effectsSummary}[/buff]")
 
     def showCraftingInventory(self):
         console.print('\n[cyan bold]=== Crafting Inventory ===[/cyan bold]')
@@ -678,6 +690,10 @@ class Entity:
                 if accessory.durability == 0:
                     printWarning(f"{accessory.name} has broken!")
                     self.unequip(slot)
+
+        incStr = f'increased_{damageType}_damage'
+        if self._stats['Temporary'].get(incStr, 0) > 0:
+            damageDealt += int(damageDealt * self._stats['Temporary'][incStr])
 
         return damageDealt, damageType
 

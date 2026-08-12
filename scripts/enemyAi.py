@@ -40,7 +40,7 @@ class EnemyAI:
             actions.append({
                 "id": ability.name,
                 "category": ability.category,
-                "damage": ability.calculateDamage(self._enemy._damage) if ability.isDamaging() else 0,
+                "damage": ability.calculateDamage(self._enemy._damage) if ability.isDamaging else 0,
                 "damageType": ability.damageType or self._enemy._damageType,
                 "cost": {},
                 "effects": rustEffects,
@@ -82,7 +82,6 @@ class EnemyAI:
 
     # -- ability execution -- #
     def _useAbility(self, ability, player: Entity, combatManager):
-        from .enemyAbilities import resolveEffects
         enemy = self._enemy
 
         console.print(f"\n[ability]{enemy._name}[/ability] uses [bold]{ability.name}[/bold]!")
@@ -98,19 +97,13 @@ class EnemyAI:
         else:
             damageTargets = [player]
 
-        if ability.isDamaging and damageTargets:
+        # damage AND effects (ability.effects['target']/['self']) are both resolved inside
+        # performAttack, uniformly for player- and enemy-used abilities
+        if damageTargets:
             for t in damageTargets:
                 combatManager.performAttack(enemy, t, abilityName=ability.name)
-
-        targetEffectsDict = ability.effects.get('target', {})
-        if targetEffectsDict and damageTargets:
-            for t in targetEffectsDict:
-                resolveEffects(targetEffectsDict, enemy, t, combatManager)
-
-        selfEffectsDict = {k: v for k, v in ability.effects.get('self', {}).items()
-                           if k != 'spawn_consumable'}
-        if selfEffectsDict:
-            resolveEffects(selfEffectsDict, enemy, enemy, combatManager)
+        elif ability.targets == 'self':
+            combatManager.performAttack(enemy, enemy, abilityName=ability.name)
 
         ability.cooldown = ability.maxCooldown
 
@@ -161,7 +154,7 @@ class EnemyAI:
             "player": {
                 "hp":          player._health,
                 "maxHp":       player._maxHealth,
-                "resistances": EnemyAI._getResistances(player),
+                "resistances": EnemyAI._getResistance(player),
                 "speed":       player._speed,
             }
         }

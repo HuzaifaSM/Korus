@@ -1,60 +1,81 @@
-NOTES: 
-  - useCallback() function in abilities.py is where mechanics are applied
+NOTES:
+  - resolveEffects() in abilities.py is where an ability's effects dict (target/self) gets turned into StatusEffect objects; performAttack() in combat.py is what actually applies them
   - make sure all 'crit damage' or similar is variable named to critMulti
 
-BUGS:
-  - 
+- erasing runes should have significantly lower entropy costs
+- double check all rune drop weights
+- rename 'multihit' stats and affixes to 'multihit chance' or 'chance to multihit'
 
-no styles/rune errors:
-- greater affix randomiser
-- erasing rune
-greater prefix + greater suffix erasing same as greater erasing
-if added == 0 for growth
-if removed == 0 for erasing
-space after confirm rune application
+BUGS:
+
+runes not working on first try:
 
 NEW AFFIXES:
+- health/stamina on hit/kill suffixes on weapons and rings
+- +x to max y resistance suffix (rings, amulet, armour)
+  > move off of armour and onto sigils and shields once they exist
+  > needs a new section in Entity._stats['Resistances']
+    - Entity._stats['Resistances']['max'] per resistance, default 75, increased by affix
+  > +1 to +10 across 7-8 tiers
+  > multi-res roll +1 to +8 across 7 tiers (t7 is 7-8)
+  > all res rolls +1 to +5 across 5 tiers
 - thorns damage: head, feet, legs, boots - prefix
 - otherworld resistance: same as divine but for psychic, ethereal and chaos damage
 - all affixes should have a minimum of 6 tiers, preferably 7+
 - after ability rework:
   > +max stamina, +stamina regen per turn
-    - both suffixes, scale same on all pieces of equipment, not available on rings/amulets
+    - both suffixes, scale same on all pieces of equipment, not available on rings/amulets/weapons
+  > mythic and soulbound affixes could include learning new abilities
 
 OTHER STUFF:
-  - more types of consumables as more things get added to the game
+  - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
+  - use crafting sandbox to test every single crafting item for bugs
+  - more enemy abilities
+  - add parallel and foresight runes
+    > foresight rune might need a complex system:
+      - chatgpt recommended: give each item an id, and whenever a foresight is used and any craft results are previewed, save that result as the only result rollable from that specific item
+  - more assets, properly ths time: soundtracks, art, etc:
+    > sprites, symbols, item icons, extra effort: top tier/soulbound/mythic/destabilised affix bonus visuals per item
+  - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
 
 CURRENTLY WORKING ON:
-  - updating the older class descriptons in this order:
-    > warrior
-    > fighter
-    > rogue
-    > monk
-  - ABILITY REWORK
-    >abilities.json and abilities.py
-    > abilities.json first, make at least all base class skills
-      > add stamina_cost field to all abilities + their upgrades/evolutions
-    > need to rewrite scripts.py ability tables
-      > add a enemy version of ability table which is more of a list of information
-      > viewed by player in-game by using a free action 'inspect enemy' -> displays relevant enemy information
+  - rework fighter class
+    > new mechanic uses stances: offensive and defensive
+      - offensive deals more damage but takes more damage, defensive is reverse
+      - ascendancies alter stances or add new opens
+
+  - finish improving warrior ascendancies + implementation, then check over all ascendancies one final time
+
+  - remove or rework any ascendancies that directly prohibit main class mechanic (e.g. Monk ascendancy disabling switching, Druid ascendancies disabling form changes)
+    > ^unless there is a good reason for it, e.g. monk psychopath is a good example of a correctly made ascendancy
+  
+  - make sure all ascendancies interact with main class mechanic in at least 1 way, 2+ if possible
+  
+  - expand ascendancy descriptions to be more clear on everything without making them too long to read in preparation for ascendancy shrine
+    > ascendancy shrine displays all ascendancies and descriptions and lets you choose which to become. can only be built after level 15 (gives player time to get resources)
+    > when all ascendancies are finished: add ascendancy upgrades
+      - every 20 levels, maxing at level 100, ascendancies gain a new upgrade, either a new mechanic or upgrades to stats or otherwise.
+
+  - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
+  
   - dungeons
     > better modifiers + more modifiers
       > dungeons.json basically needs to be remade
+      > new affix types such as "every floor enemies gain [x]" [x] = stats or items or anything
+      > create a new dict attribute in dungeons to keep track of dungeon stat changes, split between enemy and player
     > chance for inbetween wave events (more roguelike elements)
+    > should predefine entire encounter list, then iterate through it
 
 RIGHT NOW IMPORTANT:
 - finish ascendancies descriptions + functionality
-  -> need to rework Assassin for Rogue and anything first strike related
-  -> add ascending + character creation with sub types available
-  - add _removeOldAscendancy and _removeOldSubType methods to add classes
+  - add _removeOldAscendancy methods to add classes
 - make sure onHit return damageTaken and damageType at the end of methods
 
 NEED TO WORK ON:
   - ascendancy shrine camp area
     > also hosts changing ascendancy and subtypes
-  - multihit mechanic in combat system
-    > multihit = 50% chance for +1 target hit, 25% for +2, 5% for +3
-  - reworks
+    > when built: call player.gainClassAbilities() after an ascendancy change so ability overlays
+      apply immediately (updateAscendancy() has no callers yet, so this isn't wired anywhere yet)
 
 FUN ADDITIONAL STUFF:
   - playtime per save file
@@ -65,11 +86,8 @@ FUN BONUS LIBRARIES:
   - textual library
     > allows for terminal UI -> pygame but in the terminal
     > gpt: "AMAZING for your game if you ever want: proper menus, skill trees, inventory screens"
-      - would actually allow passive skill tree to be added in python and not need a game engine
-  - python-constraint
-    > puzzle mechanics or procedural rules
-    > can define systems like "generate x enemies/loot that obey y set of rules"
-  - py_trees
+      - would actually allow passive skill tree to be added in python and not need a game engine#
+  - py_trees <---
     > behaviour trees
     > boss logic! modular AI systems
   - noise
@@ -79,12 +97,14 @@ FUN BONUS LIBRARIES:
     > can simulate combat and other things outside of main game loop to test balance
 
 - keep adding more classes, more ascendancies, more sub types whenever you think of anything cool
-- fix ascendancy numbers + decide when roughly + how ascending works (~ level 20-30 seems good)
-  - ascendancy stat buffs need a lot bigger numbers.
-  - most likely unlocked around level 20-30, see average stats at that level and balance around top end
-  - some type of boss fight or trial?
-    > would need to implement bosses for boss fight, would be preferred method!
-    > refight same boss for re-picking ascendancy
+  > idea: upon levelling up to level 20, gain an ascendancy point which is used to unlock an ascendancy
+    - LATER ASCENDANCY BUFF IDEA:
+      > every 20 levels, continue to gain an ascendancy point, which can be used to unlock a buff or bonus 'thing'
+      > more than 4 upgrades, but ascendancy points capped at 4 (gain 1 at 40/60/80/100)
+        - e.g. Warlord buff could be: "Gain Fury stacks on attack if you have more than 40 (previously 50) Rage. Gain 5% Damage Reduction"
+          > essentially, only upgrades and buffs, similar to PoE ascendancy system (unlock ascendancy then gain extra things to add to it)
+  - ascendancy stat buffs need to be rebalanced around level 20 (level up every class to 20 and see standard health/gear/armour)
+    > no shop or external buff, only through combats for a 'minimal' viewpoint
 
 MARKET REWORK
   - need to fix/rework item value calculation and make it make logical sense
@@ -101,7 +121,7 @@ ITEM REWORK/IMPROVEMENTS
     > each base type has 1-2 base buffs they apply to themselves/the player, similar to affixes
       - e.g. daggers give +multihit chance, plate armour gives +x damage reduction, axes give chance to bleed on hit, etc.
       - buffs should be varied but of roughly similar power (shouldn't be any obvious BIS base unless build-specific)
-      - better base types should be unlocked at higher levels e.g. low lvl 1 dagger might have 1-2 multihit, lvl 100 could have 20+
+      - better base types should be unlocked at higher levels e.g. low lvl 1 dagger might have 1-2% multihit, lvl 100 could have 20+
         > stats dont scale linearly - might be easier to have a json file with all base types + their buffs with roll ranges
     > small chance for items dropped to be class specific
       - should only be for the player's class until the account stash is added
@@ -206,7 +226,7 @@ ITEM REWORK/IMPROVEMENTS
         > not abundant levels of rarity/quantity but a noticeable amount still
         > affixes are made/applied before loot table is made so item buffs can be applied correctly
 
-- TEXTUAL OVERHAUL
+- TEXTUAL OVERHAUL (would require a very large rework for a lot of things)
   > overhaul all rich with textual integration slowly
   > will require mid-level system rewrites
     - closer to pygame structure: act on input rather than wait for action
@@ -215,9 +235,9 @@ ITEM REWORK/IMPROVEMENTS
   > general layout:
     +----------------------------------------------------+--------------+
     | Player Stats |   Main Content Area                 | Additional   |
-    |              |   (combat / menus / inventory)      | Buttons/Info |
-    |              |                                     |              |
-    |              |                                     |              |
+    | HP/Defenses  |   (combat / menus / inventory)      | Buttons/Info |
+    | Damage Stats |                                     |              |
+    | 'See More'   |                                     |              |
     +----------------------------------------------------+ - Inventory  |
     | Combat Log / Event Log / Notifications             | - Settings   |
     |                                                    | - Save/Load  |
@@ -225,6 +245,8 @@ ITEM REWORK/IMPROVEMENTS
     +----------------------------------------------------+ - Help       |
     | Input Line                                         | - Exit       |
     +----------------------------------------------------+--------------+
+  > in combat or during any secondary menu, side buttons (or input line) can be swapped to revelant buttons
+    - e.g. 'attack', 'use ability', 'inspect enemies', etc.
 
 - lowest priority: (EXPANSION IDEAS)
 

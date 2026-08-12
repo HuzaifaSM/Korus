@@ -67,13 +67,14 @@ class BaseErasingRune(CraftingItem):
 
         item.update()
         item._generateName()
-        item.addEntropy(self.successEntropy)
+        if len(removed) > 0:
+            item.addEntropy(self.successEntropy)
         message=f'Removed {len(removed)} affixes. Removed:{removedStr}'
 
         if len(removed) < self.affixesToRemove or toRemove < self.affixesToRemove:
             outcome = CraftOutcome.PARTIAL_SUCCESS,
         else:
-            outcome - CraftOutcome.SUCCESS
+            outcome = CraftOutcome.SUCCESS
 
         return CraftResult(
                 outcome=outcome,
@@ -134,11 +135,9 @@ class ConsumingErasingRune(BaseErasingRune):
         slots = super().getRemovableSlots(item)
         if not slots:
             return []
-        weakest = min(slots, key=lambda s: s.affix.levelReq)
-        ind = slots.index(weakest)
-        slots.pop(ind)
-        weakest2 = min(slots, key=lambda s: s.affix.levelReq)
-        return [weakest, weakest2]
+        affixes = sorted(slots, key=lambda s: s.affix.levelReq)
+        af1, af2 = affixes[0], affixes[1]
+        return [af1, af2]
 
 class CleansingErasingRune(BaseErasingRune):
     name = '[light_slate_blue]Cleansing Erasing Rune[/light_slate_blue]'

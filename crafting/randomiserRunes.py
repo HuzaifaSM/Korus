@@ -76,6 +76,9 @@ class GreaterValueRandomiserRune(BaseRandomiserRune):
     dropWeight = 35
 
     def apply(self, item):
+        output = super().apply(item)
+        if output.outcome != CraftOutcome.SUCCESS:
+            return output
         affixes = self.getValidAffixes(item)
 
         if not affixes:
@@ -99,6 +102,9 @@ class PerfectValueRandomiserRune(BaseRandomiserRune):
     dropWeight = 15
 
     def apply(self, item):
+        output = super().apply(item)
+        if output.outcome != CraftOutcome.SUCCESS:
+            return output
         affixes = self.getValidAffixes(item)
 
         if not affixes:
@@ -153,7 +159,6 @@ class BaseTierRandomiserRune(BaseRandomiserRune):
             for _ in range(self.numRolls):
                 a: Affix = random.choice(variants)
                 affixRolls.append(a)
-                print(f'{a.stat} rolled tier {a.tier}')
 
             chosen = sorted(affixRolls, key=lambda a: a.tier)[-1]
 
@@ -225,9 +230,6 @@ class BaseAffixRandomiserRune(BaseRandomiserRune):
             if not s.isEmpty and not s.locked
         ]
 
-        if self.minAffixLevel is not None:
-            validSlots = [a for a in validSlots if a.levelReq >= self.minAffixLevel]
-
         if not validSlots:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -235,14 +237,15 @@ class BaseAffixRandomiserRune(BaseRandomiserRune):
             )
         
         changed = 0
-        
+
+        excludeIds = []
         for slot in validSlots:
             newAffix = rollAffix(
                 equipType=item.slot,
                 affixType=slot.kind,
                 itemLevel=item.level,
                 rarity=item.rarity,
-                excludeIds=[],
+                excludeIds=excludeIds,
                 tierBias=0.0,
                 defenseType=item.defenseType,
                 minAffixLevel=self.minAffixLevel,
@@ -251,6 +254,7 @@ class BaseAffixRandomiserRune(BaseRandomiserRune):
             if newAffix is None:
                 continue
 
+            excludeIds.append(newAffix.id)
             slot.affix = newAffix
             changed += 1
 
@@ -357,7 +361,7 @@ class DamageRandomsierRune(BaseRandomiserRune):
 
     damageWeights = [
         3,
-        3, 3, 3, 3, 3,
+        3, 3, 3, 3,
         3, 3, 3,
         1, 1, 1,
         1
@@ -373,17 +377,20 @@ class DamageRandomsierRune(BaseRandomiserRune):
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item is not a weapon',
             )
-        
+
+        damageTypes = self.damageTypes.copy()
+        damageWeights = self.damageWeights.copy()
+
         currentDamage = getattr(item, 'damageType', None)
         if currentDamage is not None:
             ind = self.damageTypes.index(currentDamage)
-            self.damageTypes.pop(ind)
-            self.damageWeights.pop(ind)
+            damageTypes.pop(ind)
+            damageWeights.pop(ind)
         else:
-            self.damageTypes.remove('none')
-            self.damageWeights = self.damageWeights[:-1]
+            damageTypes.remove('none')
+            damageWeights = self.damageWeights[:-1]
 
-        newDamage = random.choices(self.damageTypes, self.damageWeights, k=1)[0]
+        newDamage = random.choices(damageTypes, damageWeights, k=1)[0]
         if newDamage == 'none':
             item.damageType = None
         else:

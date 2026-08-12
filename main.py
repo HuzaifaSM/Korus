@@ -709,6 +709,13 @@ class Game:
 
         self.combatManager.startBattle(self.player, enemies)
 
+        if getattr(self.player, 'pendingSkeleton', None):
+            self.player.currentSkeleton = self.player.pendingSkeleton
+            self.player.skeletonTurns = 3
+            self.player.pendingSkeleton = None
+            console.print(f"[dark_red]Necromancer: {self.player.currentSkeleton._name} joins you for the start of this battle![/dark_red]")
+            pause()
+
         while self.combatManager.battleActive:
             result = self.combatManager.checkBattleEnd()
             if result:
@@ -807,6 +814,7 @@ class Game:
                 target = self.chooseTarget(aliveEnemies)
                 if target:
                     self.combatManager.performAttack(self.player, target)
+                    self.combatManager.resolveSkeletonAttack(self.player)
                     break
             elif action.lower() == 'c':
                 self.useCombatConsumable()
@@ -841,6 +849,7 @@ class Game:
 
                         if target:
                             self.combatManager.performAttack(self.player, target, abilityName)
+                            self.combatManager.resolveSkeletonAttack(self.player)
                             break
                     else:
                         printError(f"Invalid choice: {action}")
@@ -885,7 +894,6 @@ class Game:
         totalXp = 0
         totalGold = 0
         totalResources = 0
-        skillPoints = len(enemies) + (len(enemies) * (enemies[0]._level // 10))
         allLoot = {}
         allEquipment = []
         allRunes = []
@@ -894,7 +902,6 @@ class Game:
         fuel = 0
         supplies = 0
         tradeVouchers = 0
-        trainingPoints = 0
 
         if self.camp.crafter.level >= 1:
             blueprints = random.randint(1, 2 + self.camp.crafter.level)
@@ -904,10 +911,7 @@ class Game:
             supplies = random.randint(2, 5 + self.camp.campfire.level)
         if self.camp.market.level >= 1:
             tradeVouchers = random.randint(0, 2 + (self.camp.market.level // 2))
-        if self.camp.trainingGrounds.level >= 2:
-            if random.random() < 0.25 + (self.camp.trainingGrounds.level * 0.1):
-                trainingPoints = 1
-        
+
         for enemy in enemies:
             totalXp += enemy.getExperienceReward()
             totalGold += max(5, enemy._level // 2) * random.randint(2, 5)
@@ -956,8 +960,6 @@ class Game:
         console.print("\n[gold1 bold]=== Rewards ===[/gold1 bold]")
         self.player.gainExperience(totalXp)
         self.player.gainGold(totalGold)
-        console.print(f"  [cyan]- Skill Points: +{skillPoints}[/cyan]")
-        self.camp.trainingGrounds.skillPoints += skillPoints
 
         if supplies > 0:
             self.camp.campfire.supplies += supplies
@@ -971,9 +973,6 @@ class Game:
         if tradeVouchers > 0:
             self.camp.market.tradeVouchers += tradeVouchers
             console.print(f"  [magenta]- Trade Vouchers: +{tradeVouchers}[/magenta]")
-        if trainingPoints > 0:
-            self.camp.trainingGrounds.trainingPoints += trainingPoints
-            console.print(f"  [orange1]- Training Points: +{trainingPoints}[/orange1]")
 
         if allLoot:
             console.print("\n[cyan bold]=== Resources Acquired ===[/cyan bold]")
