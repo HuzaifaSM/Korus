@@ -358,7 +358,7 @@ class CombatManager:
         if not attackerUnit:
             return False
 
-        if abilityName and abilityName in attacker._abilities: # ability
+        if abilityName and abilityName in attacker._abilities:
             ability = attacker._abilities[abilityName]
             console.print(f"\n[cyan]{attacker._name}[/cyan] uses [bold]{abilityName}[/bold]")
 
@@ -373,13 +373,11 @@ class CombatManager:
                     printWarning(f"  - {abilityName} is on cooldown for {ability.cooldown} more turn(s).")
                     return False
 
-            # ability.effects['self'] applies immediately, regardless of what happens otherwise
             selfEffects = ability.effects.get('self', {})
             if selfEffects:
                 for effect in resolveEffects(selfEffects):
                     self.addStatusEffect(attacker, effect, attacker)
 
-            # ability.effects['target'] is resolved fresh per-target further down, so AOE hits don't share the same StatusEffect instance across multiple targets
             targetEffectsDict = ability.effects.get('target', {})
             effectsBeforeTargeting: List[StatusEffect] = []
 

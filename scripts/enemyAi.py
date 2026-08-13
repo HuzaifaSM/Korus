@@ -29,8 +29,9 @@ class EnemyAI:
             "effects": []
         })
 
-        # abilities
-        for _, ability in self._enemy._abilities.items():
+        for name, ability in self._enemy._abilities.items():
+            if name == "Basic Attack":
+                continue
             canUse, _ = ability.canUse()
             if not canUse:
                 continue
@@ -66,7 +67,7 @@ class EnemyAI:
         actionId = decision.get('actionId', 'basic_attack') if decision else 'basic_attack'
 
         if actionId == 'basic_attack':
-            combatManager.performAttack(enemy, player)
+            combatManager.performAttack(enemy, player, "Basic Attack")
             return
 
         if actionId in enemy._inventory:
@@ -78,7 +79,7 @@ class EnemyAI:
             self._useAbility(ability, player, combatManager)
             return
 
-        self._doBasicAttack(player, combatManager)
+        combatManager.performAttack(enemy, player, "Basic Attack")
 
     # -- ability execution -- #
     def _useAbility(self, ability, player: Entity, combatManager):
@@ -134,7 +135,7 @@ class EnemyAI:
             for d in response.get('decisions', [])
             if 'error' not in d
         }
-    
+
     @staticmethod
     def _buildSnapshot(enemies: list[Entity], player: Entity, actionLists: list) -> dict:
         enemyStates = []
@@ -158,7 +159,7 @@ class EnemyAI:
                 "speed":       player._speed,
             }
         }
-    
+
     @staticmethod
     def _callEngine(snapshot: dict) -> dict | None:
         try:

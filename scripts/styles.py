@@ -625,9 +625,6 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         enemyIndex += batchSize
 
 def createAbilityTables(abilities: dict, maxPerTable: int = 10) -> Table:
-    """Despite the name (kept for compatibility with callers), this builds one full-width
-    table - the old side-by-side narrow-column layout didn't have room for scaling/heal/cost/
-    per-effect detail, so a single row-per-ability table replaced it."""
     table = Table(show_header=True, header_style="bold cyan", box=box.ROUNDED, padding=(0, 1))
     table.add_column("#", style="dim", width=2)
     table.add_column("Ability", style="cyan")

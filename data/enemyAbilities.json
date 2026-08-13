@@ -1,7 +1,7 @@
 {
     "Rend": {
         "name": "Rend",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 1,
         "cooldown": 2,
@@ -21,7 +21,7 @@
     },
     "Lunge": {
         "name": "Lunge",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 1,
         "cooldown": 3,
@@ -35,7 +35,7 @@
     },
     "Bash": {
         "name": "Bash",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 5,
         "cooldown": 3,
@@ -56,7 +56,7 @@
     },
     "Enfeeble": {
         "name": "Enfeeble",
-        "category": "utility",
+        "category": "ability",
         "tier": 1,
         "level_req": 5,
         "cooldown": 4,
@@ -77,7 +77,7 @@
     },
     "Snarl": {
         "name": "Snarl",
-        "category": "utility",
+        "category": "ability",
         "tier": 1,
         "level_req": 8,
         "cooldown": 4,
@@ -98,7 +98,7 @@
     },
     "Scavenge": {
         "name": "Scavenge",
-        "category": "utility",
+        "category": "ability",
         "tier": 1,
         "level_req": 10,
         "cooldown": 5,
@@ -118,7 +118,7 @@
     },
     "Brace": {
         "name": "Brace",
-        "category": "buff",
+        "category": "ability",
         "tier": 1,
         "level_req": 10,
         "cooldown": 4,
@@ -139,7 +139,7 @@
     },
     "Mend": {
         "name": "Mend",
-        "category": "buff",
+        "category": "ability",
         "tier": 1,
         "level_req": 12,
         "cooldown": 5,
@@ -161,7 +161,7 @@
     },
     "Venomous Bite": {
         "name": "Venomous Bite",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 15,
         "cooldown": 3,
@@ -181,7 +181,7 @@
     },
     "Smoulder": {
         "name": "Smoulder",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 15,
         "cooldown": 3,
@@ -201,7 +201,7 @@
     },
     "Ravaging Strike": {
         "name": "Ravaging Strike",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 30,
         "cooldown": 3,
@@ -225,7 +225,7 @@
     },
     "Venom Surge": {
         "name": "Venom Surge",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 30,
         "cooldown": 4,
@@ -245,7 +245,7 @@
     },
     "Expose Weakness": {
         "name": "Expose Weakness",
-        "category": "utility",
+        "category": "ability",
         "tier": 2,
         "level_req": 30,
         "cooldown": 5,
@@ -266,7 +266,7 @@
     },
     "Warcry": {
         "name": "Warcry",
-        "category": "utility",
+        "category": "ability",
         "tier": 2,
         "level_req": 35,
         "cooldown": 5,
@@ -288,7 +288,7 @@
     },
     "Bloodletting": {
         "name": "Bloodletting",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 35,
         "cooldown": 4,
@@ -308,7 +308,7 @@
     },
     "Frostbite": {
         "name": "Frostbite",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 35,
         "cooldown": 3,
@@ -330,7 +330,7 @@
     },
     "Intimidate": {
         "name": "Intimidate",
-        "category": "utility",
+        "category": "ability",
         "tier": 2,
         "level_req": 40,
         "cooldown": 5,
@@ -355,7 +355,7 @@
     },
     "Iron Bulwark": {
         "name": "Iron Bulwark",
-        "category": "buff",
+        "category": "ability",
         "tier": 2,
         "level_req": 40,
         "cooldown": 5,
@@ -381,7 +381,7 @@
     },
     "Elemental Surge": {
         "name": "Elemental Surge",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 45,
         "cooldown": 4,
@@ -405,7 +405,7 @@
     },
     "Constrict": {
         "name": "Constrict",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 45,
         "cooldown": 4,
@@ -430,7 +430,7 @@
     },
     "Blood Ritual": {
         "name": "Blood Ritual",
-        "category": "buff",
+        "category": "ability",
         "tier": 2,
         "level_req": 50,
         "cooldown": 6,
@@ -455,7 +455,7 @@
     },
     "Tear Apart": {
         "name": "Tear Apart",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 60,
         "cooldown": 3,
@@ -483,7 +483,7 @@
     },
     "Death Knell": {
         "name": "Death Knell",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 60,
         "cooldown": 5,
@@ -507,7 +507,7 @@
     },
     "Harrowing Roar": {
         "name": "Harrowing Roar",
-        "category": "utility",
+        "category": "ability",
         "tier": 3,
         "level_req": 65,
         "cooldown": 5,
@@ -539,7 +539,7 @@
     },
     "Consuming Darkness": {
         "name": "Consuming Darkness",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 65,
         "cooldown": 4,
@@ -562,7 +562,7 @@
     },
     "Rupture": {
         "name": "Rupture",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 70,
         "cooldown": 4,
@@ -586,7 +586,7 @@
     },
     "Void Scream": {
         "name": "Void Scream",
-        "category": "utility",
+        "category": "ability",
         "tier": 3,
         "level_req": 70,
         "cooldown": 6,
@@ -612,7 +612,7 @@
     },
     "Dark Mending": {
         "name": "Dark Mending",
-        "category": "buff",
+        "category": "ability",
         "tier": 3,
         "level_req": 70,
         "cooldown": 6,
@@ -638,7 +638,7 @@
     },
     "Annihilating Blow": {
         "name": "Annihilating Blow",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 80,
         "cooldown": 5,
@@ -666,7 +666,7 @@
     },
     "Soul Leech": {
         "name": "Soul Leech",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 80,
         "cooldown": 5,
@@ -693,7 +693,7 @@
     },
     "Abyssal Surge": {
         "name": "Abyssal Surge",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 90,
         "cooldown": 4,
@@ -716,7 +716,7 @@
     },
     "Undying Fury": {
         "name": "Undying Fury",
-        "category": "buff",
+        "category": "ability",
         "tier": 3,
         "level_req": 90,
         "cooldown": 7,
@@ -750,7 +750,7 @@
     },
     "Static Shock": {
         "name": "Static Shock",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 6,
         "cooldown": 3,
@@ -771,7 +771,7 @@
     },
     "Fire and Smoke": {
         "name": "Fire and Smoke",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 8,
         "cooldown": 3,
@@ -792,7 +792,7 @@
     },
     "Sacred Smite": {
         "name": "Sacred Smite",
-        "category": "damage",
+        "category": "ability",
         "tier": 1,
         "level_req": 10,
         "cooldown": 3,
@@ -813,7 +813,7 @@
     },
     "Chain Lightning": {
         "name": "Chain Lightning",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 38,
         "cooldown": 4,
@@ -834,7 +834,7 @@
     },
     "Cyclone": {
         "name": "Cyclone",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 42,
         "cooldown": 4,
@@ -855,7 +855,7 @@
     },
     "Divine Judgement": {
         "name": "Divine Judgement",
-        "category": "damage",
+        "category": "ability",
         "tier": 2,
         "level_req": 48,
         "cooldown": 5,
@@ -880,7 +880,7 @@
     },
     "Thunderclap": {
         "name": "Thunderclap",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 68,
         "cooldown": 4,
@@ -905,7 +905,7 @@
     },
     "Tempest": {
         "name": "Tempest",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 75,
         "cooldown": 5,
@@ -934,7 +934,7 @@
     },
     "Holy Annihilation": {
         "name": "Holy Annihilation",
-        "category": "damage",
+        "category": "ability",
         "tier": 3,
         "level_req": 85,
         "cooldown": 5,

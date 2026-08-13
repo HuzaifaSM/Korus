@@ -4,7 +4,6 @@ NOTES:
 
 BUGS:
 - mage class doesn't display mana instead of stamina
-- abilities dont display stamina costs, or deduct from stamina
 - shop item display isn't very readable - should just play equipment pieces
 - can accquire '0x resource'
 - paladin can potentially spend more favour than available. case: 9/100 favour available, ability used 11 favour
