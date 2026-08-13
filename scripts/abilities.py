@@ -91,7 +91,7 @@ class Ability:
         gained = self.resources.get('gain', {})
         for resource, amount in gained.items():
             if resource == 'energy_shield':
-                player._stats['energyShield'] = min(player.maxEnergyShield, player.energyShield + amount)
+                player._stats['energy_shield'] = min(player.maxEnergyShield, player.energyShield + amount)
             else:
                 attr = f'_{resource}' if hasattr(player, f'_{resource}') else resource
                 current = getattr(player, attr, 0)

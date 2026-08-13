@@ -20,7 +20,7 @@ from scripts.help import Help
 from scripts.styles import (
     console, printHeader, printSeparator, pause, clearScreen,
     printWarning, printError, printInfo, printSuccess,
-    displayDeath, displayVictory, formatRarity,
+    displayDeath, displayVictory, formatRarity, formatDamageType,
     createAbilityTables, createCombatStatusTable, createEnemyPreview
 )
 
@@ -276,9 +276,21 @@ class Game:
             clearScreen()
             printHeader(f"{self.player._name} - Level {self.player._level} {self.player.className}")
 
+            dType = formatDamageType(self.player._damageType.title(), self.player._damageType)
             console.print(f"[health]HP:[/health] {self.player._health}/{self.player._maxHealth} | "
-                          f"[damage]DMG:[/damage] {self.player._damage} | "
+                          f"[damage]DMG:[/damage] {self.player._damage} | Type: {dType} | "
                           f"[speed]SPD:[/speed] {self.player._speed:.2f}")
+
+            defParts = []
+            if self.player.armour > 0:
+                defParts.append(f"[armour]Armour:[/armour] {self.player.armour}")
+            if self.player.evasion > 0:
+                defParts.append(f"[evasion]Evasion:[/evasion] {self.player.evasion}")
+            if self.player.energyShield > 0:
+                defParts.append(f"[energy_shield]Energy Shield:[/energy_shield] {self.player.energyShield}")
+            defStr = " | ".join(defParts)
+            console.print(f"{defStr}")
+
             console.print(f"[xp]XP:[/xp] {self.player._xp}/{self.player._xpToNextLevel}")
             console.print(f"\n[info]Area Level:[/info] {self.areaLevel} | [success]Battles Won:[/success] {self.battlesWon}")
 
@@ -535,9 +547,18 @@ class Game:
         for slot, equip in self.player._equipment.items():
             if equip:
                 hasEquipped = True
+                dmgStr = ""
+                defStr = ""
+                if equip.damage > 0:
+                    dmgStr = f" | Damage: {equip.damage}"
+                    if equip.damageType:
+                        dmgStr += f" | Damage Type: [{equip.damageType}]{equip.damageType}[/{equip.damageType}]"
+                if equip.defenseValue > 0 and equip.defenseType:
+                    defType = equip.defenseType.replace('_', ' ').title()
+                    defStr = f" | {equip.defenseValue} {defType}"
                 equipName = formatRarity(equip.name, equip.rarity.value)
                 console.print(f"\n[bold]{slot.upper()}:[/bold] {equipName}")
-                console.print(f"  [dim]Level {equip.level} | Durability: {equip.durability}/{equip.maxDurability}[/dim]")
+                console.print(f"  [dim]Level {equip.level} | Durability: {equip.durability}/{equip.maxDurability}[/dim]{dmgStr}{defStr}")
                 console.print(f"  [cyan]Stats:[/cyan] {equip._formatStats()}")
 
         if not hasEquipped:
@@ -619,6 +640,7 @@ class Game:
                 for ability in self.player._abilities.values():
                     ability.cooldown = 0 # reset all ability cooldowns back to 0
             self.player._stamina = self.player._maxStamina
+            self.player._stats['energy_shield'] = self.player.maxEnergyShield
             self.battlesWon += 1
             currentAreaLevel = self.areaLevel
             if self.areaLevel > 100:
@@ -822,6 +844,9 @@ class Game:
                 console.print("[red]Fled from battle.[/red]")
                 pause()
                 self.combatManager.battleActive = False
+                for _, ability in self.player._abilities.items():
+                    ability.cooldown = 0
+                self.player._stamina = self.player._maxStamina
                 return
             else:
                 try:

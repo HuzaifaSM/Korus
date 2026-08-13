@@ -51,6 +51,9 @@ KORUS_THEME = Theme({
     "damage": "orange1",
     "speed": "bright_cyan",
     "stamina": "sky_blue1",
+    "armour": "grey53",
+    "evasion": "chartreuse3",
+    "energy_shield": "deep_sky_blue1",
 
     "human": "green",
     "beast": "yellow",
@@ -565,8 +568,6 @@ def createCombatStatusTable(player, enemies: List) -> Table:
                 col.append("  " + ", ".join(resistParts[i:i+2]))
         
         return col
-
-    totalEntities = 1 + len(aliveEnemies)
 
     firstRowEnemyCount = min(4, len(aliveEnemies))
 

@@ -121,8 +121,8 @@ class Entity:
             'baseCritMulti': baseCritMulti or 1.5,
             'armour': 0,
             'evasion': 0,
-            'energyShield': 0,
-            'maxEnergyShield': 0
+            'energy_shield': 0,
+            'max_energy_shield': 0
         }
         self._abilities: Dict[str, Ability] = {"Basic Attack": BasicAttack()}
         self._inventory: Dict[str, int] = {}  # {item_name: quantity}
@@ -169,11 +169,11 @@ class Entity:
     
     @property
     def energyShield(self) -> int:
-        return self._stats['energyShield']
-    
+        return self._stats['energy_shield']
+
     @property
     def maxEnergyShield(self) -> int:
-        return self._stats['maxEnergyShield']
+        return self._stats['max_energy_shield']
 
     @property
     def critChance(self) -> float:
@@ -198,9 +198,9 @@ class Entity:
             baseStr += f"\n[cyan]Armour:[/cyan] {self._stats['armour']}"
         if self._stats.get('evasion', 0) > 0:
             baseStr += f"\n[cyan]Evasion:[/cyan] {self._stats['evasion']}"
-        if self._stats.get('maxEnergyShield', 0) > 0:
-            es = self._stats.get('energyShield', 0)
-            maxEs = self.stats['maxEnergyShield']
+        if self._stats.get('max_energy_shield', 0) > 0:
+            es = self._stats.get('energy_shield', 0)
+            maxEs = self.stats['max_energy_shield']
             baseStr += f"\n[cyan]Energy Shield:[/cyan] {es} / {maxEs}"
 
         return baseStr
@@ -316,8 +316,6 @@ class Entity:
             console.print(f"  [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
             if  self._isDead: # dies
                 self.death()
-        else:
-            console.print("[success]Your Shield prevented any damage being taken![/success]")
 
     def heal(self, amount: int, doPrint: bool = True) -> int:
         """returns true healed amount"""
@@ -578,7 +576,7 @@ class Entity:
                         armour += equipment.defenseValue + self._getExtraBonuses('added_armour')
                     elif equipment.defenseType == 'evasion':
                         evasion += equipment.defenseValue + self._getExtraBonuses('added_evasion')
-                    elif equipment.defenseType == 'energyShield':
+                    elif equipment.defenseType == 'energy_shield':
                         es += equipment.defenseValue + self._getExtraBonuses('added_energy_shield')
 
                 if equipment.slot == 'amulet':
@@ -590,6 +588,7 @@ class Entity:
                     globalEsInc += gIncEs + self._getExtraBonuses('increased_energy_shield')
 
         self._maxHealth = int((self._maxHealth + healthFlat) * (1 + healthInc))
+        self._speed = round(self._speed, 2)
 
         # cap bonuses
         self._stats['Bonuses']['enemyQuantity'] = min(self._stats['Bonuses']['enemyQuantity'], 100)
@@ -607,8 +606,8 @@ class Entity:
         self._stats['armour'] = finalArmour
         self._stats['evasion'] = finalEvasion
         if not inCombat:
-            self._stats['energyShield'] = finalEs
-        self._stats['maxEnergyShield'] = finalEs
+            self._stats['energy_shield'] = finalEs
+        self._stats['max_energy_shield'] = finalEs
 
         if not inCombat:
             self._health = min(self._health, self._maxHealth)
@@ -619,14 +618,18 @@ class Entity:
             console.print(f"[health]HP:[/health] {self._health} / {self._maxHealth}")
             console.print(f"[damage]DMG:[/damage] {self._damage} |[{self._damageType}] Type: {self._damageType}[/{self._damageType}]")
             console.print(f"[speed]Speed:[/speed] {self._speed:.2f}")
-            
-            console.print("\n[bold]Resistances:[/bold]")
+
+            resistances = {}
             for res, val in self._stats['Resistances'].items():
                 if val != 0:
-                    console.print(f"  {res}: [cyan]{val}%[/cyan]")
+                    resistances[res] = val
+            if resistances:
+                console.print("\n[bold]Resistances:[/bold]")
+                for r, v in resistances:
+                    console.print(f"  {r}: [cyan]{v}%[/cyan]")
 
             activeBonuses = {k: v for k, v in self._stats['Bonuses'].items() if v > 0}
-            if activeBonuses.get('healingMagnitude', 100) == 100:
+            if activeBonuses.get('healingMagnitude') == 100:
                 activeBonuses.pop('healingMagnitude')
             if activeBonuses:
                 console.print("\n[bold]Bonuses:[/bold]")

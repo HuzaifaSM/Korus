@@ -10,7 +10,7 @@ WARLORD:
 
 WARRIOR_DESCRIPTIONS = {
     "Warrior": "[class_warrior]A proud and tenacious warrior, emboldened by the thrill of battle.[/class_warrior]\n"
-        "+3 Damage dealt per [resource]Rage[/resource]. +1 [resource]Rage[/resource] per 8 damage dealt. -1 [resource]Rage[/resource] per 5 damage taken. +2 HP per leftover [resource]rage[/resource] at the end of combat.\n"
+        "+3 Damage dealt per [resource]Rage[/resource]. +1 [resource]Rage[/resource] per 6 damage dealt. -1 [resource]Rage[/resource] per 8 damage taken. +2 HP per leftover [resource]rage[/resource] at the end of combat.\n"
         "Dealing [fire]Fire[/fire] damage grants +1 [resource]Rage[/resource]. Taking [fire]Fire[/fire] damage reduces [resource]Rage[/resource] loss by 2.\n"
         "Starting Stats: 50 [health]Health[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 200% [critical]Crit Damage[/critical] | [fire]Fire Damage[/fire] | 0.8 [speed]Speed[/speed] | 50 Max [resource]Rage[/resource] | +1 [resource]Rage[/resource] on Level Up.",
     #ascendancies
@@ -129,7 +129,7 @@ class Warrior(Player): # higher damage, lower speed, fire damage
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
         super().onAttack(damageDealt, damageType, target, combatManager)
-        rageGain = damageDealt // 8
+        rageGain = damageDealt // 6
         if damageType == 'fire' and damageDealt > 0:
             rageGain += 1
 
@@ -176,17 +176,18 @@ class Warrior(Player): # higher damage, lower speed, fire damage
     
     def onHit(self, damageTaken, damageType, isCrit, attacker, combatManager):
         super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
-        rageLoss = max(0, damageTaken // 5)
-        if damageType != 'fire':
-            rageLoss += 2
+        if self._rage > 0:
+            rageLoss = max(0, damageTaken // 8)
+            if damageType != 'fire':
+                rageLoss += 2
 
-        if self._ascendancy == 'Warlord':
-            rageLoss = rageLoss // 2
-            if self._rage > 40:
-                damageTaken = int(damageTaken * 0.85)
+            if self._ascendancy == 'Warlord':
+                rageLoss = rageLoss // 2
+                if self._rage > 40:
+                    damageTaken = int(damageTaken * 0.85)
 
-        self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
-        console.print(f"\n[warning]Your rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
+            self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
+            console.print(f"\n[warning]Your rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
 
         return damageTaken, damageType
 

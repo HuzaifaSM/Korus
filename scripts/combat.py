@@ -157,14 +157,14 @@ class CombatUnit:
         return min(baseResist, 75)
 
     def calculateArmourReduction(self, incomingDamage: int, armourIgnorePercent: float = 0.0) -> float:
-        armour = self.entity._stats.get('armour', 0) * (1 - armourIgnorePercent)
+        armour = self.entity.armour * (1 - armourIgnorePercent)
         if armour <= 0:
             return 0
         reduction = armour / (armour + (10 * incomingDamage))
         return min(0.9, reduction)
 
     def checkEvade(self):
-        return self.entropyTracker.rollEvasion(self.entity._stats.get('evasion', 0))
+        return self.entropyTracker.rollEvasion(self.entity.evasion)
 
     def getVulnerabilityModifier(self) -> float:
         multiplier = 1.0
@@ -239,6 +239,7 @@ class CombatManager:
         if self.currentTurnIndex >= len(self.turnOrder): #start next round if at end of list
             self.currentTurnIndex = 0
             self.turnNumber += 1
+            self._enemyDecisions = {}
 
             for unit in self.turnOrder: #reset all units for new round
                 if unit.isActive:
@@ -262,7 +263,7 @@ class CombatManager:
                     self.turnNumber += 1
                     self._enemyDecisions = {}
                     for unit in self.turnOrder:
-                        if unit.isActive():
+                        if unit.isActive:
                             unit.resetTurn()
                 nextUnit = self.getCurrentUnit()
                 attempts += 1
@@ -322,11 +323,11 @@ class CombatManager:
                 if didEvade:
                     target.onEvade()
                     console.print(f"    [buff]{target._name} dodged the attack![/buff]")
-                    return 0
+                    return 0, True
 
             if damageType != 'ethereal': # ethereal ignores armour
                 reduction = combatUnit.calculateArmourReduction(finalDamage, armourIgnorePercent)
-                reducedAmount = round(finalDamage * reduction)
+                reducedAmount = int(finalDamage * reduction)
                 finalDamage -= reducedAmount
 
                 if reducedAmount > 0:
@@ -337,13 +338,13 @@ class CombatManager:
                 if currentES > 0:
                     if finalDamage >= currentES:
                         finalDamage -= currentES
-                        target._stats['energyShield'] = 0
+                        target._stats['energy_shield'] = 0
                         console.print(f"    [warning]{target._name}'s energy shield was broken![/warning]")
                     else:
-                        target._stats['energyShield'] -= finalDamage
+                        target._stats['energy_shield'] -= finalDamage
                         console.print(f"    [cyan]{target._name}'s energy shield absorbed {finalDamage} damage![/cyan]")
-                        return 0
-                
+                        return 0, False
+
         return finalDamage, didEvade
 
     def performAttack(self, attacker: Entity, target: Entity, abilityName: str = None):
@@ -532,8 +533,8 @@ class CombatManager:
 
             # CRITICAL
 
+            isCrit, critMult = attacker.rollCritical(targetUnit, damage)
             if damageType != 'heal':
-                isCrit, critMult = attacker.rollCritical(targetUnit, damage)
                 if isCrit:
                     damage = int(damage * critMult)
                     console.print(f"[bold gold1]✨ CRITICAL HIT! ✨[/bold gold1] [damage]{critMult*100:.0f}%[/damage] damage!")
@@ -564,9 +565,9 @@ class CombatManager:
                             damage -= reflect
                             attacker.damage(reflect, damageType)
 
-            if damage < 0:
-                healAmount = abs(damage)
-                attacker.heal(healAmount)
+            if damageType == 'heal':
+                heal = int(ability.healBase + (attacker._maxHealth * ability.healPercent))
+                attacker.heal(heal)
             else:
                 # DAMAGE
                 for t in targets:

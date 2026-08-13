@@ -90,7 +90,7 @@ class Campfire(Station):
         healAmount = round(self.player._maxHealth * 0.15)
         suppliesUsed = 0
         while self.supplies and not (self.player._health == self.player._maxHealth):
-            self.player.heal(healAmount)
+            self.player.heal(healAmount, False)
             self.supplies -= 1
             suppliesUsed += 1
         printSuccess(f"\nUsed {suppliesUsed} supplies to recover to full health.")

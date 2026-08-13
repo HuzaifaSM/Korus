@@ -74,7 +74,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         return baseStr
 
     def _serialise(self):
-        temp = super()._serialise()
+        temp = super().serialise()
         temp['maxMana'] = self._maxMana
         temp['mana'] = self._mana
         temp['arcanistKills'] = self.arcanistKills

@@ -181,7 +181,7 @@ class SplittingChaosRune(BaseChaosRune):
     name = '[orchid bold]Splitting Chaos Rune[/orchid bold]'
     description = 'Removes 1 random affix above level 35 and adds 2 new random affixes above level 20.'
     minAffixLevel = 20
-    minItemLevel = 3
+    minItemLevel = 30
     affixesToAdd = 2
     affixesToRemove = 1
     successEntropy = 0.2

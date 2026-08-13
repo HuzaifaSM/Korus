@@ -98,15 +98,13 @@ class EnemyAI:
         else:
             damageTargets = [player]
 
-        # damage AND effects (ability.effects['target']/['self']) are both resolved inside
-        # performAttack, uniformly for player- and enemy-used abilities
+        # damage, effects (ability.effects['target']/['self']), AND cooldown-setting-on-success
+        # are all resolved inside performAttack, uniformly for player- and enemy-used abilities
         if damageTargets:
             for t in damageTargets:
                 combatManager.performAttack(enemy, t, abilityName=ability.name)
         elif ability.targets == 'self':
             combatManager.performAttack(enemy, enemy, abilityName=ability.name)
-
-        ability.cooldown = ability.maxCooldown
 
     def _useConsumable(self, itemName: str):
         from .items import CONSUMABLES

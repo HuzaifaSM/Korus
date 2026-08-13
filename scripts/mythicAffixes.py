@@ -132,8 +132,6 @@ def rollMythicAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
             if baseId not in excludeIds:
 
                 if defenseType:
-                    if defenseType == 'energyShield':
-                        defenseType = 'energy_shield'
                     defenseTypes = ['armour', 'evasion', 'energy_shield']
                     if affix.stat in defenseTypes:
                         if affix.stat != defenseType:

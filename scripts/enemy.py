@@ -139,27 +139,41 @@ class Enemy(Entity):
         slots = ['head', 'chest', 'legs', 'feet', 'weapon', 'amulet', 'ring']
         maxEquipment = max(0, min(4, self._level // 15)) if self._level < 100 else 5
         numEquipped = 0
-        for slot in slots:
-            if numEquipped >= maxEquipment:
-                break
+        dropChance = {
+            ItemRarity.COMMON: 0.15 + round(self._level / 500, 4),
+            ItemRarity.UNCOMMON: 0.1 + round(self._level / 600, 4),
+            ItemRarity.RARE: 0.05 + round(self._level / 700, 4),
+            ItemRarity.EPIC: 0.02 + round(self._level / 900, 4),
+            ItemRarity.LEGENDARY: 0.01 + round(self._level / 1200, 4)
+        }
 
-            equipChance = min(0.8, 0.1 + (self._level / 50))
+        if self._level > 10:
+            for slot in slots:
+                if numEquipped >= maxEquipment:
+                    break
 
-            if random.random() < equipChance:
-                rarity = rollRarity(self._level) # rarity bonus based on level
-                equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
-                self._equipment[slot] = equipment
+                equipChance = min(0.75, 0.15 + (self._level / 40))
 
-                dropChance = {
-                    ItemRarity.COMMON: 0.15 + round(self._level / 500, 4),
-                    ItemRarity.UNCOMMON: 0.1 + round(self._level / 600, 4),
-                    ItemRarity.RARE: 0.05 + round(self._level / 700, 4),
-                    ItemRarity.EPIC: 0.02 + round(self._level / 900, 4),
-                    ItemRarity.LEGENDARY: 0.01 + round(self._level / 1200, 4)
-                }
-                finalDropChance = min(0.95, dropChance.get(rarity, 0.3))
-                self._lootTable.addEquipment(equipment, finalDropChance)
-                numEquipped += 1
+                if random.random() < equipChance:
+                    rarity = rollRarity(self._level) # rarity bonus based on level
+                    equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
+                    self.equip(equipment)
+
+                    finalDropChance = min(0.95, dropChance.get(rarity, 0.3))
+                    self._lootTable.addEquipment(equipment, finalDropChance)
+                    numEquipped += 1
+        else: # special rules for enemies level 1-10: guaranteed 1 equipment piece. unable to roll epic/legendary equipment
+            slot = random.choice(slots)
+            rarity = None
+            while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY]:
+                rarity = rollRarity(self._level)
+            equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
+            self.equip(equipment)
+
+            finalDropChance = min(0.8, dropChance.get(rarity, 0.3) + 0.3)
+            self._lootTable.addEquipment(equipment, finalDropChance)
+
+        self._recalculateStats(False)
 
     def _generateInventory(self):
         numResources = random.randint(1, min(2 + self._level // 15, 6))
