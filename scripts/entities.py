@@ -59,7 +59,8 @@ class Entity:
                 'chance_to_multihit': 0,
                 'lifesteal': 0,
                 'added_multihits': 0,
-                'hpRegen': 0,
+                'hp_regen': 0,
+                'stamina_regen': 0,
                 'increased_defenses': 0,
             },
             'Permanent': {
@@ -81,7 +82,8 @@ class Entity:
                 'ailmentAvoidance': 0,
                 'critResistance': 0,
                 'lifesteal': 0,
-                'hpRegen': 0,
+                'hp_regen': 0,
+                'stamina_regen': 0,
                 'added_multihits': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
@@ -106,7 +108,8 @@ class Entity:
                 'critMulti': 0,
                 'resistancePeneration': 0,
                 'lifesteal': 0,
-                'hpRegen': 0,
+                'hp_regen': 0,
+                'stamina_regen': 0,
                 'added_multihits': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
@@ -739,8 +742,9 @@ class Entity:
     def onTurnStart(self, combatManager=None):
         """Recalculates stats for temp + permanent additions, use at end of onTurnStart methods"""
         self._recalculateStats(False, True)
-        heal = self._stats['Bonuses']['hpRegen']
+        heal = self._stats['Bonuses']['hp_regen']
         self.heal(heal, False)
+        self._stamina = min(self._maxStamina, self._stamina + 3 + self._stats['Bonuses']['stamina_regen'])
 
     def onTurnEnd(self):
         """Rewrite per class"""

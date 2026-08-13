@@ -718,8 +718,8 @@
                     "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
                 }
             },
-            "health_regeneration": {
-                "stat": "health_regeneration",
+            "hp_regen": {
+                "stat": "hp_regen",
                 "isPercent": false,
                 "categories": ["health", "regeneration", "defensive", "utility"],
                 "tiers": {
@@ -731,6 +731,20 @@
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
                     "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            },
+            "stamina_regen": {
+                "stat": "stamina_regen",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recoup" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Respiration" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Dexterity" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Revitalisation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Energy" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
                 }
             }
         }
@@ -1202,8 +1216,8 @@
                     "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
                 }
             },
-            "health_regeneration": {
-                "stat": "health_regeneration",
+            "hp_regen": {
+                "stat": "hp_regen",
                 "isPercent": false,
                 "categories": ["health", "regeneration", "defensive", "utility"],
                 "tiers": {
@@ -1215,6 +1229,20 @@
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
                     "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            },
+            "stamina_regen": {
+                "stat": "stamina_regen",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recoup" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Respiration" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Dexterity" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Revitalisation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Energy" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
                 }
             }
         }
@@ -1671,8 +1699,8 @@
                     "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
                 }
             },
-            "health_regeneration": {
-                "stat": "health_regeneration",
+            "hp_regen": {
+                "stat": "hp_regen",
                 "isPercent": false,
                 "categories": ["health", "regeneration", "defensive", "utility"],
                 "tiers": {
@@ -1684,6 +1712,20 @@
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
                     "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            },
+            "stamina_regen": {
+                "stat": "stamina_regen",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recoup" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Respiration" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Dexterity" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Revitalisation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Energy" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
                 }
             }
         }
@@ -2110,8 +2152,8 @@
                     "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
                 }
             },
-            "health_regeneration": {
-                "stat": "health_regeneration",
+            "hp_regen": {
+                "stat": "hp_regen",
                 "isPercent": false,
                 "categories": ["health", "regeneration", "defensive", "utility"],
                 "tiers": {
@@ -2123,6 +2165,20 @@
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Renewal" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Restoration" },
                     "8": { "levelReq": 92, "min": 73, "max": 95, "weight": 80, "name": "of Rebirth" }
+                }
+            },
+            "stamina_regen": {
+                "stat": "stamina_regen",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 900, "name": "of Recoup" },
+                    "2": { "levelReq": 12, "min": 4, "max": 7, "weight": 820, "name": "of Respiration" },
+                    "3": { "levelReq": 25, "min": 8, "max": 13, "weight": 700, "name": "of Dexterity" },
+                    "4": { "levelReq": 40, "min": 14, "max": 22, "weight": 560, "name": "of Revitalisation" },
+                    "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Energy" },
+                    "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
+                    "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
                 }
             }
         }
@@ -2515,8 +2571,8 @@
                     "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
                 }
             },
-            "health_regeneration": {
-                "stat": "health_regeneration",
+            "hp_regen": {
+                "stat": "hp_regen",
                 "isPercent": false,
                 "categories": ["health", "regeneration", "defensive", "utility"],
                 "tiers": {
@@ -2527,6 +2583,20 @@
                     "5": { "levelReq": 72, "min": 19, "max": 30, "weight": 270, "name": "of Vitality" },
                     "6": { "levelReq": 84, "min": 31, "max": 48, "weight": 150, "name": "of Renewal" },
                     "7": { "levelReq": 94, "min": 49, "max": 68, "weight": 60, "name": "of Restoration" }
+                }
+            },
+            "stamina_regen": {
+                "stat": "stamina_regen",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 2, "weight": 900, "name": "of Recoup" },
+                    "2": { "levelReq": 12, "min": 3, "max": 5, "weight": 820, "name": "of Respiration" },
+                    "3": { "levelReq": 25, "min": 6, "max": 10, "weight": 700, "name": "of Dexterity" },
+                    "4": { "levelReq": 40, "min": 11, "max": 18, "weight": 560, "name": "of Revitalisation" },
+                    "5": { "levelReq": 56, "min": 19, "max": 30, "weight": 410, "name": "of Energy" },
+                    "6": { "levelReq": 72, "min": 31, "max": 48, "weight": 260, "name": "of Serene Flow" },
+                    "7": { "levelReq": 84, "min": 49, "max": 68, "weight": 150, "name": "of Infinite Stamina" }
                 }
             }
         }
