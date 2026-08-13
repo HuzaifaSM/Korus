@@ -270,7 +270,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 console.print(f"[buff]Mana Sickness expired![/buff]")
         
     def onBattleEnd(self):
-        self._lastElementUsed = None
         self._mana = self._maxMana
         self.symphony = 0
         self.lastSymphonyElement = None
@@ -279,10 +278,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self.flux = 0
         self.manaSicknessTurns = 0
         self.archon = 0
-        self.sageTypesUsed = []
-        self.sageManaSpent = 0
-        self.warlockUsedHP = False
-        self.chroniclerEnemies = 0
         super().onBattleEnd()
 
     def _recalculateStats(self, doPrint=True, inCombat=False):

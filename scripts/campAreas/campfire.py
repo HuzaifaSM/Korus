@@ -88,6 +88,7 @@ class Campfire(Station):
             printWarning("No supplies to aid in recovery.")
             return
         healAmount = round(self.player._maxHealth * 0.15)
+        console.print(f"[heal]Healing {healAmount} per supply.[/heal]")
         suppliesUsed = 0
         while self.supplies and not (self.player._health == self.player._maxHealth):
             self.player.heal(healAmount, False)

@@ -7463,5 +7463,1205 @@
             "hardcoreMode": false,
             "saveNum": 3
         }
+    },
+    "August 13 2026 13:52:19": {
+        "player": {
+            "maxHealth": 75,
+            "baseHealth": 75,
+            "health": -10,
+            "baseDamage": 14,
+            "damageType": "arcane",
+            "baseSpeed": 1.07,
+            "stats": {
+                "Resistances": {
+                    "physical": 0,
+                    "fire": 0,
+                    "cold": 0,
+                    "lightning": 0,
+                    "dark": 0,
+                    "holy": 0,
+                    "arcane": 0,
+                    "earth": 0,
+                    "psychic": 0,
+                    "ethereal": 0,
+                    "chaos": 0,
+                    "all": 0,
+                    "elemental": 0,
+                    "otherworld": 0,
+                    "divine": 0
+                },
+                "Bonuses": {
+                    "itemRarity": 0,
+                    "itemQuantity": 0,
+                    "enemyQuantity": 0,
+                    "xpGain": 0,
+                    "goldGain": 0,
+                    "stunAvoidance": 0,
+                    "dotResistance": 0,
+                    "ailmentAvoidance": 0,
+                    "healingMagnitude": 0,
+                    "critChance": 0,
+                    "critMulti": 0,
+                    "critResistance": 0,
+                    "resistancePenetration": 0,
+                    "chance_to_multihit": 0,
+                    "lifesteal": 0,
+                    "added_multihits": 0,
+                    "hpRegen": 0,
+                    "increased_defenses": 0
+                },
+                "Permanent": {
+                    "physical": 0,
+                    "fire": 0,
+                    "earth": 0,
+                    "lightning": 0,
+                    "cold": 0,
+                    "holy": 0,
+                    "dark": 0,
+                    "psychic": 0,
+                    "arcane": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "resistancePenetration": 0,
+                    "stunAvoidance": 0,
+                    "dotResistance": 0,
+                    "ailmentAvoidance": 0,
+                    "critResistance": 0,
+                    "lifesteal": 0,
+                    "hpRegen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0
+                },
+                "Temporary": {
+                    "elemental": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "healingMagnitude": 0,
+                    "stunAvoidance": 0,
+                    "dotResistance": 0,
+                    "speed": 0,
+                    "critChance": 0,
+                    "critMulti": 0,
+                    "resistancePeneration": 0,
+                    "lifesteal": 0,
+                    "hpRegen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0,
+                    "increased_dark_damage": 0
+                },
+                "baseCritChance": 0.05,
+                "baseCritMulti": 1.75,
+                "armour": 0,
+                "evasion": 31,
+                "energy_shield": 0,
+                "max_energy_shield": 11
+            },
+            "name": "The Hero",
+            "level": 8,
+            "xp": 40,
+            "xpToNextLevel": 576,
+            "gold": 293,
+            "equipped": {
+                "weapon": {
+                    "name": "[uncommon]Uncommon Weapon of Wisdom[/uncommon]",
+                    "itemType": "weapon",
+                    "rarity": "uncommon",
+                    "value": 2000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "weapon",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "increased_resistance_penetration_t1",
+                                "name": "of Wisdom",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "resistance_penetration",
+                                "minVal": 10,
+                                "maxVal": 20,
+                                "baseValue": 17,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "penetration",
+                                    "offensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "increased_item_quantity_t1",
+                                "name": "of Plunder",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "item_quantity",
+                                "minVal": 5,
+                                "maxVal": 10,
+                                "baseValue": 5,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "suffix",
+                                "weight": 550,
+                                "categories": [
+                                    "quantity",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 10,
+                    "durability": 113,
+                    "maxDurability": 120,
+                    "baseMaxDurability": 120,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 31,
+                    "baseDamage": 31,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "chest": {
+                    "name": "[common]Common Chest of Stone[/common]",
+                    "itemType": "armour",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "chest",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "earth_resistance_t1",
+                                "name": "of Stone",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "earth_resistance",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 7,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "earth",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 6,
+                    "durability": 43,
+                    "maxDurability": 74,
+                    "baseMaxDurability": 74,
+                    "defenseType": "evasion",
+                    "defenseValue": 31,
+                    "baseDefenseValue": 31,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "feet": {
+                    "name": "[uncommon]Unstable Uncommon Feet of the Glacier[/uncommon]",
+                    "itemType": "armour",
+                    "rarity": "uncommon",
+                    "value": 512000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "feet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.05,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "cold_resistance_t1",
+                                "name": "of the Glacier",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "cold_resistance",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "cold",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 5,
+                    "durability": 25,
+                    "maxDurability": 125,
+                    "baseMaxDurability": 60,
+                    "defenseType": "energy_shield",
+                    "defenseValue": 11,
+                    "baseDefenseValue": 11,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0975,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.05,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "amulet": {
+                    "name": "[common]Lucky Common Amulet of the Mind[/common]",
+                    "itemType": "accessory",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "amulet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_item_rarity_t1",
+                                "name": "Lucky",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "item_rarity",
+                                "minVal": 5,
+                                "maxVal": 10,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 550,
+                                "categories": [
+                                    "rarity",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "psychic_resistance_t1",
+                                "name": "of the Mind",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "psychic_resistance",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 11,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "psychic",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 10,
+                    "durability": 80,
+                    "maxDurability": 80,
+                    "baseMaxDurability": 80,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                }
+            },
+            "equipmentStorage": [],
+            "craftingInventory": {
+                "randomiser_defense": 1,
+                "chaos_splitting": 1
+            },
+            "inventory": {
+                "cloth": 10,
+                "crystal": 6,
+                "herbs": 14,
+                "stone": 15,
+                "ascended_essence": 25,
+                "soul": 6,
+                "bone": 2,
+                "leather": 6,
+                "mana_essence": 6,
+                "wood": 1
+            },
+            "className": "Mage",
+            "classDescription": "[class_mage]A master of the arcane arts.[/class_mage]\n[resource]Mana[/resource]: You have no [stamina]Stamina[/stamina]. Start with a [resource]mana[/resource] pool that increases with level. Regenerate a base of 5 [resource]mana[/resource] per turn.\nUpon attacking with Elemental or [arcane]Arcane[/arcane] damage, spend [resource]mana[/resource] equal to 20% of damage dealt. Gain damage equal to [resource]mana[/resource] spent on attacks.\nStarting Stats: 40 [health]HP[/health] | 7 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 175% [critical]Crit Damage[/critical] | [arcane]Arcane Damage[/arcane] | 1 [speed]Speed[/speed].",
+            "ascendancy": null,
+            "ascendancyDescription": null,
+            "maxLevel": 100,
+            "maxMana": 75,
+            "mana": 55,
+            "arcanistKills": 0,
+            "knowledgeStacks": 0
+        },
+        "camp": {
+            "campfire": {
+                "name": "Campfire",
+                "resourcesNeeded": {
+                    "wood": 20,
+                    "stone": 25,
+                    "iron_ore": 10
+                },
+                "level": 1,
+                "supplies": 9
+            },
+            "crafter": {
+                "name": "Crafter",
+                "resourcesNeeded": {
+                    "wood": 50,
+                    "stone": 50,
+                    "iron_ore": 20
+                },
+                "level": 0,
+                "blueprints": 0
+            },
+            "forge": {
+                "name": "Forge",
+                "resourcesNeeded": {
+                    "iron_ore": 50,
+                    "stone": 100,
+                    "wood": 50
+                },
+                "level": 0,
+                "fuel": 0
+            },
+            "market": {
+                "name": "Market",
+                "resourcesNeeded": {
+                    "wood": 75,
+                    "stone": 75,
+                    "iron_ore": 30,
+                    "leather": 20
+                },
+                "level": 0,
+                "tradeVouchers": 0,
+                "stock": {
+                    "bone": {
+                        "amount": 19,
+                        "value": 30
+                    },
+                    "wood": {
+                        "amount": 12,
+                        "value": 3
+                    },
+                    "herbs": {
+                        "amount": 11,
+                        "value": 6
+                    },
+                    "[common]Common Ring [orange1]of the Mage[/orange1][/common]": {
+                        "amount": 1,
+                        "value": 1500,
+                        "item": {
+                            "name": "[common]Common Ring [orange1]of the Mage[/orange1][/common]",
+                            "itemType": "accessory",
+                            "rarity": "common",
+                            "value": 500,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "ring",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": null
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": {
+                                        "id": "arcane_resistance_t1",
+                                        "name": "[orange1]of the Mage[/orange1]",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "arcane_resistance",
+                                        "minVal": 5,
+                                        "maxVal": 15,
+                                        "baseValue": 9,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "suffix",
+                                        "weight": 900,
+                                        "categories": [
+                                            "resistance",
+                                            "divine",
+                                            "arcane",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "level": 5,
+                            "durability": 75,
+                            "maxDurability": 70,
+                            "baseMaxDurability": 75,
+                            "defenseType": null,
+                            "defenseValue": 0,
+                            "baseDefenseValue": 0,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.0,
+                            "baseEntropyResistance": 0.0,
+                            "entropyResistance": 0.0,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    },
+                    "[common]Light Common Feet of the Mage[/common]": {
+                        "amount": 1,
+                        "value": 500,
+                        "item": {
+                            "name": "[common]Light Common Feet of the Mage[/common]",
+                            "itemType": "armour",
+                            "rarity": "common",
+                            "value": 500,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "feet",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": {
+                                        "id": "added_evasion_t1",
+                                        "name": "Light",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "evasion",
+                                        "minVal": 5,
+                                        "maxVal": 15,
+                                        "baseValue": 6,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "prefix",
+                                        "weight": 1000,
+                                        "categories": [
+                                            "evasion",
+                                            "defensive",
+                                            "defense"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": {
+                                        "id": "arcane_resistance_t1",
+                                        "name": "of the Mage",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "arcane_resistance",
+                                        "minVal": 5,
+                                        "maxVal": 12,
+                                        "baseValue": 6,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "suffix",
+                                        "weight": 900,
+                                        "categories": [
+                                            "resistance",
+                                            "divine",
+                                            "arcane",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "level": 5,
+                            "durability": 75,
+                            "maxDurability": 60,
+                            "baseMaxDurability": 75,
+                            "defenseType": "evasion",
+                            "defenseValue": 24,
+                            "baseDefenseValue": 18,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.0,
+                            "baseEntropyResistance": 0.0,
+                            "entropyResistance": 0.0,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    }
+                },
+                "lastRestock": "2026-08-13T04:07:02.180510"
+            },
+            "questBoard": {
+                "name": "Quest Board",
+                "resourcesNeeded": {
+                    "wood": 30,
+                    "stone": 30
+                },
+                "level": 0,
+                "activeQuests": {},
+                "completedQuests": []
+            }
+        },
+        "game": {
+            "areaLevel": 4,
+            "battlesWon": 17,
+            "difficulty": "normal",
+            "hardcoreMode": false,
+            "saveNum": 1
+        }
+    },
+    "August 13 2026 14:02:55": {
+        "player": {
+            "maxHealth": 75,
+            "baseHealth": 75,
+            "health": -13,
+            "baseDamage": 14,
+            "damageType": "arcane",
+            "baseSpeed": 1.07,
+            "stats": {
+                "Resistances": {
+                    "physical": 0,
+                    "fire": 0,
+                    "cold": 0,
+                    "lightning": 0,
+                    "dark": 0,
+                    "holy": 0,
+                    "arcane": 0,
+                    "earth": 0,
+                    "psychic": 0,
+                    "ethereal": 0,
+                    "chaos": 0,
+                    "all": 0,
+                    "elemental": 0,
+                    "otherworld": 0,
+                    "divine": 0
+                },
+                "Bonuses": {
+                    "itemRarity": 0,
+                    "itemQuantity": 0,
+                    "enemyQuantity": 0,
+                    "xpGain": 0,
+                    "goldGain": 0,
+                    "stunAvoidance": 0,
+                    "dotResistance": 0,
+                    "ailmentAvoidance": 0,
+                    "healing_magnitude": 100,
+                    "critChance": 0,
+                    "critMulti": 0,
+                    "critResistance": 0,
+                    "resistancePenetration": 0,
+                    "chance_to_multihit": 0,
+                    "lifesteal": 0,
+                    "added_multihits": 0,
+                    "hpRegen": 0,
+                    "increased_defenses": 0
+                },
+                "Permanent": {
+                    "physical": 0,
+                    "fire": 0,
+                    "earth": 0,
+                    "lightning": 0,
+                    "cold": 0,
+                    "holy": 0,
+                    "dark": 0,
+                    "psychic": 0,
+                    "arcane": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "resistancePenetration": 0,
+                    "stunAvoidance": 0,
+                    "dotResistance": 0,
+                    "ailmentAvoidance": 0,
+                    "critResistance": 0,
+                    "lifesteal": 0,
+                    "hpRegen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0
+                },
+                "Temporary": {
+                    "elemental": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "healing_magnitude": 0,
+                    "stunAvoidance": 0,
+                    "dotResistance": 0,
+                    "speed": 0,
+                    "critChance": 0,
+                    "critMulti": 0,
+                    "resistancePeneration": 0,
+                    "lifesteal": 0,
+                    "hpRegen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0,
+                    "increased_dark_damage": 0
+                },
+                "baseCritChance": 0.05,
+                "baseCritMulti": 1.75,
+                "armour": 0,
+                "evasion": 31,
+                "energy_shield": 0,
+                "max_energy_shield": 11
+            },
+            "name": "The Hero",
+            "level": 8,
+            "xp": 575,
+            "xpToNextLevel": 576,
+            "gold": 368,
+            "equipped": {
+                "chest": {
+                    "name": "[common]Common Chest of Stone[/common]",
+                    "itemType": "armour",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "chest",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "earth_resistance_t1",
+                                "name": "of Stone",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "earth_resistance",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 7,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "earth",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 6,
+                    "durability": 32,
+                    "maxDurability": 80,
+                    "baseMaxDurability": 74,
+                    "defenseType": "evasion",
+                    "defenseValue": 31,
+                    "baseDefenseValue": 31,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "feet": {
+                    "name": "[uncommon]Unstable Uncommon Feet of the Glacier[/uncommon]",
+                    "itemType": "armour",
+                    "rarity": "uncommon",
+                    "value": 1024000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "feet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.05,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "cold_resistance_t1",
+                                "name": "of the Glacier",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "cold_resistance",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "cold",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 5,
+                    "durability": 14,
+                    "maxDurability": 125,
+                    "baseMaxDurability": 60,
+                    "defenseType": "energy_shield",
+                    "defenseValue": 11,
+                    "baseDefenseValue": 11,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0975,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.05,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                }
+            },
+            "equipmentStorage": [],
+            "craftingInventory": {
+                "randomiser_defense": 1,
+                "chaos_splitting": 1
+            },
+            "inventory": {
+                "cloth": 11,
+                "crystal": 12,
+                "herbs": 17,
+                "stone": 22,
+                "ascended_essence": 13,
+                "soul": 6,
+                "bone": 2,
+                "leather": 6,
+                "mana_essence": 6,
+                "wood": 3,
+                "iron_ore": 5
+            },
+            "className": "Mage",
+            "classDescription": "[class_mage]A master of the arcane arts.[/class_mage]\n[resource]Mana[/resource]: You have no [stamina]Stamina[/stamina]. Start with a [resource]mana[/resource] pool that increases with level. Regenerate a base of 5 [resource]mana[/resource] per turn.\nUpon attacking with Elemental or [arcane]Arcane[/arcane] damage, spend [resource]mana[/resource] equal to 20% of damage dealt. Gain damage equal to [resource]mana[/resource] spent on attacks.\nStarting Stats: 40 [health]HP[/health] | 7 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 175% [critical]Crit Damage[/critical] | [arcane]Arcane Damage[/arcane] | 1 [speed]Speed[/speed].",
+            "ascendancy": null,
+            "ascendancyDescription": null,
+            "maxLevel": 100,
+            "maxMana": 75,
+            "mana": 55,
+            "arcanistKills": 0,
+            "knowledgeStacks": 0
+        },
+        "camp": {
+            "campfire": {
+                "name": "Campfire",
+                "resourcesNeeded": {
+                    "wood": 20,
+                    "stone": 25,
+                    "iron_ore": 10
+                },
+                "level": 1,
+                "supplies": 0
+            },
+            "crafter": {
+                "name": "Crafter",
+                "resourcesNeeded": {
+                    "wood": 50,
+                    "stone": 50,
+                    "iron_ore": 20
+                },
+                "level": 0,
+                "blueprints": 0
+            },
+            "forge": {
+                "name": "Forge",
+                "resourcesNeeded": {
+                    "iron_ore": 50,
+                    "stone": 100,
+                    "wood": 50
+                },
+                "level": 0,
+                "fuel": 0
+            },
+            "market": {
+                "name": "Market",
+                "resourcesNeeded": {
+                    "wood": 75,
+                    "stone": 75,
+                    "iron_ore": 30,
+                    "leather": 20
+                },
+                "level": 0,
+                "tradeVouchers": 0,
+                "stock": {
+                    "bone": {
+                        "amount": 19,
+                        "value": 30
+                    },
+                    "wood": {
+                        "amount": 12,
+                        "value": 3
+                    },
+                    "herbs": {
+                        "amount": 11,
+                        "value": 6
+                    },
+                    "[common]Common Ring [orange1]of the Mage[/orange1][/common]": {
+                        "amount": 1,
+                        "value": 1500,
+                        "item": {
+                            "name": "[common]Common Ring [orange1]of the Mage[/orange1][/common]",
+                            "itemType": "accessory",
+                            "rarity": "common",
+                            "value": 500,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "ring",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": null
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": {
+                                        "id": "arcane_resistance_t1",
+                                        "name": "[orange1]of the Mage[/orange1]",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "arcane_resistance",
+                                        "minVal": 5,
+                                        "maxVal": 15,
+                                        "baseValue": 9,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "suffix",
+                                        "weight": 900,
+                                        "categories": [
+                                            "resistance",
+                                            "divine",
+                                            "arcane",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "level": 5,
+                            "durability": 75,
+                            "maxDurability": 70,
+                            "baseMaxDurability": 75,
+                            "defenseType": null,
+                            "defenseValue": 0,
+                            "baseDefenseValue": 0,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.0,
+                            "baseEntropyResistance": 0.0,
+                            "entropyResistance": 0.0,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    },
+                    "[common]Light Common Feet of the Mage[/common]": {
+                        "amount": 1,
+                        "value": 500,
+                        "item": {
+                            "name": "[common]Light Common Feet of the Mage[/common]",
+                            "itemType": "armour",
+                            "rarity": "common",
+                            "value": 500,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "feet",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": {
+                                        "id": "added_evasion_t1",
+                                        "name": "Light",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "evasion",
+                                        "minVal": 5,
+                                        "maxVal": 15,
+                                        "baseValue": 6,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "prefix",
+                                        "weight": 1000,
+                                        "categories": [
+                                            "evasion",
+                                            "defensive",
+                                            "defense"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": {
+                                        "id": "arcane_resistance_t1",
+                                        "name": "of the Mage",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "arcane_resistance",
+                                        "minVal": 5,
+                                        "maxVal": 12,
+                                        "baseValue": 6,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "suffix",
+                                        "weight": 900,
+                                        "categories": [
+                                            "resistance",
+                                            "divine",
+                                            "arcane",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "level": 5,
+                            "durability": 75,
+                            "maxDurability": 75,
+                            "baseMaxDurability": 75,
+                            "defenseType": "evasion",
+                            "defenseValue": 24,
+                            "baseDefenseValue": 18,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.0,
+                            "baseEntropyResistance": 0.0,
+                            "entropyResistance": 0.0,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    }
+                },
+                "lastRestock": "2026-08-13T04:07:02.180510"
+            },
+            "questBoard": {
+                "name": "Quest Board",
+                "resourcesNeeded": {
+                    "wood": 30,
+                    "stone": 30
+                },
+                "level": 0,
+                "activeQuests": {},
+                "completedQuests": []
+            }
+        },
+        "game": {
+            "areaLevel": 5,
+            "battlesWon": 20,
+            "difficulty": "normal",
+            "hardcoreMode": false,
+            "saveNum": 1
+        }
     }
 }

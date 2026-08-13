@@ -547,6 +547,8 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         healthBar = createHealthBar(entity._health, entity._maxHealth, width)
         col.append(f"[health]Health:[/health]  {healthBar}")
         if isPlayer:
+            if player.energyShield > 0 and player.maxEnergyShield > 0:
+                col.append(f"[energy_shield]Energy Shield:[/energy_shield] {player.energyShield}/{player.maxEnergyShield}")
             if player.className not in ['Mage', 'Wretch']: # both manaless classes
                 staminaBar = createStaminaBar(entity._stamina, entity._maxStamina, width)
                 col.append(f'[stamina]Stamina:[/stamina] {staminaBar}')
@@ -556,7 +558,7 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         col.append(f"[damage]DMG:[/damage] {entity._damage} [dim]({formatDamageType(entity._damageType, entity._damageType)})[/dim]")
         col.append(f"[speed]SPD:[/speed] {entity._speed if not isPlayer else f'{entity._speed:.2f}'}")
         col.append("")
-        
+
         activeResists = {k: v for k, v in entity._stats['Resistances'].items() if v != 0}
         if activeResists:
             col.append("[bold]Resistances:[/bold]")

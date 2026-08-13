@@ -147,7 +147,7 @@ class Enemy(Entity):
             ItemRarity.LEGENDARY: 0.01 + round(self._level / 1200, 4)
         }
 
-        if self._level > 10:
+        if self._level > 20:
             for slot in slots:
                 if numEquipped >= maxEquipment:
                     break
@@ -162,7 +162,23 @@ class Enemy(Entity):
                     finalDropChance = min(0.95, dropChance.get(rarity, 0.3))
                     self._lootTable.addEquipment(equipment, finalDropChance)
                     numEquipped += 1
-        else: # special rules for enemies level 1-10: guaranteed 1 equipment piece. unable to roll epic/legendary equipment
+
+        elif self._level > 10: # rules for enemies level 11-20: guaranteed 1-2 equipment pieces, unable to roll legendary equipment
+            numEq = random.choices([1, 2], weights=[2, 1], k=1)[0]
+            for _ in range(numEq):
+                slot = random.choice(slots)
+                while self._equipment[slot] is not None:
+                    slot = random.choice(slots)
+                rarity = None
+                while rarity in [None, ItemRarity.LEGENDARY]:
+                    rarity = rollRarity(self._level)
+                equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
+                self.equip(equipment)
+
+                finalDropChance = min(0.9, dropChance.get(rarity, 0.3) + 0.25)
+                self._lootTable.addEquipment(equipment, finalDropChance)
+
+        else: # rules for enemies level 1-10: guaranteed 1 equipment piece. unable to roll epic/legendary equipment
             slot = random.choice(slots)
             rarity = None
             while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY]:
@@ -301,7 +317,7 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, g
     baseCritMulti = round(random.uniform(1.1 + level / 300, 1.5 + level / 200), 2)
 
     baseHealth = round(baseHealth * difficulty)
-    baseDamage = round(baseDamage * difficulty)
+    baseDamage = min(level, round(baseDamage * difficulty))
     
     loot = LootTable()
     numDrops = random.randint(1, max(2, 2 + level // 6))

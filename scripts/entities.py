@@ -51,7 +51,7 @@ class Entity:
                 'stunAvoidance': 0,
                 'dotResistance': 0,
                 'ailmentAvoidance': 0,
-                'healingMagnitude': 100,
+                'healing_magnitude': 100,
                 'critChance': 0,
                 'critMulti': 0,
                 'critResistance': 0,
@@ -98,7 +98,7 @@ class Entity:
                 'divine': 0,
                 'otherworld': 0,
                 'all': 0,
-                'healingMagnitude': 0,
+                'healing_magnitude': 0,
                 'stunAvoidance': 0,
                 'dotResistance': 0,
                 'speed': 0,
@@ -195,13 +195,13 @@ class Entity:
         baseStr =  f"[health]Health:[/health] {healthBar} | [damage]Damage:[/damage] {self._damage} [dim]({formatDamageType(self._damageType, self._damageType)})[/dim] | [speed]Speed:[/speed] {self._speed}"
 
         if self._stats.get('armour', 0) > 0:
-            baseStr += f"\n[cyan]Armour:[/cyan] {self._stats['armour']}"
+            baseStr += f"\n[armour]Armour:[/armour] {self.armour}"
         if self._stats.get('evasion', 0) > 0:
-            baseStr += f"\n[cyan]Evasion:[/cyan] {self._stats['evasion']}"
+            baseStr += f"\n[evasion]Evasion:[/evasion] {self.evasion}"
         if self._stats.get('max_energy_shield', 0) > 0:
-            es = self._stats.get('energy_shield', 0)
-            maxEs = self.stats['max_energy_shield']
-            baseStr += f"\n[cyan]Energy Shield:[/cyan] {es} / {maxEs}"
+            es = self.energyShield
+            maxEs = self.maxEnergyShield
+            baseStr += f"\n[energy_shield]Energy Shield:[/energy_shield] {es} / {maxEs}"
 
         return baseStr
 
@@ -319,7 +319,7 @@ class Entity:
 
     def heal(self, amount: int, doPrint: bool = True) -> int:
         """returns true healed amount"""
-        magnitude = self._stats['Bonuses']['healingMagnitude'] / 100
+        magnitude = self._stats['Bonuses']['healing_magnitude'] / 100
         modifiedAmount = int(amount * magnitude)
         if modifiedAmount > 0:
             self._health = min(self._health + modifiedAmount, self._maxHealth)
@@ -364,7 +364,7 @@ class Entity:
         else:
             if ability not in ENEMY_ABILITIES:
                 return
-            resolved = deepcopy(ENEMY_ABILITIES[ability]) # used to separate references
+            resolved = deepcopy(ENEMY_ABILITIES[ability]) # used to sefate references
 
         self._abilities[ability] = resolved
         if doPrint:
@@ -515,14 +515,12 @@ class Entity:
         self._damage = self._baseDamage
         self._speed = self._baseSpeed
 
-        # reset bonuses
         for bonus in self._stats['Bonuses']:
-            if bonus == 'healingMagnitude':
+            if bonus == 'healing_magnitude':
                 self._stats['Bonuses'][bonus] = 100
             else:
                 self._stats['Bonuses'][bonus] = 0
 
-        # reset resistances
         for res in self._stats['Resistances']:
             self._stats['Resistances'][res] = 0
 
@@ -567,7 +565,10 @@ class Entity:
                     )
                 
                 for bonus in self._stats['Bonuses'].keys():
+
                     bonusFlat, bonusInc, _ = equipment.getStatBonuses(bonus)
+                    if bonus == 'healing_magnitude':
+                        bonusFlat += 100
                     extra = self._getExtraBonuses(bonus)
                     self._stats['Bonuses'][bonus] = round((bonusFlat + extra) * (1 + bonusInc))
 
@@ -629,8 +630,9 @@ class Entity:
                     console.print(f"  {r}: [cyan]{v}%[/cyan]")
 
             activeBonuses = {k: v for k, v in self._stats['Bonuses'].items() if v > 0}
-            if activeBonuses.get('healingMagnitude') == 100:
-                activeBonuses.pop('healingMagnitude')
+
+            if activeBonuses.get('healing_magnitude') == 100:
+                activeBonuses.pop('healing_magnitude')
             if activeBonuses:
                 console.print("\n[bold]Bonuses:[/bold]")
                 for bonus, val in activeBonuses.items():

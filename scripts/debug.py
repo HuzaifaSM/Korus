@@ -356,53 +356,59 @@ class Debugger:
                 printError('Invalid input!')
                 pause()
 
-    def mainMenu(self):
-        while True:
-            clearScreen()
-            printHeader("Debug Menu")
-            console.print("[dim]0.[/dim] Exit")
-            console.print("[dim]1.[/dim] View Commands")
-            console.print("\n[cyan]Type a command to use it[/cyan]")
-            choice = console.input("> ").strip()
-            if choice == "0":
-                break
-            elif choice == "1":
-                console.print("\n[bold cyan]=== Available Commands ===[/bold cyan]")
-                for i, command in enumerate(COMMANDS, 1):
-                    console.print(f"  [dim]{i}.[/dim] [cyan]{command}[/cyan]")
-                pause()
-            else:
-                choice = choice.lower()
-                if choice in COMMANDS:
-                    if choice == "give_item":
-                        self.giveItem()
-                    elif choice == "remove_item":
-                        self.removeItem()
-                    elif choice in ["give_equipment", "eq"]:
-                        self.giveEquipment()
-                    elif choice in ["give_ability", "ability"]:
-                        self.giveAbility()
-                    elif choice in ["give_consumable", "consumable"]:
-                        self.giveConsumable()
-                    elif choice in ["give_xp", "xp"]:
-                        self.giveXp()
-                    elif choice in ["give_gold", "gold"]:
-                        self.giveGold()
-                    elif choice in ['restock']:
-                        self.game.camp.market._generateStock()
-                    elif choice in ['area', 'area_level']:
-                        self.changeAreaLevel()
-                    elif choice in ['heal']:
-                        self.heal()
-                    elif choice in ['runes', 'crafting']:
-                        self.giveRunes()
-                    elif choice in ['level', 'lvl']:
-                        self.setPlayerLevel()
-                    else:
-                        printError(f"Invalid choice: {choice}")
-                        pause()
-                else:
-                    printWarning(f"Unknown command: {choice}")
+    def mainMenu(self, autoCommand: str = None):
+        if autoCommand:
+            self.processChoice(autoCommand)
+        else:
+            while True:
+                clearScreen()
+                printHeader("Debug Menu")
+                console.print("[dim]0.[/dim] Exit")
+                console.print("[dim]1.[/dim] View Commands")
+                console.print("\n[cyan]Type a command to use it[/cyan]")
+                choice = console.input("> ").strip()
+                if choice == "0":
+                    break
+                elif choice == "1":
+                    console.print("\n[bold cyan]=== Available Commands ===[/bold cyan]")
+                    for i, command in enumerate(COMMANDS, 1):
+                        console.print(f"  [dim]{i}.[/dim] [cyan]{command}[/cyan]")
                     pause()
+                else:
+                    self.processChoice(choice)
+
+    def processChoice(self, choice: str):
+        choice = choice.lower()
+        if choice in COMMANDS:
+            if choice == "give_item":
+                self.giveItem()
+            elif choice == "remove_item":
+                self.removeItem()
+            elif choice in ["give_equipment", "eq"]:
+                self.giveEquipment()
+            elif choice in ["give_ability", "ability"]:
+                self.giveAbility()
+            elif choice in ["give_consumable", "consumable"]:
+                self.giveConsumable()
+            elif choice in ["give_xp", "xp"]:
+                self.giveXp()
+            elif choice in ["give_gold", "gold"]:
+                self.giveGold()
+            elif choice in ['restock']:
+                self.game.camp.market._generateStock()
+            elif choice in ['area', 'area_level']:
+                self.changeAreaLevel()
+            elif choice in ['heal']:
+                self.heal()
+            elif choice in ['runes', 'crafting']:
+                self.giveRunes()
+            elif choice in ['level', 'lvl']:
+                self.setPlayerLevel()
+            else:
+                printError(f"Invalid choice: {choice}")
+                pause()
+        else:
+            printWarning(f"Unknown command: {choice}")
+            pause()
 
 ...

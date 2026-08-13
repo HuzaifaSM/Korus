@@ -1994,7 +1994,7 @@
                     "mana",
                     "elemental"
                 ],
-                "damage_base": 3,
+                "damage_base": 4,
                 "damage_scaling": 45,
                 "damage_type": "arcane",
                 "stamina_cost": 0,
@@ -2008,7 +2008,7 @@
                 "level": 1,
                 "cooldown": 2,
                 "targets": 1,
-                "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 10 Damage + 40% of your base damage.",
+                "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 5 Damage + 45% of your base damage.",
                 "evolutions": {
                     "25": {
                         "damage_base": 15,
@@ -2032,7 +2032,7 @@
                                 }
                             }
                         },
-                        "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 40 Damage + 65% of your base damage.\n  - Apply 10% Dvine Exposure for 2 turns."
+                        "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 15 Damage + 70% of your base damage.\n  - Apply 10% Dvine Exposure for 2 turns."
                     },
                     "50": {
                         "damage_base": 40,
@@ -2060,7 +2060,7 @@
                                 }
                             }
                         },
-                        "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 100 Damage + 90% of your base damage.\n  - 20% Divine Exposure and 20% Vulnerable for 2 turns."
+                        "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 40 Damage + 110% of your base damage.\n  - 20% Divine Exposure and 20% Vulnerable for 2 turns."
                     },
                     "75": {
                         "damage_base": 100,
@@ -2092,7 +2092,7 @@
                                 }
                             }
                         },
-                        "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 240 Damage + 145% of your base damage.\n  - 30% Elemental Exposure, 30% Vulnerable and 20% Weaken for 2-3 turns."
+                        "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 100 Damage + 150% of your base damage.\n  - 30% Elemental Exposure, 30% Vulnerable and 20% Weaken for 2-3 turns."
                     }
                 }
             },

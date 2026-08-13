@@ -314,8 +314,11 @@ class Game:
 
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
 
-            if choice.lower() == "debug":
-                self.debugger.mainMenu()
+            if choice.lower() == "debug" or choice.startswith("/"):
+                auto = None
+                if choice.startswith("/"):
+                    auto = choice.split("/")[1]
+                self.debugger.mainMenu(autoCommand=auto)
                 continue
             elif choice.lower() == "data":
                 console.print("\n[bold cyan]=== ALL GAME DATA ===[/bold cyan]")

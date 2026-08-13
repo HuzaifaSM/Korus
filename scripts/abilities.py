@@ -256,7 +256,7 @@ class StatusEffect:
             for dt in DAMAGE_TYPES:
                 self.target._stats['Temporary'][dt] -= self.data['resistanceReduction'] * mult
         elif self.name == 'poison':
-            self.target._stats['Temporary']['healingMagnitude'] -= self.data['healingReduction'] * mult
+            self.target._stats['Temporary']['healing_magnitude'] -= self.data['healingReduction'] * mult
         elif self.name in ['stun', 'freeze']:
             self.target._stats['Temporary']['stunAvoidance'] += self.data['grantsAvoidance'] * mult
         elif self.name in ['chill', 'slow']: # has a more complex calculation to implement later, stacks non-linearly up to a max of 99%
