@@ -58,12 +58,11 @@ class Help:
     [bold yellow]Resource Management:[/bold yellow]
     - [gold]Gold[/gold]: Used for buying items and upgrades
     - [cyan]Resources[/cyan]: Dropped by enemies, used for crafting and upgrading
-    - [yellow]Skill Points[/yellow]: Earned from victories, spent at Training Grounds
-    - [green]Supplies/Fuel/Blueprints[/green]: Used at specific camp stations
+    - [blue]Runes[/blue]: Dropped by enemies, used to modify equipment in various ways
 
     [bold yellow]Quick Tips:[/bold yellow]
     - Heal at the [red]Campfire[/red] between fights (uses supplies)
-    - Check the [green]Market[/green] regularly for good deals
+    - Check the [green]Market[/green] regularly for resources and new pieces of equipment
     - [orange1]Upgrade camp stations[/orange1] to unlock new features
     - Save your game frequently!
 
@@ -92,13 +91,8 @@ class Help:
     [bold yellow]Status Effects:[/bold yellow]
     - [dot]DoTs[/dot]: Bleed, Burn, Poison, Curse (damage over time)
     - [cc]CC[/cc]: Stun, Freeze, Slow (crowd control)
-    - [debuff]Debuffs[/debuff]: Weaken, Vulnerable, Exposed
+    - [debuff]Debuffs[/debuff]: Weaken, Vulnerable, Exposed, Exposure
     - [buff]Buffs[/buff]: Regeneration, Shield, Lifesteal
-
-    [bold yellow]Strategy Tips:[/bold yellow]
-    - Use abilities on cooldown for maximum damage
-    - Target low-health enemies first
-    - Check enemy resistances before choosing attacks
 
     [dim]Press Enter to return...[/dim]
     """
@@ -111,47 +105,29 @@ class Help:
         guide = """
     [bold cyan]Camp Overview:[/bold cyan]
 
-    Your camp contains 6 stations that grow stronger as you upgrade them.
+    Your camp contains 4 stations that grow stronger as you upgrade them.
+    Upon reaching level 1 of a camp, you will begin finding specific resources for them whenever winning a combat.
 
     [bold red]1. CAMPFIRE (Healing & Potions)[/bold red]
-    - [green]Rest[/green]: Use supplies to heal to full HP
+    - Adds supplies to combat rewards (Level 1+)
+    - Automatically heals you after each victory (Level 1+)
+    - [green]Rest[/green]: Use supplies found from combat to heal to full HP
     - [cyan]Brew Potions[/cyan]: Create health potions (Level 2+)
-    - Automatically heals you after each victory ([heal]+20% healing per level[/heal])
 
-    [bold cyan]2. CRAFTER (Equipment Creation)[/bold cyan]
-    - [yellow]Craft Equipment[/yellow]: Create new gear with blueprints
-    - [magenta]Enchant Equipment[/magenta]: Add special properties (Level 3+)
-    - Higher levels = better rarity chances
-
-    [bold yellow]3. FORGE (Equipment Upgrades)[/bold yellow]
+    [bold yellow]2. FORGE (Equipment Upgrades)[/bold yellow]
+    - [gold3]Craft Equipment[/gold3] (Level 1+)
     - [green]Repair[/green]: Fix damaged equipment
-    - [cyan]Upgrade Stats[/cyan]: Boost equipment values
-    - [orange1]Add Stats[/orange1]: Give equipment new properties (Level 2+)
-    - [red]Reforge[/red]: Reroll all stats (Level 2+)
+    - [cyan]Apply Runes[/cyan]: Use your runes to modify equipment
 
-    [bold magenta]4. TRAINING GROUNDS (Abilities)[/bold magenta]
-    - [green]Learn Abilities[/green]: Purchase new attacks
-    - [cyan]Upgrade Damage[/cyan]: Increase ability power
-    - [yellow]Reduce Cooldown[/yellow]: Use abilities more often (Level 2+)
-    - [orange1]Upgrade Mechanics[/orange1]: Enhance effects (Level 3+)
-    - [red]Train Stats[/red]: Boost base stats (Level 4+)
-    - [gold1]Increase Max Level[/gold1]: Raise level cap (Level 5+)
-
-    [bold green]5. MARKET (Trading)[/bold green]
+    [bold green]3. MARKET (Trading)[/bold green]
     - [cyan]Buy/Sell[/cyan]: Trade resources and equipment
     - [yellow]Force Restock[/yellow]: Refresh shop inventory (Level 1+)
     - Stock updates every hour automatically
 
-    [bold blue]6. QUEST BOARD (Objectives)[/bold blue]
+    [bold blue]4. QUEST BOARD (Objectives)[/bold blue] (currently not working)
     - [green]Accept Quests[/green]: Take on challenges
     - [yellow]Complete Quests[/yellow]: Earn XP, gold, and items
     - Quest limit increases with level
-
-    [bold yellow]Priority Upgrades:[/bold yellow]
-    1. [red]Campfire to Level 2[/red] (unlock potion brewing)
-    2. [magenta]Training Grounds to Level 2[/magenta] (cooldown reduction)
-    3. [cyan]Crafter to Level 1[/cyan] (equipment crafting)
-    4. [yellow]Forge to Level 1[/yellow] (repairs and upgrades)
 
     [dim]Press Enter to return...[/dim]
     """
@@ -159,60 +135,30 @@ class Help:
 
     def _helpClasses(self):
         clearScreen()
-        printHeader("Classes & Abilities")
-        
+        printHeader("Classes & Ascendancies")
+
         guide = """
-    [bold cyan]Player Classes:[/bold cyan]
+    [bold cyan]Player Classes:[/bold cyan] (REDO COMPLETELY)
 
-    [bold red]WARRIOR[/bold red] (Fire Damage)
-    - Builds [damage]Rage[/damage] during combat
-    - Higher rage = more damage
-    - Rage converts to healing after battle
-    - [buff]High burst damage.[/buff]
+    [class_cultist]Cultist[/class_cultist] | [chaos]Chaos Damage[/chaos]
 
-    [bold magenta]ROGUE[/bold magenta] (Dark Damage)
-    - Gains [buff]Siphon[/buff] stacks on hit. Each Siphon stack grants 5% lifesteal. Stacks up to 10 stacks.
-    - [buff]First Strike[/buff] abilities deal 2x damage to full HP enemies
-    - High speed and critical chance
-    - [buff]Strong opener, good sustain.[/buff]
+    [class_druid]Druid[/class_druid] | [earth]Earth Damage[/earth]
 
-    [bold purple]MAGE[/bold purple] (Arcane Damage)
-    - Uses [cyan]Mana[/cyan] to empower elemental attacks
-    - Bonus damage for using same element consecutively
-    - [buff]Versatile damage types.[/buff]
+    [class_fighter]Fighter[/class_fighter] | [physical]Physical Damage[/physical]
 
-    [bold white]FIGHTER[/bold white] (Physical Damage)
-    - Builds [buff]Combo[/buff] with each hit
-    - Combo multiplies damage exponentially
-    - [buff]Quickly ramps damage.[/buff]
+    [class_mage]Mage[/class_mage] | [arcane]Arcane Damage[/arcane]
 
-    [bold bright_cyan]RANGER[/bold bright_cyan] (Wind Damage)
-    - High [buff]Dodge Chance[/buff] (scales with level)
-    - [debuff]Blind[/debuff] enemies to reduce accuracy
-    - [buff]High base speed, chance to dodge.[/buff]
+    [class_monk]Monk[/class_monk] | [lightning]Lightning[/lightning] and [cold]Cold[/cold] Damage
 
-    [bold green]DRUID[/bold green] (Earth Damage)
-    - Shapeshifts between [human]Human[/human] and [beast]Beast[/beast] forms each turn
-    - Builds [earth]Thorns[/earth] for defense
-    - [nature]Nature[/nature] abilities generate thorns (human form)
-    - [harvest]Harvest[/harvest] abilities consume thorns as cost (beast form)
-    - [buff]Versatile playstyle due to switching forms.[/buff]
+    [class_paladin]Paladin[/class_paladin] | [holy]Holy Damage[/holy]
+    
+    [class_spectre]Spectre[/class_spectre] | [ethereal]Ethereal Damage[/ethereal]
 
-    [bold gold1]PALADIN[/bold gold1] (Holy Damage)
-    - Gains [gold1]Divine Favour[/gold1] each turn
-    - Spends favour for random combat buffs
-    - [buff]High health, strong attacks. Power of RNGesus[/buff]
+    [class_wanderer]Wanderer[/class_wanderer] | [psychic]Psychic Damage[/psychic]
 
-    [bold cyan]MONK[/bold cyan] (Lightning/Cold)
-    - Alternates between [lightning]Lightning[/lightning] and [cold]Cold[/cold] damage
-    - Gains permanent [buff]Combat Prowess[/buff] (damage + speed)
-    - [buff]Highly balanced, quickly scales and allows potential to ignore resistances[/buff]
+    [class_warrior]Warrior[/class_warrior] | [fire]Fire Damage[/fire]
 
-    [bold yellow]Ability Tips:[/bold yellow]
-    - Learn abilities that complement your class
-    - Upgrade ability damage at Training Grounds
-    - Reduce cooldowns to use abilities more often
-    - Upgrade mechanics to enhance effects (e.g., Bleed → Lacerate)
+    [class_wretch]Wretch[/class_wretch] | [dark]Dark Damage[/dark]
 
     [dim]Press Enter to return...[/dim]
     """
@@ -231,19 +177,19 @@ class Help:
     - [gold]Accessories[/gold]: Ring, Amulet
 
     [bold yellow]Rarity Tiers:[/bold yellow]
-    [common]Common[/common] → [uncommon]Uncommon[/uncommon] → [rare]Rare[/rare] → [epic]Epic[/epic] → [legendary]Legendary[/legendary] → [unique]Unique[/unique]
+    [common]Common[/common] → [uncommon]Uncommon[/uncommon] → [rare]Rare[/rare] → [epic]Epic[/epic] → [legendary]Legendary[/legendary]
     Higher rarity = better stats and more stat slots
 
     [bold yellow]Equipment Sources:[/bold yellow]
     - [green]Enemy Drops[/green]: Random loot from victories
-    - [cyan]Crafter[/cyan]: Craft with blueprints
+    - [cyan]Forge[/cyan]: Craft with blueprints
     - [yellow]Market[/yellow]: Buy from shop inventory
 
     [bold yellow]Equipment Management:[/bold yellow]
     - [green]Equip/Unequip[/green]: Move items between equipment and storage
     - [yellow]Compare[/yellow]: Check stat differences
     - [red]Repair[/red]: Fix durability at Forge
-    - [cyan]Upgrade[/cyan]: Boost stats at Forge
+    - [cyan]Upgrade[/cyan]: Use runes at the Forge
     - [gold]Sell[/gold]: Trade unwanted gear at Market
 
     [bold yellow]Item Types:[/bold yellow]
@@ -256,12 +202,6 @@ class Help:
     [green]Consumables[/green]:
     - Health Potions (Small → Godly)
     - Brew at Campfire Level 2+
-
-    [bold yellow]Tips:[/bold yellow]
-    - Keep higher rarity items even if stats are lower (can upgrade)
-    - Sell excess common/uncommon equipment for gold
-    - Repair equipment before durability reaches 0
-    - Compare equipment before equipping new gear
 
     [dim]Press Enter to return...[/dim]
     """
@@ -295,42 +235,10 @@ class Help:
     - Cannot be toggled after game starts
     - For the ultimate challenge
 
-    [bold cyan]Progression Tips:[/bold cyan]
-
-    [bold yellow]Early Game (Level 1-20):[/bold yellow]
-    - Focus on [green]upgrading Campfire[/green] for healing
-    - Learn a few key [magenta]abilities[/magenta]
-    - [cyan]Equip any gear you find[/cyan]
-
-    [bold yellow]Mid Game (Level 21-50):[/bold yellow]
-    - Upgrade [cyan]Crafter[/cyan] to craft better equipment
-    - Invest in [yellow]ability cooldown reduction[/yellow]
-    - Start [red]enchanting and upgrading[/red] equipment
-    - Accept [blue]quests[/blue] for extra resources
-
-    [bold yellow]Late Game (Level 51-100):[/bold yellow]
-    - Max out [magenta]Training Grounds[/magenta] for stat training
-    - Focus on [legendary]Legendary/Unique[/legendary] equipment
-    - Upgrade [orange1]ability mechanics[/orange1]
-    - Use [gold1]Training Points[/gold1] to boost base stats
-
-    [bold yellow]Endgame (Level 100+):[/bold yellow]
-    - Increase [gold1]Max Level[/gold1] at Training Grounds Level 5
-    - Perfect your equipment with [cyan]reforging[/cyan]
-    - Complete all [blue]quests[/blue]
-    - Challenge yourself on Hell difficulty!
-
     [bold yellow]Area Level:[/bold yellow]
     - Increases every 5-15 victories
     - Higher area level = stronger enemies
-    - Scales infinitely for endless progression
-
-    [bold yellow]General Strategy:[/bold yellow]
-    - [green]Save frequently[/green]!
-    - Balance offense and defense
-    - Don't neglect camp upgrades
-    - Experiment with different ability combinations
-    - Change difficulty if too easy/hard
+    - You can reduce Area Level by 1 by spending 3 Souls. (NYI)
 
     [dim]Press Enter to return...[/dim]
     """

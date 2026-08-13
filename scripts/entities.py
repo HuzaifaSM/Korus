@@ -58,6 +58,7 @@ class Entity:
                 'resistancePenetration': 0,
                 'chance_to_multihit': 0,
                 'lifesteal': 0,
+                'damage_reduction': 0,
                 'added_multihits': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
@@ -82,6 +83,7 @@ class Entity:
                 'ailmentAvoidance': 0,
                 'critResistance': 0,
                 'lifesteal': 0,
+                'damage_reduction': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
                 'added_multihits': 0,
@@ -108,6 +110,7 @@ class Entity:
                 'critMulti': 0,
                 'resistancePeneration': 0,
                 'lifesteal': 0,
+                'damage_reduction': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
                 'added_multihits': 0,
@@ -728,6 +731,9 @@ class Entity:
                 if armour.durability == 0:
                     printWarning(f"{armour.name} has broken!")
                     self.unequip(slot)
+
+        damageTaken = max(0, damageTaken - self._stats['Bonuses']['damage_reduction'])
+
         return damageTaken, damageType
 
     def onKill(self, entity: Entity, attackData: Dict, combatManager=None) -> Optional[Dict]:

@@ -215,8 +215,8 @@ class Equipment(Item):
             slot.affix = affix
 
         self.level = level
-        self.defenseType = defenses.get('defenseType', None)
-        self.defenseValue = defenses.get('defenseValue', 0)
+        self.defenseType: str = defenses.get('defenseType', None)
+        self.defenseValue: int = defenses.get('defenseValue', 0)
         self.baseDefenseValue = defenses.get('baseDefenseValue', 0)
 
         self.damage = damages.get('damage', 0)
@@ -869,35 +869,66 @@ class Equipment(Item):
 
     def compareTo(self, other: Optional['Equipment']) -> str:
         """'Other' is the current equipment piece, self is the new equipment piece"""
+        if self.slot != other.slot:
+            return f"[error][bold]ERROR:[/bold] Selected items do not have the same base types.[/error]"
+
+        def diff(newStat, oldStat) -> tuple[int, str, str]:
+            change = round(newStat - oldStat, 2)
+            symbol = "[+]" if change > 0 else "[-]"
+            colour = "success" if change > 0 else "error"
+            return change, symbol, colour
+
         if not other:
             return f"\nNEW: {self.name}\n    {self._formatStats()}"
         comparison = ""
-        comparison += f"\n Current: {other.name}"
+        comparison += f"\n [cyan]Current:[/cyan] {other.name}"
         comparison += f"\n   {other._formatStats()}"
-        comparison += f"\n New: {self.name}"
+        comparison += f"\n [cyan]New:[/cyan] {self.name}"
         comparison += f"\n   {self._formatStats()}"
-        comparison += "\nChanges:"
+        comparison += "\n[bold yellow3]Changes:[/bold yellow3]" if self.slot not in ['ring', 'amulet'] else ""
         # compare each stat
-        allStats = set(list(self.stats.keys()) + list(other.stats.keys()))
-        for stat in allStats:
-            oldVal = other.stats.get(stat, 0)
-            newVal = self.stats.get(stat, 0)
-            if oldVal != newVal:
-                if stat == 'damageType':
-                    if type(oldVal) == str and type(newVal) == str: # both damage types
-                        comparison += f"\n  [-] Damage Type: {oldVal} | [+] Damage Type: {newVal}"
-                    elif type(oldVal) == str and type(newVal) != str:
-                        comparison += f"\n  [-] Damage Type: {oldVal}"
-                    elif type(oldVal) != str and type(newVal) == str:
-                        comparison += f"\n  [+] Damage Type: {newVal}"
-                else:
-                    diff = round(newVal - oldVal, 2)
-                    symbol = "+" if diff > 0 else "" # negative shows in difference
-                    colour = "[+]" if diff > 0 else "[-]"
-                    resStr = ""
-                    if stat in DAMAGE_TYPES:
-                        resStr = " resistance"
-                    comparison += f"\n  {colour} {stat}{resStr}: {symbol}{diff}"
+        oldStats = other.stats.copy()
+        newStats = self.stats.copy()
+
+        if self.slot in ['head', 'chest', 'feet', 'legs']:
+            newDef = self.defenseValue
+            oldDef = other.defenseValue
+            change, symbol, colour = diff(newDef, oldDef)
+            if other.defenseType == self.defenseType:
+                comparison += f"\n[{colour}]{symbol} {change} {self.defenseValue}[/{colour}]"
+            else: # different defense types
+                nType = self.defenseType.replace('_', ' ').title()
+                oType = other.defenseType.replace('_', ' ').title()
+                comparison += f"\n[success] [+] {self.defenseValue} {nType}[/success] | [error] [-] {other.defenseValue} {oType}[/error]"
+
+        if self.slot == 'weapon':
+            newDtype = self.damageType
+            oldDtype = other.damageType
+            change, symbol, colour = diff(self.damage, other.damage)
+            comparison += f"\n[{colour}] {symbol} {change} Damage[/{colour}]"
+            if newDtype is not None and oldDtype is not None:
+                comparison += f"\n[success] [+] Damage Type: {newDtype}[/success] | [error] [-] Damage Type: {oldDtype}[/error]"
+            elif newDtype is None and oldDtype is not None:
+                comparison += f"\n[error] [-] Damage Type: {oldDtype}[/error]"
+            elif newDtype is not None and oldDtype is None:
+                comparison += f"\n[success] [+] Damage Type: {newDtype}[/success]"
+
+        if len(newStats) > 0:
+            comparison += "\n[bold green3 underline]Gains:[/bold green3 underline]"
+            newStats = {a.stat.replace('_', ' ').title(): a.value for a in newStats
+                        if not ((self.slot == 'weapon' and a.stat == 'damage')
+                        or (self.slot == 'armour' and a.stat in ['armour', 'evasion', 'energy_shield']))
+                        }
+            for k, v in newStats.items(): # k = stat, v = value
+                comparison += f"\n[success] [+] {v} {k}[/success]"
+        if len(oldStats) > 0:
+            comparison += "\n[bold red3 underline]Losses:[/bold red3 underline]"
+            oldStats = {a.stat.replace('_', ' ').title(): a.value for a in oldStats
+                        if not ((self.slot == 'weapon' and a.stat == 'damage')
+                        or (self.slot == 'armour' and a.stat in ['armour', 'evasion', 'energy_shield']))
+                        }
+            for k, v in oldStats.items():
+                comparison += f"\n[error] [-] {v} {k}[/error]"
 
         return comparison
 

@@ -317,7 +317,7 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, g
     baseCritMulti = round(random.uniform(1.1 + level / 300, 1.5 + level / 200), 2)
 
     baseHealth = round(baseHealth * difficulty)
-    baseDamage = min(level, round(baseDamage * difficulty))
+    baseDamage = min(level + 5, round(baseDamage * difficulty))
     
     loot = LootTable()
     numDrops = random.randint(1, max(2, 2 + level // 6))

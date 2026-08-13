@@ -1,6 +1,6 @@
 from typing import Optional
 import random
-from .station import Station
+from scripts.campAreas.station import Station
 from scripts.items import Equipment, ItemRarity, rollRarity
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,

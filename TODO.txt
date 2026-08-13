@@ -5,7 +5,7 @@ NOTES:
 BUGS:
 - shop item display isn't very readable - should just play equipment pieces
 - can accquire '0x resource'
-- paladin can potentially spend more favour than available. case: 9/100 favour available, ability used 11 favour
+- ability resource gain has no display
 - paladin asked to use favour twice a turn
 - druid ability fail due to wrong form still consumes turn
 - abilities should show if they add stacks of a mechanic e.g. wretch abilities adding extra blood spike, druid abilities adding verdance, etc.
@@ -15,6 +15,8 @@ BUGS:
 
 NEW AFFIXES:
   - health/stamina on hit/kill suffixes on weapons and rings
+  > +max stamina
+    - suffix, scale same on all pieces of equipment, armour only
   - +x to max y resistance suffix (rings, amulet, armour)
     > move off of armour and onto sigils and shields once they exist
     > needs a new section in Entity._stats['Resistances']
@@ -28,10 +30,7 @@ NEW AFFIXES:
         > multi-res roll 9-12
         > all res roll 7-10
   - thorns damage: head, feet, legs, boots - prefix
-  - otherworld resistance: same as divine but for psychic, ethereal and chaos damage
   - all affixes should have a minimum of 6 tiers, preferably 7+
-  > +max stamina, +stamina regen per turn
-    - both suffixes, scale same on all pieces of equipment, not available on rings/amulets/weapons
   > mythic and soulbound affixes could include learning new abilities
 
 OTHER STUFF:
@@ -46,13 +45,12 @@ OTHER STUFF:
   - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
 
 CURRENTLY WORKING ON:
-  - stamina regen stats/affixes. apply in entity onTurnStart
-
   - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
     > Classes complete:
 
     > Classes in progress:
       - mage
+      - paladin
   
   - rework fighter class
     > new mechanic uses stances: offensive and defensive
@@ -68,6 +66,14 @@ CURRENTLY WORKING ON:
   
   - expand ascendancy descriptions to be more clear on everything without making them too long to read in preparation for ascendancy shrine
     > ascendancy shrine displays all ascendancies and descriptions and lets you choose which to become. can only be built after level 15 (gives player time to get resources)
+
+  - remake main.py main menu
+    > add a 'player management' section which contains viewing inventory, viewing equipment, and view abilities
+    > add a 'settings' section which contains changing difficulty, help menu, and saving
+    > add an option to reduce the area level by 1 at the cost of 3 Souls
+
+  - completely rewrite help.py and all sections of Help to better explain everything
+    > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.
 
   - dungeons
     > better modifiers + more modifiers

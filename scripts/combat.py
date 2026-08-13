@@ -270,8 +270,9 @@ class CombatManager:
 
             self._setPhaseForUnit(nextUnit)
             nextEntity = nextUnit.entity
-            nextEntity.onTurnStart(self)
-            
+            if not nextEntity.isPlayer:
+                nextEntity.onTurnStart(self)
+
     def getCurrentUnit(self) -> Optional[CombatUnit]:
         if 0 <= self.currentTurnIndex < len(self.turnOrder):
             return self.turnOrder[self.currentTurnIndex]

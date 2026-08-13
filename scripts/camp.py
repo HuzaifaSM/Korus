@@ -6,7 +6,6 @@ from .styles import (
 )
 
 from .campAreas.campfire import Campfire
-from .campAreas.crafter import Crafter
 from .campAreas.forge import Forge
 from .campAreas.market import Market
 from .campAreas.questBoard import QuestBoard
@@ -16,7 +15,6 @@ def printChoices():
     choices = [
         "[dim]0)[/dim] Return",
         "[dim]1)[/dim] [red]Campfire[/red]",
-        "[dim]2)[/dim] [cyan]Crafter[/cyan]",
         "[dim]3)[/dim] [yellow]Forge[/yellow]",
         "[dim]4)[/dim] [green]Market[/green]",
         "[dim]5)[/dim] [blue]Quest Board[/blue]"
@@ -27,22 +25,19 @@ def printChoices():
 class Camp:
     """Collection of all camp buildings in one place:
         - Campfire
-        - Crafter
         - Forge
         - Market
         - Quest Board"""
     def __init__(self, player):
         self.player = player
         self.campfire = Campfire(self.player) #1
-        self.crafter = Crafter(self.player) #2
-        self.forge = Forge(self.player) #3
-        self.market = Market(self.player) #4
-        self.questBoard = QuestBoard(self.player) #5
+        self.forge = Forge(self.player) #2
+        self.market = Market(self.player) #3
+        self.questBoard = QuestBoard(self.player) #4
 
     def _serialiseAll(self):
         return {
             'campfire': self.campfire._serialise(),
-            'crafter': self.crafter._serialise(),
             'forge': self.forge._serialise(),
             'market': self.market._serialise(),
             'questBoard': self.questBoard._serialise()
@@ -114,12 +109,10 @@ class Camp:
                     case 1:
                         self.campfire.mainMenu()
                     case 2:
-                        self.crafter.mainMenu()
-                    case 3:
                         self.forge.mainMenu()
-                    case 4:
+                    case 3:
                         self.market.mainMenu()
-                    case 5:
+                    case 4:
                         self.questBoard.mainMenu()
                     case _:
                         printWarning("\nInvalid choice.")

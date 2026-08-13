@@ -1,9 +1,10 @@
 from typing import Dict, Optional, List
 from .station import Station
-from scripts.items import Equipment, ItemRarity
+import random
+from scripts.items import Equipment, ItemRarity, rollRarity
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
-    pause, printWarning, printError, printSuccess,
+    pause, printWarning, printError, printSuccess, formatRarity,
     Panel
 )
 from scripts.runeDrops import getRuneObject
@@ -13,12 +14,13 @@ from copy import deepcopy
 
 class Forge(Station):
     """
-    Crafting station for applying runes to equipment\n
+    Crafting station for creating equipment and applying runes to equipment.\n
     Features a split-screen interface showing before/after item states
     """
     def __init__(self, player):
         super().__init__(player, "Forge")
         self.fuel = 0
+        self.blueprints = 0
         self.previousItem = None
         self.currentItem = None
         self.currentCraftingPage = 1
@@ -53,6 +55,7 @@ class Forge(Station):
     def _serialise(self):
         temp = super()._serialise()
         temp['fuel'] = self.fuel
+        temp['blueprints'] = self.blueprints
         return temp
 
     def mainMenu(self):
@@ -60,10 +63,12 @@ class Forge(Station):
             clearScreen()
             printHeader(f"Forge - Level {self.level}")
             console.print(f"[gold]Fuel:[/gold] {self.fuel}")
+            console.print(f"[gold]Blueprints:[/gold] {self.blueprints}")
             printSeparator()
             console.print("[dim]0.[/dim] Return")
-            console.print("[dim]1.[/dim] Repair Equipment")
-            console.print("[dim]2.[/dim] Craft With Runes")
+            console.print("[dim]1.[/dim] Craft Equipment")
+            console.print("[dim]2.[/dim] Repair Equipment")
+            console.print("[dim]3.[/dim] Craft With Runes")
             console.print("[dim]9.[/dim] Upgrade Forge")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
@@ -74,8 +79,10 @@ class Forge(Station):
                     case 0:
                         break
                     case 1:
-                        self.repairEquipment()
+                        self.craftingMenu()
                     case 2:
+                        self.repairEquipment()
+                    case 3:
                         self.craftingInterface()
                     case 9:
                         self.upgrade()
@@ -84,6 +91,61 @@ class Forge(Station):
             except ValueError as e:
                 printError(f"{e}")
                 pause()
+
+    def craftingMenu(self):
+        clearScreen()
+        printHeader("CRAFT EQUIPMENT")
+        console.print(f"[gold]Blueprints:[/gold] {self.blueprints}")
+        
+        slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
+        console.print("\n[bold]nSelect slot to craft:[/bold]")
+        for i, slot in enumerate(slots, 1):
+            console.print(f"  [cyan]{i}.[/cyan] {slot.capitalize()}")
+        
+        choice = console.input("\n[cyan]Choose slot (0 to cancel):\n>[/cyan] ").strip()
+        try:
+            index = int(choice) - 1
+            if 0 <= index < len(slots):
+                self.craftEquipment(slots[index])
+        except ValueError:
+            pass
+        pause()
+
+    def craftEquipment(self, slot: str):
+        if self.level < 1:
+            printWarning(f"Forge Level 1 required for crafting. Current Level: {self.level}")
+            return
+        
+        blueprintCost = 5 + (self.level * 5)
+        if self.blueprints < blueprintCost:
+            printWarning(f"Need {blueprintCost} blueprints to craft. Current blueprints: {self.blueprints}")
+            return
+        rarityChances = {
+            1: {ItemRarity.COMMON: 0.8, ItemRarity.UNCOMMON: 0.2},
+            2: {ItemRarity.COMMON: 0.6, ItemRarity.UNCOMMON: 0.3, ItemRarity.RARE: 0.1},
+            3: {ItemRarity.COMMON: 0.4, ItemRarity.UNCOMMON: 0.35, ItemRarity.RARE: 0.2, ItemRarity.EPIC: 0.05},
+            4: {ItemRarity.UNCOMMON: 0.4, ItemRarity.RARE: 0.35, ItemRarity.EPIC: 0.2, ItemRarity.LEGENDARY: 0.05},
+            5: {ItemRarity.RARE: 0.5, ItemRarity.EPIC: 0.35, ItemRarity.LEGENDARY: 0.15}
+        }
+
+        rarityBonus = int(self.player._stats['Bonuses']['itemRarity'] * 0.5) # rarity applied at half value
+        rarity = rollRarity(rarityBonus)
+
+        roll = random.random()
+        cumulative = 0
+        rarity = ItemRarity.COMMON
+        for r, chance in rarityChances[self.level].items():
+            cumulative += chance
+            if roll <= cumulative:
+                rarity = r
+                break
+        # generate equipment
+        equipment = Equipment._generateEquipmentPiece(self.player._level, slot, rarity)
+        self.blueprints -= blueprintCost
+        console.print(f"\n[success]Crafted:[/success] {formatRarity(equipment.name, equipment.rarity.value)}")
+        console.print(f"    [dim]{equipment._formatStats()}[/dim]")
+        self.player.addEquipmentToStorage(equipment)
+
 
     def repairEquipment(self):
         clearScreen()
