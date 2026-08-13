@@ -6,7 +6,7 @@
             "health": -7,
             "baseDamage": 9,
             "damageType": "dark",
-            "baseSpeed": 1.1300000000000001,
+            "baseSpeed": 1.13,
             "stats": {
                 "Resistances": {
                     "physical": 0,
@@ -172,7 +172,7 @@
             "health": -7,
             "baseDamage": 10,
             "damageType": "dark",
-            "baseSpeed": 1.1400000000000001,
+            "baseSpeed": 1.14,
             "stats": {
                 "Resistances": {
                     "physical": 0,
@@ -1456,7 +1456,7 @@
             "health": -7,
             "baseDamage": 37,
             "damageType": "earth",
-            "baseSpeed": 1.4100000000000001,
+            "baseSpeed": 1.41,
             "stats": {
                 "Resistances": {
                     "physical": 10,
@@ -2764,7 +2764,7 @@
             "health": -355,
             "baseDamage": 58,
             "damageType": "dark",
-            "baseSpeed": 1.6200000000000003,
+            "baseSpeed": 1.62,
             "stats": {
                 "Resistances": {
                     "physical": 40,
@@ -3637,7 +3637,7 @@
             "health": -288,
             "baseDamage": 58,
             "damageType": "dark",
-            "baseSpeed": 1.6200000000000003,
+            "baseSpeed": 1.62,
             "stats": {
                 "Resistances": {
                     "physical": 40,
@@ -4510,7 +4510,7 @@
             "health": -215,
             "baseDamage": 58,
             "damageType": "dark",
-            "baseSpeed": 1.6200000000000003,
+            "baseSpeed": 1.62,
             "stats": {
                 "Resistances": {
                     "physical": 0,
@@ -5276,7 +5276,7 @@
             "health": -275,
             "baseDamage": 60,
             "damageType": "dark",
-            "baseSpeed": 1.6400000000000001,
+            "baseSpeed": 1.64,
             "stats": {
                 "Resistances": {
                     "physical": 40,

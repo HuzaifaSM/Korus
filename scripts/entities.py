@@ -2,11 +2,12 @@ from typing import Dict, Optional, List
 import random
 from copy import deepcopy
 from .items import Equipment, Consumable
-from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, EnemyAbility, resolveEffects
+from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, BasicAttack
 from .runeDrops import getRuneObject
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo,
-    formatDamageType, formatRarity, createHealthBar, formatEffectsSummary
+    formatDamageType, formatRarity, createHealthBar,
+    formatEffectsDetailed, formatAbilityCost
 )
 
 ELEMENTAL_RES = ['fire', 'earth', 'cold', 'lightning']
@@ -123,7 +124,7 @@ class Entity:
             'energyShield': 0,
             'maxEnergyShield': 0
         }
-        self._abilities: Dict[str, Ability] = {}
+        self._abilities: Dict[str, Ability] = {"Basic Attack": BasicAttack()}
         self._inventory: Dict[str, int] = {}  # {item_name: quantity}
         self._craftingInventory: Dict[str, int] = {} # {f'{category}_{runeType}': quantity}
         self._equipmentStorage: List[Equipment] = [] # store equipment objects
@@ -271,8 +272,7 @@ class Entity:
         
         self._inventory = data.get('inventory', {})
         self._craftingInventory = data.get('craftingInventory', {})
-        print(self._craftingInventory)
-        self._abilities = {}
+        self._abilities = {"Basic Attack": BasicAttack()}
 
         self._recalculateStats()
 
@@ -285,7 +285,7 @@ class Entity:
             )
 
     def calcXpRequirement(self):
-        self._xpToNextLevel = max(50 + self._level * 25, (3 * self._level) ** 2)
+        self._xpToNextLevel = max(int((self._level * 25) ** 0.717), (3 * self._level) ** 2)
 
     def damage(self, damage: int, damageType: str, combatUnit = None, *, lethal: bool = True):
         """'true' damageType means no resistances apply"""
@@ -319,7 +319,8 @@ class Entity:
         else:
             console.print("[success]Your Shield prevented any damage being taken![/success]")
 
-    def heal(self, amount: int, doPrint: bool = True):
+    def heal(self, amount: int, doPrint: bool = True) -> int:
+        """returns true healed amount"""
         magnitude = self._stats['Bonuses']['healingMagnitude'] / 100
         modifiedAmount = int(amount * magnitude)
         if modifiedAmount > 0:
@@ -336,6 +337,7 @@ class Entity:
         else:
             if doPrint:
                 console.print(f"[warning]{self._name}'s healing was nullified![/warning]")
+        return modifiedAmount
 
     def death(self):
         console.print(f"[error]{self._name} has been defeated[/error]")
@@ -345,8 +347,7 @@ class Entity:
         """target is combatUnit"""
         target = target.entity
         if random.random() < self.critChance:
-            critMulti = min(1.0, self.critMulti * (1 - (target._stats['Bonuses']['critResistance'] / 100)))
-            return True, critMulti
+            return True, self.critMulti
         return False, 1.0
 
     def gainGold(self, amount: int):
@@ -372,10 +373,12 @@ class Entity:
             console.print(f"[success]{self._name} Learnt {ability}![/success]")
             if resolved.damageType:
                 damageTypeFormatted = formatDamageType(resolved.damageType, resolved.damageType)
-                console.print(f"[dim]Stats: Base Damage = {resolved.baseDamage} / Type = {damageTypeFormatted}[/dim]")
-            effectsSummary = formatEffectsSummary(resolved.effects)
-            if effectsSummary:
-                console.print(f"  [buff]- Effects: {effectsSummary}[/buff]")
+                console.print(f"[dim]Base Damage: {resolved.baseDamage} + {resolved.damageScaling*100:.0f}% of damage | Type: {damageTypeFormatted}[/dim]")
+            costStr = formatAbilityCost(getattr(resolved, 'resources', {}))
+            if costStr != "-":
+                console.print(f"[dim]Cost: {costStr}[/dim]")
+            for line in formatEffectsDetailed(resolved.effects):
+                console.print(f"  [buff]- {line}[/buff]")
 
     def removeAbility(self, ability: str, doPrint: bool = True):
         if ability in self._abilities:
@@ -401,10 +404,14 @@ class Entity:
             console.print(f"  [cyan]- {name}[/cyan]")
             if ability.damageType:
                 damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
-                console.print(f"    [dim]Damage: {ability.calculateDamage(self._damage)} | Type: {damageTypeFormatted}[/dim]")
-            effectsSummary = formatEffectsSummary(ability.effects)
-            if effectsSummary:
-                console.print(f"    [buff]Effects: {effectsSummary}[/buff]")
+                console.print(f"    [dim]Base Damage: {ability.baseDamage} + {ability.damageScaling*100:.0f}% of damage | Type: {damageTypeFormatted}[/dim]")
+            if ability.healBase or ability.healPercent:
+                console.print(f"    [heal]Heal: {ability.healBase} + {ability.healPercent*100:.0f}% Max HP[/heal]")
+            costStr = formatAbilityCost(getattr(ability, 'resources', {}))
+            if costStr != "-":
+                console.print(f"    [dim]Cost: {costStr}[/dim]")
+            for line in formatEffectsDetailed(ability.effects):
+                console.print(f"    [buff]- {line}[/buff]")
 
     def addRune(self, category: str, runeType: str, quantity: int = 1):
         key = f'{category}_{runeType}'
@@ -412,7 +419,9 @@ class Entity:
             self._craftingInventory[key] += quantity
         else:
             self._craftingInventory[key] = quantity
-        console.print(f'[success]  - Gained {quantity}x {runeType}[/success]')
+        rune = getRuneObject(category, runeType)
+        runeName = rune.name if rune else runeType
+        console.print(f'[success]  - Gained {quantity}x {runeName}[/success]')
 
     def removeRune(self, category: str, runeType: str, quantity: int = 1) -> bool:
         key = f'{category}_{runeType}'
@@ -616,8 +625,9 @@ class Entity:
                 if val != 0:
                     console.print(f"  {res}: [cyan]{val}%[/cyan]")
 
-            activeBonuses = {k: v for k, v in self._stats['Bonuses'].items() 
-                            if (k == 'healing_magnitude' and v != 100) or (k != 'healing_magnitude' and v != 0)}
+            activeBonuses = {k: v for k, v in self._stats['Bonuses'].items() if v > 0}
+            if activeBonuses.get('healingMagnitude', 100) == 100:
+                activeBonuses.pop('healingMagnitude')
             if activeBonuses:
                 console.print("\n[bold]Bonuses:[/bold]")
                 for bonus, val in activeBonuses.items():
@@ -655,11 +665,15 @@ class Entity:
             console.print(f" [bold]= {name} =[/bold]")
             if ability.damageType:
                 damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
-                console.print(f"  [dim]- Damage: {ability.calculateDamage(self._damage)} | Type: {damageTypeFormatted}[/dim]")
+                console.print(f"  [dim]- Base Damage: {ability.baseDamage} + {ability.damageScaling*100:.0f}% of damage | Type: {damageTypeFormatted}[/dim]")
+            if ability.healBase or ability.healPercent:
+                console.print(f"  [heal]- Heal: {ability.healBase} + {ability.healPercent*100:.0f}% Max HP[/heal]")
             console.print(f"  [dim]- Cooldown: {ability.maxCooldown} turns[/dim]")
-            effectsSummary = formatEffectsSummary(ability.effects)
-            if effectsSummary:
-                console.print(f"  [buff]- Effects: {effectsSummary}[/buff]")
+            costStr = formatAbilityCost(getattr(ability, 'resources', {}))
+            if costStr != "-":
+                console.print(f"  [dim]- Cost: {costStr}[/dim]")
+            for line in formatEffectsDetailed(ability.effects):
+                console.print(f"  [buff]- {line}[/buff]")
 
     def showCraftingInventory(self):
         console.print('\n[cyan bold]=== Crafting Inventory ===[/cyan bold]')
@@ -721,8 +735,7 @@ class Entity:
         """Recalculates stats for temp + permanent additions, use at end of onTurnStart methods"""
         self._recalculateStats(False, True)
         heal = self._stats['Bonuses']['hpRegen']
-        self.heal(heal)
-        console.print(f"[heal]Healed for {heal} HP from HP Regen![/heal]")
+        self.heal(heal, False)
 
     def onTurnEnd(self):
         """Rewrite per class"""

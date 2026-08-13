@@ -3,9 +3,9 @@ from scripts.styles import console
 import random
 
 SPECTRE_DESCRIPTIONS = {
-    "Spectre": "A vengeful ghost brimming with malice.\n"
-        "Ghostly: When dealing Ethereal Damage, heal equal to 10% of ignored Armour Rating on the target.\n"
-        "Starting Stats: 40 HP | 6 Damage | 3% Crit Chance | 180% Crit Damage | Ethereal Damage | 1.15 Speed.",
+    "Spectre": "[class_spectre]A vengeful ghost brimming with malice.[/class_spectre]\n"
+        "[resource]Ghostly[/resource]: When dealing [ethereal]Ethereal[/ethereal] Damage, heal equal to 10% of ignored Armour Rating on the target.\n"
+        "Starting Stats: 40 [health]HP[/health] | 6 [damage]Damage[/damage] | 3% [critical]Crit Chance[/critical] | 180% [critical]Crit Damage[/critical] | [ethereal]Ethereal Damage[/ethereal] | 1.15 [speed]Speed[/speed].",
     #ascendancies
     "Wraith": "Ghostly now heals for 20% of ignored Armour Rating. If the target has no Armour Rating, they take 50% Increased Damage.\n"
         "For every 300 HP healed in combat through Ghostly, lose 1% Max HP permanently.\n"
@@ -54,8 +54,8 @@ class Spectre(Player):
             if doPrint:
                 console.print(f"  [ethereal]Lich: Converted {conversion} HP to Energy Shield![/ethereal]")
 
-    def onAttack(self, damageDealt, damageType, target=None):
-        super().onAttack(damageDealt, damageType)
+    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
+        super().onAttack(damageDealt, damageType, target, combatManager)
         if target:
             target = target.entity
 
@@ -109,7 +109,7 @@ class Spectre(Player):
 
         return {}
 
-    def heal(self, amount):
+    def heal(self, amount, doPrint: bool = True):
         if self._ascendancy == 'Lich':
             magnitude = self._stats['Bonuses']['healingMagnitude'] / 100
             modifiedAmount = int(amount * magnitude)
@@ -120,9 +120,9 @@ class Spectre(Player):
                 )
                 console.print(f"[success]{self._name} gained {modifiedAmount} Energy Shield from healing![/success] [dim]Energy Shield: {self._stats['energyShield']} / {self._stats['maxEnergyShield']}[/dim]")
         else:
-            super().heal(amount)
+            super().heal(amount, doPrint)
 
-    def onHit(self, damageTaken, damageType, attacker=None, combatManager=None):
+    def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
         if self._ascendancy == 'Revenant':
             if self.revenantReverseDamage:
                 self.revenantReverseDamage = False
@@ -137,13 +137,13 @@ class Spectre(Player):
                 else:
                     self.intangibleAbsorbed += damageTaken
                     damageTaken = 0
-                    return super().onHit(0, damageType, attacker, combatManager)
+                    return super().onHit(0, damageType, crit, attacker, combatManager)
             if self._health - damageTaken <= 0 and not self.intangibilityUsed:
                 self._health = 1
                 self.intangibilityUsed = True
                 self.intangibleTurns = 1
                 console.print(f"\n[gold1]Revenant: Death denied! Intangible for 1 turn![/gold1]")
-                return super().onHit(0, damageType, attacker, combatManager)
+                return super().onHit(0, damageType, crit, attacker, combatManager)
         
         elif self._ascendancy == 'Phantasm':
             if attacker.phasedTurns > 0:
@@ -162,7 +162,7 @@ class Spectre(Player):
                 damageTaken -= shieldDmg
                 console.print(f"  [ethereal]Lich: Energy Shield absorbed {shieldDmg} chaos damage![/ethereal]")
 
-        return super().onHit(damageTaken, damageType, attacker, combatManager)
+        return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
     def onTurnStart(self, combatManager=None):
         if self._ascendancy == 'Phantasm' and self.shiftingTurns > 0:

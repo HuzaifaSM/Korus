@@ -3,10 +3,10 @@ from scripts.styles import console, formatDamageType
 import random
 
 MAGE_DESCRIPTIONS = {
-    "Mage": "A master of the arcane arts.\n"
-        "Mana: You have no stamina. Start with a mana pool that increases with level. Regenerate a base of 5 mana per turn.\n"
-        "Upon attacking with Elemental or Arcane damage, spend mana equal to 20% of damage dealt. Gain damage equal to mana spent on attacks.\n"
-        "Starting Stats: 40 HP | 7 Damage | 5% Crit Chance | 175% Crit Damage | Arcane Damage | 1 Speed.",
+    "Mage": "[class_mage]A master of the arcane arts.[/class_mage]\n"
+        "[resource]Mana[/resource]: You have no [stamina]Stamina[/stamina]. Start with a [resource]mana[/resource] pool that increases with level. Regenerate a base of 5 [resource]mana[/resource] per turn.\n"
+        "Upon attacking with Elemental or [arcane]Arcane[/arcane] damage, spend [resource]mana[/resource] equal to 20% of damage dealt. Gain damage equal to [resource]mana[/resource] spent on attacks.\n"
+        "Starting Stats: 40 [health]HP[/health] | 7 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 175% [critical]Crit Damage[/critical] | [arcane]Arcane Damage[/arcane] | 1 [speed]Speed[/speed].",
     #ascendancies
     "Elementalist": "For every elemental attack used consecutively, gain 1 stack of Symphony. Max 10 stacks of Symphony. Symphony: 5% more Elemental damage per Symphony stack.\n"
         "Every 3rd elemental attack instead attacks all enemies for 60% damage. If only one enemy is alive, deal 200% damage to it instead.\n"
@@ -125,13 +125,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
             for enemy in enemies:
                 enemy.entity.damage(aoeDamage, 'arcane')
 
-        if self._lastElementUsed == damageType:
-            damageDealt = round(damageDealt * 1.2)
-            console.print(f"\n[buff]Damage type affinity: +20% damage![/buff]")
-        else:
-            self._lastElementUsed = damageType
-            console.print(f"\n[info]New damage type affinity: {formatDamageType(self._lastElementUsed, self._lastElementUsed)}[/info]")
-        
         if self._ascendancy == 'Arcanist' and self.arcanistKills > 0 and damageType == 'arcane':
             damageDealt = int(damageDealt * (1 + self.arcanistKills * 0.01))
 
@@ -180,8 +173,8 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
         return damageDealt, damageType
 
-    def onHit(self, damageTaken, damageType, attacker=None, combatManager=None):
-        super().onHit(damageTaken, damageType)
+    def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
+        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
         if self._ascendancy == 'Calamity' and damageType not in ELEMENTAL and random.random() < 0.2:
             if attacker and combatManager:
@@ -200,12 +193,14 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 attacker.damage(reflectDamage, 'arcane')
                 console.print(f"[arcane]Archon: Nullified damage and reflected {reflectDamage} damage as Arcane damage![/arcane]")
                 self._health += damageTaken
-                return
+                return 0, damageType
 
         if self._ascendancy == 'Calamity' and damageType in ELEMENTAL:
             extraDamage = int(damageTaken * 0.1)
             self._health -= extraDamage
             console.print(f"[warning]Calamity: Took {extraDamage} extra elemental damage![/warning]")
+
+        return damageTaken, damageType
 
     def onKill(self, entity, attackData, combatManager=None):
         if self._ascendancy == 'Arcanist' and attackData['damageType'] == 'arcane':
@@ -259,8 +254,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
         totalRegen = baseRegen + self.manaRegenBonus
         self._mana = min(self._maxMana, self._mana + totalRegen)
-        console.print(f"[cyan]+{totalRegen} mana regenerated. ({self._mana} / {self._maxMana})[/cyan]")
-        
+
     def onTurnEnd(self):
         super().onTurnEnd()
 
@@ -291,8 +285,8 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self.chroniclerEnemies = 0
         super().onBattleEnd()
 
-    def _recalculateStats(self, doPrint=True):
-        super()._recalculateStats(doPrint)
+    def _recalculateStats(self, doPrint=True, inCombat=False):
+        super()._recalculateStats(doPrint, inCombat)
         self._maxMana = self._maxHealth
 
     def updateAscendancy(self, ascendancy):

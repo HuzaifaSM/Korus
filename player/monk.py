@@ -3,10 +3,10 @@ from scripts.styles import console, formatDamageType
 import random
 
 MONK_DESCRIPTIONS = {
-    "Monk": "An enlightened martial artist.\n"
-        "In combat, if your damage type is Lightning or Cold, switch to the other at the beginning of your turn.\n"
-        "Prowess: When dealing Lightning or Cold damage, Gain 1 Prowess per 12 damage dealt. Prowess buffs: +2 Damage, +0.03 Speed. Prowess has no limit.\n"
-        "Starting Stats: 55 HP | 3 Damage | 10% Crit Chance | 130% Crit Damage | Lightning Damage | 1.05 Speed.",
+    "Monk": "[class_monk]An enlightened martial artist.[/class_monk]\n"
+        "In combat, if your damage type is [lightning]Lightning[/lightning] or [cold]Cold[/cold], switch to the other at the beginning of your turn.\n"
+        "[resource]Prowess[/resource]: When dealing [lightning]Lightning[/lightning] or [cold]Cold[/cold] damage, Gain 1 [resource]Prowess[/resource] per 12 damage dealt. [resource]Prowess[/resource] buffs: +2 Damage, +0.03 Speed. [resource]Prowess[/resource] has no limit.\n"
+        "Starting Stats: 55 [health]HP[/health] | 3 [damage]Damage[/damage] | 10% [critical]Crit Chance[/critical] | 130% [critical]Crit Damage[/critical] | [lightning]Lightning Damage[/lightning] | 1.05 [speed]Speed[/speed].",
     #ascendancies
     "Enlightened": "25% Increased Cold and Lightning Damage Dealt. At the start of combat, your damage type switches to the first type you use.\n"
         "If the first damage type was lightning or cold, 100% more Prowess generation for the rest of combat.\n"
@@ -60,8 +60,8 @@ class Monk(Player): # higher speed, higher health, lower damage, lightning + col
         if hasattr(self, '_form'):
             delattr(self, '_form')
 
-    def onAttack(self, damageDealt, damageType, target=None):
-        super().onAttack(damageDealt, damageType)
+    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
+        super().onAttack(damageDealt, damageType, target, combatManager)
         if self.enlightenedElement is None:
             self.enlightenedElement = damageType
             if self._ascendancy == 'Enlightened' and damageType in ['cold', 'lightning']:
@@ -119,8 +119,8 @@ class Monk(Player): # higher speed, higher health, lower damage, lightning + col
 
         return damageDealt, damageType
 
-    def onHit(self, damageTaken, damageType):
-        super().onHit(damageTaken, damageType)
+    def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
+        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
         if self._ascendancy == 'Ascetic':
             damageTaken = int(damageTaken * 0.9)
             if damageType == 'psychic':
@@ -134,8 +134,10 @@ class Monk(Player): # higher speed, higher health, lower damage, lightning + col
                 self._damageType = 'cold'
             console.print(f"\n[info]Your elemental affinity changes your damage type to {formatDamageType(self._damageType, self._damageType)}[/info]")
 
-    def rollCritical(self, target, damageDealt):
-        crit, multi = super().rollCritical(target)
+        return damageTaken, damageType
+
+    def rollCritical(self, target, damageDealt=None):
+        crit, multi = super().rollCritical(target, damageDealt)
 
         if self._ascendancy == 'Ascetic' and crit:
             heal = int((self._maxHealth * 0.01) * (damageDealt // 60))

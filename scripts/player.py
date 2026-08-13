@@ -24,8 +24,8 @@ def selectClass(name: str, quick: bool = False) -> Player:
                 
                 # Show description
                 console.print(f"\n[bold gold1]{chosen}[/bold gold1]")
-                console.print(f"[dim]{DESCRIPTIONS[chosen][chosen]}[/dim]\n")
-                
+                console.print(f"{DESCRIPTIONS[chosen][chosen]}\n")
+
                 confirm = console.input("[cyan]Play as this class? (y/n):[/cyan] ").strip().lower()
                 if confirm == 'y':
                     return CLASSES[chosen](name)

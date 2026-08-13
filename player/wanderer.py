@@ -3,9 +3,9 @@ from scripts.styles import console, pause
 import random
 
 WANDERER_DESCRIPTIONS = {
-    "Wanderer": "A lost soul searching for peace.\n"
-        "Lost: If a single hit deals more than 10% of your Max HP, your next attack will deal 50% More Damage and target all enemies.\n"
-        "Starting Stats: 45 HP | 6 Damage | 10% Crit Chance | 160% Crit Damage | Psychic Damage | 1.1 Speed.",
+    "Wanderer": "[class_wanderer]A lost soul searching for peace.[/class_wanderer]\n"
+        "[resource]Lost[/resource]: If a single hit deals more than 10% of your Max HP, your next attack will deal 50% More Damage and target all enemies.\n"
+        "Starting Stats: 45 [health]HP[/health] | 6 [damage]Damage[/damage] | 10% [critical]Crit Chance[/critical] | 160% [critical]Crit Damage[/critical] | [psychic]Psychic Damage[/psychic] | 1.1 [speed]Speed[/speed].",
     #ascdenancies
     "Fractured": "Upon triggering Lost, gain Fracture, up to 5 stacks.\n"
         "Fracture: +5% Psychic Damage. +3% Crit Chance. At 5 Fracture, your next attack deals 150% Damage to all enemies, and Fracture is set to 0.\n"
@@ -49,8 +49,8 @@ class Wanderer(Player):
         super()._recalculateStats(doPrint)
         self.abyssalHealThreshold = self._maxHealth * 2
 
-    def onAttack(self, damageDealt, damageType):
-        super().onAttack(damageDealt, damageType)
+    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
+        super().onAttack(damageDealt, damageType, target, combatManager)
         if self.lostTrigger and self._ascendancy != 'Abyssal':
             damageDealt = int(damageDealt * 1.5)
             self.lostTrigger = False
@@ -78,8 +78,8 @@ class Wanderer(Player):
 
         return damageDealt, damageType
 
-    def onHit(self, damageTaken, damageType):
-        super().onHit(damageTaken, damageType)
+    def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
+        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
         if damageTaken >= int(self._maxHealth * self.lostPercent):
             self.lostTrigger = True
             console.print(f"\n[buff]Wanderer: Took more than 10% of max health as damage! Lost has been activated.[/buff]")
@@ -99,8 +99,8 @@ class Wanderer(Player):
 
         return damageTaken, damageType
 
-    def rollCritical(self, target):
-        crit, critMulti = super().rollCritical(target)
+    def rollCritical(self, target, damageDealt=None):
+        crit, critMulti = super().rollCritical(target, damageDealt)
         if self._ascendancy == 'Fractured':
             damageTaken = int(self._maxHealth * 0.02)
             console.print(f"  [warning]- Fractured: Dealt a critical strike. 2% of Max HP lost. -{damageTaken} HP.[/warning]")
@@ -108,7 +108,7 @@ class Wanderer(Player):
 
         return crit, critMulti
 
-    def onTurnStart(self):
+    def onTurnStart(self, combatManager=None):
         if self._ascendancy == 'Abyssal' and not self.lostTrigger:
             self.lostTrigger = True
         if self._ascendancy == 'Warper':

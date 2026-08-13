@@ -50,10 +50,66 @@ KORUS_THEME = Theme({
     "health": "red",
     "damage": "orange1",
     "speed": "bright_cyan",
+    "stamina": "sky_blue1",
 
     "human": "green",
-    "beast": "yellow"
+    "beast": "yellow",
+
+    # keyword categories
+    "resource": "turquoise2 bold",
+    "critical": "gold3 bold",
+    "resistance": "steel_blue1",
+    "lifesteal": "red3 bold",
+    "regen": "spring_green3",
+
+    # class colours
+    "class_warrior": "dark_red bold",
+    "class_fighter": "white bold",
+    "class_monk": "yellow bold",
+    "class_mage": "purple bold",
+    "class_wanderer": "bright_magenta bold",
+    "class_wretch": "magenta bold",
+    "class_druid": "green4 bold",
+    "class_paladin": "gold1 bold",
+    "class_spectre": "grey85 bold",
+    "class_cultist": "dark_magenta bold",
+
+    # Cultist ascendancy family
+    "asc_umbralist": "purple4 bold",
+    "asc_harbinger": "dark_violet bold",
+    "asc_doomsayer": "medium_orchid bold",
+    "asc_ritualist": "deep_pink4 bold",
+    "asc_anarchist": "bright_magenta bold",
+    "asc_desecrator": "medium_purple bold",
 })
+
+# -- keyword highlighting: maps literal keyword text to a theme style key.
+# Longest phrases are matched first so multi-word keywords aren't shadowed by
+# shorter ones they contain (e.g. "Crit Chance" vs a hypothetical "Chance").
+KEYWORDS: Dict[str, str] = {
+    # class resources / mechanics
+    "Insanity": "resource", "Rage": "resource", "Fury": "resource",
+    "Combo": "resource", "Verdance": "resource", "Mastery": "resource",
+    "Favour": "resource", "Prowess": "resource", "Momentum": "resource",
+    "Corruption": "resource", "Volatility": "resource", "Omen": "resource",
+    "Heresy": "resource", "Devotion": "resource", "Discharge": "resource",
+    "Ruin": "resource", "Insight": "resource", "Mana": "resource",
+    "Blood Spike": "resource",
+
+    # generic stat / affix terms
+    "Crit Chance": "critical", "Critical Chance": "critical",
+    "Crit Damage": "critical", "Critical Damage": "critical",
+    "Damage Reduction": "resistance", "Resistance": "resistance",
+    "Lifesteal": "lifesteal", "Life Leech": "lifesteal",
+    "HP Regen": "regen", "Regeneration": "regen",
+    "Shield": "buff",
+}
+
+def highlightKeywords(text: str) -> str:
+    for keyword in sorted(KEYWORDS, key=len, reverse=True):
+        style = KEYWORDS[keyword]
+        text = text.replace(keyword, f"[{style}]{keyword}[/{style}]")
+    return text
 
 console = Console(theme=KORUS_THEME, markup=True)
 
@@ -120,6 +176,69 @@ def formatEffectsSummary(effects: Dict) -> str:
             parts.append(f"{', '.join(n.replace('_', ' ') for n in names)} ({side})")
     return '; '.join(parts)
 
+def _formatEffectMagnitude(params: Dict) -> str:
+    """Pulls the meaningful numeric detail(s) out of a single effect's param dict,
+    e.g. {'stacks': 2} -> '2 stacks', {'amount': 0.2, 'turns': 2} -> '20% for 2 turns'"""
+    bits = []
+    if 'stacks' in params:
+        n = params['stacks']
+        bits.append(f"{n} stack{'s' if n != 1 else ''}")
+    if 'amount_percent' in params:
+        pct = params['amount_percent']
+        pct = pct * 100 if isinstance(pct, float) and abs(pct) <= 1 else pct
+        bits.append(f"{pct:.0f}% Max HP" if pct == int(pct) else f"{pct}% Max HP")
+    if 'amount_flat' in params:
+        bits.append(f"{params['amount_flat']} flat")
+    if 'amount' in params:
+        amt = params['amount']
+        bits.append(f"{amt*100:.0f}%" if isinstance(amt, float) and abs(amt) <= 1 else f"{amt}%")
+    if 'speed' in params:
+        bits.append(f"{'+' if params['speed'] >= 0 else ''}{params['speed']} Speed")
+    if 'damage' in params:
+        mult = params['damage']
+        pct = int(round((mult - 1) * 100))
+        bits.append(f"{'+' if pct >= 0 else ''}{pct}% Damage")
+    if 'chance' in params and params['chance'] < 100:
+        bits.append(f"{params['chance']}% chance")
+
+    detail = ', '.join(bits)
+    if 'turns' in params:
+        n = params['turns']
+        turnsStr = f"{n} turn{'s' if n != 1 else ''}"
+        detail = f"{detail} for {turnsStr}" if detail else turnsStr
+    return detail
+
+def formatEffectsDetailed(effects: Dict) -> List[str]:
+    """One line per effect with its actual numbers, e.g.
+    ['Bleed: 2 stacks (target)', 'Haste: +10% Damage for 2 turns (self)']"""
+    lines = []
+    for side in ('target', 'self'):
+        for name, params in effects.get(side, {}).items():
+            if name == 'spawn_consumable':
+                continue
+            label = name.replace('_', ' ').title()
+            detail = _formatEffectMagnitude(params)
+            lines.append(f"{label}: {detail} ({side})" if detail else f"{label} ({side})")
+    return lines
+
+def formatAbilityCost(resources: Dict, staminaCost: int) -> str:
+    """Human-readable resource cost, e.g. '8 Health' or '6% Max Health' or '20 Mana'"""
+    required = resources.get('required', {})
+    if not required and staminaCost == 0:
+        return "-"
+    parts = []
+    if staminaCost > 0:
+        parts.append(f'[stamina]Stamina:[/stamina] {staminaCost}')
+    for resource, amount in required.items():
+        label = resource.replace('_', ' ').title()
+        if isinstance(amount, dict):
+            pct = amount.get('amount', 0)
+            pct = pct * 100 if abs(pct) <= 1 else pct
+            parts.append(f"{pct:.0f}% Max {label}")
+        else:
+            parts.append(f"{amount} {label}")
+    return ', '.join(parts)
+
 def formatStatChange(value: float) -> str:
     if value > 0:
         return f"[success]+{value}[/success]"
@@ -140,7 +259,22 @@ def createHealthBar(current: int, maximum: int, width: int = 20) -> str:
     else:
         colour = "red"
     
-    bar = f"[{colour}]{'█' * filled}[/{colour}][dim]{'░' * empty}[/dim]"
+    bar = f"[{colour}]{'■' * filled}[/{colour}][dim]{'□' * empty}[/dim]"
+    return f"{bar} [{current}/{maximum}]"
+
+def createStaminaBar(current: int, maximum: int, width: int = 20) -> str:
+    percentage = current / maximum if maximum > 0 else 0
+    filled = int(width * percentage)
+    empty = width - filled
+
+    if percentage > 0.6:
+        colour = "turquoise2"
+    elif percentage > 0.3:
+        colour = "dodger_blue1"
+    else:
+        colour = "deep_sky_blue4"
+
+    bar = f"[{colour}]{'■' * filled}[/{colour}][dim]{'□' * empty}[/dim]"
     return f"{bar} [{current}/{maximum}]"
 
 def createEquipmentTable(equipmentDict: dict) -> Table:
@@ -163,17 +297,24 @@ def createAbilityTable(abilities: dict) -> Table:
     table = Table(title="Abilities", box=box.ROUNDED, show_header=True)
     table.add_column("#", style="cyan", no_wrap=True)
     table.add_column("Ability", style="white")
-    table.add_column("Damage", justify="right")
+    table.add_column("Base DMG", justify="right")
+    table.add_column("Scaling", justify="right")
     table.add_column("Type", style="dim")
+    table.add_column("Heal", justify="right")
     table.add_column("Cooldown", justify="center")
+    table.add_column("Cost", style="dim")
     table.add_column("Effects", style="dim")
 
     for i, (name, ability) in enumerate(abilities.items(), 1):
-        damageStr = str(ability.baseDamage) if ability.baseDamage >= 0 else f"[green]{-ability.baseDamage} HP[/green]"
+        damageStr = str(ability.baseDamage) if ability.baseDamage else "-"
+        scalingStr = f"{ability.damageScaling*100:.0f}%" if ability.damageScaling else "-"
         damageType = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else "-"
+        healStr = f"{ability.healBase}+{ability.healPercent*100:.0f}%" if (ability.healBase or ability.healPercent) else "-"
         cooldownStr = f"[red]{ability.cooldown}[/red]" if ability.cooldown > 0 else f"[green]0[/green]"
-        effects = formatEffectsSummary(ability.effects)
-        table.add_row(str(i), name, damageStr, damageType, cooldownStr, effects)
+        costStr = formatAbilityCost(ability.resources, ability.staminaCost)
+        effectsLines = formatEffectsDetailed(ability.effects)
+        effects = "\n".join(effectsLines) if effectsLines else "-"
+        table.add_row(str(i), name, damageStr, scalingStr, damageType, healStr, cooldownStr, costStr, effects)
 
     return table
 
@@ -356,6 +497,17 @@ def createEnemyPreview(enemies: List) -> Table:
                 equipmentParts.append(f"{equip.name} | Drop Chance = {int(chance*100)}%")
             col.append("[yellow]" + "\n".join(equipmentParts) + "[/yellow]")
 
+        runes = enemy._lootTable.runeDrops
+        if runes:
+            from .runeDrops import getRuneObject
+            col.append("[bold light_cyan3]Runes:[/bold light_cyan3]")
+            runeParts = []
+            for cat, runeType, dropChance in runes:
+                runeObj = getRuneObject(cat, runeType)
+                runeName = runeObj.name if runeObj else runeType
+                runeParts.append(f"{runeName} | Drop Chance = {int(dropChance*100)}%")
+            col.append("[light_cyan3]" + "\n".join(runeParts) + "[/light_cyan3]")
+
         enemyColumns.append(col)
         maxRows = max(maxRows, len(col))
         
@@ -390,7 +542,14 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         
         width = 15 if isPlayer else 10
         healthBar = createHealthBar(entity._health, entity._maxHealth, width)
-        col.append(f"[health]HP:[/health] {healthBar}")
+        col.append(f"[health]Health:[/health]  {healthBar}")
+        if isPlayer:
+            if player.className not in ['Mage', 'Wretch']: # both manaless classes
+                staminaBar = createStaminaBar(entity._stamina, entity._maxStamina, width)
+                col.append(f'[stamina]Stamina:[/stamina] {staminaBar}')
+            if player.className == 'Mage':
+                manaBar = createStaminaBar(entity._mana, entity._maxMana, width) # mana uses same colours as stamina
+                col.append(f'[arcane]Mana:[/arcane]    {manaBar}')
         col.append(f"[damage]DMG:[/damage] {entity._damage} [dim]({formatDamageType(entity._damageType, entity._damageType)})[/dim]")
         col.append(f"[speed]SPD:[/speed] {entity._speed if not isPlayer else f'{entity._speed:.2f}'}")
         col.append("")
@@ -465,49 +624,45 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         console.print(tableN)
         enemyIndex += batchSize
 
-def createAbilityTables(abilities: dict, maxPerTable: int = 10) -> Columns:
-    abilityList = list(abilities.items())
-    tables = []
-    maxColumns = 3
+def createAbilityTables(abilities: dict, maxPerTable: int = 10) -> Table:
+    """Despite the name (kept for compatibility with callers), this builds one full-width
+    table - the old side-by-side narrow-column layout didn't have room for scaling/heal/cost/
+    per-effect detail, so a single row-per-ability table replaced it."""
+    table = Table(show_header=True, header_style="bold cyan", box=box.ROUNDED, padding=(0, 1))
+    table.add_column("#", style="dim", width=2)
+    table.add_column("Ability", style="cyan")
+    table.add_column("Base DMG", style="damage", justify="right")
+    table.add_column("Scaling", justify="right")
+    table.add_column("Type")
+    table.add_column("Heal", justify="right")
+    table.add_column("CD", style="yellow", justify="center")
+    table.add_column("Cost", style="dim")
+    table.add_column("Effects", style="buff")
 
-    #console.print(f"[dim]DEBUG: Total abilities: {len(abilityList)}, maxPerTable: {maxPerTable}[/dim]")
+    for j, (name, ability) in enumerate(abilities.items(), 1):
+        cdText = str(ability.cooldown) if ability.cooldown > 0 else "✓"
+        cdStyle = "red" if ability.cooldown > 0 else "green"
 
-    for i in range(0, len(abilityList), maxPerTable):
-        chunk = abilityList[i:i+maxPerTable]
+        damageStr = str(ability.baseDamage) if ability.baseDamage else "-"
+        scalingStr = f"{ability.damageScaling*100:.0f}%" if ability.damageScaling else "-"
+        dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else "-"
+        healStr = f"{ability.healBase}+{ability.healPercent*100:.0f}%" if (ability.healBase or ability.healPercent) else "-"
+        costStr = formatAbilityCost(ability.resources, ability.staminaCost)
+        effectsLines = formatEffectsDetailed(ability.effects)
+        effectsText = "\n".join(effectsLines) if effectsLines else "-"
 
-        #console.print(f"[dim]DEBUG: Creating table {len(tables)+1} with abilities {i+1} to {i+len(chunk)}[/dim]")
+        table.add_row(
+            str(j),
+            name,
+            damageStr,
+            scalingStr,
+            dmgTypeFormatted,
+            healStr,
+            f"[{cdStyle}]{cdText}[/{cdStyle}]",
+            costStr,
+            effectsText
+        )
 
-        table = Table(show_header=True, header_style="bold cyan", box=box.ROUNDED, padding=(0, 1))
-        table.add_column("#", style="dim", width=2)
-        table.add_column("Ability", style="cyan", width=15)
-        table.add_column("DMG", style="damage", width=3)
-        table.add_column("Type", width=9)
-        table.add_column("CD", style="yellow", width=2)
-        table.add_column("Effects", style="buff", width=15)
-
-        for j, (name, ability) in enumerate(chunk, start=i+1):
-            cdText = str(ability.cooldown) if ability.cooldown > 0 else "✓"
-            cdStyle = "red" if ability.cooldown > 0 else "green"
-            effectsText = formatEffectsSummary(ability.effects)
-            if len(effectsText) > 15:
-                effectsText = effectsText[:14] + "..."
-
-            dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else "-"
-
-            table.add_row(
-                str(j),
-                name[:16] + ".." if len(name) > 16 else name,
-                str(ability.baseDamage),
-                dmgTypeFormatted,
-                f"[{cdStyle}]{cdText}[/{cdStyle}]",
-                effectsText
-            )
-
-        tables.append(table)
-
-        if len(tables) >= maxColumns:
-            break
-
-    return Columns(tables, equal=False, expand=False)
+    return table
 
 ...

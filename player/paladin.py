@@ -4,12 +4,12 @@ import random
 from typing import Dict, Any
 
 PALADIN_DESCRIPTIONS = {
-    "Paladin": "A holy warrior blessed with divine favour.\n"
-        "Favour: Gain 5-10 Favour per turn. Max 100 Favour. Gain +1 Max Favour on level up. At the start of your turn, you can decide whether Favour will be randomly spent this turn or not.\n"
-        "Possible attack buffs per Favour spent: +2 Damage, +2% Increased Damage, +1% Crit Chance, +3% Crit Damage.\n"
-        "Possible defense buffs per Favour spent: -2 Damage Taken, +0.1% Damage Reduction, 1% Max HP gained as Shield.\n"
-        "+5% Increased Effect of Favour buffs per level. Heal for 20% of remaining Favour at the end of battle.\n"
-        "Starting Stats: 55 Health | 4 Damage | 5% Crit Chance | 175% Crit Damage | Holy Damage | 1.05 Speed.",
+    "Paladin": "[class_paladin]A holy warrior blessed with divine favour.[/class_paladin]\n"
+        "[resource]Favour[/resource]: Gain 5-10 [resource]Favour[/resource] per turn. Max 100 [resource]Favour[/resource]. Gain +1 Max [resource]Favour[/resource] on level up. At the start of your turn, you can decide whether [resource]Favour[/resource] will be randomly spent this turn or not.\n"
+        "Possible attack buffs per [resource]Favour[/resource] spent: +2 Damage, +2% Increased Damage, +1% [critical]Crit Chance[/critical], +3% [critical]Crit Damage[/critical].\n"
+        "Possible defense buffs per [resource]Favour[/resource] spent: -2 Damage Taken, +0.1% [resistance]Damage Reduction[/resistance], 1% Max HP gained as [buff]Shield[/buff].\n"
+        "+5% Increased Effect of [resource]Favour[/resource] buffs per level. Heal for 20% of remaining [resource]Favour[/resource] at the end of battle.\n"
+        "Starting Stats: 55 [health]Health[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 175% [critical]Crit Damage[/critical] | [holy]Holy Damage[/holy] | 1.05 [speed]Speed[/speed].",
     #ascendancies
     "Zealot": "-25 Max Favour. Attack buffs from Favour have 50% Increased Effect. Defense buffs from Favour have 20% Less Effect.\n"
         "Whilst at or above 50 favour, gain 20% Increased Damage, +5% Crit Chance and +10% Lifesteal.\n"
@@ -285,8 +285,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
 
         return damageDealt, damageType
     
-    def onHit(self, damageTaken, damageType, attacker = None, combatManager=None):
-        super().onHit(damageTaken, damageType, attacker, combatManager)
+    def onHit(self, damageTaken, damageType, isCrit, attacker = None, combatManager=None):
+        super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
     
         if self.favourSpendingEnabled and self.favour > 0:
             spent = random.randint(1, self.favour)
@@ -344,6 +344,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
                 self.blessingTurns = 2
             if self.blessingTurns > 0:
                 damageTaken = int(damageTaken * 0.95)
+
+        return damageTaken, damageType
 
     def onKill(self, entity, attackData, combatManager=None):
         if self._ascendancy == 'Justicar':

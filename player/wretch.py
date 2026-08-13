@@ -4,13 +4,13 @@ from copy import deepcopy
 import random
 
 WRETCH_DESCRIPTIONS = {
-    "Wretch": "An outcast mage, revelling in the torture of flesh and blood.\n"
-        "You have no Stamina. All abilities cost Health to use. Gain +1% Lifesteal per 5% Missing Health.\n"
-        "Upon attacking an enemy with an ability, apply 1 stack of Blood Spike, up to 10 stacks.\n"
-        "Each stack of Blood Spike increases the execution threshold on an enemy by 2%. If an enemy's health drops below the execution threshold, they are immediately killed.\n"
-        "When an enemy is executed by Blood Spike, heal for 1% Max HP per stack of Blood Spike on the executed enemy.\n"
-        "Whilst below 40% Health: Gain +0.3 Speed, 10% Increased Dark Damage.\n"
-        "Starting Stats: 60 HP | 4 Damage | 5% Crit Chance | 150% Crit Damage | Dark Damage | 0.95 Speed.",
+    "Wretch": "[class_wretch]An outcast mage, revelling in the torture of flesh and blood.[/class_wretch]\n"
+        "You have no [stamina]Stamina[/stamina]. All abilities cost [health]Health[/health] to use. Gain +1% [lifesteal]Lifesteal[/lifesteal] per 5% Missing Health.\n"
+        "Upon attacking an enemy with an ability, apply 1 stack of [resource]Blood Spike[/resource], up to 10 stacks.\n"
+        "Each stack of [resource]Blood Spike[/resource] increases the execution threshold on an enemy by 2%. If an enemy's health drops below the execution threshold, they are immediately killed.\n"
+        "When an enemy is executed by [resource]Blood Spike[/resource], heal for 1% Max HP per stack of [resource]Blood Spike[/resource] on the executed enemy.\n"
+        "Whilst below 40% Health: Gain +0.3 Speed, 10% Increased [dark]Dark[/dark] Damage.\n"
+        "Starting Stats: 60 [health]HP[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 150% [critical]Crit Damage[/critical] | [dark]Dark Damage[/dark] | 0.95 [speed]Speed[/speed].",
     # ascendancies
     "Exsanguinator": "You can apply up to 15 stacks of Blood Spike on an enemy.\n"
         "Upon critically striking an enemy with Blood Spike stacks, consume all stacks to deal 5% Increased damage per stack\n."

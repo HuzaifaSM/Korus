@@ -1,7 +1,8 @@
 from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES
 from scripts.styles import (
     console, displayLevelUp, formatDamageType, pause,
-    printSuccess, printWarning, printInfo, clearScreen, formatEffectsSummary
+    printSuccess, printWarning, printInfo, clearScreen,
+    formatEffectsSummary, formatEffectsDetailed, formatAbilityCost
 )
 import random
 from typing import Dict
@@ -68,10 +69,12 @@ class Player(Entity):
             self._baseSpeed += 0.01
             self._baseStamina += 4
 
+
             if self._level == self._maxLevel:
                 console.print("[gold1]Congratulations! You have reached the maximum level![/gold1]")
             self._recalculateStats()
             displayLevelUp(self)
+            self._health = self._maxHealth
             pause()
 
     def gainClassAbilities(self):
@@ -96,11 +99,15 @@ class Player(Entity):
                 console.print(f"[bold]{'='*50}[/bold]")
                 if resolved.damageType:
                     damageTypeFormatted = formatDamageType(resolved.damageType, resolved.damageType)
-                    console.print(f"[cyan]Damage:[/cyan] {resolved.calculateDamage(self._damage)} ({damageTypeFormatted})")
+                    console.print(f"[cyan]Base Damage:[/cyan] {resolved.baseDamage} [dim]+ {resolved.damageScaling*100:.0f}% of your damage[/dim] ({damageTypeFormatted})")
+                if resolved.healBase or resolved.healPercent:
+                    console.print(f"[heal]Heal:[/heal] {resolved.healBase} [dim]+ {resolved.healPercent*100:.0f}% of your Max HP[/dim]")
                 console.print(f"[cyan]Cooldown:[/cyan] {resolved.maxCooldown} turns")
-                effectsSummary = formatEffectsSummary(resolved.effects)
-                if effectsSummary:
-                    console.print(f"[buff]Effects: {effectsSummary}[/buff]")
+                costStr = formatAbilityCost(resolved.resources, resolved.staminaCost)
+                if costStr != "-":
+                    console.print(f"[cyan]Cost:[/cyan] {costStr}")
+                for line in formatEffectsDetailed(resolved.effects):
+                    console.print(f"[buff]- {line}[/buff]")
                 console.print(f"[bold]{'='*50}[/bold]\n")
                 pause()
 

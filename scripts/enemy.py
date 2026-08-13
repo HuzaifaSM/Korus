@@ -3,7 +3,7 @@ from typing import Dict
 from .entities import Entity
 from .items import Equipment, ItemRarity, LootTable, RESOURCES, rollRarity, RARITY_WEIGHTS
 from .runeDrops import rollRuneDrops
-from .abilities import ENEMY_ABILITIES, EnemyAbility
+from .abilities import ENEMY_ABILITIES, EnemyAbility, BasicAttack
 from json import load
 from .styles import console
 from .enemyAi import EnemyAI
@@ -31,7 +31,7 @@ class Enemy(Entity):
         scaledCritMulti = round(critMulti + (random.randint(5, 15) + level / 5) / 100, 2)
 
         super().__init__(scaledHealth, scaledDamage, scaledCritChance, scaledCritMulti, damageType, scaledSpeed, name)
-        self._abilities: Dict[str, EnemyAbility] = {}
+        self._abilities: Dict[str, EnemyAbility] = {"Basic Attack": BasicAttack()}
         self._level = level
         self._experienceReward = max(level * 10, level * (level // 3 + random.randint(5, 15 + level // 5)))
         self._lootTable = lootTable or LootTable()

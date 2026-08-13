@@ -3,9 +3,9 @@ from scripts.styles import console
 import random
 
 FIGHTER_DESCRIPTIONS = {
-    "Fighter": "A combo-focused brawler."
-        "\nEach hit grants +1 Combo for the rest of combat. +2 Damage per combo. No combo maximum."
-        "\n Starting Stats: 40 HP | 3 Damage | 7.5% Crit Chance | 175% Crit Damage | Physical Damage | 1.15 Speed.",
+    "Fighter": "[class_fighter]A combo-focused brawler.[/class_fighter]"
+        "\nEach hit grants +1 [resource]Combo[/resource] for the rest of combat. +2 Damage per [resource]combo[/resource]. No [resource]combo[/resource] maximum."
+        "\n Starting Stats: 40 [health]HP[/health] | 3 [damage]Damage[/damage] | 7.5% [critical]Crit Chance[/critical] | 175% [critical]Crit Damage[/critical] | [physical]Physical Damage[/physical] | 1.15 [speed]Speed[/speed].",
     #ascendancies
     "Bladedancer": "Combo is capped at 5. At maximum combo, deal 60% increased damage with your next hit and heal for 3% of damage dealt. Reset combo after this attack.\n"
         "Upon dealing a critical hit, gain Flurry for 3 turns. Flurry: 15% Increased Physical Damage, +0.1 Speed, +20% Crit Damage."
@@ -68,8 +68,8 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         if hasattr(self, '_form'):
             delattr(self, '_form')
 
-    def rollCritical(self, target):
-        crit, critMulti = super().rollCritical(target)
+    def rollCritical(self, target, damageDealt=None):
+        crit, critMulti = super().rollCritical(target, damageDealt)
         if self._ascendancy == 'Bladedancer':
             if crit:
                 if self.flurryTurns == 0:
@@ -84,12 +84,12 @@ class Fighter(Player): # higher speed, lower damage, physical damage
                     self._stats['Temporary']['speed'] += 0.15
                 self.marshalMomentumTurns = 2
                 for _, ability in self._abilities.items():
-                    ability.currentCooldown = max(0, ability.currentCooldown - 1)
+                    ability.cooldown = max(0, ability.cooldown - 1)
                 console.print('[gold1]Marshal: Critical Hit! Gained 2 turns of Momentum and all ability cooldowns reduced by 1.[/gold1]')
         return crit, critMulti
 
-    def onAttack(self, damageDealt, damageType, target=None):
-        super().onAttack(damageDealt, damageType)
+    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
+        super().onAttack(damageDealt, damageType, target, combatManager)
         comboGained = False
         bonus = 0
         damageDealt = int(damageDealt * (self._combo / 100) * self.comboEffect)
@@ -150,17 +150,17 @@ class Fighter(Player): # higher speed, lower damage, physical damage
 
         return damageDealt, damageType
     
-    def onHit(self, damageTaken, damageType):
+    def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
         if self._ascendancy == 'Barbarian':
             damageTaken = round(damageTaken * 1.1)
             self.barbarianHits += 1
-        
+
         if self._ascendancy == 'Champion' and self.aegis:
             damageTaken = damageTaken = 0
             self.aegisDamage = True
             self.aegis -= 1
 
-        return super().onHit(damageTaken, damageType)
+        return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
     def onKill(self, entity, attackData):
         if self._ascendancy == 'Marshal':

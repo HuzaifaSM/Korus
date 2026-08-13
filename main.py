@@ -20,9 +20,7 @@ from scripts.help import Help
 from scripts.styles import (
     console, printHeader, printSeparator, pause, clearScreen,
     printWarning, printError, printInfo, printSuccess,
-    displayCombatStatus, displayLoot,
-    displayDeath, displayVictory, createAbilityTable,
-    formatDamageType, formatRarity,
+    displayDeath, displayVictory, formatRarity,
     createAbilityTables, createCombatStatusTable, createEnemyPreview
 )
 
@@ -81,7 +79,7 @@ class Game:
                 choice = int(choice)
                 match choice:
                     case 1:
-                        self.start()
+                        self.newGame()
                         if not self.mainMenu():
                             break
                     case 2:
@@ -132,7 +130,7 @@ class Game:
                         if hardcore:
                             diffDisplay += " [bold red](HARDCORE)[/bold red]"
 
-                        console.print(f"[cyan]{saveNum}.[/cyan] [bold]{playerName}[/bold] [dim]| {className} | Level {playerLevel}[/dim]")
+                        console.print(f"[cyan]{saveNum}.[/cyan] [bold]{playerName}[/bold] | [class_{className}]{className}[/class_{className}] | Level {playerLevel}")
                         console.print(f"    [dim]Difficulty: {diffDisplay}[/dim]\n")
                         saves.append(saveNum)
                     except Exception as e:
@@ -173,7 +171,7 @@ class Game:
             pause()
             return False
 
-    def start(self):
+    def newGame(self):
         clearScreen()
         printHeader("New Game")
 
@@ -204,7 +202,7 @@ class Game:
                 console.print(f"[dim]{i}.[/dim] {diff.getDisplayName()}")
                 console.print(f"    [dim]{diff.getDescription()}[/dim]\n")
 
-            choice = console.input("[cyan]Choose difficulty (1-4):\n> [/cyan]")
+            choice = console.input("[cyan]Choose a difficulty (1-4):\n> [/cyan]")
             try:
                 index = int(choice) - 1
                 if 0 <= index < len(Difficulty):
@@ -541,7 +539,7 @@ class Game:
                 console.print(f"\n[bold]{slot.upper()}:[/bold] {equipName}")
                 console.print(f"  [dim]Level {equip.level} | Durability: {equip.durability}/{equip.maxDurability}[/dim]")
                 console.print(f"  [cyan]Stats:[/cyan] {equip._formatStats()}")
-        
+
         if not hasEquipped:
             console.print("  [dim]Nothing equipped[/dim]")
         
@@ -620,6 +618,7 @@ class Game:
             if self.player._abilities:
                 for ability in self.player._abilities.values():
                     ability.cooldown = 0 # reset all ability cooldowns back to 0
+            self.player._stamina = self.player._maxStamina
             self.battlesWon += 1
             currentAreaLevel = self.areaLevel
             if self.areaLevel > 100:
@@ -766,8 +765,8 @@ class Game:
 
         self.player.consumableUsed = False
 
-        createCombatStatusTable(self.player, enemies)
         self.player.onTurnStart()
+        createCombatStatusTable(self.player, enemies)
 
         console.print("\n[bold red]Enemies:[/bold red]")
         aliveEnemies = [e for e in enemies if not e._isDead]
@@ -775,11 +774,10 @@ class Game:
             console.print(f"  [red]{i}. {enemy._name}[/red]")
 
         console.print("\n[bold cyan]=== Actions ===[/bold cyan]\n")
-        console.print("[dim]0.[/dim] Basic Attack [dim](Default)[/dim]")
         console.print("[dim]C.[/dim] Use Consumable [dim](Free Action)[/dim]")
         console.print("[dim]F.[/dim] [yellow]Flee from Combat.[/yellow]")
         if self.player.className == 'Druid':
-            console.print(f"[dim]S.[/dim] [green]Force shapeshift [dim] (Free Action) | Current form: {self.player._form}[/dim][/green]")
+            console.print(f"[dim]S.[/dim] [green]Force shapeshift [dim] (Free Action) | Current form: {self.player.form}[/dim][/green]")
         console.print()
         
         if self.player._abilities:
@@ -810,18 +808,12 @@ class Game:
                     abilityTables = createAbilityTables(abilities, maxPerTable=10) 
                     console.print(abilityTables)
                     console.print()
-            elif action == "0" or action == '':
-                target = self.chooseTarget(aliveEnemies)
-                if target:
-                    self.combatManager.performAttack(self.player, target)
-                    self.combatManager.resolveSkeletonAttack(self.player)
-                    break
             elif action.lower() == 'c':
                 self.useCombatConsumable()
                 continue
             elif action.lower() == 's' and self.player.className == 'Druid':
                 self.player._shapeShift()
-                abilities = self.player.useableAbilities()
+                abilities = self.player._abilities
                 abilityTables = createAbilityTables(abilities, maxPerTable=10)
                 console.print(abilityTables)
                 console.print()
@@ -872,7 +864,7 @@ class Game:
                     printError(f"Invalid target: #{int(target) + 1}")
             except ValueError as e:
                 printError(f"{e}")
-            
+
     def enemyTurn(self, currentUnit):
         enemy = currentUnit.entity
 
@@ -1017,11 +1009,11 @@ class Game:
 
 def main():
     try:
-        subprocess.Popen([ # create a korus watcher to track save file changes
+        subprocess.Popen([ # create a korus watcher to silently track save file changes
             r"tools\korus_watch.exe",
             "data/saves",
             "--log", "data/watch/save_watch.log",
-            "--interval", "10"
+            "--interval", "10", "--silent"
         ])
 
         game = Game()

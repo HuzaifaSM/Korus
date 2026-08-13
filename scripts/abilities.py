@@ -110,6 +110,11 @@ class Ability:
     def __rich__(self) -> str:
         return self.__str__()
 
+class BasicAttack(Ability):
+    def __init__(self):
+        super().__init__('Basic Attack', "damage", ["damage"], 0, 0, 1.0, None,
+                         0, 0, 0, 1, {}, {}, {}, "Strike the enemy with a basic attack.")
+
 class AbilityTree:
     def __init__(self, baseData: Dict, evolutions: Dict[int, Dict]):
         self.baseData = baseData
@@ -133,7 +138,7 @@ class AbilityTree:
         dScale = data.get('damage_scaling', 0)
         dScaling = dScale / 100 if dScale >= 1 else dScale
         hScale = data.get('heal_percent', 0)
-        hScaling = hScale / 100 if hScale >= 1 else dScale
+        hScaling = hScale / 100 if hScale >= 1 else hScale
 
         return Ability(
             data['name'], data['category'], data.get('tags', []), data.get('stamina_cost'),
@@ -618,7 +623,7 @@ class EnemyAbility:
         self.maxCooldown = cooldown
         self.cooldown = 0
         self.targets = targets
-        self.damageBase = damageBase
+        self.baseDamage = damageBase
         self.damageScaling = damageScaling
         self.damageType = damageType
         self.weight = weight
@@ -626,7 +631,7 @@ class EnemyAbility:
         self.description = description
 
     def calculateDamage(self, enemyBaseDamage: int) -> int:
-        return int(self.damageBase + (enemyBaseDamage * self.damageScaling))
+        return int(self.baseDamage + (enemyBaseDamage * self.damageScaling))
 
     def canUse(self) -> Tuple[bool, str]:
         if self.cooldown > 0:
@@ -635,7 +640,7 @@ class EnemyAbility:
 
     @property
     def isDamaging(self) -> bool:
-        return self.damageBase > 0 or self.damageScaling > 0
+        return self.baseDamage > 0 or self.damageScaling > 0
 
     def spawnedConsumableHeal(self) -> Optional[int]:
         """Returns heal amount if ability spawns a consumable, else None"""

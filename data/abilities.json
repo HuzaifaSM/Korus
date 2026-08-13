@@ -1991,10 +1991,10 @@
                     "mana",
                     "elemental"
                 ],
-                "damage_base": 10,
-                "damage_scaling": 40,
+                "damage_base": 3,
+                "damage_scaling": 45,
                 "damage_type": "arcane",
-                "stamina_cost": 15,
+                "stamina_cost": 0,
                 "resources": {
                     "required": {
                         "mana": {
@@ -2011,7 +2011,6 @@
                         "damage_base": 40,
                         "damage_scaling": 65,
                         "level": 25,
-                        "stamina_cost": 40,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2036,7 +2035,6 @@
                         "damage_base": 100,
                         "damage_scaling": 90,
                         "level": 50,
-                        "stamina_cost": 85,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2065,7 +2063,6 @@
                         "damage_base": 240,
                         "damage_scaling": 145,
                         "level": 75,
-                        "stamina_cost": 150,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2108,7 +2105,7 @@
                 ],
                 "heal_base": 0,
                 "heal_percent": 0,
-                "stamina_cost": 30,
+                "stamina_cost": 0,
                 "level": 5,
                 "cooldown": 3,
                 "resources": {
@@ -2255,7 +2252,7 @@
                     "elemental_exposure",
                     "haste"
                 ],
-                "stamina_cost": 45,
+                "stamina_cost": 0,
                 "level": 10,
                 "cooldown": 4,
                 "targets": "all",
@@ -2447,7 +2444,6 @@
                         "damage_base": 65,
                         "damage_scaling": 50,
                         "level": 40,
-                        "stamina_cost": 80,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2481,7 +2477,6 @@
                         "damage_base": 115,
                         "damage_scaling": 80,
                         "level": 65,
-                        "stamina_cost": 150,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2517,7 +2512,6 @@
                         "damage_base": 210,
                         "damage_scaling": 105,
                         "level": 90,
-                        "stamina_cost": 260,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2562,7 +2556,7 @@
                 "damage_base": 50,
                 "damage_scaling": 60,
                 "damage_type": "arcane",
-                "stamina_cost": 55,
+                "stamina_cost": 0,
                 "level": 20,
                 "cooldown": 3,
                 "targets": 1,
@@ -2591,7 +2585,6 @@
                         "damage_base": 105,
                         "damage_scaling": 85,
                         "level": 45,
-                        "stamina_cost": 85,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2629,7 +2622,6 @@
                         "damage_base": 170,
                         "damage_scaling": 115,
                         "level": 70,
-                        "stamina_cost": 155,
                         "resources": {
                             "required": {
                                 "mana": {
@@ -2678,7 +2670,6 @@
                         "damage_base": 250,
                         "damage_scaling": 150,
                         "level": 95,
-                        "stamina_cost": 280,
                         "resources": {
                             "required": {
                                 "mana": {

@@ -2,37 +2,43 @@ NOTES:
   - resolveEffects() in abilities.py is where an ability's effects dict (target/self) gets turned into StatusEffect objects; performAttack() in combat.py is what actually applies them
   - make sure all 'crit damage' or similar is variable named to critMulti
 
-- double check all rune drop weights
-
 BUGS:
-
-runes not working on first try:
+- mage class doesn't display mana instead of stamina
+- abilities dont display stamina costs, or deduct from stamina
+- shop item display isn't very readable - should just play equipment pieces
+- can accquire '0x resource'
+- paladin can potentially spend more favour than available. case: 9/100 favour available, ability used 11 favour
+- paladin asked to use favour twice a turn
+- druid ability fail due to wrong form still consumes turn
+- abilities should show if they add stacks of a mechanic e.g. wretch abilities adding extra blood spike, druid abilities adding verdance, etc.
+- druid verdance buff display for beast is incorrect. case: current verdance 2/30, buffs: +" damage, +200.0% elemental res (WRONG), +0.00 speed, same for human form (percentages seem to be 100x larger than they should be)
+- druid form abilities should have form as part of the requirement/cost field
+- abilities don't display damage type sometimes
 
 NEW AFFIXES:
-- health/stamina on hit/kill suffixes on weapons and rings
-- +x to max y resistance suffix (rings, amulet, armour)
-  > move off of armour and onto sigils and shields once they exist
-  > needs a new section in Entity._stats['Resistances']
-    - Entity._stats['Resistances']['max'] per resistance, default 75, increased by affix, final cap at 90%
-    > +1 to +10 across 7 tiers
-      > t1-3 are static 1/2/3 resistance, t4 = 4-5, t5 = 6-7, t6 = 7-8, t7 = 9-10
-    > multi-res roll +1 to +8 across 7 tiers (t7 is 7-8)
-    > all res rolls +1 to +5 across 5 tiers
-    > soulbound suffixes on chestplate, legs and amulet
-      > 1 res roll 10-15
-      > multi-res roll 9-12
-      > all res roll 7-10
-- thorns damage: head, feet, legs, boots - prefix
-- otherworld resistance: same as divine but for psychic, ethereal and chaos damage
-- all affixes should have a minimum of 6 tiers, preferably 7+
-- after ability rework:
+  - health/stamina on hit/kill suffixes on weapons and rings
+  - +x to max y resistance suffix (rings, amulet, armour)
+    > move off of armour and onto sigils and shields once they exist
+    > needs a new section in Entity._stats['Resistances']
+      - Entity._stats['Resistances']['max'] per resistance, default 75, increased by affix, final cap at 90%
+      > +1 to +10 across 7 tiers
+        > t1-3 are static 1/2/3 resistance, t4 = 4-5, t5 = 6-7, t6 = 7-8, t7 = 9-10
+      > multi-res roll +1 to +8 across 7 tiers (t7 is 7-8)
+      > all res rolls +1 to +5 across 5 tiers
+      > soulbound suffixes on chestplate, legs and amulet
+        > 1 res roll 10-15
+        > multi-res roll 9-12
+        > all res roll 7-10
+  - thorns damage: head, feet, legs, boots - prefix
+  - otherworld resistance: same as divine but for psychic, ethereal and chaos damage
+  - all affixes should have a minimum of 6 tiers, preferably 7+
   > +max stamina, +stamina regen per turn
     - both suffixes, scale same on all pieces of equipment, not available on rings/amulets/weapons
   > mythic and soulbound affixes could include learning new abilities
 
 OTHER STUFF:
+  - camp main menu screen should show tier of each camp and resources needed to upgrade if not max tier
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
-  - use crafting sandbox to test every single crafting item for bugs
   - more enemy abilities
   - add parallel and foresight runes
     > foresight rune might need a complex system:
@@ -42,6 +48,12 @@ OTHER STUFF:
   - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
 
 CURRENTLY WORKING ON:
+  - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
+    > Classes complete:
+
+    > Classes in progress:
+      - Cultist
+  
   - rework fighter class
     > new mechanic uses stances: offensive and defensive
       - offensive deals more damage but takes more damage, defensive is reverse
@@ -56,11 +68,7 @@ CURRENTLY WORKING ON:
   
   - expand ascendancy descriptions to be more clear on everything without making them too long to read in preparation for ascendancy shrine
     > ascendancy shrine displays all ascendancies and descriptions and lets you choose which to become. can only be built after level 15 (gives player time to get resources)
-    > when all ascendancies are finished: add ascendancy upgrades
-      - every 20 levels, maxing at level 100, ascendancies gain a new upgrade, either a new mechanic or upgrades to stats or otherwise.
 
-  - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
-  
   - dungeons
     > better modifiers + more modifiers
       > dungeons.json basically needs to be remade
@@ -72,9 +80,6 @@ CURRENTLY WORKING ON:
 RIGHT NOW IMPORTANT:
 - finish ascendancies descriptions + functionality
   - add _removeOldAscendancy methods to add classes
-- make sure onHit return damageTaken and damageType at the end of methods
-
-NEED TO WORK ON:
   - ascendancy shrine camp area
     > also hosts changing ascendancy and subtypes
     > when built: call player.gainClassAbilities() after an ascendancy change so ability overlays
@@ -89,7 +94,7 @@ FUN BONUS LIBRARIES:
   - textual library
     > allows for terminal UI -> pygame but in the terminal
     > gpt: "AMAZING for your game if you ever want: proper menus, skill trees, inventory screens"
-      - would actually allow passive skill tree to be added in python and not need a game engine#
+      - would actually allow passive skill tree to be added in python and not need a game engine
   - py_trees <---
     > behaviour trees
     > boss logic! modular AI systems
@@ -100,18 +105,16 @@ FUN BONUS LIBRARIES:
     > can simulate combat and other things outside of main game loop to test balance
 
 - keep adding more classes, more ascendancies, more sub types whenever you think of anything cool
-  > idea: upon levelling up to level 20, gain an ascendancy point which is used to unlock an ascendancy
+  > upon levelling up to level 20, gain an ascendancy point which is used to unlock an ascendancy
     - LATER ASCENDANCY BUFF IDEA:
-      > every 20 levels, continue to gain an ascendancy point, which can be used to unlock a buff or bonus 'thing'
+      > every 20 levels, continue to gain an ascendancy point, which can be used to unlock a buff, mechanic or other boon
       > more than 4 upgrades, but ascendancy points capped at 4 (gain 1 at 40/60/80/100)
         - e.g. Warlord buff could be: "Gain Fury stacks on attack if you have more than 40 (previously 50) Rage. Gain 5% Damage Reduction"
           > essentially, only upgrades and buffs, similar to PoE ascendancy system (unlock ascendancy then gain extra things to add to it)
-  - ascendancy stat buffs need to be rebalanced around level 20 (level up every class to 20 and see standard health/gear/armour)
-    > no shop or external buff, only through combats for a 'minimal' viewpoint
 
 MARKET REWORK
   - need to fix/rework item value calculation and make it make logical sense
-    - baesd on amount of affixes on an item, item rarity, rarity of item affixes (based on weight), etc.
+    - based on amount of affixes on an item, item rarity, rarity of item affixes (based on weight), etc.
   - more exciting items, different items
   - market has a unique selection of affixes that are market-only
     > market items on average have higher tiers of affixes
@@ -188,27 +191,6 @@ ITEM REWORK/IMPROVEMENTS
               > not a true destabilisation unless player used the rune
               > only in name to prevent further modification to the item
     - add a quick sell option when getting an item at the end of combat (simple QoL)
-
-- ABILITY REWORK
-  - a lot less available abilities but each one is more impactful + costs more resources
-  - could give all entities mana as a resource to use, some could use health or other mechanics instead?
-    > mage can keep its mechanic even if mana is global since its unique enough
-  - basic attack always exists, but abilities are generally how damage is dealt
-  - abilities could be split with tags that are used to scale
-    - e.g. 'Slash' has tags: {physical, bleed, dot, attack, melee}
-  - abilities could be split between 'offense', 'defense', 'utility', 'unique' for simplicity
-  - rework should aim to make combat more meaningful rather than just a dps race as it is currently
-  - allows for probably weapons/rings to have more affixes as well (increased dot damage, etc.)
-  - abilities should have the opportunity to consist of multiple parts:
-    > example: deal 300% of base damage as x damage type, gain x shield, for x turns gain [] buff
-  - rework abilities.py and the mechanics
-    > separate mechanics into a json file where they can be more descriptive + have better structure
-  - rework status effects
-    > more impactful on actual gameplay, DoTs should have secondary effects to help differentiate
-      - e.g. bleeding reduces speed, posion negates health regen, etc.
-      - DoTs should also have damage types so extra resistances can be applied to them
-    > remove second tiers of mechanics and reduce total amount of mechanics: quality over quantity
-      - do not remove so many mechanics that some abilities have nothing, but so that they are not overwhelming/extra
 
 - ENEMY REWORK
   - enemies have smarter thinking + decision making
@@ -303,7 +285,7 @@ ITEM REWORK/IMPROVEMENTS
       -> custom and unique crafting methods
       -> charater power
       -> engaging mechanics + activities
-      -> new uniques + items
+      -> new items
       -> new abilities?
       - could try to challenge programming-side of development by trying to make new things
         - e.g. real-time mechanics, other such things
@@ -333,27 +315,9 @@ ITEM REWORK/IMPROVEMENTS
       > could replace questBoard with townHall building where all NPCs are stored
 
   > NOT FOR TERMINAL
-    > Skill Upgrades (Last Epoch Skill Trees)
     > Skill Tree (Path of Exile-like)
-      -> Unique per class, smaller secondary one for ascendancies
-        -> Some nodes could be different for sub-types
-          -> E.g. savage berserker sub-type has no rage, could be replaced with damage nodes?
+      -> Unique per class or global for all characters
       -> Should contain small nodes which lead to notables with larger buffs.
-      -> 'Travel' nodes can be basic things such as +hp or +damage or such
-      -> Might be a good idea to add armour and dodge/evasion to all characters as bonus stats if the tree feels too small/not enough things!
+      -> 'Travel' nodes can be basic things such as +hp or +damage
     >>> FOR THIS!!! Need to make a node system that works and correctly and efficiently affects the player!
       -> Potential implementation: 'treeBuffs' dict or equivalent, then added onto the player in recalculateStats
-      -> Would need to rework how skills function alongside upgrades potentially
-        - might not actually need to depending on how well serialisation works in terms of its affects
-          - could still be useful for making sure skills can be upgraded more effectively and allowing for more options
-
-  > Boss fights - unlocked on level? needed to progress to next zone? some reason to fight bosses!
-    -> e.g. one time uniques, one time stat bonuses
-      - if grid system is implemented, boss fights can be significantly more indepth
-        -> custom arena maps specifically tailored for the boss
-
-IF AND WHEN MOVING TO GODOT GAME ENGINE/PYGAME:
-  - Caves of Qud / Tales of Maj'Eyal style movement/combat/grid
-  - Reduce enemy item drops to 3 at max, significantly reduce resources dropped or significantly increase resource costs
-  - Could eventually make an entire skill tree (path of exile) per class, with a smaller one for ascendancies
-

@@ -4,11 +4,11 @@ from typing import Dict
 import random
 
 DRUID_DESCRIPTIONS = {
-    "Druid": "A nature mystic who channels the primal forces.\n"
-        "Shapeshifting: Deal Earth damage to swap forms. Your forms grow in power with each level.\n"
-        "Per Level Buffs: Human: +1 Damage, +1% Elemental Resistance, +0.01 Speed | Beast: +1.5% Crit Damage, +2% Increased Earth Damage, -0.02 Speed, +0.4% Damage Taken.\n"
-        "Gain 1 stack of Verdance per 10 damage dealt, to a max of 30 stacks. Verdance: 0.5% Damage Reduction, 1% Increased Earth Damage. Heal 1% Max HP per Verdance at the end of combat.\n"
-        "Starting Stats: 55 HP | 5 Damage | 7.5% Crit Chance | 150% Crit Damage | Earth Damage | 1 Speed.",
+    "Druid": "[class_druid]A nature mystic who channels the primal forces.[/class_druid]\n"
+        "Shapeshifting: Deal [earth]Earth[/earth] damage to swap forms. Your forms grow in power with each level.\n"
+        "Per Level Buffs: [human]Human[/human]: +1 Damage, +1% Elemental Resistance, +0.01 Speed | [beast]Beast[/beast]: +1.5% [critical]Crit Damage[/critical], +2% Increased [earth]Earth[/earth] Damage, -0.02 Speed, +0.4% Damage Taken.\n"
+        "Gain 1 stack of [resource]Verdance[/resource] per 10 damage dealt, to a max of 30 stacks. [resource]Verdance[/resource]: 0.5% [resistance]Damage Reduction[/resistance], 1% Increased [earth]Earth[/earth] Damage. Heal 1% Max HP per [resource]Verdance[/resource] at the end of combat.\n"
+        "Starting Stats: 55 [health]HP[/health] | 5 [damage]Damage[/damage] | 7.5% [critical]Crit Chance[/critical] | 150% [critical]Crit Damage[/critical] | [earth]Earth Damage[/earth] | 1 [speed]Speed[/speed].",
     #ascendancy
     "Primalist": "Form bonuses have 50% Increased Magnitude. Human Form gains 0.25% Damage Reduction per level. Beast Form gains +1 Damage per level.\n"
         "Upon shapeshifting, gain Residual for 2 turns from your previous form. Human Residual: +30% Crit Damage, +20% Increased Earth Damage. Beast Residual: +15% Elemental Resistance, +5% Lifesteal.\n"
@@ -319,7 +319,7 @@ class Druid(Player): # balanced damage and speed, earth damage
 
         return damageDealt, damageType
     
-    def onHit(self, damageTaken, damageType, attacker = None, combatManager=None):
+    def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
         if self._ascendancy == 'Arbiter' and self.form == 'human' and self.adaptationTurns > 0:
             damageTaken = int(damageTaken * 0.85)
 
@@ -341,7 +341,7 @@ class Druid(Player): # balanced damage and speed, earth damage
                 dr += 0.005 * self.verdance * self.verdanceEffect
             damageTaken = int(damageTaken * (1 - dr))
 
-        return super().onHit(damageTaken, damageType, attacker, combatManager)
+        return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
     
     def onKill(self, entity, attackData, combatManager=None):
         if self._ascendancy == 'Arbiter':

@@ -358,7 +358,7 @@ class CombatManager:
         if not attackerUnit:
             return False
 
-        if abilityName and abilityName in attacker._abilities:
+        if abilityName and abilityName in attacker._abilities: # ability
             ability = attacker._abilities[abilityName]
             console.print(f"\n[cyan]{attacker._name}[/cyan] uses [bold]{abilityName}[/bold]")
 
@@ -373,18 +373,16 @@ class CombatManager:
                     printWarning(f"  - {abilityName} is on cooldown for {ability.cooldown} more turn(s).")
                     return False
 
-            # ability.effects['self'] applies immediately, regardless of what happens to the target(s)
+            # ability.effects['self'] applies immediately, regardless of what happens otherwise
             selfEffects = ability.effects.get('self', {})
             if selfEffects:
                 for effect in resolveEffects(selfEffects):
                     self.addStatusEffect(attacker, effect, attacker)
 
-            # ability.effects['target'] is resolved fresh per-target further down, so AOE hits
-            # don't share the same StatusEffect instance across multiple targets
+            # ability.effects['target'] is resolved fresh per-target further down, so AOE hits don't share the same StatusEffect instance across multiple targets
             targetEffectsDict = ability.effects.get('target', {})
-            mechanicsBeforeTargeting: List[StatusEffect] = []
+            effectsBeforeTargeting: List[StatusEffect] = []
 
-            # Determine targets
             targets = []
             if ability.targets == "all":
                 if attackerUnit.team == "player":
@@ -402,7 +400,7 @@ class CombatManager:
                 targets = [target]
 
             damage = ability.calculateDamage(attacker._damage)
-            damageType = ability.damageType
+            damageType = ability.damageType if ability.damageType else attacker._damageType
             if attackerUnit:
                 damage = int(damage * attackerUnit.getDamageModifier())
 
@@ -420,16 +418,16 @@ class CombatManager:
                         targets.append(random.choice(available))
                         console.print(f"  [lightning]- Stormwalker: Lightning damage forks to {target._name}![/lightning]")
                     if random.random() < 0.4:
-                        mechanicsBeforeTargeting.append(Effects.createShock())
+                        effectsBeforeTargeting.append(Effects.createShock())
                         console.print(f"  [lightning]- Stormwalker: Lightning damage applied Shock to {target._name}![/lightning]")
 
                 elif attacker._ascendancy == 'Glacierfist':
                     if random.random() < 0.25:
                         chill = Effects.createChill()
-                        mechanicsBeforeTargeting.extend(chill)
+                        effectsBeforeTargeting.extend(chill)
                     if random.random() < 0.2:
                         freeze = Effects.createFreeze()
-                        mechanicsBeforeTargeting.append(freeze)
+                        effectsBeforeTargeting.append(freeze)
 
                 elif attacker._ascendancy == 'Enlightened':
                     if damageType != attacker._damageType:
@@ -453,9 +451,9 @@ class CombatManager:
                     if attacker._ascendancy == 'Weaver':
                         attacker.wovenDamage += 10
                         weaken = Effects.createWeaken()
-                        mechanicsBeforeTargeting.append(weaken)
+                        effectsBeforeTargeting.append(weaken)
                         exposed = Effects.createExposed()
-                        mechanicsBeforeTargeting.append(exposed)
+                        effectsBeforeTargeting.append(exposed)
                         console.print('  [buff]- Weaver: Lost Triggered! Applied Weaken and Lost to all enemies! +10 Damage for the rest of combat.[/buff]')
 
                 if attacker._ascendancy == 'Fractured':
@@ -478,7 +476,7 @@ class CombatManager:
                 elif attacker._ascendancy == 'Fluxweaver' and damageType in ['arcane', 'cold', 'earth', 'fire', 'lightning']:
                     if random.random() < 0.3:
                         exposure = Effects.createElementalExposure()
-                        mechanicsBeforeTargeting.append(exposure)
+                        effectsBeforeTargeting.append(exposure)
                         console.print(f'[wind]Fluxweaver: Applied Elemental Exposure![/wind]')
 
             elif attacker.className == 'Fighter':
@@ -504,11 +502,11 @@ class CombatManager:
                     if random.random() < 0.4:
                         burn = Effects.createBurn()
                         for b in burn:
-                            mechanicsBeforeTargeting.append(b)
+                            effectsBeforeTargeting.append(b)
                 elif attacker._ascendancy == 'Juggernaut' and attacker._fortify >= attacker._maxFortify and attacker._rage >= 100:
                     targets = [u.entity for u in self.getUnitsInTeam('enemy')]
                     stun = Effects.createStun()
-                    mechanicsBeforeTargeting.append(stun)
+                    effectsBeforeTargeting.append(stun)
                     console.print(f'[gold1]Juggernaut: Max Fortify - Stunning all enemies! -100 Rage.[/gold1]')
                     attacker._rage -= 100
 
@@ -523,7 +521,7 @@ class CombatManager:
                 if attacker._ascendancy == 'Harbinger' and attacker.insanity == attacker.maxInsanity:
                     curse = Effects.createCurse(2)
                     for c in curse:
-                        mechanicsBeforeTargeting.append(c)
+                        effectsBeforeTargeting.append(c)
 
                 elif attacker._ascendancy == 'Anarchist':
                     if attacker.volatility == attacker.maxVolatility and attacker.insanity > 0:
@@ -574,7 +572,7 @@ class CombatManager:
             else:
                 # DAMAGE
                 for t in targets:
-                    mechanics: List[StatusEffect] = [deepcopy(m) for m in mechanicsBeforeTargeting]
+                    mechanics: List[StatusEffect] = [deepcopy(m) for m in effectsBeforeTargeting]
                     mechanics.extend(resolveEffects(targetEffectsDict))
 
                     targetUnit = None
