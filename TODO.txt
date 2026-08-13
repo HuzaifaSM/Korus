@@ -46,6 +46,9 @@ OTHER STUFF:
   - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
 
 CURRENTLY WORKING ON:
+  - add energy shield to combat tables for in-combat
+    > if the player has > 0 energy shield, it is displayed.
+
   - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
     > Classes complete:
 

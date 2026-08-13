@@ -2011,8 +2011,8 @@
                 "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 10 Damage + 40% of your base damage.",
                 "evolutions": {
                     "25": {
-                        "damage_base": 40,
-                        "damage_scaling": 65,
+                        "damage_base": 15,
+                        "damage_scaling": 70,
                         "level": 25,
                         "resources": {
                             "required": {
@@ -2035,8 +2035,8 @@
                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 40 Damage + 65% of your base damage.\n  - Apply 10% Dvine Exposure for 2 turns."
                     },
                     "50": {
-                        "damage_base": 100,
-                        "damage_scaling": 90,
+                        "damage_base": 40,
+                        "damage_scaling": 110,
                         "level": 50,
                         "resources": {
                             "required": {
@@ -2063,8 +2063,8 @@
                         "description": "Hurl a bolt of arcane energy at your target.\n  - Cooldown: 2 Turns\n  - Deal 100 Damage + 90% of your base damage.\n  - 20% Divine Exposure and 20% Vulnerable for 2 turns."
                     },
                     "75": {
-                        "damage_base": 240,
-                        "damage_scaling": 145,
+                        "damage_base": 100,
+                        "damage_scaling": 160,
                         "level": 75,
                         "resources": {
                             "required": {
@@ -2420,7 +2420,7 @@
                     "stun",
                     "mana"
                 ],
-                "damage_base": 30,
+                "damage_base": 20,
                 "damage_scaling": 25,
                 "damage_type": "arcane",
                 "stamina_cost": 50,
@@ -2445,8 +2445,8 @@
                 "description": "Bombard all enemies with a barrage of arcane missiles.\n  - Cooldown: 4 Turns. Costs 20 Mana.\n  - Deal 30 Damage + 25% of your base damage to all enemies.\n  - 15% Chance to Stun for 1 turn.",
                 "evolutions": {
                     "40": {
-                        "damage_base": 65,
-                        "damage_scaling": 50,
+                        "damage_base": 35,
+                        "damage_scaling": 45,
                         "level": 40,
                         "resources": {
                             "required": {
@@ -2478,8 +2478,8 @@
                         "description": "Bombard all enemies with arcane missiles.\n  - Cooldown: 4 Turns. Costs 35 Mana.\n  - Deal 65 Damage + 50% of your base damage to all enemies.\n  - 25% Stun. 1 Burn. 15% Elemental Exposure for 2 turns."
                     },
                     "65": {
-                        "damage_base": 115,
-                        "damage_scaling": 80,
+                        "damage_base": 60,
+                        "damage_scaling": 85,
                         "level": 65,
                         "resources": {
                             "required": {
@@ -2513,8 +2513,8 @@
                         "description": "Bombard all enemies with arcane missiles.\n  - Cooldown: 4 Turns. Costs 55 Mana.\n  - Deal 115 Damage + 80% of your base damage to all enemies.\n  - 35% Stun. 2 Burn. 25% Elemental Exposure, 20% Slow for 2 turns."
                     },
                     "90": {
-                        "damage_base": 210,
-                        "damage_scaling": 105,
+                        "damage_base": 85,
+                        "damage_scaling": 120,
                         "level": 90,
                         "resources": {
                             "required": {
