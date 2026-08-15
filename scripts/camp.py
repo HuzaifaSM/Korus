@@ -10,18 +10,6 @@ from .campAreas.forge import Forge
 from .campAreas.market import Market
 from .campAreas.questBoard import QuestBoard
 
-def printChoices():
-    """Print camp choices"""
-    choices = [
-        "[dim]0)[/dim] Return",
-        "[dim]1)[/dim] [red]Campfire[/red]",
-        "[dim]3)[/dim] [yellow]Forge[/yellow]",
-        "[dim]4)[/dim] [green]Market[/green]",
-        "[dim]5)[/dim] [blue]Quest Board[/blue]"
-    ]
-    for line in choices:
-        console.print(line)
-
 class Camp:
     """Collection of all camp buildings in one place:
         - Campfire
@@ -47,7 +35,6 @@ class Camp:
         self.player = player
         # update player references
         self.campfire.player = player
-        self.crafter.player = player
         self.forge.player = player
         self.market.player = player
         self.questBoard.player = player
@@ -58,17 +45,12 @@ class Camp:
         self.campfire.level = campfire.get('level', 1)
         self.campfire.supplies = campfire.get('supplies', 0)
 
-        crafter = data['crafter']
-        self.crafter.name = crafter.get('name', 'Crafter')
-        self.crafter.resourcesNeeded = crafter.get('resourcesNeeded', {})
-        self.crafter.level = crafter.get('level', 1)
-        self.crafter.blueprints = crafter.get('blueprints', 0)
-
         forge = data['forge']
         self.forge.name = forge.get('name', 'Forge')
         self.forge.resourcesNeeded = forge.get('resourcesNeeded', {})
         self.forge.level = forge.get('level', 1)
         self.forge.fuel = forge.get('fuel', 0)
+        self.forge.blueprints = forge.get('blueprints', 0)
 
         market = data['market']
         self.market.name = market.get('name', 'trainingGrounds')
@@ -98,7 +80,15 @@ class Camp:
             console.print(self.player.__str__())
             console.print("\n[dim]Area: Camp[/dim]")
             printSeparator()
-            printChoices()
+            campLines = [
+                "[dim]0)[/dim] Return",
+                f"[dim]1)[/dim] [red]Campfire[/red] | Current Level: {self.campfire.level}\n  [dim]Upgrade Requirements:[/dim] {self.campfire.formatUpgradeRequirements()}",
+                f"[dim]2)[/dim] [yellow]Forge[/yellow] | Current Level: {self.forge.level}\n  [dim]Upgrade Requirements:[/dim] {self.forge.formatUpgradeRequirements()}",
+                f"[dim]3)[/dim] [green]Market[/green] | Current Level: {self.market.level}\n  [dim]Upgrade Requirements:[/dim] {self.market.formatUpgradeRequirements()}",
+                f"[dim]4)[/dim] [blue]Quest Board[/blue] | Current Level: {self.questBoard.level}\n  [dim]Upgrade Requirements:[/dim] {self.questBoard.formatUpgradeRequirements()}"
+            ]
+            for line in campLines:
+                console.print(line + "\n")
             choice = console.input("\n[cyan]>[/cyan] ").strip()
             try:
                 choice = int(choice)
@@ -113,7 +103,8 @@ class Camp:
                     case 3:
                         self.market.mainMenu()
                     case 4:
-                        self.questBoard.mainMenu()
+                        printWarning("The Quest Board is currently under maintenance!")
+                        #self.questBoard.mainMenu()
                     case _:
                         printWarning("\nInvalid choice.")
             except Exception as e:

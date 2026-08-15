@@ -65,7 +65,7 @@
             },
             "increased_xp_gain": {
                 "stat": "xp_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["xp", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
@@ -77,7 +77,7 @@
             },
             "increased_gold_gain": {
                 "stat": "gold_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["gold", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
@@ -89,7 +89,7 @@
             },
             "increased_item_rarity": {
                 "stat": "item_rarity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["rarity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
@@ -187,7 +187,7 @@
             },
             "increased_item_quantity": {
                 "stat": "item_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
@@ -199,7 +199,7 @@
             },
             "increased_enemy_quantity": {
                 "stat": "enemy_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["enemy_quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
@@ -380,7 +380,7 @@
             },
             "increased_item_rarity": {
                 "stat": "item_rarity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["rarity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
@@ -455,7 +455,7 @@
             },
             "increased_item_quantity": {
                 "stat": "item_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
@@ -467,7 +467,7 @@
             },
             "increased_enemy_quantity": {
                 "stat": "enemy_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["enemy_quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
@@ -875,7 +875,7 @@
             },
             "increased_item_rarity": {
                 "stat": "item_rarity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["rarity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
@@ -942,7 +942,7 @@
             },
             "increased_item_quantity": {
                 "stat": "item_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
@@ -954,7 +954,7 @@
             },
             "increased_enemy_quantity": {
                 "stat": "enemy_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["enemy_quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
@@ -1361,7 +1361,7 @@
             },
             "increased_item_rarity": {
                 "stat": "item_rarity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["rarity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
@@ -1373,7 +1373,7 @@
             },
             "increased_xp_gain": {
                 "stat": "xp_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["xp", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
@@ -1385,7 +1385,7 @@
             },
             "increased_gold_gain": {
                 "stat": "gold_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["gold", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
@@ -1437,7 +1437,7 @@
             },
             "increased_item_quantity": {
                 "stat": "item_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
@@ -1449,7 +1449,7 @@
             },
             "increased_enemy_quantity": {
                 "stat": "enemy_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["enemy_quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
@@ -1837,7 +1837,7 @@
             },
             "increased_item_rarity": {
                 "stat": "item_rarity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["rarity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
@@ -1902,7 +1902,7 @@
             },
             "increased_item_quantity": {
                 "stat": "item_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
@@ -1914,7 +1914,7 @@
             },
             "increased_enemy_quantity": {
                 "stat": "enemy_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["enemy_quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
@@ -2236,7 +2236,7 @@
             },
             "increased_xp_gain": {
                 "stat": "xp_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["xp", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
@@ -2248,7 +2248,7 @@
             },
             "increased_gold_gain": {
                 "stat": "gold_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["gold", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
@@ -2260,7 +2260,7 @@
             },
             "increased_item_rarity": {
                 "stat": "item_rarity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["rarity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
@@ -2336,7 +2336,7 @@
             },
             "increased_item_quantity": {
                 "stat": "item_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
@@ -2348,7 +2348,7 @@
             },
             "increased_enemy_quantity": {
                 "stat": "enemy_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["enemy_quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },
@@ -2684,7 +2684,7 @@
             },
             "increased_xp_gain": {
                 "stat": "xp_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["xp", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Learning" },
@@ -2696,7 +2696,7 @@
             },
             "increased_gold_gain": {
                 "stat": "gold_gain",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["gold", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 10, "max": 18, "weight": 700, "name": "Prosperous" },
@@ -2708,7 +2708,7 @@
             },
             "increased_item_rarity": {
                 "stat": "item_rarity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["rarity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "Lucky" },
@@ -2798,7 +2798,7 @@
             },
             "increased_item_quantity": {
                 "stat": "item_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 10, "min": 5, "max": 10, "weight": 550, "name": "of Plunder" },
@@ -2810,7 +2810,7 @@
             },
             "increased_enemy_quantity": {
                 "stat": "enemy_quantity",
-                "isPercent": true,
+                "isPercent": false,
                 "categories": ["enemy_quantity", "utility"],
                 "tiers": {
                     "1": { "levelReq": 20, "min": 5, "max": 10, "weight": 600, "name": "of Danger" },

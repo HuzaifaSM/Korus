@@ -97,7 +97,7 @@ class QuestBoard(Station):
     def displayQuests(self):
         clearScreen()
         printHeader("Active Quests")
-        if not len(self.quests):
+        if not len(self.activeQuests):
             printWarning("No active quests!")
             return
         console.print(" === [bold gold]Quests:[/bold gold] ===")

@@ -74,7 +74,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             if crit:
                 if self.flurryTurns == 0:
                     self._stats['Temporary']['speed'] += 0.1
-                    self._stats['Temporary']['critMulti'] += 0.25
+                    self._stats['Temporary']['crit_multi'] += 0.25
                 self.flurryTurns = 3
         if self._ascendancy == 'Marshal':
             if self.marshalAttackCount % 5 == 0:
@@ -143,7 +143,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         elif self._ascendancy == 'Marshal':
             if self.totalComboGenerated % 5 == 0 and comboGained:
                 self._stats['Temporary']['all'] += 3
-                self._stats['Temporary']['critChance'] += 0.02
+                self._stats['Temporary']['crit_chance'] += 0.02
                 self.marshalDamageStacks += 1
             damageDealt = int(damageDealt * (1 + 0.03 * self.marshalDamageStacks))
             self.marshalAttackCount += 1
@@ -178,11 +178,11 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             self.flurryTurns -= 1
             if self.flurryTurns == 0:
                 self._stats['Temporary']['speed'] -= 0.1
-                self._stats['Temporary']['critMulti'] -= 0.25
+                self._stats['Temporary']['crit_multi'] -= 0.25
 
         elif self._ascendancy == 'Barbarian' and self._combo > 10:
-            self._stats['Temporary']['critChance'] += 0.03
-            self._stats['Temporary']['critMulti'] += 0.25
+            self._stats['Temporary']['crit_chance'] += 0.03
+            self._stats['Temporary']['crit_multi'] += 0.25
 
         super().onTurnStart()
 

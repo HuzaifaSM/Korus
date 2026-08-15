@@ -6,13 +6,17 @@ import random
 to implement:
 WARLORD:
     - 'whenever an enemy attacks you, deal 50 fire damage to them', '1% DR per 50 shield, 1% ID per 25 shield', 'when shield is broken...'
+replace flamewarden with new Tyrant ascendancy:
+    - take 20% less damage from attacks that deal less damage than your base damage
+    - added armour. taking damage hsa no effect on rage, gain rage based on amount of damage prevented from armour
+    - intended as 'armour stacking' ascendancy
 """
 
 WARRIOR_DESCRIPTIONS = {
     "Warrior": "[class_warrior]A proud and tenacious warrior, emboldened by the thrill of battle.[/class_warrior]\n"
-        "+3 Damage dealt per [resource]Rage[/resource]. +1 [resource]Rage[/resource] per 6 damage dealt. -1 [resource]Rage[/resource] per 8 damage taken. +2 HP per leftover [resource]rage[/resource] at the end of combat.\n"
+        "+3 Damage dealt per [resource]Rage[/resource]. +1 [resource]Rage[/resource] per 6 damage dealt. -1 [resource]Rage[/resource] per 8 damage taken. +2 HP per leftover [resource]Rage[/resource] at the end of combat.\n"
         "Dealing [fire]Fire[/fire] damage grants +1 [resource]Rage[/resource]. Taking [fire]Fire[/fire] damage reduces [resource]Rage[/resource] loss by 2.\n"
-        "Starting Stats: 50 [health]Health[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 200% [critical]Crit Damage[/critical] | [fire]Fire Damage[/fire] | 0.8 [speed]Speed[/speed] | 50 Max [resource]Rage[/resource] | +1 [resource]Rage[/resource] on Level Up.",
+        "Starting Stats: 50 [health]Health[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 200% [critical]Crit Damage[/critical] | [fire]Fire Damage[/fire] | 0.8 [speed]Speed[/speed] | Max 50 [resource]Rage[/resource] | +1 [resource]Rage[/resource] on Level Up.",
     #ascendancies
     "Warlord": "50% less Rage decay, gain Fury stacks on attack if you have more than 50 Rage.\n"
         "Fury: 2% Increased Damage, +2% Lifesteal. Max 10 stacks of fury. At max Fury, your next attack deals 200% increased damage to all enemies and consumes all Fury.\n"
@@ -236,7 +240,7 @@ class Warrior(Player): # higher damage, lower speed, fire damage
                 'critChance': 0.05 * self.annihilation
             }
             self._stats['Temporary']['speed'] += self.annihilationBuffs['speed']
-            self._stats['Temporary']['critChance'] += self.annihilationBuffs['critChance']
+            self._stats['Temporary']['crit_chance'] += self.annihilationBuffs['critChance']
         
         super().onTurnStart()
 
@@ -253,7 +257,7 @@ class Warrior(Player): # higher damage, lower speed, fire damage
             self._baseHealth -= 15
             self._damage += 1
             self._baseSpeed += 0.05
-            self._stats['Permanent']['stunAvoidance'] -= 50
+            self._stats['Permanent']['stun_avoidance'] -= 50
         elif self.ascendancy == 'Blood Reaver':
             self._baseHealth -= 10
             self._baseDamage -= 1
@@ -281,7 +285,7 @@ class Warrior(Player): # higher damage, lower speed, fire damage
             self._baseHealth += 15
             self._damage -= 1
             self._baseSpeed -= 0.05
-            self._stats['Permanent']['stunAvoidance'] += 50
+            self._stats['Permanent']['stun_avoidance'] += 50
             self._ascendancy = 'Juggernaut'
             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Juggernaut']
         elif ascendancy == 'Blood Reaver':

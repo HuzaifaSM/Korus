@@ -21,7 +21,8 @@ from scripts.styles import (
     console, printHeader, printSeparator, pause, clearScreen,
     printWarning, printError, printInfo, printSuccess,
     displayDeath, displayVictory, formatRarity, formatDamageType,
-    createAbilityTables, createCombatStatusTable, createEnemyPreview
+    createAbilityTables, createCombatStatusTable, createEnemyPreview,
+    createEquipmentStoragePages
 )
 
 class Game:
@@ -104,7 +105,7 @@ class Game:
             printWarning("No files found!")
             pause()
             return False
-        
+
         console.print("\n[bold cyan]=== Available Saves === [/bold cyan]\n")
 
         try:
@@ -355,7 +356,6 @@ class Game:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
                 printError(f"[ERROR] {e}")
-                pause()
             pause()
 
     def saveMenu(self):
@@ -418,19 +418,13 @@ class Game:
 
             console.print("\n[bold cyan]=== Currently Equipped ===[/bold cyan]")
             hasEquipment = False
-            for slot, equip in self.player._equipment.items():
+            for _, equip in self.player._equipment.items():
                 if equip:
                     hasEquipment = True
-                    equipName = formatRarity(equip.name, equip.rarity.value)
-                    durabilityPercent = (equip.durability / equip.maxDurability) * 100
-                    durabilityColour = "green" if durabilityPercent > 60 else "yellow" if durabilityPercent > 30 else "red"
-                    console.print(f"  [cyan]{slot.capitalize()}:[/cyan] {equipName}")
-                    console.print(f"    [dim]{equip._formatStats()}[/dim]")
-                    console.print(f"    [{durabilityColour}]Durability: {equip.durability}/{equip.maxDurability} ({durabilityPercent:.0f}%)[/{durabilityColour}]")
-            
+                    console.print(equip)
             if not hasEquipment:
                 console.print("  [dim]Nothing equipped[/dim]")
-            
+
             # Show storage count
             console.print(f"\n[bold cyan]=== Equipment Storage ===[/bold cyan]")
             console.print(f"[dim]Items in storage: {len(self.player._equipmentStorage)}[/dim]")
@@ -469,23 +463,43 @@ class Game:
             printWarning("No equipment in storage!")
             pause()
             return
-        
-        clearScreen()
-        printHeader("Equip from Storage")
 
-        console.print("\n[bold cyan]=== Storage ===[/bold cyan]")
-        for i, equip in enumerate(self.player._equipmentStorage, 1):
-            equipName = formatRarity(equip.name, equip.rarity.value)
-            console.print(f"  [cyan]{i}.[/cyan] {equipName} [dim]({equip.slot})[/dim]")
-            console.print(f"    [dim]{equip._formatStats()}[/dim]")
-        
-        choice = console.input("\n[cyan]Choose item to equip (0 to cancel):[/cyan]\n> ").strip()
-        # try:
-        index = int(choice) - 1
+        inventoryPages = createEquipmentStoragePages(self.player._equipmentStorage)
+        totalPages = len(inventoryPages)
+        currentPage = 1
+
+        while True:
+            clearScreen()
+            printHeader("Equip from Storage")
+
+            console.print(f"\n[bold cyan]=== Storage (Page {currentPage}/{totalPages}) ===[/bold cyan]")
+            console.print(inventoryPages[currentPage])
+
+            prompt = "\n[cyan]Choose item to equip (0 to cancel"
+            if totalPages > 1:
+                prompt += ", N for next page, P for previous page"
+            prompt += "):[/cyan]\n> "
+            choice = console.input(prompt).strip().lower()
+
+            if totalPages > 1 and choice == 'n':
+                currentPage = currentPage % totalPages + 1
+                continue
+            if totalPages > 1 and choice == 'p':
+                currentPage = (currentPage - 2) % totalPages + 1
+                continue
+
+            try:
+                index = int(choice) - 1
+            except ValueError:
+                printWarning("Invalid input!")
+                pause()
+                return
+            break
+
         if 0 <= index < len(self.player._equipmentStorage):
             equipment = self.player._equipmentStorage[index]
             slot = equipment.slot
-            
+
             # Show comparison if slot is occupied
             if self.player._equipment[slot]:
                 current = self.player._equipment[slot]
@@ -504,9 +518,6 @@ class Game:
             self.player.equip(equipment)
             printSuccess(f"Equipped {equipment.name}!")
             pause()
-        # except ValueError:
-        #     printWarning("Invalid input!")
-        #     pause()
 
     def unequipToStorage(self):
         equippedSlots = [(slot, equip) for slot, equip in self.player._equipment.items() if equip]
@@ -542,42 +553,43 @@ class Game:
             pause()
 
     def viewAllEquipment(self):
-        clearScreen()
-        printHeader("All Equipment Details")
-        
-        console.print("\n[bold cyan]=== EQUIPPED ===[/bold cyan]")
-        hasEquipped = False
-        for slot, equip in self.player._equipment.items():
-            if equip:
-                hasEquipped = True
-                dmgStr = ""
-                defStr = ""
-                if equip.damage > 0:
-                    dmgStr = f" | Damage: {equip.damage}"
-                    if equip.damageType:
-                        dmgStr += f" | Damage Type: [{equip.damageType}]{equip.damageType}[/{equip.damageType}]"
-                if equip.defenseValue > 0 and equip.defenseType:
-                    defType = equip.defenseType.replace('_', ' ').title()
-                    defStr = f" | {equip.defenseValue} {defType}"
-                equipName = formatRarity(equip.name, equip.rarity.value)
-                console.print(f"\n[bold]{slot.upper()}:[/bold] {equipName}")
-                console.print(f"  [dim]Level {equip.level} | Durability: {equip.durability}/{equip.maxDurability}[/dim]{dmgStr}{defStr}")
-                console.print(f"  [cyan]Stats:[/cyan] {equip._formatStats()}")
+        inventoryPages = createEquipmentStoragePages(self.player._equipmentStorage) if self.player._equipmentStorage else {}
+        totalPages = len(inventoryPages)
+        currentPage = 1
 
-        if not hasEquipped:
-            console.print("  [dim]Nothing equipped[/dim]")
-        
-        console.print(f"\n[bold cyan]=== STORAGE ({len(self.player._equipmentStorage)} items) ===[/bold cyan]")
-        if self.player._equipmentStorage:
-            for i, equip in enumerate(self.player._equipmentStorage, 1):
-                equipName = formatRarity(equip.name, equip.rarity.value)
-                console.print(f"\n[cyan]{i}.[/cyan] {equipName} [dim]({equip.slot})[/dim]")
-                console.print(f"  [dim]Level {equip.level} | Durability: {equip.durability}/{equip.maxDurability}[/dim]")
-                console.print(f"  [cyan]Stats:[/cyan] {equip._formatStats()}")
-        else:
-            console.print("  [dim]Storage is empty[/dim]")
-        
-        pause()
+        while True:
+            clearScreen()
+            printHeader("All Equipment Details")
+
+            console.print("\n[bold cyan]=== EQUIPPED ===[/bold cyan]")
+            hasEquipped = False
+            for equip in self.player._equipment.values():
+                if equip:
+                    hasEquipped = True
+                    console.print(equip)
+            if not hasEquipped:
+                console.print("  [dim]Nothing equipped[/dim]")
+
+            console.print(f"\n[bold cyan]=== STORAGE ({len(self.player._equipmentStorage)} items) ===[/bold cyan]")
+            if inventoryPages:
+                console.print(f"[dim]Page {currentPage}/{totalPages}[/dim]")
+                console.print(inventoryPages[currentPage])
+            else:
+                console.print("  [dim]Storage is empty[/dim]")
+
+            if totalPages > 1:
+                choice = console.input("\n[cyan](N)ext page, (P)revious page, or Enter to return:[/cyan]\n> ").strip().lower()
+                if choice == 'n':
+                    currentPage = currentPage % totalPages + 1
+                    continue
+                elif choice == 'p':
+                    currentPage = (currentPage - 2) % totalPages + 1
+                    continue
+                else:
+                    break
+            else:
+                pause()
+                break
 
     def compareEquipment(self):
         clearScreen()
@@ -702,8 +714,8 @@ class Game:
         self.postBattle(result, enemies)
 
     def generateEnemies(self) -> List[Enemy]:
-        numEnemies = random.randint(min(3, 1 + (self.player._level + self.areaLevel) // 30), min(1 + self.areaLevel//5, 4))
-        enemyBonus = self.player._stats['Bonuses']['enemyQuantity']
+        numEnemies = random.randint(min(3, 1 + (self.player._level + self.areaLevel) // 40), min(1 + self.areaLevel//8, 4))
+        enemyBonus = self.player._stats['Bonuses']['enemy_quantity']
         multiplier = 1 + (enemyBonus / 100)
         numEnemies = int(numEnemies * multiplier)
         numEnemies = min(numEnemies, 8) # hard cap at 8 enemies
@@ -833,6 +845,13 @@ class Game:
                     abilityTables = createAbilityTables(abilities, maxPerTable=10) 
                     console.print(abilityTables)
                     console.print()
+            elif action in ['data']:
+                clearScreen()
+                printHeader("Checking Enemy Data")
+                for e in enemies:
+                    console.print(e)
+                    for slot, eq in e._equipment.items():
+                        console.print(f"{slot}:\n{eq}")
             elif action.lower() == 'c':
                 self.useCombatConsumable()
                 continue
@@ -923,10 +942,9 @@ class Game:
         supplies = 0
         tradeVouchers = 0
 
-        if self.camp.crafter.level >= 1:
-            blueprints = random.randint(1, 2 + self.camp.crafter.level)
         if self.camp.forge.level >= 1:
             fuel = random.randint(1, 4 + self.camp.forge.level)
+            blueprints = random.randint(1, 2 + self.camp.forge.level)
         if self.camp.campfire.level >= 1:
             supplies = random.randint(2, 5 + self.camp.campfire.level)
         if self.camp.market.level >= 1:
@@ -951,23 +969,23 @@ class Game:
             for category, runeType in runes:
                 allRunes.append((category, runeType))
         
-        xpBonus = self.player._stats['Bonuses']['xpGain']
+        xpBonus = self.player._stats['Bonuses']['xp_gain']
         if xpBonus > 0:
             effectiveBonus = xpBonus / (1 + (xpBonus / 100))
-            xpModifier = 1 + (effectiveBonus / 100)
+            xpModifier = effectiveBonus / 100
         else:
-            xpModifier = 1 + (xpBonus / 100)
-        goldBonus = self.player._stats['Bonuses']['goldGain']
-        itemBonus = self.player._stats['Bonuses']['itemQuantity']
+            xpModifier = xpBonus / 100
+        goldBonus = self.player._stats['Bonuses']['gold_gain']
+        itemBonus = self.player._stats['Bonuses']['item_quantity']
 
         if xpBonus > 0:
             bonusXp = round(totalXp * xpModifier)
             totalXp += bonusXp
-            console.print(f"  [buff]XP Bonus: +{bonusXp} (+{xpBonus}%)[/buff]")
+            console.print(f"[buff]XP Bonus: +{bonusXp} (+{xpBonus}%)[/buff]")
         if goldBonus > 0:
             bonusGold = round(totalGold * (goldBonus / 100))
             totalGold += bonusGold
-            console.print(f"  [buff]Gold Bonus: +{bonusGold} (+{goldBonus}%)[/buff]")
+            console.print(f"[buff]Gold Bonus: +{bonusGold} (+{goldBonus}%)[/buff]")
         if itemBonus > 0:
             bonusItems = int(totalResources * (itemBonus / 100))
             if bonusItems > 0:
@@ -975,7 +993,7 @@ class Game:
                     if item in RESOURCES:
                         proportion = allLoot[item] / totalResources
                         allLoot[item] += int(bonusItems * proportion)
-            console.print(f"  [buff][Item Bonus: +{bonusItems} total items (+{itemBonus}%)][/buff]")
+            console.print(f"[buff][Item Bonus: +{bonusItems} total items (+{itemBonus}%)][/buff]")
 
         console.print("\n[gold1 bold]=== Rewards ===[/gold1 bold]")
         self.player.gainExperience(totalXp)
@@ -985,7 +1003,7 @@ class Game:
             self.camp.campfire.supplies += supplies
             console.print(f"  [green]- Campfire Supplies: +{supplies}[/green]")
         if blueprints > 0:
-            self.camp.crafter.blueprints += blueprints
+            self.camp.forge.blueprints += blueprints
             console.print(f"  [cyan]- Blueprints: +{blueprints}[/cyan]")
         if fuel > 0:
             self.camp.forge.fuel += fuel
@@ -995,21 +1013,20 @@ class Game:
             console.print(f"  [magenta]- Trade Vouchers: +{tradeVouchers}[/magenta]")
 
         if allLoot:
-            console.print("\n[cyan bold]=== Resources Acquired ===[/cyan bold]")
+            console.print("\n[cyan bold]=== Resources Accquired ===[/cyan bold]")
             for item, quantity in sorted(allLoot.items()):
                 self.player.addItem(item, quantity)
 
         if allEquipment:
             console.print("\n[cyan bold]=== Equipment Found ===[/cyan bold]")
             for equipment in allEquipment:
-                equipName = formatRarity(equipment.name, equipment.rarity.value)
-                console.print(f"  [legendary]- {equipName}[/legendary] [dim](Level {equipment.level})[/dim]")
+                console.print(equipment)
 
                 if equipment.slot in self.player._equipment:
                     current = self.player._equipment[equipment.slot]
                     if current:
                         console.print(f"[dim]{equipment.compareTo(current)}[/dim]")
-                
+
                 if equipment.slot in self.player._equipment:
                     choice = console.input(f"\n    [cyan]Equip {equipment.name}? (y/n/s to store):[/cyan] [dim](default = store)[/dim]\n> ").strip().lower()
                     if choice == 'n':
@@ -1032,7 +1049,6 @@ class Game:
             for cat, rtype in allRunes:
                 self.player.addRune(cat, rtype, 1)
 
-        pause()
         self.camp.campfire.applyHeal()
 
 def main():

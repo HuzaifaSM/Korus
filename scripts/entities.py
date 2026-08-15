@@ -7,7 +7,7 @@ from .runeDrops import getRuneObject
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo,
     formatDamageType, formatRarity, createHealthBar,
-    formatEffectsDetailed, formatAbilityCost
+    formatEffectsDetailed, formatAbilityCost, pause
 )
 
 ELEMENTAL_RES = ['fire', 'earth', 'cold', 'lightning']
@@ -43,19 +43,19 @@ class Entity:
                 'divine': 0
             },
             'Bonuses': {
-                'itemRarity': 0,
-                'itemQuantity': 0,
-                'enemyQuantity': 0,
-                'xpGain': 0,
-                'goldGain': 0,
-                'stunAvoidance': 0,
-                'dotResistance': 0,
-                'ailmentAvoidance': 0,
+                'item_rarity': 0,
+                'item_quantity': 0,
+                'enemy_quantity': 0,
+                'xp_gain': 0,
+                'gold_gain': 0,
+                'stun_avoidance': 0,
+                'dot_resistance': 0,
+                'ailment_avoidance': 0,
                 'healing_magnitude': 100,
-                'critChance': 0,
-                'critMulti': 0,
-                'critResistance': 0,
-                'resistancePenetration': 0,
+                'crit_chance': 0,
+                'crit_multi': 0,
+                'crit_resistance': 0,
+                'resistance_penetration': 0,
                 'chance_to_multihit': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
@@ -77,11 +77,11 @@ class Entity:
                 'divine': 0,
                 'otherworld': 0,
                 'all': 0,
-                'resistancePenetration': 0,
-                'stunAvoidance': 0,
-                'dotResistance': 0,
-                'ailmentAvoidance': 0,
-                'critResistance': 0,
+                'resistance_penetration': 0,
+                'stun_avoidance': 0,
+                'dot_resistance': 0,
+                'ailment_avoidance': 0,
+                'crit_resistance': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
                 'hp_regen': 0,
@@ -103,12 +103,12 @@ class Entity:
                 'otherworld': 0,
                 'all': 0,
                 'healing_magnitude': 0,
-                'stunAvoidance': 0,
-                'dotResistance': 0,
+                'stun_avoidance': 0,
+                'dot_resistance': 0,
                 'speed': 0,
-                'critChance': 0,
-                'critMulti': 0,
-                'resistancePeneration': 0,
+                'crit_chance': 0,
+                'crit_multi': 0,
+                'resistance_peneration': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
                 'hp_regen': 0,
@@ -183,11 +183,11 @@ class Entity:
 
     @property
     def critChance(self) -> float:
-        return self._stats['baseCritChance'] + self._getExtraBonuses('critChance')
+        return self._stats['baseCritChance'] + self._getExtraBonuses('crit_chance')
 
     @property
     def critMulti(self) -> float:
-        return self._stats['baseCritMulti'] + (self._stats['Bonuses']['critMulti']) + self._getExtraBonuses('critMulti')
+        return self._stats['baseCritMulti'] + (self._stats['Bonuses']['crit_multi']) + self._getExtraBonuses('crit_multi')
 
     @property
     def numMultihits(self) -> int:
@@ -313,13 +313,13 @@ class Entity:
         trueDamage = max(0, damage - self._shield)
         damagePrevented = damage - trueDamage
         self._shield -= damagePrevented
-        if damage > 0:
-            self._health -= damage
+        if trueDamage > 0:
+            self._health -= trueDamage
             if not lethal and self._health <= 0:
                 self._health = 1
                 console.print(f"  [warning]Non-lethal damage dealt![/warning]")
             damageTypeFormatted = formatDamageType(damageType, damageType)
-            console.print(f"  [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
+            console.print(f"  [damage]- {self._name} took {trueDamage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
             if  self._isDead: # dies
                 self.death()
 
@@ -446,9 +446,10 @@ class Entity:
         return self.getRune(category, runeType) > 0
 
     def addItem(self, itemName: str, quantity: int = 1, doPrint: bool = True):
-        self._inventory[itemName] = self._inventory.get(itemName, 0) + quantity
-        if doPrint:
-            console.print(f"[success]  - Gained {quantity}x {itemName}[/success]")
+        if quantity > 0:
+            self._inventory[itemName] = self._inventory.get(itemName, 0) + quantity
+            if doPrint:
+                console.print(f"[success]  - Gained {quantity}x {itemName}[/success]")
 
     def removeItem(self, itemName: str, quantity: int = 1) -> bool:
         if self._inventory.get(itemName) >= quantity:
@@ -473,7 +474,7 @@ class Entity:
         if 0 <= index < len(self._equipmentStorage):
             return self._equipmentStorage.pop(index)
         return None
-    
+
     def showEquipmentStorage(self):
         console.print("\n[bold cyan]=== Equipment Storage ===[/bold cyan]")
         if not self._equipmentStorage:
@@ -484,22 +485,30 @@ class Entity:
                 console.print(f"  [cyan]{i}.[/cyan] {equipName}")
                 console.print(f"    [dim]Durability: {equipment.durability} / {equipment.maxDurability}[/dim]")
 
-    def equip(self, equipment: Equipment) -> bool:
+    def equip(self, equipment: Equipment, doPrint: bool = True) -> bool:
         slot = equipment.slot
 
         if slot not in self._equipment:
-            printError(f"Invalid equipment slot: {slot}")
+            if doPrint:
+                printError(f"Invalid equipment slot: {slot}")
             return False
         
         if self._equipment[slot]:
             self.unequip(slot)
 
         self._equipment[slot] = equipment
-        self._recalculateStats()
+        self._recalculateStats(doPrint)
+        if equipment.slot != 'weapon':
+            hGain, hInc, _ = equipment.getStatBonuses('health')
+            self._health = min(
+                self._maxHealth,
+                (self._health + hGain) * (1 + hInc)
+            )
         equipName = formatRarity(equipment.name, equipment.rarity.value)
-        printSuccess(f"Equipped {equipName} in {slot} slot.")
+        if doPrint:
+            printSuccess(f"Equipped {equipName} in {slot} slot.")
         return True
-    
+
     def unequip(self, slot: str) -> Optional[Equipment]:
         if slot in self._equipment and self._equipment[slot]:
             item = self._equipment[slot]
@@ -512,7 +521,7 @@ class Entity:
     def _getExtraBonuses(self, stat: str) -> int: # gets temporary + permanent buffs for a stat
         perm = self._stats['Permanent'].get(stat, 0)
         temp = self._stats['Temporary'].get(stat, 0)
-        if 'increased_' in stat or stat in ['critChance', 'critMulti']:
+        if 'increased_' in stat or stat in ['crit_chance', 'crit_multi']:
             return (perm + temp / 100)
         return perm + temp
 
@@ -551,9 +560,12 @@ class Entity:
                 extra = self._getExtraBonuses('increased_health')
                 healthInc += hInc + extra
 
-                dFlat, dInc, _ = equipment.getStatBonuses('damage')
-                dmgFlat += dFlat
-                dmgInc += dInc
+                if equipment.slot == 'weapon':
+                    dmgFlat += equipment.damage
+                else:
+                    dFlat, dInc, _ = equipment.getStatBonuses('damage')
+                    dmgFlat += dFlat
+                    dmgInc += dInc
 
                 sFlat, sInc, _ = equipment.getStatBonuses('speed')
                 spdFlat += sFlat
@@ -563,20 +575,18 @@ class Entity:
                     self._damageType = equipment.getDamageType() if equipment.getDamageType() else self._damageType
 
                 for damageType in self._stats['Resistances'].keys():
-                    resFlat, _, _ = equipment.getStatBonuses(damageType)
+                    resFlat, _, _ = equipment.getStatBonuses(f'{damageType}_resistance')
                     extra = self._getExtraBonuses(damageType)
                     self._stats['Resistances'][damageType] = min(
                         self._stats['Resistances'][damageType] + resFlat + extra,
                         75
                     )
-                
+
                 for bonus in self._stats['Bonuses'].keys():
 
                     bonusFlat, bonusInc, _ = equipment.getStatBonuses(bonus)
-                    if bonus == 'healing_magnitude':
-                        bonusFlat += 100
                     extra = self._getExtraBonuses(bonus)
-                    self._stats['Bonuses'][bonus] = round((bonusFlat + extra) * (1 + bonusInc))
+                    self._stats['Bonuses'][bonus] += round((bonusFlat + extra) * (1 + bonusInc))
 
                 if hasattr(equipment, 'defenseType') and equipment.defenseType:
                     if equipment.defenseType == 'armour':
@@ -594,13 +604,14 @@ class Entity:
                     _, _, gIncEs = equipment.getStatBonuses('energy_shield')
                     globalEsInc += gIncEs + self._getExtraBonuses('increased_energy_shield')
 
+        self._damage = int((self._baseDamage + dmgFlat) * (1 + dmgInc))
         self._maxHealth = int((self._maxHealth + healthFlat) * (1 + healthInc))
         self._speed = round(self._speed, 2)
 
         # cap bonuses
-        self._stats['Bonuses']['enemyQuantity'] = min(self._stats['Bonuses']['enemyQuantity'], 100)
-        self._stats['Bonuses']['stunAvoidance'] = min(self._stats['Bonuses']['stunAvoidance'], 100)
-        self._stats['Bonuses']['dotResistance'] = min(self._stats['Bonuses']['dotResistance'], 100)
+        self._stats['Bonuses']['enemy_quantity'] = min(self._stats['Bonuses']['enemy_quantity'], 100)
+        self._stats['Bonuses']['stun_avoidance'] = min(self._stats['Bonuses']['stun_avoidance'], 100)
+        self._stats['Bonuses']['dot_resistance'] = min(self._stats['Bonuses']['dot_resistance'], 100)
 
         globalIncDef = self._getExtraBonuses('increased_defenses')
         armour += self._getExtraBonuses('added_armour')
@@ -623,7 +634,7 @@ class Entity:
         if doPrint:
             console.print("\n[bold cyan]Stats updated:[/bold cyan]")
             console.print(f"[health]HP:[/health] {self._health} / {self._maxHealth}")
-            console.print(f"[damage]DMG:[/damage] {self._damage} |[{self._damageType}] Type: {self._damageType}[/{self._damageType}]")
+            console.print(f"[damage]DMG:[/damage] {self._damage} |[{self._damageType}] Type: {self._damageType.title()}[/{self._damageType}]")
             console.print(f"[speed]Speed:[/speed] {self._speed:.2f}")
 
             resistances = {}
@@ -632,8 +643,8 @@ class Entity:
                     resistances[res] = val
             if resistances:
                 console.print("\n[bold]Resistances:[/bold]")
-                for r, v in resistances:
-                    console.print(f"  {r}: [cyan]{v}%[/cyan]")
+                for r, v in resistances.items():
+                    console.print(f"-  [{r}]{r.title()}[/{r}]: [cyan]{v}%[/cyan]")
 
             activeBonuses = {k: v for k, v in self._stats['Bonuses'].items() if v > 0}
 
@@ -643,6 +654,8 @@ class Entity:
                 console.print("\n[bold]Bonuses:[/bold]")
                 for bonus, val in activeBonuses.items():
                     console.print(f"  [buff]{bonus.replace('_', ' ').title()}: {val}%[/buff]")
+            console.print()
+            pause()
 
     def useConsumable(self, consumable: Consumable) -> bool:
         if consumable.use(self):
@@ -680,7 +693,7 @@ class Entity:
             if ability.healBase or ability.healPercent:
                 console.print(f"  [heal]- Heal: {ability.healBase} + {ability.healPercent*100:.0f}% Max HP[/heal]")
             console.print(f"  [dim]- Cooldown: {ability.maxCooldown} turns[/dim]")
-            costStr = formatAbilityCost(getattr(ability, 'resources', {}))
+            costStr = formatAbilityCost(ability.resources, ability.staminaCost)
             if costStr != "-":
                 console.print(f"  [dim]- Cost: {costStr}[/dim]")
             for line in formatEffectsDetailed(ability.effects):

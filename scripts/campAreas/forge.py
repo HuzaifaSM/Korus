@@ -27,10 +27,10 @@ class Forge(Station):
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
-            1: {"iron_ore": 50, "stone": 100, "wood": 50},
-            2: {"iron_ore": 150, "crystal": 15, "bone": 30},
+            1: {"iron_ore": 5, "stone": 25, "wood": 10},
+            2: {"iron_ore": 50, "crystal": 15, "bone": 10},
             3: {"crystal": 40, "mana_essence": 20, "ancient_wood": 10},
-            4: {"mana_essence": 60, "diamond": 30, "dragon_scale": 10},
+            4: {"mana_essence": 50, "diamond": 30, "dragon_scale": 10},
             5: {"dragon_scale": 30, "ascended_essence": 20, "diamond": 100}
         }
 
@@ -93,23 +93,27 @@ class Forge(Station):
                 pause()
 
     def craftingMenu(self):
-        clearScreen()
-        printHeader("CRAFT EQUIPMENT")
-        console.print(f"[gold]Blueprints:[/gold] {self.blueprints}")
-        
-        slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
-        console.print("\n[bold]nSelect slot to craft:[/bold]")
-        for i, slot in enumerate(slots, 1):
-            console.print(f"  [cyan]{i}.[/cyan] {slot.capitalize()}")
-        
-        choice = console.input("\n[cyan]Choose slot (0 to cancel):\n>[/cyan] ").strip()
-        try:
-            index = int(choice) - 1
-            if 0 <= index < len(slots):
-                self.craftEquipment(slots[index])
-        except ValueError:
-            pass
-        pause()
+        if self.level > 0:
+            clearScreen()
+            printHeader("CRAFT EQUIPMENT")
+            console.print(f"[gold]Blueprints:[/gold] {self.blueprints}")
+            
+            slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
+            console.print("\n[bold]Select slot to craft:[/bold]")
+            for i, slot in enumerate(slots, 1):
+                console.print(f"  [cyan]{i}.[/cyan] {slot.capitalize()}")
+
+            choice = console.input("\n[cyan]Choose slot (0 to cancel):\n>[/cyan] ").strip()
+            try:
+                index = int(choice) - 1
+                if 0 <= index < len(slots):
+                    self.craftEquipment(slots[index])
+            except ValueError:
+                pass
+            pause()
+        else:
+            printWarning(f"Forge Level 1 required for crafting. Current Level: {self.level}")
+            return
 
     def craftEquipment(self, slot: str):
         if self.level < 1:
@@ -128,7 +132,7 @@ class Forge(Station):
             5: {ItemRarity.RARE: 0.5, ItemRarity.EPIC: 0.35, ItemRarity.LEGENDARY: 0.15}
         }
 
-        rarityBonus = int(self.player._stats['Bonuses']['itemRarity'] * 0.5) # rarity applied at half value
+        rarityBonus = int(self.player._stats['Bonuses']['item_rarity'] * 0.5) # rarity applied at half value
         rarity = rollRarity(rarityBonus)
 
         roll = random.random()
@@ -235,13 +239,13 @@ class Forge(Station):
             console.print("[cyan]Options:[/cyan]")
             console.print("  [dim]1.[/dim] View Crafting Inventory")
             console.print("  [dim]2.[/dim] Apply Rune")
-            console.print("  [dim]3.[/dim] Next Rune Page")
-            console.print("  [dim]4.[/dim] Previous Rune Page")
-            console.print("  [dim]5.[/dim] View Item Details")
+            if len(self.runePages) > 1:
+                console.print("  [dim]3.[/dim] Next Rune Page")
+                console.print("  [dim]4.[/dim] Previous Rune Page")
             console.print("  [dim]0.[/dim] Finish Crafting")
-            
+
             choice = console.input("\n[cyan]>[/cyan] ").strip()
-            
+
             try:
                 choice = int(choice)
                 if choice == 0:
@@ -250,11 +254,11 @@ class Forge(Station):
                     self._viewCraftingInventory()
                 elif choice == 2:
                     self._applyRune()
-                elif choice == 3:
+                elif choice == 3 and len(self.runePages) > 1:
                     self.currentCraftingPage = min(len(self.runePages), self.currentCraftingPage + 1)
                     console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
                     pause()
-                elif choice == 4:
+                elif choice == 4 and len(self.runePages) > 1:
                     self.currentCraftingPage = max(1, self.currentCraftingPage - 1)
                     console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
                     pause()
@@ -311,7 +315,7 @@ class Forge(Station):
 
                 console.print(f"\n[yellow]Applying:[/yellow] {rune.name}")
                 console.print(f"[cyan]Effect:[/cyan] [dim]{rune.description}[/dim]")
-                confirm = console.input("\n[cyan]Confirm? (y/n):\n>[/cyan]").strip().lower()
+                confirm = console.input("\n[cyan]Confirm? (y/n):\n>[/cyan] ").strip().lower()
 
                 if confirm == 'y':
                     result = rune.apply(self.currentItem)
@@ -389,9 +393,9 @@ class Forge(Station):
 
         allEquipment = []
 
-        for slot, equip in self.player._equipment.items():
+        for _, equip in self.player._equipment.items():
             if equip and not equip.entropyLocked and not equip.destabilised:
-                allEquipment.append((f'[EQUIPPED] {slot}', equip))
+                allEquipment.append((f'[EQUIPPED] ', equip))
         for i, equip in enumerate(self.player._equipmentStorage):
             if not equip.entropyLocked and not equip.destabilised:
                 allEquipment.append((f'[STORAGE] #{i+1}', equip))
@@ -416,11 +420,4 @@ class Forge(Station):
             pass
 
         return None
-
-    def _viewItemDetails(self):
-        clearScreen()
-        printHeader('Item Details')
-
-        console.print(self.currentItem)
-        pause()
 

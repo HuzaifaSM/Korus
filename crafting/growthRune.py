@@ -1,5 +1,6 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
 from scripts.affixes import rollAffix, Affix, AFFIX_POOL
+from scripts.mythicAffixes import rollMythicAffix, MythicAffix, MYTHIC_AFFIX_POOL
 import random
 from typing import Dict
 
@@ -41,6 +42,7 @@ class BaseGrowthRune(CraftingItem):
                 )
         
         added = 0
+        addedAffixes: list[Affix] = []
 
         for _ in range(self.affixesToAdd):
             slot = self.getRandomEmptySlot(item)
@@ -79,6 +81,7 @@ class BaseGrowthRune(CraftingItem):
                 else:
                     item.durability = int(item.durability * (1 + (affix.value / 100)))
             added += 1
+            addedAffixes.append(affix)
 
         if added == 0:
             return CraftResult(
@@ -90,10 +93,14 @@ class BaseGrowthRune(CraftingItem):
         item._generateName()
         item.addEntropy(self.successEntropy)
 
+        addedStr = ""
+        for a in addedAffixes:
+            addedStr += f"[dim green1]- {a}[/dim green1]"
+
         if added == self.affixesToAdd:
             return CraftResult(
                     outcome=CraftOutcome.SUCCESS,
-                    message=f'Added {added} affixes.',
+                    message=f'Added {added} affixes. Added:\n{addedStr}',
                     entropyAdded=self.successEntropy
                 )
         else:
@@ -386,6 +393,7 @@ class ImitatingGrowthRune(BaseGrowthRune):
             )
 
         chosenAffix = random.choice(validAffixes)
+        added: list[Affix] = []
         
         newAffix = Affix(
             id=chosenAffix.id,
@@ -401,7 +409,11 @@ class ImitatingGrowthRune(BaseGrowthRune):
             categories=chosenAffix.categories
         )
         newAffix.rollValue()
-        
+        added.append(newAffix)
+        addedStr = ""
+        for a in added:
+            addedStr += f"[dim green1]- {a}[/dim green1]"
+
         slot.affix = newAffix
         item.update()
         item._generateName()
@@ -409,7 +421,7 @@ class ImitatingGrowthRune(BaseGrowthRune):
         
         return CraftResult(
                 outcome=CraftOutcome.SUCCESS,
-                message=f'Added {self.affixesToAdd} affixes',
+                message=f'Added {self.affixesToAdd} affixes. Added:\n{addedStr}',
                 entropyAdded=self.successEntropy
             )
 

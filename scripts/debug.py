@@ -34,8 +34,8 @@ def getAllRunes() -> Dict[str, str]: # make get runes/crafting debug: 100 of eac
     return allRunes
 
 COMMANDS = {
-    "give_item", "remove_item", "give_equipment", 'eq', "give_ability", "ability", "give_consumable", "consumable", "give_xp", "xp", "give_gold", "gold",
-    "restock", "area", "area_level", "heal", 'runes', 'give_runes', 'crafting', 'lvl', 'level'
+    "give_item", "remove_item", "give_equipment", 'eq', "give_consumable", "consumable", "give_xp", "xp", "give_gold", "gold",
+    "restock", "area", "area_level", "heal", 'runes', 'give_runes', 'crafting', 'lvl', 'level', 'recalc', 'stats'
 }
 
 SLOTS = {
@@ -190,32 +190,6 @@ class Debugger:
                 pause()
                 break
 
-    def giveAbility(self):
-        while True:
-            clearScreen()
-            printHeader("Give Ability - Debug")
-            console.print("[dim]0.[/dim] Exit")
-            console.print("[dim]1.[/dim] View Ability Names")
-            console.print("\n[cyan]Otherwise type ability name to get[/cyan]")
-            choice = console.input("> ").strip().lower()
-            if choice == "0":
-                break
-            elif choice == "1":
-                console.print("\n[bold cyan]=== Available Abilities ===[/bold cyan]")
-                for i, name in enumerate(CLASS_ABILITIES.keys(), 1):
-                    console.print(f"  [dim]{i}.[/dim] {name}")
-                pause()
-            else:
-                choice = choice[0].upper() + choice[1:]
-                if choice in CLASS_ABILITIES:
-                    self.game.player.gainAbility(choice)
-                    printSuccess(f"Gained {choice}")
-                    pause()
-                    break
-                else:
-                    printWarning(f"Unknown ability: {choice}")
-                    pause()
-
     def giveConsumable(self):
         while True:
             clearScreen()
@@ -326,15 +300,6 @@ class Debugger:
             newInv[f'{cat}_{rType}'] = 100
         self.game.player._craftingInventory = newInv
         printSuccess('Given player 100 of each crafting rune')
-        view = console.input('See runes inventory to confirm? y/n\n> ').strip().lower()
-        if view == 'y':
-            for item in self.game.player._craftingInventory:
-                for k, v in item.items():
-                    k = str(k)
-                    print(k, v)
-                    s = k.split('_', 1)
-                    console.print(getRuneObject(s[0], s[1]))
-            pause()
 
     def setPlayerLevel(self):
         while True:
@@ -386,8 +351,6 @@ class Debugger:
                 self.removeItem()
             elif choice in ["give_equipment", "eq"]:
                 self.giveEquipment()
-            elif choice in ["give_ability", "ability"]:
-                self.giveAbility()
             elif choice in ["give_consumable", "consumable"]:
                 self.giveConsumable()
             elif choice in ["give_xp", "xp"]:
@@ -404,6 +367,8 @@ class Debugger:
                 self.giveRunes()
             elif choice in ['level', 'lvl']:
                 self.setPlayerLevel()
+            elif choice in ['recalc', 'stats']:
+                self.game.player._recalculateStats()
             else:
                 printError(f"Invalid choice: {choice}")
                 pause()

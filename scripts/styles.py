@@ -16,7 +16,8 @@ KORUS_THEME = Theme({
     "rare": "blue",
     "epic": "magenta",
     "legendary": "gold1 bold",
-    "unique": "orange3 bold underline",
+    "mythic": "magenta1 bold",
+    "blank": "bold thistle1 italic",
 
     "ability": "dim cyan",
 
@@ -214,33 +215,48 @@ def _formatEffectMagnitude(params: Dict) -> str:
 def formatEffectsDetailed(effects: Dict) -> List[str]:
     """One line per effect with its actual numbers, e.g.
     ['Bleed: 2 stacks (target)', 'Haste: +10% Damage for 2 turns (self)']"""
-    lines = []
-    for side in ('target', 'self'):
-        for name, params in effects.get(side, {}).items():
-            if name == 'spawn_consumable':
-                continue
+    if effects:
+        lines = []
+        for side in ('target', 'self'):
+            for name, params in effects.get(side, {}).items():
+                if name == 'spawn_consumable':
+                    continue
+                label = name.replace('_', ' ').title()
+                detail = _formatEffectMagnitude(params)
+                lines.append(f"{label}: {detail} ({side})" if detail else f"{label} ({side})")
+        return lines
+    return []
+
+def formatResourceGainDetailed(gains: Dict) -> List[str]:
+    if gains:
+        lines = []
+        for name, value in gains.items():
             label = name.replace('_', ' ').title()
-            detail = _formatEffectMagnitude(params)
-            lines.append(f"{label}: {detail} ({side})" if detail else f"{label} ({side})")
-    return lines
+            lines.append(f"{label}: +{value}")
+        return lines
+    return []
 
 def formatAbilityCost(resources: Dict, staminaCost: int) -> str:
     """Human-readable resource cost, e.g. '8 Health' or '6% Max Health' or '20 Mana'"""
-    required = resources.get('required', {})
-    if not required and staminaCost == 0:
-        return "-"
-    parts = []
-    if staminaCost > 0:
-        parts.append(f'[stamina]Stamina:[/stamina] {staminaCost}')
-    for resource, amount in required.items():
-        label = resource.replace('_', ' ').title()
-        if isinstance(amount, dict):
-            pct = amount.get('amount', 0)
-            pct = pct * 100 if abs(pct) <= 1 else pct
-            parts.append(f"{pct:.0f}% Max {label}")
-        else:
-            parts.append(f"{amount} {label}")
-    return ', '.join(parts)
+    if resources or staminaCost:
+        required = {}
+        if resources:
+            required = resources.get('required', {})
+        if not required and staminaCost == 0:
+            return "-"
+        parts = []
+        if staminaCost > 0:
+            parts.append(f'[stamina]Stamina:[/stamina] {staminaCost}')
+        for resource, amount in required.items():
+            label = resource.replace('_', ' ').title()
+            if isinstance(amount, dict):
+                pct = amount.get('amount', 0)
+                pct = pct * 100 if abs(pct) <= 1 else pct
+                parts.append(f"{pct:.0f}% Max {label}")
+            else:
+                parts.append(f"{amount} {label}")
+        return ', '.join(parts)
+    return ""
 
 def formatStatChange(value: float) -> str:
     if value > 0:
@@ -325,11 +341,39 @@ def createInventoryTable(inventory: dict) -> Table:
     table = Table(title="Inventory", box=box.ROUNDED, show_header=True)
     table.add_column("Item", style="white")
     table.add_column("Quantity", justify="right", style="cyan")
-    
+
     for item, quantity in sorted(inventory.items()):
         table.add_row(item, str(quantity))
 
     return table
+
+def createEquipmentStoragePages(equipmentList: list, itemsPerColumn: int = 5) -> Dict[int, Table]:
+    itemsPerPage = itemsPerColumn * 2
+    pages: Dict[int, Table] = {}
+    totalPages = max(1, (len(equipmentList) + itemsPerPage - 1) // itemsPerPage)
+
+    for pageNum in range(1, totalPages + 1):
+        startIdx = (pageNum - 1) * itemsPerPage
+        pageItems = equipmentList[startIdx:startIdx + itemsPerPage]
+        leftItems = pageItems[:itemsPerColumn]
+        rightItems = pageItems[itemsPerColumn:]
+
+        table = Table(box=box.ROUNDED, show_header=False, show_lines=True)
+        table.add_column("#", style="cyan", justify="right", width=3)
+        table.add_column("Item", ratio=1)
+        table.add_column("#", style="cyan", justify="right", width=3)
+        table.add_column("Item", ratio=1)
+
+        for row in range(itemsPerColumn):
+            leftNum = str(startIdx + row + 1) if row < len(leftItems) else ""
+            leftItem = leftItems[row] if row < len(leftItems) else ""
+            rightNum = str(startIdx + itemsPerColumn + row + 1) if row < len(rightItems) else ""
+            rightItem = rightItems[row] if row < len(rightItems) else ""
+            table.add_row(leftNum, leftItem, rightNum, rightItem)
+
+        pages[pageNum] = table
+
+    return pages
 
 def displayCombatStatus(player, enemies: list):
     playerHP = createHealthBar(player._health, player._maxHealth, width=15)
@@ -489,7 +533,7 @@ def createEnemyPreview(enemies: List) -> Table:
             col.append("[bold gold]Resources:[/bold gold]")
             resourceParts = []
             for resource, (minAmt, maxAmt, chance) in resources.items():
-                resourceParts.append(f"{resource}: {minAmt}-{maxAmt} | Drop Chance = {int(chance*100)}%")
+                resourceParts.append(f"{resource}: {minAmt}-{maxAmt} | Drop Chance = {int(chance*100)}%\n")
             col.append(f"[gold]" + ", ".join(resourceParts) + "[/gold]")
 
         equipment = enemy._lootTable.equipmentPool
@@ -549,6 +593,8 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         if isPlayer:
             if player.energyShield > 0 and player.maxEnergyShield > 0:
                 col.append(f"[energy_shield]Energy Shield:[/energy_shield] {player.energyShield}/{player.maxEnergyShield}")
+            if player._shield > 0:
+                col.append(f"[dim cyan]Shield:[/dim cyan] {player._shield}")
             if player.className not in ['Mage', 'Wretch']: # both manaless classes
                 staminaBar = createStaminaBar(entity._stamina, entity._maxStamina, width)
                 col.append(f'[stamina]Stamina:[/stamina] {staminaBar}')
@@ -557,6 +603,19 @@ def createCombatStatusTable(player, enemies: List) -> Table:
                 col.append(f'[arcane]Mana:[/arcane]    {manaBar}')
         col.append(f"[damage]DMG:[/damage] {entity._damage} [dim]({formatDamageType(entity._damageType, entity._damageType)})[/dim]")
         col.append(f"[speed]SPD:[/speed] {entity._speed if not isPlayer else f'{entity._speed:.2f}'}")
+
+        if isPlayer:
+            if player.className == 'Warriror':
+                col.append(f"[class_warrior]Rage:[/class_warrior] {player._rage}/{player._maxRage}")
+            elif player.className == 'Wanderer':
+                col.append(f"[class_wanderer]Lost Active:[/class_wanderer] {player.lostTrigger}")
+            elif player.className == 'Paladin':
+                col.append(f"[class_paladin]Favour:[/class_paladin] {player.favour}/{player.maxFavour}")
+            elif player.className == 'Druid':
+                col.append(f"[class_druid]Verdance:[/class_paladin] {player.verdance}/{player.maxVerdance}")
+            elif player.className == 'Cultist':
+                col.append(f"[class_cultist]Insanity:[/class_cultist] {player.insanity}")
+
         col.append("")
 
         activeResists = {k: v for k, v in entity._stats['Resistances'].items() if v != 0}
@@ -637,6 +696,7 @@ def createAbilityTables(abilities: dict, maxPerTable: int = 10) -> Table:
     table.add_column("Heal", justify="right")
     table.add_column("CD", style="yellow", justify="center")
     table.add_column("Cost", style="dim")
+    table.add_column("Resource Gain", style="green")
     table.add_column("Effects", style="buff")
 
     for j, (name, ability) in enumerate(abilities.items(), 1):
@@ -647,7 +707,9 @@ def createAbilityTables(abilities: dict, maxPerTable: int = 10) -> Table:
         scalingStr = f"{ability.damageScaling*100:.0f}%" if ability.damageScaling else "-"
         dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else "-"
         healStr = f"{ability.healBase}+{ability.healPercent*100:.0f}%" if (ability.healBase or ability.healPercent) else "-"
-        costStr = formatAbilityCost(ability.resources, ability.staminaCost)
+        costStr = formatAbilityCost(ability.resources.get('required'), ability.staminaCost)
+        gainLines = formatResourceGainDetailed(ability.resources.get('gain'))
+        gainText = "\n".join(gainLines) if gainLines else "-"
         effectsLines = formatEffectsDetailed(ability.effects)
         effectsText = "\n".join(effectsLines) if effectsLines else "-"
 
@@ -660,6 +722,7 @@ def createAbilityTables(abilities: dict, maxPerTable: int = 10) -> Table:
             healStr,
             f"[{cdStyle}]{cdText}[/{cdStyle}]",
             costStr,
+            gainText,
             effectsText
         )
 

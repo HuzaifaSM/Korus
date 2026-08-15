@@ -147,7 +147,7 @@ class Monk(Player): # higher speed, higher health, lower damage, lightning + col
             if self.apathy < 20:
                 self.apathy += 1
                 self._stats['Temporary']['speed'] += 0.1
-                self._stats['Temporary']['critMulti'] += 0.15
+                self._stats['Temporary']['crit_multi'] += 0.15
                 console.print(f'  [dark_red]- Psychopath: Gained 1 Apathy! Total: {self.apathy}/15[/dark_red]')
 
         return crit, multi

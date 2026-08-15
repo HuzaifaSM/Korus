@@ -3,6 +3,7 @@ from typing import Dict, Optional, List, Any, Tuple
 import random
 from .styles import console, printError
 from .affixes import rollAffix, Affix
+from .mythicAffixes import rollMythicAffix
 
 class ItemRarity(Enum):
     COMMON = "common"
@@ -72,12 +73,15 @@ class AffixSlot:
             affix=affix
         )
 
+ARMOUR_SLOTS = ['head', 'chest', 'legs', 'feet']
+
 RARITY_VALUES = {
     "common": 1,
     "uncommon": 2,
     "rare": 3,
     "epic": 4,
     "legendary": 5,
+    "mythic": 10,
     "quest": 1
 }
 
@@ -98,14 +102,16 @@ VALUE_MULTIPLIER = {
     ItemRarity.RARE: 3,
     ItemRarity.EPIC: 4,
     ItemRarity.LEGENDARY: 5,
+    ItemRarity.MYTHIC: 10,
 }
 
 ENTROPY_RESISTANCE = {
-    ItemRarity.COMMON: 0.0, #0%
-    ItemRarity.UNCOMMON: 0.05, #5%
-    ItemRarity.RARE: 0.125, #12.5%
-    ItemRarity.EPIC: 0.20, #20%
-    ItemRarity.LEGENDARY: 0.35 #35%
+    ItemRarity.COMMON: 0.0,
+    ItemRarity.UNCOMMON: 0.05,
+    ItemRarity.RARE: 0.125,
+    ItemRarity.EPIC: 0.20,
+    ItemRarity.LEGENDARY: 0.35,
+    ItemRarity.MYTHIC: 0.5,
 }
 
 MAX_PRESERVATIONS = {
@@ -113,24 +119,21 @@ MAX_PRESERVATIONS = {
     ItemRarity.UNCOMMON: 1,
     ItemRarity.RARE: 2,
     ItemRarity.EPIC: 2,
-    ItemRarity.LEGENDARY: 3
+    ItemRarity.LEGENDARY: 3,
+    ItemRarity.MYTHIC: 4,
 }
 
 class ItemType(Enum):
     RESOURCE = "resource"
     CONSUMABLE = "consumable"
-    WEAPON = "weapon"
-    ARMOUR = "armour"
-    ACCESSORY = "accessory"
+    EQUIPMENT = "equipment"
     QUEST = "quest"
     DUNGEON = "dungeon"
 
 TYPE_SERIALS = {
     "resource": ItemType.RESOURCE,
     "consumable": ItemType.CONSUMABLE,
-    "weapon": ItemType.WEAPON,
-    "armour": ItemType.ARMOUR,
-    "accessory": ItemType.ACCESSORY,
+    "equipment": ItemType.EQUIPMENT,
     "quest": ItemType.QUEST
 }
 
@@ -198,7 +201,7 @@ class Equipment(Item):
                  prefixes: List[Affix] = None, suffixes: List[Affix] = None, numPrefixes: int = 1, numSuffixes: int = 1,
                  level: int = 1, maxEntropy: float | None = None):
 
-        itemType = ItemType.WEAPON if slot == "weapon" else ItemType.ARMOUR if slot in ["head", "chest", "legs", "feet"] else ItemType.ACCESSORY
+        itemType = ItemType.EQUIPMENT
 
         if not hasattr(self, 'value'):
             value = 500 * RARITY_VALUES[rarity.value]
@@ -444,7 +447,8 @@ class Equipment(Item):
             ItemRarity.UNCOMMON: 100,
             ItemRarity.RARE: 200,
             ItemRarity.EPIC: 400,
-            ItemRarity.LEGENDARY: 800
+            ItemRarity.LEGENDARY: 800,
+            ItemRarity.MYTHIC: 1100,
         }
         if not hasattr(self, 'baseMaxDurability'):
             baseDurability = durabilityValues[self.rarity] + (self.level * (random.randint(1, 5)))
@@ -516,7 +520,7 @@ class Equipment(Item):
 
     @staticmethod
     def _calculateDefenseRoll(slot: str, level: int, rarity: ItemRarity) -> List[str, int]:
-        if slot in ['weapon', 'ring', 'amulet']:
+        if slot not in ARMOUR_SLOTS:
             return None, 0
         
         defenseTypes = ['armour', 'evasion', 'energy_shield']
@@ -568,10 +572,10 @@ class Equipment(Item):
     def _calculateDamageRoll(slot: str, level: int, rarity: ItemRarity) -> List[int, str | None]:
         if slot != 'weapon':
             return 0, None
-        
-        baseMin = random.randint(6, 9) + level // 2
-        baseMax = random.randint(10, 17) + level
-        
+
+        baseMin = random.randint(2, 4) + int(level * 2 / 3) - (1 if level < 3 else 0)
+        baseMax = random.randint(6, 8) + int(level * 4 / 3) - (random.randint(1, 2) if level < 5 else 0)
+
         rarityMultipliers = {
             ItemRarity.COMMON: 1,
             ItemRarity.UNCOMMON: 1.2,
@@ -662,7 +666,8 @@ class Equipment(Item):
                 ItemRarity.UNCOMMON: ([1, 2], [1, 2]),
                 ItemRarity.RARE: ([2], [2]),
                 ItemRarity.EPIC: ([2, 3], [2, 3]),
-                ItemRarity.LEGENDARY: ([3], [3])
+                ItemRarity.LEGENDARY: ([3], [3]),
+                ItemRarity.MYTHIC: ([3, 3, 4], [3, 3, 4]) # 3 twice for a higher chance of 3, smaller chance of 4
             }
             basePrefixes, baseSuffixes = bases.get(rarity, (1, 1))
             extra = level // 34 # +1 both affix slots every 34 levels
@@ -677,7 +682,8 @@ class Equipment(Item):
                 ItemRarity.UNCOMMON: 0.05,
                 ItemRarity.RARE: 0.15,
                 ItemRarity.EPIC: 0.25,
-                ItemRarity.LEGENDARY: 0.40
+                ItemRarity.LEGENDARY: 0.40,
+                ItemRarity.MYTHIC: 0.5
             }
             totalBias = levelBias + rarityBias.get(rarity, 0.0)
             return min(1.0, totalBias)
@@ -695,7 +701,10 @@ class Equipment(Item):
             'suffixes': []
         }
 
-        if slot in ['head', 'chest', 'legs', 'feet']:
+        defenseType, defenseValue = None, 0
+        damageType, baseDamage = None, 0
+
+        if slot in ARMOUR_SLOTS:
 
             defenseType, defenseValue = Equipment._calculateDefenseRoll(slot, level, rarity)
 
@@ -714,20 +723,34 @@ class Equipment(Item):
 
         prefixes = []
         suffixes = []
-        exludedPrefixIds = set()
+        excludedPrefixIds = set()
         excludedSuffixIds = set()
+
+        mythicPre = 0
+        mythicSuf = 0
+        if rarity == ItemRarity.MYTHIC:
+            mythicType = random.choice(['prefix', 'suffix'])
+            mythicAffix = rollMythicAffix(slot, mythicType, level, rarity, set(), defenseType)
+            if mythicType == 'prefix':
+                mythicPre = 1
+                prefixes.append(mythicAffix)
+                excludedPrefixIds.add(mythicAffix.id.split('_t')[0])
+            else:
+                mythicSuf = 1
+                suffixes.append(mythicAffix)
+                excludedSuffixIds.add(mythicAffix.id.split('_t')[0])
 
         tierBias = calculateTierBias(level, rarity)
 
         defenseType = equipment.get('defenseType', None)
 
-        for _ in range(numPrefixes):
-            affix = rollAffix(slot, 'prefixes', level, rarity, exludedPrefixIds, tierBias, defenseType)
+        for _ in range(numPrefixes - mythicPre):
+            affix = rollAffix(slot, 'prefixes', level, rarity, excludedPrefixIds, tierBias, defenseType)
             if affix:
                 prefixes.append(affix)
-                exludedPrefixIds.add(affix.id.split('_t')[0])
+                excludedPrefixIds.add(affix.id.split('_t')[0])
         
-        for _ in range(numSuffixes):
+        for _ in range(numSuffixes - mythicSuf):
             affix = rollAffix(slot, 'suffix', level, rarity, excludedSuffixIds, tierBias, defenseType)
             if affix:
                 suffixes.append(affix)
@@ -833,12 +856,24 @@ class Equipment(Item):
 
         prefix = ""
         if len(prefixAffixes) > 0:
-            highestPrefixAffix = max(prefixAffixes, key=lambda a: a.tier)
-            prefix = f"{highestPrefixAffix.name} "
+            if self.rarity == ItemRarity.MYTHIC:
+                for a in prefixAffixes:
+                    if a.isMythic:
+                        prefix = f"{a.name} "
+                        break
+            if prefix == "":
+                highestPrefixAffix = max(prefixAffixes, key=lambda a: a.tier)
+                prefix = f"{highestPrefixAffix.name} "
         suffix = ""
         if len(suffixAffixes) > 0:
-            highestSuffixAffix = max(suffixAffixes, key=lambda a: a.tier)
-            suffix = f" {highestSuffixAffix.name}"
+            if self.rarity == ItemRarity.MYTHIC:
+                for a in suffixAffixes:
+                    if a.isMythic:
+                        suffix = f" {a.name}"
+                        break
+            if suffix == "":
+                highestSuffixAffix = max(suffixAffixes, key=lambda a: a.tier)
+                suffix = f" {highestSuffixAffix.name}"
 
         if hasattr(self, 'destabilisedAffixes') and len(self.destabilisedAffixes) > 0:
             affix = random.choice(self.destabilisedAffixes)
@@ -890,12 +925,12 @@ class Equipment(Item):
         oldStats = other.stats.copy()
         newStats = self.stats.copy()
 
-        if self.slot in ['head', 'chest', 'feet', 'legs']:
+        if self.slot in ARMOUR_SLOTS:
             newDef = self.defenseValue
             oldDef = other.defenseValue
             change, symbol, colour = diff(newDef, oldDef)
             if other.defenseType == self.defenseType:
-                comparison += f"\n[{colour}]{symbol} {change} {self.defenseValue}[/{colour}]"
+                comparison += f"\n[{colour}]{symbol} {change} {self.defenseType}[/{colour}]"
             else: # different defense types
                 nType = self.defenseType.replace('_', ' ').title()
                 oType = other.defenseType.replace('_', ' ').title()
@@ -917,7 +952,7 @@ class Equipment(Item):
             comparison += "\n[bold green3 underline]Gains:[/bold green3 underline]"
             newStats = {a.stat.replace('_', ' ').title(): a.value for a in newStats
                         if not ((self.slot == 'weapon' and a.stat == 'damage')
-                        or (self.slot == 'armour' and a.stat in ['armour', 'evasion', 'energy_shield']))
+                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield']))
                         }
             for k, v in newStats.items(): # k = stat, v = value
                 comparison += f"\n[success] [+] {v} {k}[/success]"
@@ -925,7 +960,7 @@ class Equipment(Item):
             comparison += "\n[bold red3 underline]Losses:[/bold red3 underline]"
             oldStats = {a.stat.replace('_', ' ').title(): a.value for a in oldStats
                         if not ((self.slot == 'weapon' and a.stat == 'damage')
-                        or (self.slot == 'armour' and a.stat in ['armour', 'evasion', 'energy_shield']))
+                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield']))
                         }
             for k, v in oldStats.items():
                 comparison += f"\n[error] [-] {v} {k}[/error]"
@@ -936,8 +971,8 @@ class Equipment(Item):
         statStrings = []
         for stat in self.stats:
             statStrings.append(f"{stat}")
-        return ", ".join(statStrings)
-    
+        return "\n- ".join(statStrings)
+
     def takeDamage(self, amount: int):
         durabilityLoss = max(1, amount // 10) #1 durability loss per 10 damage
         self.durability = max(0, self.durability - durabilityLoss)
@@ -956,12 +991,13 @@ class Equipment(Item):
         globalIncrease = 0
 
         for affix in self.stats:
-            if affix.isGlobal and affix.isPercent and affix.stat in (stat, 'defenses'):
-                globalIncrease += affix.value / 100
-            elif affix.stat == stat and affix.isFlat:
-                totalBonus += affix.value
-            elif affix.stat == stat and affix.isPercent:
-                totalIncrease += affix.value / 100
+            if affix.stat == stat:
+                if affix.isGlobal and affix.isPercent and affix.stat in (stat, 'defenses'):
+                    globalIncrease += affix.value / 100
+                elif affix.stat and affix.isFlat:
+                    totalBonus += affix.value
+                elif affix.stat and affix.isPercent:
+                    totalIncrease += affix.value / 100
 
         return totalBonus, totalIncrease, globalIncrease
 
@@ -1099,19 +1135,24 @@ RARITY_WEIGHTS = {
     ItemRarity.UNCOMMON: 20,
     ItemRarity.RARE: 10,
     ItemRarity.EPIC: 4,
-    ItemRarity.LEGENDARY: 1
+    ItemRarity.LEGENDARY: 1,
+    ItemRarity.MYTHIC: 0.2,
 }
 
-def rollRarity(bonus: int = 0) -> ItemRarity:
+def rollRarity(level: int = 0) -> ItemRarity:
     weights = RARITY_WEIGHTS.copy()
-    if bonus > 0:
-        shiftAmount = bonus / 100
+    if level > 0:
+        shiftAmount = level / 100
         commonReduction = RARITY_WEIGHTS[ItemRarity.COMMON] * shiftAmount * 0.5
         weights[ItemRarity.COMMON] = max(10, RARITY_WEIGHTS[ItemRarity.COMMON] - commonReduction)
         weights[ItemRarity.UNCOMMON] += commonReduction * 0.3
         weights[ItemRarity.RARE] += commonReduction * 0.3
         weights[ItemRarity.EPIC] += commonReduction * 0.25
         weights[ItemRarity.LEGENDARY] += commonReduction * 0.15
+        if level >= 60:
+            weights[ItemRarity.MYTHIC] += commonReduction * 0.03
+        else:
+            weights[ItemRarity.MYTHIC] = 0
 
     totalWeight = round(sum(weights.values()))
     roll = random.randint(1, totalWeight)

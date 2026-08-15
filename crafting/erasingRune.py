@@ -69,7 +69,7 @@ class BaseErasingRune(CraftingItem):
         item._generateName()
         if len(removed) > 0:
             item.addEntropy(self.successEntropy)
-        message=f'Removed {len(removed)} affixes. Removed:{removedStr}'
+        message=f'Removed {len(removed)} affixes. Removed:\n{removedStr}'
 
         if len(removed) < self.affixesToRemove or toRemove < self.affixesToRemove:
             outcome = CraftOutcome.PARTIAL_SUCCESS,

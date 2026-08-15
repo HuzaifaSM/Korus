@@ -1,12 +1,9 @@
 from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES
 from scripts.styles import (
     console, displayLevelUp, formatDamageType, pause,
-    printSuccess, printWarning, printInfo, clearScreen,
-    formatEffectsSummary, formatEffectsDetailed, formatAbilityCost
+    formatEffectsDetailed, formatAbilityCost
 )
-import random
-from typing import Dict
-from scripts.abilities import Ability, CLASS_ABILITIES
+from scripts.abilities import CLASS_ABILITIES
 
 class Player(Entity):
     def __init__(self, name: str, health: int = 50, damage: int = 5, baseCritChance: float = 0.05, baseCritMulti: float = 1.5, damageType: str = "physical", speed: float = 1.0, /,
@@ -18,6 +15,7 @@ class Player(Entity):
         self.ascendancyDescription = ascendancyDescription
         self.dungeonKeys = {}
         self._maxLevel = 100
+        self.isPlayer = True
         self.gainClassAbilities()
 
         self.consumableUsed = False

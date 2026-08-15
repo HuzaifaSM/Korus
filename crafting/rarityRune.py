@@ -184,6 +184,7 @@ RARITY_RUNES: Dict[str, BaseRarityRune] = {
     'uncommon': UncommonRarityRune(),
     'rare': RareRarityRune(),
     'epic': EpicRarityRune(),
+    'legendary': LegendaryRarityRune(),
     'chaos': ChaosRarityRune()
 }
 

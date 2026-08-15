@@ -20,13 +20,13 @@ class Market(Station):
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
-            1: {"wood": 75, "stone": 75, "iron_ore": 30, "leather": 20},
-            2: {"iron_ore": 150, "leather": 50, "cloth": 50, "bone": 25},
-            3: {"crystal": 40, "bone": 50, "soul": 20},
-            4: {"mana_essence": 40, "diamond": 20, "soul": 30},
-            5: {"dragon_scale": 15, "ascended_essence": 10, "diamond": 50}
+            1: {"wood": 50, "stone": 50, "iron_ore": 10, "leather": 20},
+            2: {"iron_ore": 50, "leather": 50, "cloth": 50, "bone": 25},
+            3: {"crystal": 25, "bone": 50, "soul": 25},
+            4: {"mana_essence": 40, "diamond": 20, "soul": 50},
+            5: {"dragon_scale": 15, "ascended_essence": 10, "diamond": 25}
         }
-    
+
     def _serialise(self):
         temp = super()._serialise()
         temp['tradeVouchers'] = self.tradeVouchers

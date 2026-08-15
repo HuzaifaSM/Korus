@@ -13,7 +13,7 @@ from crafting.destabilisationRune import DESTABILISATION_RUNES
 from crafting.revealingRune import REVEALING_RUNES
 from crafting.manipulationRune import MANIPULATION_RUNES
 from crafting.base import CraftOutcome
-from scripts.styles import console
+from scripts.styles import console, pause, printError
 from rich.prompt import Prompt, IntPrompt
 
 def createTestItem():
@@ -29,15 +29,19 @@ def createTestItem():
     slot = slots[int(slotChoice)-1]
     
     # Choose rarity
-    rarities = [ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY]
+    rarities = [ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]
     console.print("\n[bold]Available rarities:[/bold]")
     for i, rarity in enumerate(rarities, 1):
         console.print(f"{i}. {rarity.value.title()}")
     rarityChoice = IntPrompt.ask("Choose rarity", choices=[str(i) for i in range(1, len(rarities)+1)])
     rarity = rarities[int(rarityChoice)-1]
-    
+
     # Choose level
     level = IntPrompt.ask("Choose item level", default=100)
+
+    if rarity == ItemRarity.MYTHIC and level < 60:
+        printError("[ERROR] Mythic items cannot be below level 60")
+        return False
     
     # Generate item
     item = Equipment._generateEquipmentPiece(level, slot, rarity)
@@ -107,6 +111,8 @@ def craftingSandbox():
     console.print("[gold1 bold]═══════════════════════════════════[/gold1 bold]\n")
     
     item = createTestItem()
+    if not item:
+        exit()
     
     while not item.entropyLocked and not item.destabilised:
         categories = displayRuneCategories()
@@ -137,13 +143,15 @@ def craftingSandbox():
         # Apply the rune
         console.print(f"\n[yellow]Applying {rune.name}...[/yellow]")
         result = rune.apply(item)
-        
+
         if result == CraftOutcome.NO_EFFECT:
             console.print("[red]✗ Rune had no effect![/red]")
         elif result == CraftOutcome.SUCCESS:
             console.print("[green bold]✓ Rune applied successfully![/green bold]")
         elif result == CraftOutcome.PARTIAL_SUCCESS:
             console.print("[yellow]⚠ Rune partially succeeded[/yellow]")
+        console.print(f"\n{result.message}\n")
+        pause()
 
         # Show updated item
         console.print("\n" + "="*50)
@@ -161,3 +169,4 @@ def craftingSandbox():
 
 if __name__ == "__main__":
     craftingSandbox()
+    exit()

@@ -13,8 +13,8 @@
                     "debuff",
                     "curse"
                 ],
-                "damage_base": 8,
-                "damage_scaling": 35,
+                "damage_base": 3,
+                "damage_scaling": 30,
                 "damage_type": "chaos",
                 "stamina_cost": 15,
                 "level": 1,
@@ -27,7 +27,7 @@
                     }
                 },
                 "requierments": {},
-                "description": "Lash out with chaotic energy, striking your target.\n  - Cooldown: 2 Turns\n  - Deal 8 Damage + 35% of your base damage.\n  - Apply 1 stack of Curse to your target.",
+                "description": "Lash out with chaotic energy, striking your target.\n  - Cooldown: 2 Turns\n  - Deal 3 Damage + 30% of your base damage.\n  - Apply 1 stack of Curse to your target.",
                 "evolutions": {
                     "25": {
                         "damage_base": 35,
@@ -5444,18 +5444,18 @@
                     "elemental"
                 ],
                 "damage_base": 4,
-                "damage_scaling": 28,
+                "damage_scaling": 30,
                 "damage_type": "fire",
                 "stamina_cost": 15,
                 "level": 1,
                 "cooldown": 2,
                 "targets": 1,
                 "effects": {},
-                "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 4 Damage + 28% of your base damage as Fire.\n  - Generates extra Rage from fire damage bonus (+1 Rage).",
+                "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 4 Damage + 30% of your base damage as Fire.\n  - Generates extra Rage from fire damage bonus (+1 Rage).",
                 "evolutions": {
                     "25": {
                         "damage_base": 25,
-                        "damage_scaling": 52,
+                        "damage_scaling": 55,
                         "level": 25,
                         "stamina_cost": 40,
                         "tags+": [
@@ -5469,7 +5469,7 @@
                                 }
                             }
                         },
-                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 25 Damage + 52% of your base damage as Fire.\n  - Apply 1 Burn. Generates extra Rage."
+                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 25 Damage + 55% of your base damage as Fire.\n  - Apply 1 Burn. Generates extra Rage."
                     },
                     "50": {
                         "damage_base": 72,
@@ -6105,7 +6105,7 @@
                     "strike"
                 ],
                 "damage_base": 6,
-                "damage_scaling": 40,
+                "damage_scaling": 45,
                 "damage_type": "dark",
                 "stamina_cost": 0,
                 "level": 1,
@@ -6117,7 +6117,7 @@
                 },
                 "effects": {},
                 "requirements": {},
-                "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 8 Health.\n  - Deal 6 Damage + 40% of your base damage.",
+                "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 8 Health.\n  - Deal 6 Damage + 45% of your base damage.",
                 "evolutions": {
                     "25": {
                         "damage_base": 30,

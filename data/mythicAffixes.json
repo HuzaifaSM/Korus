@@ -26,7 +26,7 @@
                 "tiers": {
                     "1": { "levelReq": 50, "min": 0.1, "max": 0.2, "weight": 40, "name": "Rending" }
                 },
-                "description": "Upon killing an enemy or landing a critical hit, permanently gain [x] Critical Hit Chance. Cannot grant more than 25% Critical Hit Chance."
+                "description": "Upon killing an enemy or landing a critical hit, permanently gain [x] Critical Hit Chance, up to a maximum of +25%."
             },
             "withering_assault": {
                 "stat": "damage",
@@ -64,7 +64,7 @@
                 "tiers": {
                     "1": { "levelReq": 50, "min": 10, "max": 30, "weight": 35, "name": "of the Condemned" }
                 },
-                "description": "While you are below 25% Max HP, deal [x] bonus damage."
+                "description": "While you are below 25% Max HP, deal [x] increased damage."
             }
         }
     },
@@ -356,7 +356,7 @@
                 "description": "Whenever you deal a critical hit, permanently gain [x] Item Find."
             },
             "stun_avoidance": {
-                "stat": "stunAvoidance",
+                "stat": "stun_avoidance",
                 "isPercent": true,
                 "categories": ["utility", "defensive", "mythic", "percent"],
                 "tiers": {

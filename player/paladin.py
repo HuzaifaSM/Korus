@@ -100,12 +100,12 @@ class Paladin(Player): #higher health, lower damage, holy damage
         if self._ascendancy == 'Crusader':
             if self._health > self._maxHealth * 0.75:
                 if not self.crusaderActiveLastTurn:
-                    self._stats['Temporary']['critChance'] += 0.05
+                    self._stats['Temporary']['crit_chance'] += 0.05
                     self._stats['Temporary']['speed'] += 0.2
                 self.crusaderActiveLastTurn = True
                 return True
             if self.crusaderActiveLastTurn:
-                self._stats['Temporary']['critChance'] -= 0.05
+                self._stats['Temporary']['crit_chance'] -= 0.05
                 self._stats['Temporary']['speed'] -= 0.2
             self.crusaderActiveLastTurn = False
         return False
@@ -205,7 +205,10 @@ class Paladin(Player): #higher health, lower damage, holy damage
         elif self._ascendancy == 'Inquisitor':
             favourEffect += 0.3
 
-        val = int(val * amount * favourEffect)
+        if type(val) is int:
+            val = int(val * amount * favourEffect)
+        else:
+            val = round(val * amount * favourEffect, 2)
         buff = buffType.replace('_', ' ').title()
         console.print(f"  [gold1]Spent {amount} Favour on defensive buff: +{val}{ex} {buff}.[/gold1]")
         return {buffType: val}
@@ -350,7 +353,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
     def onKill(self, entity, attackData, combatManager=None):
         if self._ascendancy == 'Justicar':
             if self.justiceTurns == 0:
-                self._stats['Temporary']['critChance'] += 0.1
+                self._stats['Temporary']['crit_chance'] += 0.1
                 self._stats['Temporary']['speed'] += 0.2
             self.justiceTurns = 3
 
@@ -407,7 +410,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
         elif self._ascendancy == 'Justicar' and self.justiceTurns > 0:
             self.justiceTurns -= 1
             if self.justiceTurns == 0:
-                self._stats['Temporary']['critChance'] -= 0.1
+                self._stats['Temporary']['crit_chance'] -= 0.1
                 self._stats['Temporary']['speed'] -= 0.2
 
         console.print("[gold1]Paladin: Enable spending Favour this turn? (y/n):")
@@ -460,7 +463,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._baseHealth += 20
             self._baseDamage -= 2
             self._baseSpeed -= 0.1
-            self._stats['Permanent']['stunAvoidance'] += 20
+            self._stats['Permanent']['stun_avoidance'] += 20
             self._stats['Permanent']['added_armour'] += 100
             self._stats['Permanent']['added_energy_shield'] += 30
             self.favourMinGain += 3

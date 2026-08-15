@@ -4,14 +4,17 @@ NOTES:
 
 BUGS:
 - shop item display isn't very readable - should just play equipment pieces
+- warrior rage isn't displayed in combat tables
 - can accquire '0x resource'
-- ability resource gain has no display
-- paladin asked to use favour twice a turn
 - druid ability fail due to wrong form still consumes turn
 - abilities should show if they add stacks of a mechanic e.g. wretch abilities adding extra blood spike, druid abilities adding verdance, etc.
 - druid verdance buff display for beast is incorrect. case: current verdance 2/30, buffs: +" damage, +200.0% elemental res (WRONG), +0.00 speed, same for human form (percentages seem to be 100x larger than they should be)
 - druid form abilities should have form as part of the requirement/cost field
 - abilities don't display damage type sometimes
+- should display armour and evasion amount using values from combatManager
+- +crit multi adds as flat, meaning it's 100x more effective than it should be (+67 crit multi = +6700% crit multi)
+- burn debuff labelled as 'fire'
+- debuffs/effects still apply to entities that have dodged attacks
 
 NEW AFFIXES:
   - health/stamina on hit/kill suffixes on weapons and rings
@@ -45,27 +48,43 @@ OTHER STUFF:
   - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
 
 CURRENTLY WORKING ON:
+  - in the forge:
+    > move next/previous rune page options into the actual crafting menu
+    > remove the 'crafting interface' entirely and replace it with going straight into actual rune crafting
+      - rewrite _applyRune to become the new 'rune crafting menu'
+    > when applying runes, rather than printing 10 at a time in a flat list, use a rich table to display a 2 column grid with 6 runes, aka 12 runes at a time (test and see if 3 columns also works (if text wraps inside of its own column))
+      - same logic as equipment inventory
+
+  - ability table needs line sbetween each ability
+
+  - for mythic items, if they don't have a mythic affix (e.g. removed by an erasing rune), for all runes that add affixes, add implementation to allow a new mythic affix to be rolled with a higher priority than standard affixes (e.g. add for growth, chaos, affix randomiser)
+
   - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
     > Classes complete:
 
     > Classes in progress:
-      - mage
       - paladin
-  
+
   - rework fighter class
     > new mechanic uses stances: offensive and defensive
       - offensive deals more damage but takes more damage, defensive is reverse
       - ascendancies alter stances or add new opens
+  - rework monk class
 
   - finish improving warrior ascendancies + implementation, then check over all ascendancies one final time
+    > warrior abilities should cost rage and interact with their rage costs in different ways
+      - e.g. increased effect per rage consumed, increased damage per rage consumed, etc.
+      - once done, rewrite base warrior class: "Gain 1 Rage per 8 Damage taken." instead of "lose 1 per 8"
 
   - remove or rework any ascendancies that directly prohibit main class mechanic (e.g. Monk ascendancy disabling switching, Druid ascendancies disabling form changes)
     > ^unless there is a good reason for it, e.g. monk psychopath is a good example of a correctly made ascendancy
-  
   - make sure all ascendancies interact with main class mechanic in at least 1 way, 2+ if possible
   
   - expand ascendancy descriptions to be more clear on everything without making them too long to read in preparation for ascendancy shrine
     > ascendancy shrine displays all ascendancies and descriptions and lets you choose which to become. can only be built after level 15 (gives player time to get resources)
+
+  - ascendancy abilities:
+    > ascendancies add 2 abilities each, with 2 evolutions, and edit up to 2 existing base class abilities
 
   - remake main.py main menu
     > add a 'player management' section which contains viewing inventory, viewing equipment, and view abilities
@@ -88,8 +107,7 @@ RIGHT NOW IMPORTANT:
   - add _removeOldAscendancy methods to add classes
   - ascendancy shrine camp area
     > also hosts changing ascendancy and subtypes
-    > when built: call player.gainClassAbilities() after an ascendancy change so ability overlays
-      apply immediately (updateAscendancy() has no callers yet, so this isn't wired anywhere yet)
+    > when built: call player.gainClassAbilities() after an ascendancy change so ability overlays apply immediately
 
 FUN ADDITIONAL STUFF:
   - playtime per save file
@@ -262,7 +280,7 @@ ITEM REWORK/IMPROVEMENTS
     -> can have 1 unique modifier: 'Anomaly Modifier'
       - separate from other map affixes
       - changes entire combat for map e.g.
-        - all hits apply burn, enemies take 50% less damage, all resistances are inverted, etc.
+        - all hits apply burn, enemies take 50% less damage and have 25% less hp, all resistances are inverted, etc.
 
   > Account Stash
     > is a camp station
@@ -327,3 +345,10 @@ ITEM REWORK/IMPROVEMENTS
       -> 'Travel' nodes can be basic things such as +hp or +damage
     >>> FOR THIS!!! Need to make a node system that works and correctly and efficiently affects the player!
       -> Potential implementation: 'treeBuffs' dict or equivalent, then added onto the player in recalculateStats
+
+NEVER GONNA HAPPEN (probably):
+- pygame
+- change the game from turn-based to real-time.
+- pixel-art arpg is the goal, same items and drops by the time i reach this stage
+- abilities are given hitboxes and such
+- whatever else

@@ -32,7 +32,7 @@ class Campfire(Station):
             2: {"wood": 20, "stone": 25, "iron_ore": 10},
             3: {"herbs": 30, "leather": 20, "iron_ore": 15},
             4: {"bone": 10, "wood": 60, "stone": 50, "iron_ore": 25},
-            5: {"soul": 30, "iron_ore": 100, "diamond": 10}
+            5: {"soul": 30, "iron_ore": 50, "diamond": 10}
         }
 
     def mainMenu(self):

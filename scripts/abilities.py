@@ -258,7 +258,7 @@ class StatusEffect:
         elif self.name == 'poison':
             self.target._stats['Temporary']['healing_magnitude'] -= self.data['healingReduction'] * mult
         elif self.name in ['stun', 'freeze']:
-            self.target._stats['Temporary']['stunAvoidance'] += self.data['grantsAvoidance'] * mult
+            self.target._stats['Temporary']['stun_avoidance'] += self.data['grantsAvoidance'] * mult
         elif self.name in ['chill', 'slow']: # has a more complex calculation to implement later, stacks non-linearly up to a max of 99%
             self.target._stats['Temporary']['speed'] -= self.data['amount'] * mult
         elif self.name == 'exposed':
@@ -284,7 +284,7 @@ class StatusEffect:
         if self.effectType == 'dot':
             damage = self.data['baseDamage'] + int(self.attacker._damage * self.data['damagePercent'])
             damageType = self.data.get('damageType')
-            dotResistance = self.target._stats['Bonuses'].get('dotResistance', 0)
+            dotResistance = self.target._stats['Bonuses'].get('dot_resistance', 0)
             if dotResistance > 0:
                 damage = int(damage * (1 - (dotResistance / 100)))
                 if damage < 0:

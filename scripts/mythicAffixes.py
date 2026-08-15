@@ -9,8 +9,8 @@ from .affixes import Affix
 descMark = 'plum4'
 
 class MythicAffix(Affix):
-    def __init__(self, id, name, levelReq, tier, stat, minVal, maxVal, isPercent = False, kind = "prefix", weight = 100, categories = None, description = "", sign = True, **kwargs):
-        super().__init__(id, name, levelReq, tier, stat, minVal, maxVal, isPercent, kind, weight, categories, isMythic = True, **kwargs)
+    def __init__(self, id, name, levelReq, tier, stat, slot, minVal, maxVal, isPercent = False, kind = "prefix", weight = 100, categories = None, description = "", sign = True, **kwargs):
+        super().__init__(id, name, levelReq, tier, stat, slot, minVal, maxVal, isPercent, kind, weight, categories, isMythic = True, **kwargs)
         self.descriptionBase = f'[{descMark}]{description}[/{descMark}]'
         self.sign = sign
 
@@ -42,10 +42,10 @@ class MythicAffix(Affix):
         affix = super().deserialise(data)
         affix.descriptionBase = data['description']
         return affix
-    
+
     def __str__(self):
         return self.description
-    
+
 def _createMythicAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
     fp = 'Korus/data/mythicAffixes.json' if exists('Korus') else 'data/mythicAffixes.json'
     with open(fp, 'r') as f:
@@ -86,6 +86,7 @@ def _createMythicAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
                     levelReq=data['levelReq'],
                     tier=1,
                     stat=affixInfo['stat'],
+                    slot=equipType,
                     minVal=data['min'],
                     maxVal=data['max'],
                     isPercent=affixInfo.get('isPercent', False),
@@ -100,13 +101,14 @@ def _createMythicAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
         
     return affixPool
 
-def rollMythicAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
+def rollMythicAffix(equipType: str, affixType: str, itemLevel: int, rarity: object,
                     excludeIds: Set[str], defenseType: str = None,
                     minAffixLevel: int | None = None) -> Optional[Affix]:
+    """rarity = ItemRarity"""
     from .items import ItemRarity
     if rarity != ItemRarity.MYTHIC:
         return None
-    
+
     excludeIds = excludeIds or set()
 
     if equipType not in MYTHIC_AFFIX_POOL:
@@ -152,6 +154,7 @@ def rollMythicAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
         levelReq=aff.levelReq,
         tier=aff.tier,
         stat=aff.stat,
+        slot=equipType,
         minVal=aff.minVal,
         maxVal=aff.maxVal,
         isPercent=aff.isPercent,

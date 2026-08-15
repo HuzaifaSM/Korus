@@ -179,13 +179,13 @@ class Spectre(Player):
         if self._ascendancy == 'Lich':
             if self._stats['energyShield'] > (self._stats['maxEnergyShield'] * 0.5) and not self.lichBuffsActive:
                 self._stats['Temporary']['speed'] += 0.2
-                self._stats['Temporary']['critChance'] += 0.1
-                self._stats['Temporary']['critMulti'] += 0.3
+                self._stats['Temporary']['crit_chance'] += 0.1
+                self._stats['Temporary']['crit_multi'] += 0.3
                 self.lichBuffsActive = True
             if self._stats['energyShield'] < (self._stats['maxEnergyShield'] * 0.5):
                 self._stats['Temporary']['speed'] -= 0.2
-                self._stats['Temporary']['critChance'] -= 0.1
-                self._stats['Temporary']['critMulti'] -= 0.3
+                self._stats['Temporary']['crit_chance'] -= 0.1
+                self._stats['Temporary']['crit_multi'] -= 0.3
                 self.lichBuffsActive = False
 
         super().onTurnStart(combatManager)
@@ -224,7 +224,7 @@ class Spectre(Player):
             self._baseDamage += 1
             self._baseSpeed -= 0.1
             self.ghostlyAmount = 0.05
-            self._stats['Permanent']['stunAvoidance'] -= 10
+            self._stats['Permanent']['stun_avoidance'] -= 10
             self._stats['baseCritMulti'] += 0.25
             self._ascendancy = 'Phantasm'
             self.ascendancyDescription = SPECTRE_DESCRIPTIONS["Phantasm"]

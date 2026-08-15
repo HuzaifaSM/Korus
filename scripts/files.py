@@ -71,7 +71,7 @@ def _decodeKorus(korusPath: str, jsonPath: str) -> bool:
     except Exception as e:
         printError(f"Decode Error: {e}")
         return False
-    
+
 # helpers
 
 def _saveFilePath(saveNum: int) -> str:

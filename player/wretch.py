@@ -10,7 +10,7 @@ WRETCH_DESCRIPTIONS = {
         "Each stack of [resource]Blood Spike[/resource] increases the execution threshold on an enemy by 2%. If an enemy's health drops below the execution threshold, they are immediately killed.\n"
         "When an enemy is executed by [resource]Blood Spike[/resource], heal for 1% Max HP per stack of [resource]Blood Spike[/resource] on the executed enemy.\n"
         "Whilst below 40% Health: Gain +0.3 Speed, 10% Increased [dark]Dark[/dark] Damage.\n"
-        "Starting Stats: 60 [health]HP[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 150% [critical]Crit Damage[/critical] | [dark]Dark Damage[/dark] | 0.95 [speed]Speed[/speed].",
+        "Starting Stats: 65 [health]HP[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 150% [critical]Crit Damage[/critical] | [dark]Dark Damage[/dark] | 0.95 [speed]Speed[/speed].",
     # ascendancies
     "Exsanguinator": "You can apply up to 15 stacks of Blood Spike on an enemy.\n"
         "Upon critically striking an enemy with Blood Spike stacks, consume all stacks to deal 5% Increased damage per stack\n."
@@ -42,9 +42,9 @@ WRETCH_DESCRIPTIONS = {
 }
 
 class Wretch(Player):
-    def __init__(self, name, health = 60, damage = 4, damageType = "dark", speed = 0.95):
+    def __init__(self, name, health = 65, damage = 4, damageType = "dark", speed = 0.95):
         super().__init__(name, health, damage, 0.05, 1.5, damageType, speed, className="Wretch", classDescription=WRETCH_DESCRIPTIONS["Wretch"])
-        self.maxBloodSpikeStacks = 20
+        self.maxBloodSpikeStacks = 10
 
         self.under40LastTurn = False
         self.under20LastTurn = False
@@ -85,7 +85,7 @@ class Wretch(Player):
         if self._ascendancy == 'Necrose':
             if self.rotTurns == 0:
                 self._stats['Temporary']['speed'] += 0.2
-                self._stats['Temporary']['critMulti'] -= 0.5
+                self._stats['Temporary']['crit_multi'] -= 0.5
             self.rotTurns = 3
 
     def _convertToSkeleton(self, enemy, executed=False):
@@ -168,7 +168,7 @@ class Wretch(Player):
             self.rotTurns -= 1
             if self.rotTurns == 0:
                 self._stats['Temporary']['speed'] -= 0.2
-                self._stats['Temporary']['critMulti'] += 0.5
+                self._stats['Temporary']['crit_multi'] += 0.5
 
         if self._ascendancy == 'Necromancer' and self.skeletonTurns > 0:
             self.skeletonTurns -= 1
@@ -232,12 +232,12 @@ class Wretch(Player):
 
         elif self._ascendancy == 'Necrose':
             if not self.above60LastTurn and self._health <= (self._maxHealth * 0.6):
-                self._stats['Temporary']['critChance'] += 0.1
-                self._stats['Temporary']['critMulti'] += 0.5
+                self._stats['Temporary']['crit_chance'] += 0.1
+                self._stats['Temporary']['crit_multi'] += 0.5
                 self.above60LastTurn = True
             elif self.above60LastTurn and self._health > (self._maxHealth * 0.6):
-                self._stats['Temporary']['critChance'] -= 0.1
-                self._stats['Temporary']['critMulti'] -= 0.5
+                self._stats['Temporary']['crit_chance'] -= 0.1
+                self._stats['Temporary']['crit_multi'] -= 0.5
                 self.above60LastTurn = False
 
         super().onTurnStart(combatManager)

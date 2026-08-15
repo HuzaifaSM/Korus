@@ -6,7 +6,7 @@ from copy import deepcopy
 from os.path import exists
 
 class Affix:
-    def __init__(self, id: str, name: str, levelReq: int, tier: int, stat: str,
+    def __init__(self, id: str, name: str, levelReq: int, tier: int, stat: str, slot: str,
                  minVal: float, maxVal: float,
                  isPercent: bool = False, kind: str = "prefix",
                  weight: int = 100, categories: list[str] | None = None, isMythic: bool = False,
@@ -16,6 +16,7 @@ class Affix:
         self.levelReq = levelReq
         self.tier = tier
         self.stat = stat
+        self.slot = slot
         self.minVal = minVal
         self.maxVal = maxVal
         self.baseValue = None
@@ -89,7 +90,10 @@ class Affix:
         mythicStr = ""
         if self.isMythic:
            mythicStr = "[indian_red bold underline]MYTHIC[/indian_red bold unerline]"
-        return f"{lockedStr}{soulStr}{mythicStr}{prefix}{value}{suffix} {statDisplay} | [dim]Tier {self.tier}[/dim]"
+        maxTier = f"/{getMaxAffixTier(self.slot, self.kind, self.id)}"
+        if maxTier == "/None":
+            maxTier = ""
+        return f"{lockedStr}{soulStr}{mythicStr}{prefix}{value}{suffix} {statDisplay} | [dim]Tier {self.tier}{maxTier}[/dim]"
 
     # def detailed(self): # not used anywhere
     #     string = self.__rich__()
@@ -105,6 +109,7 @@ class Affix:
             'levelReq': self.levelReq,
             'tier': self.tier,
             'stat': self.stat,
+            'slot': self.slot,
             'minVal': self.minVal,
             'maxVal': self.maxVal,
             'baseValue': self.baseValue,
@@ -128,6 +133,7 @@ class Affix:
                 levelReq=data.get('levelReq', 1),
                 tier=data.get('tier', int(data.get('id', '',).split('_t')[-1])),
                 stat=data.get('stat', ''),
+                slot=data.get('slot', ''),
                 minVal=data.get('minVal', 0),
                 maxVal=data.get('maxVal', 1),
                 isPercent=data.get('isPercent', False),
@@ -188,9 +194,12 @@ def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
                 if maxTier > 6:
                     topEnd = maxTier - 1
                     highEnd = maxTier - 3
-                else:
+                elif maxTier > 3:
                     topEnd = maxTier - 1
                     highEnd = maxTier - 2
+                else:
+                    topEnd = maxTier - 1
+                    highEnd = 99 # no high end for 1-3 tier items
                 maxMarkup = 'orange_red1 bold underline'
                 topMarkup = 'dark_orange bold'
                 highMarkup = 'orange1'
@@ -218,6 +227,7 @@ def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
                         levelReq=tierData['levelReq'],
                         tier=tierId,
                         stat=affixInfo['stat'],
+                        slot=equipType,
                         minVal=tierData['min'],
                         maxVal=tierData['max'],
                         isPercent=affixInfo.get('isPercent', False),
@@ -311,6 +321,7 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
         levelReq=chosenAffix.levelReq,
         tier=chosenAffix.tier,
         stat=chosenAffix.stat,
+        slot=equipType,
         minVal=chosenAffix.minVal,
         maxVal=chosenAffix.maxVal,
         isPercent=chosenAffix.isPercent,

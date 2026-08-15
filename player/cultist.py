@@ -80,24 +80,8 @@ class Cultist(Player):
         self.volatility = 0
         self.maxVolatility = 100
 
-    def __str__(self):
-        baseStr = super().__str__()
-        
-        state = "Neutral"
-        maxInsanity = 0
-        if self.insanity > 0:
-            state = "Manic"
-            maxInsanity = self.maxInsanity
-        elif self.insanity < 0:
-            state = "Stable"
-            maxInsanity = -self.minInsanity
-
-        baseStr += f"\n[chaos]Insanity:[/chaos] {self.insanity:+d} / {maxInsanity} ({state})"
-        
-        return baseStr
-
     def _serialise(self):
-        temp = super()._serialise()
+        temp = super().serialise()
         temp['insanity'] = self.insanity
         temp['minInsanity'] = self.minInsanity
         temp['maxInsanity'] = self.maxInsanity
@@ -125,7 +109,6 @@ class Cultist(Player):
         max = max if max is not None else self.maxInsanity
 
         self.insanity = random.randint(min, max)
-        console.print(f"[chaos]Cultist: Insanity randomised! New Insanity: {self.insanity}[/chaos]")
         for k, v in self.insanityBuffs.items():
             if k in self._stats['Temporary']:
                 self._stats['Temporary'][k] += v
@@ -137,26 +120,6 @@ class Cultist(Player):
                 max(self.minInsanity, self.insanity + val)
             )
         else:
-            self.insanity = min(
-                self.maxInsanity,
-                max(self.minInsanity, int(self.insanity * val))
-            )
-        console.print(f"[chaos]Cultist: Insanity affected by effect: {effect.title()}. Insanity: {self.insanity}[/chaos]")
-
-    def _acolyteShiftInsanity(self, effect: str, val: int):
-        if effect == 'flat':
-            if self.insanity > 0:
-                val = -10
-            elif self.insanity < 0:
-                val = 10
-            self.insanity = min(
-                self.maxInsanity,
-                max(self.minInsanity, self.insanity + val)
-            )
-        else:
-            if effect == 'multiply':
-                if val == 2:
-                    val = 0.75
             self.insanity = min(
                 self.maxInsanity,
                 max(self.minInsanity, int(self.insanity * val))
@@ -212,8 +175,8 @@ class Cultist(Player):
             else: # no skew, direction is none
                 if self.heresy < 10:
                     self.heresy += 1
-                    self._stats['Temporary']['critChance'] += 0.02
-                    self._stats['Temporary']['critMulti'] += 0.1
+                    self._stats['Temporary']['crit_chance'] += 0.02
+                    self._stats['Temporary']['crit_multi'] += 0.1
 
         return skew
 
@@ -326,7 +289,7 @@ class Cultist(Player):
                 self.devotion += 1
                 self._stats['Temporary']['lifesteal'] += 8
                 if self.devotion == 5:
-                    self._stats['Temporary']['critChance'] += 0.1
+                    self._stats['Temporary']['crit_chance'] += 0.1
 
         elif self._ascendancy == 'Anarchist':
             bonus = 1 + (0.1 * (self.volatility // 25))
@@ -363,6 +326,9 @@ class Cultist(Player):
 
     def onHit(self, damageTaken, damageType, isCrit: bool, attacker = None, combatManager=None):
         super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
+
+        if self.combatStart: # dont apply insanity effects before player's first turn
+            return damageTaken, damageType
 
         if self.insanity == self.minInsanity:
             self.absorbedToAdd += int(damageTaken * 0.25)
@@ -410,7 +376,7 @@ class Cultist(Player):
                 self.faithless += 1
                 self._stats['Temporary']['hpRegen'] += 10
                 if self.faithless == 10:
-                    self._stats['Temporary']['critMulti'] += 0.8
+                    self._stats['Temporary']['crit_multi'] += 0.8
 
         elif self._ascendancy == 'Anarchist':
             if self.volatility < self.maxVolatility:

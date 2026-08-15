@@ -8,16 +8,22 @@ from json import load
 from .styles import console
 from .enemyAi import EnemyAI
 
-with open('data/names.json', 'r') as file:
-    NAMES = load(file)
-    NAME_REFERENCES = {
-        "prefix": list(NAMES["prefix"].keys()),
-        "suffix": list(NAMES["suffix"].keys()),
-        "legendary": {
-            "prefix": list(NAMES["legendary"]["prefix"].keys()),
-            "suffix": list(NAMES["legendary"]["suffix"].keys())
-        }
-    }
+NAMES = [
+    "Beast",
+    "Wraith",
+    "Hunter",
+    "Brute",
+    "Mage",
+    "Sentinel",
+    "Stalker",
+    "Construct",
+    "Spirit"
+]
+
+ELEMENTAL_NAME = {
+    'physical': 'Titanic', 'fire': 'Flaming', 'lightning': 'Charged', 'earth': 'Grounded',
+    'dark': 'Vile', 'holy': 'Divine', 'arcane': 'Magic', 'cold': 'Glacial'
+}
 
 DAMAGE_TYPES = ['physical', 'fire', 'cold', 'lightning', 'dark', 'holy', 'arcane', 'earth']
 
@@ -72,7 +78,7 @@ class Enemy(Entity):
         super()._recalculateStats(doPrint, inCombat)
         self._stats['armour'] += 50 * self.hauntedStacks
         if self.ruin > 0:
-            self._stats['Temporary']['critChance'] -= self.ruin * 0.01
+            self._stats['Temporary']['crit_chance'] -= self.ruin * 0.01
             self._stats['Temporary']['all'] -= self.ruin
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
@@ -157,7 +163,7 @@ class Enemy(Entity):
                 if random.random() < equipChance:
                     rarity = rollRarity(self._level) # rarity bonus based on level
                     equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
-                    self.equip(equipment)
+                    self.equip(equipment, False)
 
                     finalDropChance = min(0.95, dropChance.get(rarity, 0.3))
                     self._lootTable.addEquipment(equipment, finalDropChance)
@@ -170,10 +176,10 @@ class Enemy(Entity):
                 while self._equipment[slot] is not None:
                     slot = random.choice(slots)
                 rarity = None
-                while rarity in [None, ItemRarity.LEGENDARY]:
+                while rarity in [None, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]:
                     rarity = rollRarity(self._level)
                 equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
-                self.equip(equipment)
+                self.equip(equipment, False)
 
                 finalDropChance = min(0.9, dropChance.get(rarity, 0.3) + 0.25)
                 self._lootTable.addEquipment(equipment, finalDropChance)
@@ -181,10 +187,10 @@ class Enemy(Entity):
         else: # rules for enemies level 1-10: guaranteed 1 equipment piece. unable to roll epic/legendary equipment
             slot = random.choice(slots)
             rarity = None
-            while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY]:
+            while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]:
                 rarity = rollRarity(self._level)
             equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
-            self.equip(equipment)
+            self.equip(equipment, False)
 
             finalDropChance = min(0.8, dropChance.get(rarity, 0.3) + 0.3)
             self._lootTable.addEquipment(equipment, finalDropChance)
@@ -199,7 +205,7 @@ class Enemy(Entity):
             rarity = resource.rarity
             weight = round(RARITY_WEIGHTS[rarity])
             if self._level < 20 and rarity in [ItemRarity.EPIC, ItemRarity.LEGENDARY]:
-                weight = max(1, weight // 8)
+                weight = max(1, weight // 12)
             elif self._level < 40 and rarity == ItemRarity.LEGENDARY:
                 weight = max(1, weight // 4)
             elif self._level > 60 and rarity == ItemRarity.COMMON:
@@ -260,49 +266,6 @@ class Enemy(Entity):
             return key
         return None
 
-def _generateName(element: str, level: int = 1) -> dict:
-    base = random.choice(NAMES["names"])
-    if element:
-        element = element[0].capitalize() + element[1:]
-        base = f"{element} {base}"
-    stats = {
-        "health": 0, "damage": 0, "speed": 0.0
-    }
-    preStats, sufStats = {}, {}
-    legendPre, legendSuf = False, False # if a legendary prefix/suffix has been picked
-    if level > 50: # legendary only available after level 50
-        if random.uniform(0, min(0.5, 0.05+level/500)) > random.random():
-            choice = random.choice(["prefix", "suffix"])
-            if choice == "prefix":
-                prefix = random.choice(NAME_REFERENCES["legendary"]["prefix"])
-                preStats = NAMES["legendary"]["prefix"][prefix]
-                base = f"[legendary]{prefix}[/legendary] {base}"
-                legendPre = True
-            else: # suffix
-                suffix = random.choice(NAME_REFERENCES["legendary"]["suffix"])
-                sufStats = NAMES["legendary"]["suffix"][suffix]
-                base = f"{base} [legendary]{suffix}[/legendary]"
-                legendSuf = True
-    if level > 10 and not legendPre:
-        prefix = random.choice(NAME_REFERENCES["prefix"])
-        preStats = NAMES["prefix"][prefix]
-        base = f"{prefix} {base}"
-    if level > 20 and not legendSuf:
-        suffix = random.choice(NAME_REFERENCES["suffix"])
-        sufStats = NAMES["suffix"][suffix]
-        base = f"{base} {suffix}"
-    if preStats:
-        for stat, value in preStats.items():
-            stats[stat] += value
-    if sufStats:
-        for stat, value in sufStats.items():
-            stats[stat] += value
-    #print(f"[DEBUG] Generated enemy: {base} with extra stats: {stats}")
-    return {
-        "name": base,
-        "health": stats['health'], "damage": stats['damage'], "speed": round(stats['speed'], 2)
-    }
-
 def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, glacierfist: bool = False) -> Enemy:
     if rarity != 1:
         rarity += 1
@@ -311,14 +274,14 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, g
     
     element = random.choice(DAMAGE_TYPES)
     baseHealth = random.randint(10, 20) + (level * (random.randint(1, 5))) // 2
-    baseDamage = random.randint(2, 5) + level // 4
+    baseDamage = random.randint(2, 5) + level // 6
     baseSpeed = round(random.uniform(0.6, 1.1), 2)
     baseCritChance = round(random.uniform(0.01 + level / 500, 0.05 + level / 400), 2)
     baseCritMulti = round(random.uniform(1.1 + level / 300, 1.5 + level / 200), 2)
 
     baseHealth = round(baseHealth * difficulty)
-    baseDamage = min(level + 5, round(baseDamage * difficulty))
-    
+    baseDamage = min(level + (level // 5), round(baseDamage * difficulty))
+
     loot = LootTable()
     numDrops = random.randint(1, max(2, 2 + level // 6))
     chosenResources = []
@@ -330,14 +293,11 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, g
         dropChance = round(random.uniform(0.4, 1), 2)
         loot.addResource(res, minAmt, maxAmt, dropChance)
 
-    temp = _generateName(element, level)
-    name = temp['name']
-    baseHealth += temp.get('health', 0)
-    baseDamage += temp.get('damage', 0)
-    baseSpeed += temp.get('speed', 0)
+    name = f"{ELEMENTAL_NAME[element]} {random.choice(NAMES)}"
     if glacierfist:
         baseSpeed = round(baseSpeed * 0.8, 2)
     enemy = Enemy(name, level, baseHealth, baseDamage, baseCritChance, baseCritMulti, element, baseSpeed, loot)
+    enemy._health = enemy._maxHealth
     
     key = enemy.rollDungeonMap()
     if key:

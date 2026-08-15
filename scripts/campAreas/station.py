@@ -1,15 +1,16 @@
 from typing import Dict
 from scripts.styles import console, printWarning, pause, displayResourceCost, printError, printSuccess
+from scripts.entities import Entity
 
 class Station:
-    def __init__(self, player, name: str):
+    def __init__(self, player: Entity, name: str):
         self.player = player
         self.name = name
         self.level = 0
         self.resourcesNeeded = self._getUpgradeRequirements()[self.level + 1] if self.level < 5 else {}
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict]:
-        """Do not use .super() | Rewrite!"""
+        """rewrite per station"""
         return {
             1: {},
             2: {},
@@ -17,6 +18,16 @@ class Station:
             4: {},
             5: {}
         }
+
+    def formatUpgradeRequirements(self) -> str:
+        if self.level < 5:
+            lines = []
+            for resource, amount in self._getUpgradeRequirements().get(self.level + 1, {}).items():
+                playerResource = self.player._inventory.get(resource, 0)
+                sign = "[success]✓[/success]" if playerResource >= amount else "[error]✗[/error]"
+                lines.append(f"{playerResource}/{amount} {resource.replace('_', ' ').title()} {sign}")
+            return " | ".join(lines)
+        return " | [dim bold]Max Level[/dim bold]"
 
     def upgrade(self) -> bool:
         if self.level >= 5:

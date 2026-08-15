@@ -74,19 +74,19 @@ class Wanderer(Player):
         elif self._ascendancy == 'Warper' and self.warped:
             self.warped = False
             self._stats['Temporary']['lifesteal'] -= 20
-            self._stats['Temporary']['critChance'] -= 0.1
+            self._stats['Temporary']['crit_chance'] -= 0.1
 
         return damageDealt, damageType
 
     def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
         super().onHit(damageTaken, damageType, crit, attacker, combatManager)
-        if damageTaken >= int(self._maxHealth * self.lostPercent):
+        if damageTaken >= round(self._maxHealth * self.lostPercent):
             self.lostTrigger = True
             console.print(f"\n[buff]Wanderer: Took more than 10% of max health as damage! Lost has been activated.[/buff]")
 
             if self._ascendancy == 'Fractured':
                 self.fracture = min(5, self.fracture + 1)
-                self._stats['Temporary']['critChance'] = self.fracture * 0.03
+                self._stats['Temporary']['crit_chance'] = self.fracture * 0.03
                 console.print(f"\n  [buff]Fractured: Gained 1 stack of Fracture. Current Fracture stacks: {self.fracture} / 5[/buff]")
 
         if self._ascendancy == 'Warper':
@@ -95,7 +95,7 @@ class Wanderer(Player):
             if self.lostTrigger and not self.warped:
                 self.warped = True
                 self._stats['Temporary']['lifesteal'] += 20
-                self._stats['Temporary']['critChance'] += 0.1
+                self._stats['Temporary']['crit_chance'] += 0.1
 
         return damageTaken, damageType
 

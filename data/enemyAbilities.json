@@ -3,10 +3,10 @@
         "name": "Rend",
         "category": "ability",
         "tier": 1,
-        "level_req": 1,
+        "level_req": 3,
         "cooldown": 2,
         "targets": 1,
-        "damage_base": 5,
+        "damage_base": 4,
         "damage_scaling": 15,
         "damage_type": "physical",
         "effects": {

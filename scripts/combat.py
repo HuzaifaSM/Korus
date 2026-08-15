@@ -24,7 +24,7 @@ class EntropyTracker:
     def rollEvasion(self, evasionRating):
         if evasionRating == 0:
             return False
-        
+
         baseChance = min(0.75, evasionRating / 50 / 100)
 
         self.entropy += baseChance * 100
@@ -65,11 +65,9 @@ class CombatUnit:
             console.print(f"  [dim]- {effect.name.capitalize()} has worn off![/dim]")
 
         self._recalculateInitiative()
-        
-        pause()
 
     def rollStunAvoidance(self) -> bool:
-        avoidance = self.entity._stats['Bonuses']['stunAvoidance']
+        avoidance = self.entity._stats['Bonuses']['stun_avoidance']
         if avoidance <= 0:
             return False
         
@@ -113,8 +111,6 @@ class CombatUnit:
         self.initiative = round(self._baseInitiative, )
 
     def getDamageModifier(self) -> float:
-        """Modifies the unit's own OUTGOING damage (e.g. Weaken). Damage TAKEN modifiers
-        (Vulnerable/Shock/Brittle) live in getVulnerabilityModifier instead."""
         modifier = 1.0
         for effect in self.statusEffects:
             if effect.name == 'weaken':
@@ -244,7 +240,7 @@ class CombatManager:
             for unit in self.turnOrder: #reset all units for new round
                 if unit.isActive:
                     unit.resetTurn()
-        
+
         self.turnOrder = sorted(
             [u for u in self.units if u.isActive],
             key=lambda u: u.initiative,
@@ -343,7 +339,7 @@ class CombatManager:
                         console.print(f"    [warning]{target._name}'s energy shield was broken![/warning]")
                     else:
                         target._stats['energy_shield'] -= finalDamage
-                        console.print(f"    [cyan]{target._name}'s energy shield absorbed {finalDamage} damage![/cyan]")
+                        console.print(f"    [cyan]{target._name}'s energy shield absorbed {finalDamage:.0f} damage![/cyan]")
                         return 0, False
 
         return finalDamage, didEvade

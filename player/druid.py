@@ -116,7 +116,7 @@ class Druid(Player): # balanced damage and speed, earth damage
             
             if self._ascendancy == 'Primalist':
                 self.formBonuses['damageReduction'] = 0.25 * self._level
-                self._stats['Temporary']['dotResistance'] -= 15
+                self._stats['Temporary']['dot_resistance'] -= 15
 
         elif self.form == 'beast':
             self.formBonuses['critMulti'] = self.beastPerLevel['critMulti'] * self._level
@@ -126,7 +126,7 @@ class Druid(Player): # balanced damage and speed, earth damage
 
             if self._ascendancy == 'Primalist':
                 self.formBonuses['damage'] = self._level
-                self._stats['Temporary']['stunAvoidance'] -= 20
+                self._stats['Temporary']['stun_avoidance'] -= 20
 
         elif self.form == 'moonkin':
             self.formBonuses['damage'] = self.moonkinPerLevel['damage'] * self._level
@@ -153,21 +153,21 @@ class Druid(Player): # balanced damage and speed, earth damage
         if self._ascendancy == 'Primalist':
             self.residualType = oldForm
             if oldForm == 'human':
-                self._stats['Temporary']['dotResistance'] += 15
+                self._stats['Temporary']['dot_resistance'] += 15
                 console.print("  [green]Gained Human Residual: +30% Crit Multi, +20% Earth Damage[/green]")
                 if self.residualTurns == 0:
-                    self._stats['Temporary']['critMulti'] += 0.3
+                    self._stats['Temporary']['crit_multi'] += 0.3
                 else:
                     self._stats['Temporary']['elemental'] -= 15
                     self._stats['Temporary']['lifesteal'] -= 5
             else:
-                self._stats['Temporary']['stunAvoidance'] += 20
+                self._stats['Temporary']['stun_avoidance'] += 20
                 console.print("  [yellow]Gained Beast Residual: +15% Elemental Res, +5% Lifesteal[/yellow]")
                 if self.residualTurns == 0:
                     self._stats['Temporary']['elemental'] += 15
                     self._stats['Temporary']['lifesteal'] += 5
                 else:
-                    self._stats['Temporary']['critMulti'] -= 0.3
+                    self._stats['Temporary']['crit_multi'] -= 0.3
             self.residualTurns = 2
 
         if form is not None:
@@ -193,7 +193,7 @@ class Druid(Player): # balanced damage and speed, earth damage
             self.residualTurns -= 1
             if self.residualTurns == 0:
                 if self.residualType == 'human':
-                    self._stats['Temporary']['critMulti'] -= 0.3
+                    self._stats['Temporary']['crit_multi'] -= 0.3
                 else:
                     self._stats['Temporary']['elemental'] -= 15
                     self._stats['Temporary']['lifesteal'] -= 5
@@ -203,9 +203,9 @@ class Druid(Player): # balanced damage and speed, earth damage
                 if self.adaptationTurns == 0:
                     if self.adaptationType == 'human':
                         self._stats['Temporary']['healingMagnitude'] -= 50
-                        self._stats['Temporary']['critChance'] += 0.1
+                        self._stats['Temporary']['crit_chance'] += 0.1
                     elif self.adaptationType == 'beast':
-                        self._stats['Temporary']['critChance'] -= 0.1
+                        self._stats['Temporary']['crit_chance'] -= 0.1
                         self._stats['Temporary']['healingMagnitude'] -= 50
                     console.print("[earth]Arbiter: Adaptation has faded.[/earth]")
 
@@ -246,13 +246,13 @@ class Druid(Player): # balanced damage and speed, earth damage
             self._shapeShift(form='moonkin')
             if self.verdance >= 15 and not self.lunarEmpowered:
                 self.lunarEmpowered = True
-                self._stats['Temporary']['critChance'] += 0.05
-                self._stats['Temporary']['critMulti'] += 0.25
+                self._stats['Temporary']['crit_chance'] += 0.05
+                self._stats['Temporary']['crit_multi'] += 0.25
                 self._stats['Temporary']['lifesteal'] += 10
             elif self.verdance < 15 and self.lunarEmpowered:
                 self.lunarEmpowered = False
-                self._stats['Temporary']['critChance'] -= 0.05
-                self._stats['Temporary']['critMulti'] -= 0.25
+                self._stats['Temporary']['crit_chance'] -= 0.05
+                self._stats['Temporary']['crit_multi'] -= 0.25
                 self._stats['Temporary']['lifesteal'] -= 10
         
         elif self._ascendancy == 'Chimera':
@@ -353,13 +353,13 @@ class Druid(Player): # balanced damage and speed, earth damage
                 if self.form == 'human':
                     if self.adaptationTurns != 0: #previously adapted, remove alternate effects
                         self._stats['Temporary']['healingMagnitude'] += 50
-                        self._stats['Temporary']['critChance'] -= 0.1
+                        self._stats['Temporary']['crit_chance'] -= 0.1
                     self._stats['Temporary']['healingMagnitude'] += 50
                 elif self.form == 'beast':
                     if self.adaptationTurns != 0:
-                        self._stats['Temporary']['critChance'] += 0.1
+                        self._stats['Temporary']['crit_chance'] += 0.1
                         self._stats['Temporary']['healingMagnitude'] -= 10
-                    self._stats['Temporary']['critChance'] += 0.1
+                    self._stats['Temporary']['crit_chance'] += 0.1
 
         return {}
 
@@ -405,7 +405,7 @@ class Druid(Player): # balanced damage and speed, earth damage
             self.maxVerdance -= 10
             self.form = 'moonkin'
             self._stats['Permanent']['arcane'] += 15
-            self._stats['Permanent']['stunAvoidance'] += 10
+            self._stats['Permanent']['stun_avoidance'] += 10
             self._ascendancy = 'Moonkin'
             self.ascendancyDescription = DRUID_DESCRIPTIONS["Moonkin"]
         elif ascendancy == 'Chimera':
@@ -423,7 +423,7 @@ class Druid(Player): # balanced damage and speed, earth damage
             self.maxVerdance += 20
             self.formEffect = 0.5
             self._stats['Permanent']['earth'] += 25
-            self._stats['Permanent']['stunAvoidance'] += 10
+            self._stats['Permanent']['stun_avoidance'] += 10
             self._stats['added_armour'] += 50
             self._stats['added_energy_shield'] += 25
             self._ascendancy = 'Earthshaper'
