@@ -625,6 +625,12 @@ class CombatManager:
                                 if attacker._ascendancy == 'Necrose':
                                     attacker.bloodSpikeApplied += 1
 
+                        if target.className == 'Warrior':
+                            if target._ascendancy == 'Warlord':
+                                warlordHadShield = target._shield > 0
+                                console.print(f"[asc_warlord]Warlord: {attacker._name} takes 50 Fire Damage from attacking you![/asc_warlord]")
+                                attacker.damage(50, 'fire')
+
                         finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self)
 
                         armourIgnorePercent = 0.0
@@ -658,9 +664,19 @@ class CombatManager:
                         else:
                             console.print(f'[wind bold]{t._name} dodged the attack![/wind bold]')
 
-                    # AFTER-HIT EFFECTS
+                        # AFTER-HIT EFFECTS
 
-                    if mechanics and not t._isDead:
+                        if target.className == 'Warrior':
+                            if target._ascendancy == 'Warlord':
+                                if warlordHadShield and target._shield <= 0: # shield was broken on hit
+                                    heal = int(0.03 * target._maxHealth)
+                                    target.heal(heal, False)
+                                    aoeDamage = int(0.05 * target._health)
+                                    for e in self.allAlive:
+                                        e.damage(aoeDamage, 'fire')
+                                    console.print(f"[asc_warlord]Warlord: Shield broken! Healed for 3% Max HP ({heal}) and dealt 5% of your Current Health ({aoeDamage}) as damage to all enemies")
+
+                    if mechanics and not t._isDead and not evaded:
                         for mechanic in mechanics:
                             self.addStatusEffect(t, mechanic, attacker)
                     death = self.checkDead(t)
@@ -672,7 +688,7 @@ class CombatManager:
 
                         if attacker.className == 'Wanderer' and attacker._ascendancy == 'Weaver':
                             overkill = t._health
-                            remainingEnemies = [u.entity for u in self.getUnitsInTeam('enemy')]
+                            remainingEnemies = self.allAlive
                             numEnemies = len(remainingEnemies)
                             if numEnemies > 0:
                                 damageToAll = int(overkill / numEnemies)

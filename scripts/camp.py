@@ -2,13 +2,14 @@ import datetime
 from typing import Dict
 from .styles import (
     console, printHeader, printSeparator, clearScreen,
-    printWarning, printError, printInfo,
+    printWarning, printError, printInfo, checkGlobalCommand,
 )
 
 from .campAreas.campfire import Campfire
 from .campAreas.forge import Forge
 from .campAreas.market import Market
 from .campAreas.questBoard import QuestBoard
+from .campAreas.shrine import Shrine
 
 class Camp:
     """Collection of all camp buildings in one place:
@@ -18,17 +19,19 @@ class Camp:
         - Quest Board"""
     def __init__(self, player):
         self.player = player
-        self.campfire = Campfire(self.player) #1
-        self.forge = Forge(self.player) #2
-        self.market = Market(self.player) #3
-        self.questBoard = QuestBoard(self.player) #4
+        self.campfire = Campfire(self.player)
+        self.forge = Forge(self.player)
+        self.market = Market(self.player)
+        self.questBoard = QuestBoard(self.player)
+        self.shrine = Shrine(self.player)
 
     def _serialiseAll(self):
         return {
             'campfire': self.campfire._serialise(),
             'forge': self.forge._serialise(),
             'market': self.market._serialise(),
-            'questBoard': self.questBoard._serialise()
+            'questBoard': self.questBoard._serialise(),
+            'shrine': self.shrine._serialise(),
         }
 
     def deserialiseAll(self, data: Dict[str, Dict], player: object):
@@ -38,6 +41,7 @@ class Camp:
         self.forge.player = player
         self.market.player = player
         self.questBoard.player = player
+        self.shrine.player = player
 
         campfire = data['campfire']
         self.campfire.name = campfire.get('name', 'Campfire')
@@ -73,6 +77,11 @@ class Camp:
         self.questBoard.activeQuests = questBoard.get('activeQuests', {})
         self.questBoard.completedQuests = questBoard.get('completedQuests', [])
 
+        shrine = data.get('shrine', {})
+        self.shrine.name = shrine.get('shrine', 'Shrine')
+        self.shrine.resourcesNeeded = shrine.get('resourcesNeeded', {})
+        self.shrine.level = shrine.get('level', 0)
+
     def mainMenu(self):
         while True:
             clearScreen()
@@ -85,11 +94,13 @@ class Camp:
                 f"[dim]1)[/dim] [red]Campfire[/red] | Current Level: {self.campfire.level}\n  [dim]Upgrade Requirements:[/dim] {self.campfire.formatUpgradeRequirements()}",
                 f"[dim]2)[/dim] [yellow]Forge[/yellow] | Current Level: {self.forge.level}\n  [dim]Upgrade Requirements:[/dim] {self.forge.formatUpgradeRequirements()}",
                 f"[dim]3)[/dim] [green]Market[/green] | Current Level: {self.market.level}\n  [dim]Upgrade Requirements:[/dim] {self.market.formatUpgradeRequirements()}",
-                f"[dim]4)[/dim] [blue]Quest Board[/blue] | Current Level: {self.questBoard.level}\n  [dim]Upgrade Requirements:[/dim] {self.questBoard.formatUpgradeRequirements()}"
+                f"[dim]4)[/dim] [blue]Quest Board[/blue] | Current Level: {self.questBoard.level}\n  [dim]Upgrade Requirements:[/dim] {self.questBoard.formatUpgradeRequirements()}",
+                f"[dim]5)[/dim] [gold1]Shrine[/gold1] | Current Level: {self.shrine.level}\n  [dim]Upgrade Requirements:[/dim] {self.shrine.formatUpgradeRequirements()}"
             ]
             for line in campLines:
                 console.print(line + "\n")
             choice = console.input("\n[cyan]>[/cyan] ").strip()
+            checkGlobalCommand(choice)
             try:
                 choice = int(choice)
                 match choice:
@@ -105,9 +116,11 @@ class Camp:
                     case 4:
                         printWarning("The Quest Board is currently under maintenance!")
                         #self.questBoard.mainMenu()
+                    case 5:
+                        self.shrine.mainMenu()
                     case _:
                         printWarning("\nInvalid choice.")
-            except Exception as e:
+            except ValueError as e:
                 printError(f"\nAn error occured: {e}")
 
 ...

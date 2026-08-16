@@ -3,9 +3,6 @@ from scripts.styles import console, formatDamageType, pause
 import random
 
 """
-to implement:
-WARLORD:
-    - 'whenever an enemy attacks you, deal 50 fire damage to them', '1% DR per 50 shield, 1% ID per 25 shield', 'when shield is broken...'
 replace flamewarden with new Tyrant ascendancy:
     - take 20% less damage from attacks that deal less damage than your base damage
     - added armour. taking damage hsa no effect on rage, gain rage based on amount of damage prevented from armour
@@ -14,26 +11,26 @@ replace flamewarden with new Tyrant ascendancy:
 
 WARRIOR_DESCRIPTIONS = {
     "Warrior": "[class_warrior]A proud and tenacious warrior, emboldened by the thrill of battle.[/class_warrior]\n"
-        "+3 Damage dealt per [resource]Rage[/resource]. +1 [resource]Rage[/resource] per 6 damage dealt. -1 [resource]Rage[/resource] per 8 damage taken. +2 HP per leftover [resource]Rage[/resource] at the end of combat.\n"
-        "Dealing [fire]Fire[/fire] damage grants +1 [resource]Rage[/resource]. Taking [fire]Fire[/fire] damage reduces [resource]Rage[/resource] loss by 2.\n"
-        "Starting Stats: 50 [health]Health[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 200% [critical]Crit Damage[/critical] | [fire]Fire Damage[/fire] | 0.8 [speed]Speed[/speed] | Max 50 [resource]Rage[/resource] | +1 [resource]Rage[/resource] on Level Up.",
+        "+3 Damage dealt per Rage. +1 Rage per 6 damage dealt. -1 Rage per 8 damage taken. +2 HP per leftover Rage at the end of combat.\n"
+        "Dealing [fire]Fire[/fire] damage grants +1 Rage. Taking [fire]Fire[/fire] damage reduces Rage loss by 2.\n"
+        "Starting Stats: 50 [health]Health[/health] | 4 [damage]Damage[/damage] | 5% Crit Chance | 200% Crit Damage | [fire]Fire Damage[/fire] | 0.8 [speed]Speed[/speed] | Max 50 Rage | +1 Rage on Level Up.",
     #ascendancies
     "Warlord": "50% less Rage decay, gain Fury stacks on attack if you have more than 50 Rage.\n"
-        "Fury: 2% Increased Damage, +2% Lifesteal. Max 10 stacks of fury. At max Fury, your next attack deals 200% increased damage to all enemies and consumes all Fury.\n"
-        "While above 40 Rage, gain 15% Damage Reduction. Upon dealing a critical hit, your critical multiplier is increased by 20% per stack of Fury.\n"
+        "Fury: 2% Increased Damage, +2% Lifesteal. Max 10 stacks of Fury. At max Fury, your next attack deals 200% Increased Damage to all enemies and consumes all Fury.\n"
+        "While above 40 Rage, gain 15% Damage Reduction. Upon dealing a Critical Hit, gain +20% Crit Multi per stack of Fury.\n"
         "Gain 1% Damage Reduction per 20 Rage. All damage prevented from Damage Reduction is gained as Shield. Whenever an enemy attacks you, deal 50 Fire Damage to them.\n"
-        "-1% Crit Chance per 50 Shield. Deal 1% Increased Damage per 25 Shield. Whenever your shield is broken, gain HP Regen equal to 3% of your Max HP and deal damage to all enemies equal to 5% of your Max HP.\n"
-        "-10 HP. +2 Damage. +0.05 Speed. +15% Fire Resistance. +10% Physical Resistance.",
+        "-1% Crit Chance per 50 Shield. Deal 1% Increased Damage per 25 Shield. Whenever your shield is broken, heal for 3% of your Max HP and deal [fire]Fire[/fire] damage to all enemies equal to 5% of current HP.\n"
+        "-10 HP. +2 [damage]Damage[/damage]. +0.05 [speed]Speed[/speed]. +15% Fire Resistance. +10% Physical Resistance.",
     "Juggernaut": "You have 1 Fortify per 10 Rage, up to 20 stacks. +1% Damage Reduction, +2% Crit Chance, +5% Crit Damage per Fortify.\n"
-        "50% Slower Rage Decay. At max Fortify your next attack hits all enemies, applies Stun and consumes 100 Rage.\n"
+        "50% Slower Rage Decay. At max Fortify your next attack hits all enemies, applies [cc]Stun[/cc] and consumes 100 Rage.\n"
         "Whenever you are critically hit, take 35% less damage from that hit and gain Bastion until the end of your next turn.\n"
         "Bastion: +5% Damage Reduction, +20% Crit Chance, +50% Crit Damage, -0.2 Speed.\n"
-        "+20 HP. -2 Damage. -0.1 Speed. +50% Stun Avoidance. +10% Fire Resistance.",
+        "+20 HP. -2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +50% Stun Avoidance. +10% Fire Resistance.",
     "Blood Reaver": "Attacks cost 5% Current HP and deal 50% Increased Damage. Gain +3% Lifesteal per 10 Rage, up to a maximum of +45% Lifesteal at 150 Rage.\n"
         "When your Rage exceeds your Max Rage, overflow is converted to healing at 3 HP per excess Rage. At the end of combat, heal 1% Max HP per 1% Rage.\n"
         "At the start of your turn, if you are below 20% Max HP, gain Bloodlust: +10% Lifesteal, +10% Crit Chance, +25% Physical Resistance.\n"
         "Upon killing an enemy, gain 1% Increased Damage per 50 damage dealt for the rest of combat.\n"
-        "+15 HP. -2 Damage. -0.1 Speed. +5% Lifesteal.",
+        "+15 HP. -2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +5% Lifesteal.",
     "Flamewarden": "Phoenix Aspect: Whilst above 50 Rage, you have Phoenix Aspect, allowing you to survive one lethal hit.\n"
         "Upon consuming Phoenix Aspect, consume all Rage and heal 2% Max HP per Rage consumed and gain Phoenix Form for 3 turns.\n"
         "Phoenix Form: All attacks apply 2 stacks of Burn, Deal 50% Increased Fire damage, +0.2 Speed, +10 Rage per turn.\n"
@@ -43,7 +40,7 @@ WARRIOR_DESCRIPTIONS = {
     "Annihilist": "Gain 1 Annihilation per 30 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
         "Annihilation: +20% Fire Damage, +0.1 Speed, +5% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
         "Rage no longer heals you at the end of combat. Whenever you critically hit an enemy, gain 2% of the enemy's damage as your own per stack of Annihilation you have.\n"
-        "-20 HP. +3 Damage. -0.05 Speed. +25% Crit Damage.",
+        "-20 HP. +3 [damage]Damage[/damage]. -0.05 [speed]Speed[/speed]. +25% Crit Damage.",
 }
 
 class Warrior(Player): # higher damage, lower speed, fire damage
@@ -129,7 +126,7 @@ class Warrior(Player): # higher damage, lower speed, fire damage
                 self.phoenixUsed = True
                 pause()
         else:
-            return super().damage(damage, damageType, combatUnit)
+            super().damage(damage, damageType, combatUnit)
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
         super().onAttack(damageDealt, damageType, target, combatManager)
@@ -140,7 +137,7 @@ class Warrior(Player): # higher damage, lower speed, fire damage
         self._rage = min(self._maxRage, self._rage + rageGain)
         self.annihilationRage += rageGain
         if rageGain > 0:
-            console.print(f"\n[damage]Your rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/damage]")
+            console.print(f"\n[damage]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/damage]")
         
         if self._ascendancy == 'Annihilist':
             while self.annihilationRage >= 30:
@@ -157,7 +154,8 @@ class Warrior(Player): # higher damage, lower speed, fire damage
         damageDealt = damageDealt + ((self._rage * 3) * self._rageEffect)
 
         if self._ascendancy == 'Warlord':
-            damageDealt = (damageDealt) * (1 + (0.02 * self._fury))
+            damageDealt = int(damageDealt * (1 + (0.02 * self._fury)))
+            damageDealt = int(damageDealt * (1 + (0.01 * (self._shield // 25))))
             self.heal(damageDealt * (0.02 * self._fury)) # lifesteal 2% per fury
 
         if self._ascendancy == 'Blood Reaver':
@@ -186,12 +184,13 @@ class Warrior(Player): # higher damage, lower speed, fire damage
                 rageLoss += 2
 
             if self._ascendancy == 'Warlord':
+                damageTaken = int(damageTaken * (1 - (0.01 * (self._shield // 50))))
                 rageLoss = rageLoss // 2
                 if self._rage > 40:
                     damageTaken = int(damageTaken * 0.85)
 
             self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
-            console.print(f"\n[warning]Your rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
+            console.print(f"\n[warning]Your Rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
 
         return damageTaken, damageType
 

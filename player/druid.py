@@ -5,35 +5,35 @@ import random
 
 DRUID_DESCRIPTIONS = {
     "Druid": "[class_druid]A nature mystic who channels the primal forces.[/class_druid]\n"
-        "Shapeshifting: Deal [earth]Earth[/earth] damage to swap forms. Your forms grow in power with each level.\n"
-        "Per Level Buffs: [human]Human[/human]: +1 Damage, +1% Elemental Resistance, +0.01 Speed | [beast]Beast[/beast]: +1.5% [critical]Crit Damage[/critical], +2% Increased [earth]Earth[/earth] Damage, -0.02 Speed, +0.4% Damage Taken.\n"
-        "Gain 1 stack of [resource]Verdance[/resource] per 10 damage dealt, to a max of 30 stacks. [resource]Verdance[/resource]: 0.5% [resistance]Damage Reduction[/resistance], 1% Increased [earth]Earth[/earth] Damage. Heal 1% Max HP per [resource]Verdance[/resource] at the end of combat.\n"
-        "Starting Stats: 55 [health]HP[/health] | 5 [damage]Damage[/damage] | 7.5% [critical]Crit Chance[/critical] | 150% [critical]Crit Damage[/critical] | [earth]Earth Damage[/earth] | 1 [speed]Speed[/speed].",
+        "Shapeshifting: Deal Earth damage to swap forms. Your forms grow in power with each level.\n"
+        "Per Level Buffs: Human: +1 Damage, +1% Elemental Resistance, +0.01 Speed | Beast: +1.5% Crit Damage, +2% Increased Earth Damage, -0.02 Speed, +0.4% Damage Taken.\n"
+        "Gain 1 stack of Verdance per 10 damage dealt, to a max of 30 stacks. Verdance: 0.5% Damage Reduction, 1% Increased Earth Damage. Heal 1% Max HP per Verdance at the end of combat.\n"
+        "Starting Stats: 55 HP | 5 [damage]Damage[/damage] | 7.5% Crit Chance | 150% Crit Damage | [earth]Earth Damage[/earth] | 1 [speed]Speed[/speed].",
     #ascendancy
     "Primalist": "Form bonuses have 50% Increased Magnitude. Human Form gains 0.25% Damage Reduction per level. Beast Form gains +1 Damage per level.\n"
         "Upon shapeshifting, gain Residual for 2 turns from your previous form. Human Residual: +30% Crit Damage, +20% Increased Earth Damage. Beast Residual: +15% Elemental Resistance, +5% Lifesteal.\n"
         "When in Human Form, -15% Damage over Time Resistance. When in Beast Form, -20% Stun Avoidance.\n"
-        "+10 HP. +1 Damage. -0.05 Speed. +10% Earth Resistance.",
+        "+10 HP. +1 [damage]Damage[/damage]. -0.05 [speed]Speed[/speed]. +10% Earth Resistance.",
     "Arbiter": "At the start of combat, choose your starting form. You cannot shapeshift unless you kill an enemy.\n"
         "Upon killing an enemy, you may choose to shapeshift. If you do, gain Adaptation for 3 turns based on your new form.\n"
         "Human Adaptation: +15% Damage Reduction, +50% Healing Magnitude. Beast Adaptation: +20% Increased Damage, +10% Crit Chance.\n"
         "Verdance generation increased by 50%.\n"
-        "+15 HP. +1 Damage. -0.1 Speed. +10% Physical Resistance.\n",
+        "+15 HP. +1 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +10% Physical Resistance.\n",
     "Moonkin": "Gain a new form, Moonkin Form. You are permanently in Moonkin form and cannot shapeshift.\n"
         "Moonkin Form per level: +1 Damage, +0.02 Speed, +0.5% Crit Chance, +2% Crit Damage.\n"
         "Verdance no longer increases Earth Damage. Verdance grants 1.5% Damage Reduction per stack. -10 to Max Verdance.\n"
         "Whilst at or above 15 Verdance, gain Lunar Empowerment: 20% Increased Damage, +5% Crit Chance, +25% Crit Damage, +10% Lifesteal.\n"
         "The first time you drop below 25% Max HP each combat, gain Lunar Fury for 3 turns: 30% Increased Damage, +0.3 Speed.\n"
-        "+10 HP. -2 Damage. -0.1 Speed. +15% Arcane Resistance. +10% Stun Avoidance.",
+        "+10 HP. -2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +15% Arcane Resistance. +10% Stun Avoidance.",
     "Chimera": "+10 to Max Verdance. Whilst at or above 25 Verdance, you are in Chimera Form and are unable to shapeshift.\n"
         "Chimera Form per level: +1 Damage, +0.01 Speed, +1% Crit Damage, +1% Increased Earth Damage.\n"
         "While in Chimera Form, Verdance buffs have 100% Increased Effect.\n"
-        "-10 HP. +1 Damage. -0.05 Speed. +10% Elemental Resistance.",
+        "-10 HP. +1 [damage]Damage[/damage]. -0.05 [speed]Speed[/speed]. +10% Elemental Resistance.",
     "Earthshaper": "+20 to Max Verdance. Verdance instead grants +2% Increased Earth Damage and +2% Increased Armour per stack.\n"
         "Earth Damage you deal has a 25% to apply Earthbound for 2 turns: -0.2 Speed, -10% Damage Dealt.\n"
         "Whilst at or above 30 Verdance, regenerate 5% of your Energy Shield at the start of your turn.\n"
         "Form bonuses have 50% less Magnitude.\n"
-        "-10 HP. +2 Damage. -0.15 Speed. +25% Earth Resistance. +10% Stun Avoidance. +50 Armour. +25 Energy Shield.",
+        "-10 HP. +2 [damage]Damage[/damage]. -0.15 [speed]Speed[/speed]. +25% Earth Resistance. +10% Stun Avoidance. +50 Armour. +25 Energy Shield.",
 }
 
 class Druid(Player): # balanced damage and speed, earth damage
@@ -382,7 +382,46 @@ class Druid(Player): # balanced damage and speed, earth damage
         self._applyFormBonuses()
         self._recalculateStats(False)
 
+    def _removeOldAscendancy(self) -> bool:
+        if self._ascendancy == 'Primalist':
+            self._baseHealth -= 10
+            self._baseDamage -= 1
+            self._baseSpeed += 0.05
+            self.formEffect = 1
+            self._stats['Permanent']['earth'] -= 10
+        elif self._ascendancy == 'Arbiter':
+            self._baseHealth -= 15
+            self._baseDamage -= 1
+            self._baseSpeed += 0.1
+            self._stats['Permanent']['physical'] -= 10
+        elif self._ascendancy == 'Moonkin':
+            self._baseHealth -= 10
+            self._baseDamage += 2
+            self._baseSpeed += 0.1
+            self.maxVerdance += 10
+            self.form = 'human'
+            self._stats['Permanent']['arcane'] -= 15
+            self._stats['Permanent']['stun_avoidance'] -= 10
+        elif self._ascendancy == 'Chimera':
+            self._baseHealth += 10
+            self._baseDamage -= 1
+            self._baseSpeed += 0.05
+            self.maxVerdance -= 10
+            self._stats['Permanent']['elemental'] -= 10
+        elif self._ascendancy == 'Earthshaper':
+            self._baseHealth += 10
+            self._baseDamage -= 2
+            self._baseSpeed += 0.15
+            self.maxVerdance -= 20
+            self.formEffect = 1
+            self._stats['Permanent']['earth'] -= 25
+            self._stats['Permanent']['stun_avoidance'] -= 10
+            self._stats['Permanent']['added_armour'] -= 50
+            self._stats['Permanent']['added_energy_shield'] -= 25
+        return True
+
     def updateAscendancy(self, ascendancy):
+        super().updateAscendancy(ascendancy)
         if ascendancy == 'Primalist':
             self._baseHealth += 10
             self._baseDamage += 1
@@ -424,7 +463,8 @@ class Druid(Player): # balanced damage and speed, earth damage
             self.formEffect = 0.5
             self._stats['Permanent']['earth'] += 25
             self._stats['Permanent']['stun_avoidance'] += 10
-            self._stats['added_armour'] += 50
-            self._stats['added_energy_shield'] += 25
+            self._stats['Permanent']['added_armour'] += 50
+            self._stats['Permanent']['added_energy_shield'] += 25
             self._ascendancy = 'Earthshaper'
             self.ascendancyDescription = DRUID_DESCRIPTIONS["Earthshaper"]
+        self._recalculateStats()

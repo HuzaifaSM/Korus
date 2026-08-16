@@ -330,6 +330,8 @@ class Effects:
     - Shield Generation
     - Regeneration
     - Haste (speed+dmg multiplier)
+    - Might
+    - Stokeskin
     - First Strike
     """
     @staticmethod

@@ -1,9 +1,9 @@
 from typing import Dict
 from scripts.styles import console, printWarning, pause, displayResourceCost, printError, printSuccess
-from scripts.entities import Entity
+from player.base import Player
 
 class Station:
-    def __init__(self, player: Entity, name: str):
+    def __init__(self, player: Player, name: str):
         self.player = player
         self.name = name
         self.level = 0
@@ -23,6 +23,8 @@ class Station:
         if self.level < 5:
             lines = []
             for resource, amount in self._getUpgradeRequirements().get(self.level + 1, {}).items():
+                if resource == 'description':
+                    continue
                 playerResource = self.player._inventory.get(resource, 0)
                 sign = "[success]✓[/success]" if playerResource >= amount else "[error]✗[/error]"
                 lines.append(f"{playerResource}/{amount} {resource.replace('_', ' ').title()} {sign}")
@@ -42,22 +44,28 @@ class Station:
 
         costTable = displayResourceCost(required, self.player._inventory)
         console.print(costTable)
-        
+        description = required['description']
+        console.print(description)
+
         confirm = console.input("\n[bold]Proceed with upgrade? (y/n): [/bold]").strip().lower()
         if confirm != 'y':
             return False
         
         # Check if player has all resources
         for resource, amount in required.items():
+            if resource == 'description':
+                continue
             if not self.player.hasItem(resource, amount):
                 printError(f"Missing {amount}x {resource}")
                 pause()
                 return False
-        
+
         # Remove resources
         for resource, amount in required.items():
+            if resource == 'description':
+                continue
             self.player.removeItem(resource, amount)
-        
+
         self.level += 1
         self.resourcesNeeded = self._getUpgradeRequirements()[self.level + 1] if self.level < 5 else {}
         printSuccess(f"\n{self.name} has been upgraded to level {self.level}!")

@@ -114,11 +114,18 @@ class Player(Entity):
         if not self._equipment['weapon']:
             self._damageType = self.defaultDamageType
 
-    def _removeOldAscendancy(self):
-        """rewrite per class"""
-        pass
+    def _removeOldAscendancy(self) -> bool:
+        """never run super(), always return true"""
+        console.print(f"[warning]No 'removeOldAscendancy()' function for {self.className}")
+        return False
 
-    def updateAscendancy(self, ascendancy):
-        """ascendancy should be .title() version"""
-        pass
+    def updateAscendancy(self, ascendancy: str) -> bool:
+        """always run super() before updating"""
+        if self._ascendancy is not None:
+            if self._removeOldAscendancy():
+                return True
+            console.print("[warning]Unable to change ascendancy at this time[/warning]")
+            pause()
+            return False
+        return True
 

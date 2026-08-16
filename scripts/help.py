@@ -1,5 +1,5 @@
 from .styles import (
-    clearScreen, printHeader, console, printWarning, pause
+    clearScreen, printHeader, console, printWarning, pause, checkGlobalCommand
     )
 
 class Help:
@@ -18,7 +18,8 @@ class Help:
             console.print("[dim]6.[/dim] [blue]Difficulty & Progression[/blue]")
             
             choice = console.input("\n[cyan]Choose topic:\n> [/cyan]").strip()
-            
+            checkGlobalCommand(choice)
+
             try:
                 choice = int(choice)
                 match choice:

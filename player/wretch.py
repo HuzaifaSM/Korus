@@ -5,40 +5,40 @@ import random
 
 WRETCH_DESCRIPTIONS = {
     "Wretch": "[class_wretch]An outcast mage, revelling in the torture of flesh and blood.[/class_wretch]\n"
-        "You have no [stamina]Stamina[/stamina]. All abilities cost [health]Health[/health] to use. Gain +1% [lifesteal]Lifesteal[/lifesteal] per 5% Missing Health.\n"
-        "Upon attacking an enemy with an ability, apply 1 stack of [resource]Blood Spike[/resource], up to 10 stacks.\n"
-        "Each stack of [resource]Blood Spike[/resource] increases the execution threshold on an enemy by 2%. If an enemy's health drops below the execution threshold, they are immediately killed.\n"
-        "When an enemy is executed by [resource]Blood Spike[/resource], heal for 1% Max HP per stack of [resource]Blood Spike[/resource] on the executed enemy.\n"
-        "Whilst below 40% Health: Gain +0.3 Speed, 10% Increased [dark]Dark[/dark] Damage.\n"
-        "Starting Stats: 65 [health]HP[/health] | 4 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 150% [critical]Crit Damage[/critical] | [dark]Dark Damage[/dark] | 0.95 [speed]Speed[/speed].",
+        "You have no Stamina. All abilities cost Health to use. Gain +1% Lifesteal per 5% Missing Health.\n"
+        "Upon attacking an enemy with an ability, apply 1 stack of Blood Spike, up to 10 stacks.\n"
+        "Each stack of Blood Spike increases the execution threshold on an enemy by 2%. If an enemy's health drops below the execution threshold, they are immediately killed.\n"
+        "When an enemy is executed by Blood Spike, heal for 1% Max HP per stack of Blood Spike on the executed enemy.\n"
+        "Whilst below 40% Health: Gain +0.3 Speed, 10% Increased Dark Damage.\n"
+        "Starting Stats: 65 HP | 4 [damage]Damage[/damage] | 5% Crit Chance | 150% Crit Damage | [dark]Dark Damage[/dark] | 0.95 [speed]Speed[/speed].",
     # ascendancies
     "Exsanguinator": "You can apply up to 15 stacks of Blood Spike on an enemy.\n"
-        "Upon critically striking an enemy with Blood Spike stacks, consume all stacks to deal 5% Increased damage per stack\n."
+        "Upon critically striking an enemy with Blood Spike stacks, consume all stacks to deal 5% Increased damage per stack.\n"
         "Whenever an enemy dies to a critical hit, a random enemy takes Dark damage equal to 20% of the killed enemy's Max HP. If there are no more enemies, instead heal for 10% Max HP.\n"
         "Abilities will consume Energy Shield before Health if it is available. Abilities which use Energy Shield ignore 15% of the target's Armour.\n"
-        "+10 HP. +1 Damage. +5% Crit Chance. -25% Crit Damage. +50 Energy Shield.",
+        "+10 HP. +1 [damage]Damage[/damage]. +5% Crit Chance. -25% Crit Damage. +50 Energy Shield.",
     "Bloodletter": "Abilities have 50% Increased Health cost. While below 20% Health: Deal 30% Increased Dark Damage, gain +10% Lifesteal.\n"
         "While above 60% Health: -20% Divine Resistance, +10% Otherworld Resistance. Store all Divine and Otherworld damage taken.\n"
         "Whenever you are attacked by an enemy, deal Dark Damage to them equal to 5% of Health lost in combat. At the end of combat, heal for 33% of all Divine and Otherworld damage taken.\n"
         "When an enemy is executed by Blood Spike, all remaining enemies take True damage equal to 1% of their Max HP per stack of Blood Spike on the executed enemy.\n"
-        "+25 HP. +2 Damage. +0.1 Speed. +15% Dark Resistance. +5% Otherworld Resistance.",
+        "+25 HP. +2 [damage]Damage[/damage]. +0.1 [speed]Speed[/speed]. +15% Dark Resistance. +5% Otherworld Resistance.",
     "Plaguebearer": "You can apply up to 7 stacks of Blood Spike on an enemy. Enemies with 7 stacks of Blood Spike deal 20% Less Damage.\n"
         "Whenever an enemy is executed by Blood Spike, all remaining enemies gain Blood Spike stacks equal to 50% of the stacks on the executed enemy.\n"
         "Whenever you are critically hit, or an enemy is killed, you gain 1 stack of Blood Scent, up to a maximum of 5.\n"
         "Blood Scent: +10% Increased Damage, +2% Lifesteal, +0.05 Speed. At the end of combat, heal 2% Max HP per stack of Blood Scent.\n"
-        "+5 HP. +4 Damage. +0.1 Speed. +25% Crit Damage.",
+        "+5 HP. +4 [damage]Damage[/damage]. +0.1 [speed]Speed[/speed]. +25% Crit Damage.",
     "Necrose": "Whenever an enemy attacks, they gain 1 stack of Necrosis, up to a maximum of 10 stacks. Necrosis: +3% Damage Taken, -0.02 Speed.\n"
         "You can apply up to 5 stacks of Blood Spike on an enemy. Deal 2% Increased damage per Blood Spike and Necrosis applied in combat.\n"
-        "Whenever an enemy critically hits you, consume all stacks of Necrosis on them and reflect 5% of the damage taken per Necrosis consumed."
+        "Whenever an enemy critically hits you, consume all stacks of Necrosis on them and reflect 5% of the damage taken per Necrosis consumed.\n"
         "Whenever an enemy is executed by Blood Spike, heal for 5% Max HP and gain Rot for 3 turns: +25% Increased Damage, +0.2 Speed, -50% Crit Damage.\n"
-        "While above 60% Health: +10% Crit Chance, +50% Crit Damage. While below 40% Health: +5% Damage Reduction, +5% Lifesteal, -5% All Resistance.\n"
-        "-15 HP. +3 Damage. +0.1 Speed. +15% Dark Resistance. +10% Resistance Penetration",
+        "While above 60% Health: +10% Crit Chance, +50% Crit Damage. While below 40% Health: +5% Damage Reduction, +5% Lifesteal, -5% [all]All[/all] Resistance.\n"
+        "-15 HP. +3 [damage]Damage[/damage]. +0.1 [speed]Speed[/speed]. +15% Dark Resistance. +10% Resistance Penetration",
     "Necromancer": "Upon killing an enemy, you may choose to convert them into a skeleton for 3 turns.\n"
         "Skeletons are allies created from the killed enemy, keeping a portion of their stats and items, scaling off of your level.\n"
         "You can only convert one enemy per battle. If the converted enemy is the final enemy in combat, it will join you for the first 3 turns of your next combat.\n"
         "Whenever an enemy is executed by Blood Spike, they will use a basic attack on another living enemy before dying.\n"
         "If an enemy is executed by Blood Spike and converted, it will retain more of its stats and items.\n"
-        "+20 HP. -2 Damage. -0.1 Speed. +5 HP Regen. +10% Otherworld Resistance."
+        "+20 HP. -2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +5 HP Regen. +10% Otherworld Resistance."
 }
 
 class Wretch(Player):
@@ -250,7 +250,7 @@ class Wretch(Player):
 
         return crit, damage
 
-    def _removeOldAscendancy(self):
+    def _removeOldAscendancy(self) -> bool:
         if self._ascendancy == "Exsanguinator":
             self._baseHealth -= 10
             self._baseDamage -= 1
@@ -259,13 +259,13 @@ class Wretch(Player):
             self._stats['Permanent']['added_energy_shield'] -= 50
             self.maxBloodSpikeStacks -= 5
         elif self._ascendancy == "Bloodletter":
-            self._health -= 25
+            self._baseHealth -= 25
             self._baseDamage -= 2
             self._baseSpeed -= 0.1
             self._stats['Permanent']['dark'] -= 15
             self._stats['Permanent']['otherworld'] -= 5
         elif self._ascendancy == "Plaguebearer":
-            self._health -= 5
+            self._baseHealth -= 5
             self._baseDamage -= 4
             self._baseSpeed -= 0.1
             self._stats['baseCritMulti'] -= 0.25
@@ -275,16 +275,18 @@ class Wretch(Player):
             self._baseDamage -= 3
             self._baseSpeed -= 0.1
             self._stats['Permanent']['dark'] -= 15
-            self._stats['Permanent']['resistancePenetration'] -= 10
+            self._stats['Permanent']['resistance_penetration'] -= 10
             self.maxBloodSpikeStacks += 5
         elif self._ascendancy == 'Necromancer':
             self._baseHealth -= 20
             self._baseDamage += 2
             self._baseSpeed += 0.1
-            self._stats['Permanent']['hpRegen'] -= 5
+            self._stats['Permanent']['hp_regen'] -= 5
             self._stats['Permanent']['otherworld'] -= 10
+        return True
 
     def updateAscendancy(self, ascendancy):
+        super().updateAscendancy(ascendancy)
         if ascendancy == "Exsanguinator":
             self._baseHealth += 10
             self._baseDamage += 1
@@ -295,7 +297,7 @@ class Wretch(Player):
             self._ascendancy = 'Exsanguinator'
             self.ascendancyDescription = WRETCH_DESCRIPTIONS["Exsanguinator"]
         elif ascendancy == "Bloodletter":
-            self._health += 25
+            self._baseHealth += 25
             self._baseDamage += 2
             self._baseSpeed += 0.1
             self._stats['Permanent']['dark'] += 15
@@ -303,7 +305,7 @@ class Wretch(Player):
             self._ascendancy = 'Bloodletter'
             self.ascendancyDescription = WRETCH_DESCRIPTIONS["Bloodletter"]
         elif ascendancy == "Plaguebearer":
-            self._health += 5
+            self._baseHealth += 5
             self._baseDamage += 4
             self._baseSpeed += 0.1
             self._stats['baseCritMulti'] += 0.25
@@ -315,7 +317,7 @@ class Wretch(Player):
             self._baseDamage += 3
             self._baseSpeed += 0.1
             self._stats['Permanent']['dark'] += 15
-            self._stats['Permanent']['resistancePenetration'] += 10
+            self._stats['Permanent']['resistance_penetration'] += 10
             self.maxBloodSpikeStacks -= 5
             self._ascendancy = 'Necrose'
             self.ascendancyDescription = WRETCH_DESCRIPTIONS['Necrose']
@@ -323,7 +325,8 @@ class Wretch(Player):
             self._baseHealth += 20
             self._baseDamage -= 2
             self._baseSpeed -= 0.1
-            self._stats['Permanent']['hpRegen'] += 5
+            self._stats['Permanent']['hp_regen'] += 5
             self._stats['Permanent']['otherworld'] += 10
             self._ascendancy = 'Necromancer'
             self.ascendancyDescription = WRETCH_DESCRIPTIONS['Necromancer']
+        self._recalculateStats()

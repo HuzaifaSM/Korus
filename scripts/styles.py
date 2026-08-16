@@ -1,3 +1,4 @@
+import re
 from rich.console import Console
 from rich.theme import Theme
 from rich.table import Table
@@ -35,11 +36,17 @@ KORUS_THEME = Theme({
     "psychic": "bright_magenta",
     "ethereal": "grey85",
 
+    "divine": "light_goldenrod1",
+    "otherworld": "blue_violet",
+    "elemental": "orange3",
+    "all": "bright_white",
+
     "dot": "red",
     "hot": "green",
     "debuff": "orange1",
     "buff": "bright_green",
     "cc": "bright_red bold",
+    "exposure": "plum1",
 
     "header": "bold cyan",
     "success": "bold green",
@@ -85,6 +92,42 @@ KORUS_THEME = Theme({
     "asc_ritualist": "deep_pink4 bold",
     "asc_anarchist": "bright_magenta bold",
     "asc_desecrator": "medium_purple bold",
+
+    # Paladin ascendancy family
+    "asc_zealot": "dark_goldenrod bold",
+    "asc_guardian": "light_goldenrod3 bold",
+    "asc_justicar": "gold3 bold",
+    "asc_crusader": "yellow3 bold",
+    "asc_inquisitor": "wheat1 bold",
+
+    # Spectre ascendancy family
+    "asc_wraith": "grey62 bold",
+    "asc_reaper": "grey42 bold",
+    "asc_phantasm": "grey78 bold",
+    "asc_revenant": "grey58 bold",
+    "asc_lich": "grey93 bold",
+
+    # Wanderer ascendancy family
+    "asc_fractured": "orchid bold",
+    "asc_manifestation": "plum2 bold",
+    "asc_weaver": "medium_orchid3 bold",
+    "asc_abyssal": "magenta3 bold",
+    "asc_warper": "hot_pink3 bold",
+    "asc_mindbreaker": "deep_pink2 bold",
+
+    # Wretch ascendancy family
+    "asc_exsanguinator": "indian_red bold",
+    "asc_bloodletter": "indian_red1 bold",
+    "asc_plaguebearer": "dark_khaki bold",
+    "asc_necrose": "grey39 bold",
+    "asc_necromancer": "medium_purple4 bold",
+
+    # Druid ascendancy family
+    "asc_primalist": "chartreuse3 bold",
+    "asc_arbiter": "green3 bold",
+    "asc_moonkin": "slate_blue1 bold",
+    "asc_chimera": "dark_turquoise bold",
+    "asc_earthshaper": "khaki3 bold",
 })
 
 # -- keyword highlighting: maps literal keyword text to a theme style key.
@@ -95,27 +138,124 @@ KEYWORDS: Dict[str, str] = {
     "Insanity": "resource", "Rage": "resource", "Fury": "resource",
     "Combo": "resource", "Verdance": "resource", "Mastery": "resource",
     "Favour": "resource", "Prowess": "resource", "Momentum": "resource",
-    "Corruption": "resource", "Volatility": "resource", "Omen": "resource",
-    "Heresy": "resource", "Devotion": "resource", "Discharge": "resource",
-    "Ruin": "resource", "Insight": "resource", "Mana": "resource",
-    "Blood Spike": "resource",
+    "Insight": "resource", "Mana": "resource", "Blood Spike": "resource",
+    "Lost": "resource", "Ghostly": "resource", "Manic": "resource", "Stable": "resource",
 
     # generic stat / affix terms
     "Crit Chance": "critical", "Critical Chance": "critical",
+    "Crit Multi": "critical", "Critical Multiplier": "critical",
     "Crit Damage": "critical", "Critical Damage": "critical",
     "Damage Reduction": "resistance", "Resistance": "resistance",
     "Lifesteal": "lifesteal", "Life Leech": "lifesteal",
-    "HP Regen": "regen", "Regeneration": "regen",
+    "HP Regen": "regen", "Regen": "regen", "Regeneration": "regen",
     "Shield": "buff",
+
+    # core stats
+    "Health": "health", "HP": "health", "Stamina": "stamina",
+    "Armour Rating": "armour", "Armour": "armour", "Evasion": "evasion",
+    "Energy Shield": "energy_shield",
+
+    # damage types
+    "Physical": "physical", "Fire": "fire", "Cold": "cold", "Lightning": "lightning",
+    "Dark": "dark", "Holy": "holy", "Arcane": "arcane", "Wind": "wind",
+    "Earth": "earth", "Chaos": "chaos", "Psychic": "psychic", "Ethereal": "ethereal",
+
+    # umbrella resistance categories
+    "Divine": "divine", "Otherworldly": "otherworld", "Otherworld": "otherworld",
+    "Elemental": "elemental",
+
+    # shapeshift forms
+    "Human": "human", "Beast": "beast",
+
+    # status effects
+    "Bleed": "dot", "Burn": "dot", "Poison": "dot", "Curse": "dot",
+    "Stun": "cc", "Freeze": "cc",
+    "Chill": "debuff", "Slow": "debuff", "Blind": "debuff", "Shock": "debuff", "Vulnerable": "debuff", "Weaken": "debuff", "Daze": "debuff",
+    "Exposed": "exposure", "Elemental Exposure": "exposure", "Divine Exposure": "exposure", "Physical Exposure": "exposure", "Otherworld Exposure": "exposure",
+    "Shield Generation": "buff", "Haste": "buff", "Might": "buff", "Stoneskin": "buff", "First Strike": "buff",
+
+    # Cultist ascendancy mechanics
+    "Shadow": "asc_umbralist",
+    "Corruption": "asc_harbinger",
+    "Omen": "asc_doomsayer", "Heresy": "asc_doomsayer",
+    "Elevated": "asc_ritualist", "Devotion": "asc_ritualist", "Faithless": "asc_ritualist",
+    "Volatility": "asc_anarchist", "Discharge": "asc_anarchist",
+    "Ruin": "asc_desecrator", "Tainted": "asc_desecrator", "Desecrated": "asc_desecrator",
+
+    # Paladin ascendancy mechanics
+    "Zealotry": "asc_zealot",
+    "Bulwark": "asc_guardian",
+    "Justice": "asc_justicar",
+    "Valour": "asc_crusader",
+    "Blessing": "asc_inquisitor",
+
+    # Druid ascendancy mechanics
+    "Residual": "asc_primalist",
+    "Adaptation": "asc_arbiter",
+    "Moonkin": "asc_moonkin", "Lunar Empowerment": "asc_moonkin", "Lunar Fury": "asc_moonkin",
+    "Chimera": "asc_chimera",
+    "Earthbound": "asc_earthshaper",
+
+    # Wanderer ascendancy mechanics
+    "Fracture": "asc_fractured",
+    "Warped": "asc_warper",
+    "Torture": "asc_mindbreaker",
+
+    # Spectre ascendancy mechanics
+    "Execute": "asc_reaper", "Executing": "asc_reaper",
+    "Phased": "asc_phantasm", "Shifting": "asc_phantasm",
+    "Intangible": "asc_revenant",
+
+    # Wretch ascendancy mechanics
+    "Blood Scent": "asc_plaguebearer",
+    "Necrosis": "asc_necrose", "Rot": "asc_necrose",
 }
 
-def highlightKeywords(text: str) -> str:
-    for keyword in sorted(KEYWORDS, key=len, reverse=True):
-        style = KEYWORDS[keyword]
-        text = text.replace(keyword, f"[{style}]{keyword}[/{style}]")
-    return text
+# matches an opening or closing rich markup tag, e.g. "[gold1 bold]" or "[/health]"
+_TAG_RE = re.compile(r"\[/?[^\[\]]*\]")
 
-console = Console(theme=KORUS_THEME, markup=True)
+def _buildKeywordPattern() -> "re.Pattern":
+    escaped = [re.escape(k) for k in sorted(KEYWORDS, key=len, reverse=True)]
+    # boundaries are "not a letter/digit" rather than \b, so keywords match against
+    # whitespace or punctuation on either side but not when glued inside another word
+    # (e.g. "Shield" in "Shielded" is rejected, "Shield," and "Shield-Breaker" are matched)
+    return re.compile(r"(?<![A-Za-z0-9])(" + "|".join(escaped) + r")(?![A-Za-z0-9])")
+
+_KEYWORD_RE = _buildKeywordPattern()
+
+def _highlightPlainSegment(segment: str) -> str:
+    def _wrap(match: "re.Match") -> str:
+        keyword = match.group(0)
+        style = KEYWORDS[keyword]
+        return f"[{style}]{keyword}[/{style}]"
+    return _KEYWORD_RE.sub(_wrap, segment)
+
+def highlightKeywords(text: str) -> str:
+    """Wraps known keyword text in its theme style. Text already inside an
+    existing rich markup tag (manual colouring) is left untouched, so this is
+    safe to run over text that's already partially styled."""
+    pieces = []
+    depth = 0
+    lastEnd = 0
+    for tagMatch in _TAG_RE.finditer(text):
+        segment = text[lastEnd:tagMatch.start()]
+        pieces.append(_highlightPlainSegment(segment) if depth == 0 else segment)
+        tag = tagMatch.group(0)
+        pieces.append(tag)
+        depth = max(0, depth - 1) if tag.startswith('[/') else depth + 1
+        lastEnd = tagMatch.end()
+    tail = text[lastEnd:]
+    pieces.append(_highlightPlainSegment(tail) if depth == 0 else tail)
+    return ''.join(pieces)
+
+class HighlightingConsole(Console):
+    """Console that automatically runs any printed text through highlightKeywords,
+    so keyword colouring no longer has to be typed out by hand at every call site."""
+    def print(self, *args, **kwargs):
+        args = tuple(highlightKeywords(a) if isinstance(a, str) else a for a in args)
+        super().print(*args, **kwargs)
+
+console = HighlightingConsole(theme=KORUS_THEME, markup=True)
 
 #print("STYLES LOADED, CONSOLE = ", console)
 
@@ -161,6 +301,25 @@ def pause():
 
 def clearScreen():
     console.clear()
+
+class ReturnToMainMenu(Exception):
+    """Raised to unwind out of any nested menu, all the way back to the main game menu."""
+    pass
+
+class GoToSaveMenu(Exception):
+    """Raised to unwind out of any nested menu, all the way back to the save menu."""
+    pass
+
+GLOBAL_MENU_COMMAND = "menu"
+GLOBAL_SAVE_COMMAND = "save"
+
+def checkGlobalCommand(choice: str):
+    """Raises ReturnToMainMenu / GoToSaveMenu if the player typed a global navigation command."""
+    normalised = choice.strip().lower()
+    if normalised == GLOBAL_MENU_COMMAND:
+        raise ReturnToMainMenu()
+    elif normalised == GLOBAL_SAVE_COMMAND:
+        raise GoToSaveMenu()
 
 def formatRarity(text: str, rarity: str) -> str:
     colour = RARITY_COLOURS.get(rarity.lower(), 'white')
@@ -494,9 +653,10 @@ def displayResourceCost(required: dict, current: dict) -> Table:
     table.add_column("Amount", justify="right", style="white")
     
     for resource, amount in required.items():
-        has = current.get(resource, 0)
-        status = "[success]✓[/success]" if has >= amount else "[error]✗[/error]"
-        table.add_row(status, resource, f"{has}/{amount}")
+        if resource != 'description':
+            has = current.get(resource, 0)
+            status = "[success]✓[/success]" if has >= amount else "[error]✗[/error]"
+            table.add_row(status, resource, f"{has}/{amount}")
     
     return table
 

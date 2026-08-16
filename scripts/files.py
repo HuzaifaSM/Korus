@@ -5,7 +5,7 @@ from os.path import exists, isfile, join, dirname, abspath
 from os import remove, listdir, makedirs
 from datetime import datetime
 from shutil import copy2
-from .styles import console, printSuccess, printError, printInfo, pause
+from .styles import console, printSuccess, printError, printInfo, pause, printHeader, clearScreen
 
 if exists('Korus'):
     PATH        = "Korus/data/saves/"
@@ -209,6 +209,54 @@ def undoLastOperation() -> bool:
         return False
     
 # save
+
+def displayExistingSaves() -> list:
+    from main import Difficulty
+    clearScreen()
+    printHeader("Existing Saves")
+    saves = []
+    for filename in sorted(listdir(PATH)):
+        if filename.startswith('Save ') and filename.endswith('.korus'):
+            saveNum = filename.replace("Save ", "").replace(".korus", "")
+            try:
+                tempJson = f"{PATH}Save {saveNum}.temp.json"
+                if not _decodeKorus(f"{PATH}{filename}", tempJson):
+                    raise Exception(f"Failed to decode save {saveNum}")
+                with open(tempJson, 'r') as f:
+                    data: dict = json.load(f)
+                remove(tempJson)
+                player: dict = data.get('player', None)
+                if not player:
+                    raise Exception(f"Player data missing from save {saveNum}")
+
+                playerName = player.get('name', 'The Hero')
+                playerLevel = player.get('level', 1)
+                className = player.get('className')
+
+                if not className:
+                    raise Exception(f"Player has no class data in save {saveNum}")
+                
+                game: dict = data.get('game', {})
+
+                if not game:
+                    raise Exception(f"Game data missing from save {saveNum}")
+
+                difficulty = game.get('difficulty', 'normal')
+                hardcore = game.get('hardcoreMode', False)
+
+                difficultyObj = Difficulty(difficulty)
+                diffDisplay = difficultyObj.getDisplayName()
+                if hardcore:
+                    diffDisplay += " [bold red](HARDCORE)[/bold red]"
+
+                console.print(f"[cyan]{saveNum}.[/cyan] [bold]{playerName}[/bold] | [class_{className.lower()}]{className}[/class_{className.lower()}] | Level {playerLevel}")
+                console.print(f"    [dim]Difficulty: {diffDisplay}[/dim]\n")
+                saves.append(saveNum)
+            except Exception as e:
+                printError(f"Error loading Save {saveNum}: {e}")
+                console.print(f"[cyan]{saveNum}.[/cyan] [dim](Corrupted Save File)[/dim]\n")
+
+    return saves
 
 def save(game, saveNum: int = 0):
     try:

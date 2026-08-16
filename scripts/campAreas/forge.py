@@ -5,7 +5,7 @@ from scripts.items import Equipment, ItemRarity, rollRarity
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, formatRarity,
-    Panel
+    Panel, checkGlobalCommand
 )
 from scripts.runeDrops import getRuneObject
 from crafting.base import CraftOutcome, CraftResult
@@ -27,7 +27,9 @@ class Forge(Station):
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
-            1: {"iron_ore": 5, "stone": 25, "wood": 10},
+            1: {"iron_ore": 5, "stone": 25, "wood": 10,
+                'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair equipment. [resource]Blueprints[/resource] are used to craft new peices of equipment.'
+                },
             2: {"iron_ore": 50, "crystal": 15, "bone": 10},
             3: {"crystal": 40, "mana_essence": 20, "ancient_wood": 10},
             4: {"mana_essence": 50, "diamond": 30, "dragon_scale": 10},
@@ -72,6 +74,7 @@ class Forge(Station):
             console.print("[dim]9.[/dim] Upgrade Forge")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
+            checkGlobalCommand(choice)
 
             try:
                 choice = int(choice)
@@ -245,6 +248,7 @@ class Forge(Station):
             console.print("  [dim]0.[/dim] Finish Crafting")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
+            checkGlobalCommand(choice)
 
             try:
                 choice = int(choice)

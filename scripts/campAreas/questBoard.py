@@ -3,7 +3,7 @@ from json import load
 from .station import Station
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
-    pause, printWarning, printError, printSuccess
+    pause, printWarning, printError, printSuccess, checkGlobalCommand
 )
 
 class Quest:
@@ -71,6 +71,7 @@ class QuestBoard(Station):
             console.print("[dim]9.[/dim] Upgrade Quest Board")
             
             choice = console.input("\n[cyan]>[/cyan] ").strip()
+            checkGlobalCommand(choice)
             try:
                 choice = int(choice)
                 match choice:

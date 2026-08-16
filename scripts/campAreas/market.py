@@ -5,7 +5,7 @@ from .station import Station
 from scripts.items import Equipment, ItemRarity, RESOURCES, CONSUMABLES
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
-    pause, printWarning, printError, printSuccess, printInfo
+    pause, printWarning, printError, printSuccess, printInfo, checkGlobalCommand
 )
 
 class Market(Station):
@@ -20,7 +20,9 @@ class Market(Station):
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
-            1: {"wood": 50, "stone": 50, "iron_ore": 10, "leather": 20},
+            1: {"wood": 50, "stone": 50, "iron_ore": 10, "leather": 20,
+                'description': "Enemies will begin to drop [resource]Trade Vouchers[/resource].\n[resource]Trade Vouchers[/resource] are used to restock the Market's inventory.\nThe market can stock [common]Common[/common] and [uncommon]Uncommon[/uncommon] equipment."
+                },
             2: {"iron_ore": 50, "leather": 50, "cloth": 50, "bone": 25},
             3: {"crystal": 25, "bone": 50, "soul": 25},
             4: {"mana_essence": 40, "diamond": 20, "soul": 50},
@@ -74,7 +76,7 @@ class Market(Station):
         selectedResources = random.sample(availableResources, min(len(availableResources), resourceCount))
         for resource in selectedResources:
             quantity = random.randint(10 + self.level * 5, 30 + self.level * 10)
-            basePrice = RESOURCES[resource].value * 3
+            basePrice = RESOURCES[resource].value * 8
             self.stock[resource] = (quantity, basePrice)
         # equipment
         equipmentCount = 2 + self.level
@@ -85,8 +87,8 @@ class Market(Station):
                 1: [ItemRarity.COMMON, ItemRarity.UNCOMMON],
                 2: [ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.RARE],
                 3: [ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC],
-                4: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY],
-                5: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY]
+                4: [ItemRarity.RARE, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY],
+                5: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.EPIC, ItemRarity.LEGENDARY]
             }
             possibleRarities = rarityChances.get(self.level, [ItemRarity.COMMON, ItemRarity.UNCOMMON])
             rarity = random.choice(possibleRarities)
@@ -146,7 +148,8 @@ class Market(Station):
             console.print("[dim]9.[/dim] Upgrade Market")
             
             choice = console.input("\n[cyan]>[/cyan] ").strip()
-            
+            checkGlobalCommand(choice)
+
             try:
                 choice = int(choice)
                 match choice:

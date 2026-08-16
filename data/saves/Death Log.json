@@ -21797,5 +21797,3928 @@
             "hardcoreMode": false,
             "saveNum": 1
         }
+    },
+    "August 15 2026 13:33:15": {
+        "player": {
+            "maxHealth": 128,
+            "baseHealth": 110,
+            "health": -24,
+            "baseDamage": 22,
+            "damageType": "chaos",
+            "baseSpeed": 1.05,
+            "stats": {
+                "Resistances": {
+                    "physical": 0,
+                    "fire": 0,
+                    "cold": 0,
+                    "lightning": 30,
+                    "dark": 0,
+                    "holy": 0,
+                    "arcane": 7,
+                    "earth": 0,
+                    "psychic": 6,
+                    "ethereal": 0,
+                    "chaos": 0,
+                    "all": 0,
+                    "elemental": 0,
+                    "otherworld": 0,
+                    "divine": 0
+                },
+                "Bonuses": {
+                    "item_rarity": 0,
+                    "item_quantity": 0,
+                    "enemy_quantity": 0,
+                    "xp_gain": 15,
+                    "gold_gain": 0,
+                    "stun_avoidance": 0,
+                    "dot_resistance": 0,
+                    "ailment_avoidance": 0,
+                    "healing_magnitude": 100,
+                    "crit_chance": 0,
+                    "crit_multi": 0,
+                    "crit_resistance": 0,
+                    "resistance_penetration": 0,
+                    "chance_to_multihit": 0,
+                    "lifesteal": 0,
+                    "damage_reduction": 0,
+                    "added_multihits": 0,
+                    "hp_regen": 9,
+                    "stamina_regen": 6,
+                    "increased_defenses": 0
+                },
+                "Permanent": {
+                    "physical": 0,
+                    "fire": 0,
+                    "earth": 0,
+                    "lightning": 0,
+                    "cold": 0,
+                    "holy": 0,
+                    "dark": 0,
+                    "psychic": 0,
+                    "arcane": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "resistance_penetration": 0,
+                    "stun_avoidance": 0,
+                    "dot_resistance": 0,
+                    "ailment_avoidance": 0,
+                    "crit_resistance": 0,
+                    "lifesteal": 0,
+                    "damage_reduction": 0,
+                    "hp_regen": 0,
+                    "stamina_regen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0
+                },
+                "Temporary": {
+                    "elemental": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "healing_magnitude": 0,
+                    "stun_avoidance": 0,
+                    "dot_resistance": 0,
+                    "speed": -0.8200000000000001,
+                    "crit_chance": 0,
+                    "crit_multi": 0,
+                    "resistance_peneration": 0,
+                    "lifesteal": 0,
+                    "damage_reduction": 0,
+                    "hp_regen": 0,
+                    "stamina_regen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0,
+                    "increased_dark_damage": 0
+                },
+                "baseCritChance": 0.05,
+                "baseCritMulti": 1.6,
+                "armour": 93,
+                "evasion": 24,
+                "energy_shield": 0,
+                "max_energy_shield": 0
+            },
+            "name": "Cult",
+            "level": 16,
+            "xp": 538,
+            "xpToNextLevel": 2304,
+            "gold": 1096,
+            "equipped": {
+                "weapon": {
+                    "name": "[uncommon]Striking Uncommon Weapon of Swiftness[/uncommon]",
+                    "itemType": "equipment",
+                    "rarity": "uncommon",
+                    "value": 64000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "weapon",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_damage_t1",
+                                "name": "Striking",
+                                "levelReq": 2,
+                                "tier": 1,
+                                "stat": "damage",
+                                "slot": "weapon",
+                                "minVal": 10,
+                                "maxVal": 18,
+                                "baseValue": 17,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 950,
+                                "categories": [
+                                    "damage",
+                                    "offensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "added_speed_t1",
+                                "name": "of Swiftness",
+                                "levelReq": 8,
+                                "tier": 1,
+                                "stat": "speed",
+                                "slot": "weapon",
+                                "minVal": 0.04,
+                                "maxVal": 0.09,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 800,
+                                "categories": [
+                                    "speed",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 19,
+                    "durability": 115,
+                    "maxDurability": 138,
+                    "baseMaxDurability": 157,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 25,
+                    "baseDamage": 22,
+                    "damageType": null,
+                    "entropy": 0.1425,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "head": {
+                    "name": "[common]Unstable Common Head of the Tempest[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "slot": "head",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.09,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "lightning_resistance_t2",
+                                "name": "of the Tempest",
+                                "levelReq": 18,
+                                "tier": 2,
+                                "stat": "lightning_resistance",
+                                "slot": "head",
+                                "minVal": 13,
+                                "maxVal": 22,
+                                "baseValue": 22,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "lightning",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 22,
+                    "durability": 82,
+                    "maxDurability": 94,
+                    "baseMaxDurability": 94,
+                    "defenseType": "armour",
+                    "defenseValue": 25,
+                    "baseDefenseValue": 25,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.09,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "chest": {
+                    "name": "[uncommon]Sturdy Uncommon Chest of the Storm[/uncommon]",
+                    "itemType": "equipment",
+                    "rarity": "uncommon",
+                    "value": 2048000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "chest",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_armour_t1",
+                                "name": "Sturdy",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "armour",
+                                "slot": "chest",
+                                "minVal": 8,
+                                "maxVal": 20,
+                                "baseValue": 9,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 950,
+                                "categories": [
+                                    "armour",
+                                    "defense",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "lightning_resistance_t1",
+                                "name": "of the Storm",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "lightning_resistance",
+                                "slot": "chest",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 8,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "lightning",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 9,
+                    "durability": 20,
+                    "maxDurability": 118,
+                    "baseMaxDurability": 145,
+                    "defenseType": "armour",
+                    "defenseValue": 40,
+                    "baseDefenseValue": 37,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0475,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "legs": {
+                    "name": "[common]Learning Common Legs of Respiration[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "legs",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_xp_gain_t1",
+                                "name": "Learning",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "xp_gain",
+                                "slot": "legs",
+                                "minVal": 10,
+                                "maxVal": 18,
+                                "baseValue": 15,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 700,
+                                "categories": [
+                                    "xp",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "stamina_regen_t2",
+                                "name": "of Respiration",
+                                "levelReq": 12,
+                                "tier": 2,
+                                "stat": "stamina_regen",
+                                "slot": "legs",
+                                "minVal": 4,
+                                "maxVal": 7,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 820,
+                                "categories": [
+                                    "stamina",
+                                    "regeneration",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 16,
+                    "durability": 44,
+                    "maxDurability": 114,
+                    "baseMaxDurability": 130,
+                    "defenseType": "armour",
+                    "defenseValue": 28,
+                    "baseDefenseValue": 28,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "feet": {
+                    "name": "[common]Healthy Common Feet of Healing[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "feet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_health_t1",
+                                "name": "Healthy",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "health",
+                                "slot": "feet",
+                                "minVal": 4,
+                                "maxVal": 10,
+                                "baseValue": 5,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 1000,
+                                "categories": [
+                                    "health",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "hp_regen_t2",
+                                "name": "of Healing",
+                                "levelReq": 12,
+                                "tier": 2,
+                                "stat": "hp_regen",
+                                "slot": "feet",
+                                "minVal": 4,
+                                "maxVal": 7,
+                                "baseValue": 7,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 820,
+                                "categories": [
+                                    "health",
+                                    "regeneration",
+                                    "defensive",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 19,
+                    "durability": 15,
+                    "maxDurability": 69,
+                    "baseMaxDurability": 69,
+                    "defenseType": "evasion",
+                    "defenseValue": 24,
+                    "baseDefenseValue": 24,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "ring": {
+                    "name": "[epic]Chaotic Epic Ring of the Mind[/epic]",
+                    "itemType": "equipment",
+                    "rarity": "epic",
+                    "value": 524288000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_speed_t1",
+                                "name": "Nimble",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "speed",
+                                "slot": "ring",
+                                "minVal": 0.03,
+                                "maxVal": 0.08,
+                                "baseValue": 0.07,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 750,
+                                "categories": [
+                                    "speed",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t2",
+                                "name": "Chaotic",
+                                "levelReq": 12,
+                                "tier": 2,
+                                "stat": "entropy",
+                                "slot": "ring",
+                                "minVal": 0.11,
+                                "maxVal": 0.18,
+                                "baseValue": 0.13,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 780,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "psychic_resistance_t1",
+                                "name": "of the Mind",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "psychic_resistance",
+                                "slot": "ring",
+                                "minVal": 5,
+                                "maxVal": 15,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "psychic",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "hp_regen_t1",
+                                "name": "of Recovery",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "hp_regen",
+                                "slot": "ring",
+                                "minVal": 1,
+                                "maxVal": 2,
+                                "baseValue": 2,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 850,
+                                "categories": [
+                                    "health",
+                                    "regeneration",
+                                    "defensive",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 13,
+                    "durability": 425,
+                    "maxDurability": 465,
+                    "baseMaxDurability": 426,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.13,
+                    "baseEntropyResistance": 0.2,
+                    "entropyResistance": 0.2,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "amulet": {
+                    "name": "[common]Healthy Common Amulet of the Mage[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "amulet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_health_t1",
+                                "name": "Healthy",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "health",
+                                "slot": "amulet",
+                                "minVal": 9,
+                                "maxVal": 17,
+                                "baseValue": 13,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 950,
+                                "categories": [
+                                    "health",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "arcane_resistance_t1",
+                                "name": "of the Mage",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "arcane_resistance",
+                                "slot": "amulet",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 7,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "arcane",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 13,
+                    "durability": 88,
+                    "maxDurability": 89,
+                    "baseMaxDurability": 89,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                }
+            },
+            "equipmentStorage": [
+                {
+                    "name": "[common]Healthy Common Head of Light[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_health_t1",
+                                "name": "Healthy",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "health",
+                                "slot": "head",
+                                "minVal": 4,
+                                "maxVal": 10,
+                                "baseValue": 4,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 1000,
+                                "categories": [
+                                    "health",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "holy_resistance_t1",
+                                "name": "of Light",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "holy_resistance",
+                                "slot": "head",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 8,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "holy",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 5,
+                    "durability": 49,
+                    "maxDurability": 70,
+                    "baseMaxDurability": 60,
+                    "defenseType": "evasion",
+                    "defenseValue": 13,
+                    "baseDefenseValue": 13,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Unstable Common Feet of the Storm[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "feet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "slot": "feet",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "lightning_resistance_t1",
+                                "name": "of the Storm",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "lightning_resistance",
+                                "slot": "feet",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 5,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "lightning",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 2,
+                    "durability": 35,
+                    "maxDurability": 60,
+                    "baseMaxDurability": 60,
+                    "defenseType": "energy_shield",
+                    "defenseValue": 7,
+                    "baseDefenseValue": 7,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.06,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Shielded Common Head of Entropy[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_energy_shield_t1",
+                                "name": "Shielded",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "energy_shield",
+                                "slot": "head",
+                                "minVal": 3,
+                                "maxVal": 8,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 1000,
+                                "categories": [
+                                    "energy_shield",
+                                    "defensive",
+                                    "defense"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "chaos_resistance_t1",
+                                "name": "of Entropy",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "chaos_resistance",
+                                "slot": "head",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "chaos",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 8,
+                    "durability": 77,
+                    "maxDurability": 82,
+                    "baseMaxDurability": 90,
+                    "defenseType": "energy_shield",
+                    "defenseValue": 18,
+                    "baseDefenseValue": 12,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Unstable Common Head of Recovery[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "slot": "head",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "hp_regen_t1",
+                                "name": "of Recovery",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "hp_regen",
+                                "slot": "head",
+                                "minVal": 1,
+                                "maxVal": 3,
+                                "baseValue": 1,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "health",
+                                    "regeneration",
+                                    "defensive",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 13,
+                    "durability": 112,
+                    "maxDurability": 76,
+                    "baseMaxDurability": 115,
+                    "defenseType": "armour",
+                    "defenseValue": 13,
+                    "baseDefenseValue": 13,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.06,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Striking Common Ring[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_damage_t1",
+                                "name": "Striking",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "damage",
+                                "slot": "ring",
+                                "minVal": 3,
+                                "maxVal": 7,
+                                "baseValue": 4,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 880,
+                                "categories": [
+                                    "damage",
+                                    "offensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 6,
+                    "durability": 56,
+                    "maxDurability": 62,
+                    "baseMaxDurability": 56,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 4,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[uncommon]Learning Uncommon Ring of Recovery[/uncommon]",
+                    "itemType": "equipment",
+                    "rarity": "uncommon",
+                    "value": 256000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_xp_gain_t1",
+                                "name": "Learning",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "xp_gain",
+                                "slot": "ring",
+                                "minVal": 10,
+                                "maxVal": 18,
+                                "baseValue": 14,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 700,
+                                "categories": [
+                                    "xp",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "hp_regen_t1",
+                                "name": "of Recovery",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "hp_regen",
+                                "slot": "ring",
+                                "minVal": 1,
+                                "maxVal": 2,
+                                "baseValue": 2,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 850,
+                                "categories": [
+                                    "health",
+                                    "regeneration",
+                                    "defensive",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "dark_resistance_t1",
+                                "name": "of Shadow",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "dark_resistance",
+                                "slot": "ring",
+                                "minVal": 5,
+                                "maxVal": 15,
+                                "baseValue": 9,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "dark",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 14,
+                    "durability": 142,
+                    "maxDurability": 128,
+                    "baseMaxDurability": 142,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Unstable Common Legs[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "legs",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "slot": "legs",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 15,
+                    "durability": 90,
+                    "maxDurability": 80,
+                    "baseMaxDurability": 95,
+                    "defenseType": "armour",
+                    "defenseValue": 31,
+                    "baseDefenseValue": 31,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.06,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Head of Light[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "holy_resistance_t1",
+                                "name": "of Light",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "holy_resistance",
+                                "slot": "head",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "holy",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 16,
+                    "durability": 128,
+                    "maxDurability": 114,
+                    "baseMaxDurability": 130,
+                    "defenseType": "evasion",
+                    "defenseValue": 25,
+                    "baseDefenseValue": 25,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Legs of the Mind[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "legs",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "psychic_resistance_t1",
+                                "name": "of the Mind",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "psychic_resistance",
+                                "slot": "legs",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "psychic",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 16,
+                    "durability": 110,
+                    "maxDurability": 98,
+                    "baseMaxDurability": 114,
+                    "defenseType": "armour",
+                    "defenseValue": 30,
+                    "baseDefenseValue": 30,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Sturdy Common Feet of the Storm[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "feet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_armour_t1",
+                                "name": "Sturdy",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "armour",
+                                "slot": "feet",
+                                "minVal": 7,
+                                "maxVal": 15,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "armour",
+                                    "defensive",
+                                    "defense"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "lightning_resistance_t1",
+                                "name": "of the Storm",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "lightning_resistance",
+                                "slot": "feet",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 8,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "lightning",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 10,
+                    "durability": 8,
+                    "maxDurability": 100,
+                    "baseMaxDurability": 80,
+                    "defenseType": "armour",
+                    "defenseValue": 15,
+                    "baseDefenseValue": 14,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Weapon of Plunder[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "weapon",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "increased_item_quantity_t1",
+                                "name": "of Plunder",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "item_quantity",
+                                "slot": "weapon",
+                                "minVal": 5,
+                                "maxVal": 10,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 550,
+                                "categories": [
+                                    "quantity",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 19,
+                    "durability": 136,
+                    "maxDurability": 126,
+                    "baseMaxDurability": 145,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 19,
+                    "baseDamage": 19,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Ring[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 19,
+                    "durability": 144,
+                    "maxDurability": 69,
+                    "baseMaxDurability": 145,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Striking Common Amulet[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "amulet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_damage_t1",
+                                "name": "Striking",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "damage",
+                                "slot": "amulet",
+                                "minVal": 3,
+                                "maxVal": 7,
+                                "baseValue": 4,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 880,
+                                "categories": [
+                                    "damage",
+                                    "offensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 14,
+                    "durability": 64,
+                    "maxDurability": 64,
+                    "baseMaxDurability": 64,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 4,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                }
+            ],
+            "craftingInventory": {
+                "growth_prefix": 1,
+                "growth_suffix": 1,
+                "erasing_brittle": 1,
+                "erasing_erasing": 1,
+                "erasing_suffix": 1
+            },
+            "inventory": {
+                "stone": 46,
+                "cloth": 89,
+                "herbs": 98,
+                "diamond": 36,
+                "leather": 99,
+                "mana_essence": 24,
+                "crystal": 8,
+                "iron_ore": 9,
+                "wood": 65,
+                "ascended_essence": 47,
+                "bone": 6,
+                "soul": 46,
+                "dragon_scale": 17,
+                "ancient_wood": 11
+            },
+            "className": "Cultist",
+            "classDescription": "[class_cultist]A manic worshipper of demonic powers.[/class_cultist]\n[resource]Insanity[/resource]: At the start of combat, [resource]Insanity[/resource] is randomly set between your minimum and maximum. Base minimum = -50, Base maximum = 50\nPositive [resource]Insanity[/resource] ([resource]Manic[/resource]): +2% Increased [chaos]Chaos[/chaos] Damage per [resource]Insanity[/resource], -0.02 [speed]Speed[/speed] per [resource]Insanity[/resource], +1% [critical]Crit Chance[/critical] per 2 [resource]Insanity[/resource].\nNegative [resource]Insanity[/resource] ([resource]Stable[/resource]): +1% [resistance]Damage Reduction[/resistance] per 5 [resource]Insanity[/resource], +1% Max HP gained as [buff]Shield[/buff] at turn start per 10 [resource]Insanity[/resource].\n0 [resource]Insanity[/resource]: +50% Increased Damage, +25% [resistance]Damage Reduction[/resistance]. When attacking or attacked, [resource]Insanity[/resource] is randomly set between your minimum and maximum.\nAt maximum [resource]Insanity[/resource]: 75% Increased Damage, take 10% of damage dealt as [chaos]Chaos[/chaos] damage. [resource]Insanity[/resource] is randomly set between -1 and your minimum.\nAt minimum [resource]Insanity[/resource]: 25% of damage taken from next hit is gained as damage. Take no damage from the next hit. [resource]Insanity[/resource] is randomly set between 1 and your maximum.\nAt the start of every turn, [resource]Insanity[/resource] is randomly: Halved, Doubled, Inverted, or shifted by \u00b110.\nStarting Stats: 35 [health]Health[/health] | 7 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 160% [critical]Crit Damage[/critical] | [chaos]Chaos Damage[/chaos] | 0.9 [speed]Speed[/speed].",
+            "ascendancy": null,
+            "ascendancyDescription": null,
+            "maxLevel": 100,
+            "insanity": 20,
+            "minInsanity": -50,
+            "maxInsanity": 50
+        },
+        "camp": {
+            "campfire": {
+                "name": "Campfire",
+                "resourcesNeeded": {
+                    "wood": 20,
+                    "stone": 25,
+                    "iron_ore": 10
+                },
+                "level": 1,
+                "supplies": 52
+            },
+            "forge": {
+                "name": "Forge",
+                "resourcesNeeded": {
+                    "crystal": 40,
+                    "mana_essence": 20,
+                    "ancient_wood": 10
+                },
+                "level": 2,
+                "fuel": 26,
+                "blueprints": 7
+            },
+            "market": {
+                "name": "Market",
+                "resourcesNeeded": {
+                    "wood": 50,
+                    "stone": 50,
+                    "iron_ore": 10,
+                    "leather": 20
+                },
+                "level": 0,
+                "tradeVouchers": 0,
+                "stock": {
+                    "[common]Common Amulet of Mending[/common]": {
+                        "amount": 1,
+                        "value": 1500,
+                        "item": {
+                            "name": "[common]Common Amulet of Mending[/common]",
+                            "itemType": "equipment",
+                            "rarity": "common",
+                            "value": 500,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "amulet",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": null
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": {
+                                        "id": "healing_magnitude_t1",
+                                        "name": "of Mending",
+                                        "levelReq": 15,
+                                        "tier": 1,
+                                        "stat": "healing_magnitude",
+                                        "slot": "amulet",
+                                        "minVal": 10,
+                                        "maxVal": 18,
+                                        "baseValue": 15,
+                                        "mastery": 0,
+                                        "isPercent": true,
+                                        "kind": "suffix",
+                                        "weight": 600,
+                                        "categories": [
+                                            "health",
+                                            "healing",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "level": 15,
+                            "durability": 80,
+                            "maxDurability": 80,
+                            "baseMaxDurability": 80,
+                            "defenseType": null,
+                            "defenseValue": 0,
+                            "baseDefenseValue": 0,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.0,
+                            "baseEntropyResistance": 0.0,
+                            "entropyResistance": 0.0,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    },
+                    "[common]Unstable Common Head[/common]": {
+                        "amount": 1,
+                        "value": 1000,
+                        "item": {
+                            "name": "[common]Unstable Common Head[/common]",
+                            "itemType": "equipment",
+                            "rarity": "common",
+                            "value": 500,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "head",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": {
+                                        "id": "added_entropy_t1",
+                                        "name": "Unstable",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "entropy",
+                                        "slot": "head",
+                                        "minVal": 0.05,
+                                        "maxVal": 0.1,
+                                        "baseValue": 0.07,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "prefix",
+                                        "weight": 900,
+                                        "categories": [
+                                            "entropy",
+                                            "crafting",
+                                            "utility"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": null
+                                }
+                            ],
+                            "level": 15,
+                            "durability": 95,
+                            "maxDurability": 95,
+                            "baseMaxDurability": 95,
+                            "defenseType": "energy_shield",
+                            "defenseValue": 14,
+                            "baseDefenseValue": 14,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.07,
+                            "baseEntropyResistance": 0.0,
+                            "entropyResistance": 0.0,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    }
+                },
+                "lastRestock": "2026-08-15T13:30:34.791940"
+            },
+            "questBoard": {
+                "name": "Quest Board",
+                "resourcesNeeded": {
+                    "wood": 30,
+                    "stone": 30
+                },
+                "level": 0,
+                "activeQuests": {},
+                "completedQuests": []
+            }
+        },
+        "game": {
+            "areaLevel": 9,
+            "battlesWon": 41,
+            "difficulty": "normal",
+            "hardcoreMode": false,
+            "saveNum": 1
+        }
+    },
+    "August 15 2026 13:46:36": {
+        "player": {
+            "maxHealth": 133,
+            "baseHealth": 120,
+            "health": -11,
+            "baseDamage": 24,
+            "damageType": "chaos",
+            "baseSpeed": 1.07,
+            "stats": {
+                "Resistances": {
+                    "physical": 0,
+                    "fire": 0,
+                    "cold": 0,
+                    "lightning": 0,
+                    "dark": 0,
+                    "holy": 0,
+                    "arcane": 7,
+                    "earth": 0,
+                    "psychic": 6,
+                    "ethereal": 0,
+                    "chaos": 0,
+                    "all": 0,
+                    "elemental": 0,
+                    "otherworld": 0,
+                    "divine": 7
+                },
+                "Bonuses": {
+                    "item_rarity": 0,
+                    "item_quantity": 0,
+                    "enemy_quantity": 0,
+                    "xp_gain": 15,
+                    "gold_gain": 0,
+                    "stun_avoidance": 0,
+                    "dot_resistance": 0,
+                    "ailment_avoidance": 0,
+                    "healing_magnitude": 100,
+                    "crit_chance": 0,
+                    "crit_multi": 0,
+                    "crit_resistance": 0,
+                    "resistance_penetration": 0,
+                    "chance_to_multihit": 0,
+                    "lifesteal": 0,
+                    "damage_reduction": 0,
+                    "added_multihits": 0,
+                    "hp_regen": 2,
+                    "stamina_regen": 6,
+                    "increased_defenses": 0
+                },
+                "Permanent": {
+                    "physical": 0,
+                    "fire": 0,
+                    "earth": 0,
+                    "lightning": 0,
+                    "cold": 0,
+                    "holy": 0,
+                    "dark": 0,
+                    "psychic": 0,
+                    "arcane": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "resistance_penetration": 0,
+                    "stun_avoidance": 0,
+                    "dot_resistance": 0,
+                    "ailment_avoidance": 0,
+                    "crit_resistance": 0,
+                    "lifesteal": 0,
+                    "damage_reduction": 0,
+                    "hp_regen": 0,
+                    "stamina_regen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0
+                },
+                "Temporary": {
+                    "elemental": 0,
+                    "divine": 0,
+                    "otherworld": 0,
+                    "all": 0,
+                    "healing_magnitude": 0,
+                    "stun_avoidance": 0,
+                    "dot_resistance": 0,
+                    "speed": 0.0,
+                    "crit_chance": 0,
+                    "crit_multi": 0,
+                    "resistance_peneration": 0,
+                    "lifesteal": 0,
+                    "damage_reduction": 0,
+                    "hp_regen": 0,
+                    "stamina_regen": 0,
+                    "added_multihits": 0,
+                    "increased_defenses": 0,
+                    "added_armour": 0,
+                    "added_evasion": 0,
+                    "added_energy_shield": 0,
+                    "increased_armour": 0,
+                    "increased_evasion": 0,
+                    "increased_energy_shield": 0,
+                    "increased_dark_damage": 0
+                },
+                "baseCritChance": 0.05,
+                "baseCritMulti": 1.6,
+                "armour": 28,
+                "evasion": 185,
+                "energy_shield": 0,
+                "max_energy_shield": 0
+            },
+            "name": "Cult",
+            "level": 18,
+            "xp": 1569,
+            "xpToNextLevel": 2916,
+            "gold": 1299,
+            "equipped": {
+                "weapon": {
+                    "name": "[uncommon]Striking Uncommon Weapon of Swiftness[/uncommon]",
+                    "itemType": "equipment",
+                    "rarity": "uncommon",
+                    "value": 64000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "weapon",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_damage_t1",
+                                "name": "Striking",
+                                "levelReq": 2,
+                                "tier": 1,
+                                "stat": "damage",
+                                "slot": "weapon",
+                                "minVal": 10,
+                                "maxVal": 18,
+                                "baseValue": 17,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 950,
+                                "categories": [
+                                    "damage",
+                                    "offensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "added_speed_t1",
+                                "name": "of Swiftness",
+                                "levelReq": 8,
+                                "tier": 1,
+                                "stat": "speed",
+                                "slot": "weapon",
+                                "minVal": 0.04,
+                                "maxVal": 0.09,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 800,
+                                "categories": [
+                                    "speed",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 19,
+                    "durability": 87,
+                    "maxDurability": 157,
+                    "baseMaxDurability": 157,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 25,
+                    "baseDamage": 22,
+                    "damageType": null,
+                    "entropy": 0.1425,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "head": {
+                    "name": "[common]Flexible Common Head of Focus[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_evasion_t2",
+                                "name": "Flexible",
+                                "levelReq": 10,
+                                "tier": 2,
+                                "stat": "evasion",
+                                "slot": "head",
+                                "minVal": 16,
+                                "maxVal": 30,
+                                "baseValue": 24,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "evasion",
+                                    "defensive",
+                                    "defense"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "increased_crit_chance_t1",
+                                "name": "of Focus",
+                                "levelReq": 16,
+                                "tier": 1,
+                                "stat": "crit_chance",
+                                "slot": "head",
+                                "minVal": 15,
+                                "maxVal": 25,
+                                "baseValue": 20,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "suffix",
+                                "weight": 600,
+                                "categories": [
+                                    "critical",
+                                    "offensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 17,
+                    "durability": 67,
+                    "maxDurability": 84,
+                    "baseMaxDurability": 84,
+                    "defenseType": "evasion",
+                    "defenseValue": 54,
+                    "baseDefenseValue": 30,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "chest": {
+                    "name": "[uncommon]Flexible Uncommon Chest of the Sacred[/uncommon]",
+                    "itemType": "equipment",
+                    "rarity": "uncommon",
+                    "value": 2000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "chest",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_evasion_t2",
+                                "name": "Flexible",
+                                "levelReq": 10,
+                                "tier": 2,
+                                "stat": "evasion",
+                                "slot": "chest",
+                                "minVal": 34,
+                                "maxVal": 55,
+                                "baseValue": 55,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 840,
+                                "categories": [
+                                    "evasion",
+                                    "defense",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_evasion_t2",
+                                "name": "Dodging",
+                                "levelReq": 18,
+                                "tier": 2,
+                                "stat": "evasion",
+                                "slot": "chest",
+                                "minVal": 21,
+                                "maxVal": 45,
+                                "baseValue": 25,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 800,
+                                "categories": [
+                                    "evasion",
+                                    "defense",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "divine_resistance_t1",
+                                "name": "of the Sacred",
+                                "levelReq": 15,
+                                "tier": 1,
+                                "stat": "divine_resistance",
+                                "slot": "chest",
+                                "minVal": 4,
+                                "maxVal": 7,
+                                "baseValue": 7,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 450,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "defensive",
+                                    "dark",
+                                    "holy",
+                                    "arcane"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 24,
+                    "durability": 142,
+                    "maxDurability": 170,
+                    "baseMaxDurability": 170,
+                    "defenseType": "evasion",
+                    "defenseValue": 131,
+                    "baseDefenseValue": 50,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.374,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "legs": {
+                    "name": "[common]Learning Common Legs of Respiration[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "legs",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_xp_gain_t1",
+                                "name": "Learning",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "xp_gain",
+                                "slot": "legs",
+                                "minVal": 10,
+                                "maxVal": 18,
+                                "baseValue": 15,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 700,
+                                "categories": [
+                                    "xp",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "stamina_regen_t2",
+                                "name": "of Respiration",
+                                "levelReq": 12,
+                                "tier": 2,
+                                "stat": "stamina_regen",
+                                "slot": "legs",
+                                "minVal": 4,
+                                "maxVal": 7,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 820,
+                                "categories": [
+                                    "stamina",
+                                    "regeneration",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 16,
+                    "durability": 19,
+                    "maxDurability": 66,
+                    "baseMaxDurability": 130,
+                    "defenseType": "armour",
+                    "defenseValue": 28,
+                    "baseDefenseValue": 28,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "ring": {
+                    "name": "[epic]Chaotic Epic Ring of the Mind[/epic]",
+                    "itemType": "equipment",
+                    "rarity": "epic",
+                    "value": 524288000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_speed_t1",
+                                "name": "Nimble",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "speed",
+                                "slot": "ring",
+                                "minVal": 0.03,
+                                "maxVal": 0.08,
+                                "baseValue": 0.07,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 750,
+                                "categories": [
+                                    "speed",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t2",
+                                "name": "Chaotic",
+                                "levelReq": 12,
+                                "tier": 2,
+                                "stat": "entropy",
+                                "slot": "ring",
+                                "minVal": 0.11,
+                                "maxVal": 0.18,
+                                "baseValue": 0.13,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 780,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "psychic_resistance_t1",
+                                "name": "of the Mind",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "psychic_resistance",
+                                "slot": "ring",
+                                "minVal": 5,
+                                "maxVal": 15,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "psychic",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "hp_regen_t1",
+                                "name": "of Recovery",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "hp_regen",
+                                "slot": "ring",
+                                "minVal": 1,
+                                "maxVal": 2,
+                                "baseValue": 2,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 850,
+                                "categories": [
+                                    "health",
+                                    "regeneration",
+                                    "defensive",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 13,
+                    "durability": 423,
+                    "maxDurability": 413,
+                    "baseMaxDurability": 426,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.13,
+                    "baseEntropyResistance": 0.2,
+                    "entropyResistance": 0.2,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                "amulet": {
+                    "name": "[common]Healthy Common Amulet of the Mage[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "amulet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_health_t1",
+                                "name": "Healthy",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "health",
+                                "slot": "amulet",
+                                "minVal": 9,
+                                "maxVal": 17,
+                                "baseValue": 13,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 950,
+                                "categories": [
+                                    "health",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "arcane_resistance_t1",
+                                "name": "of the Mage",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "arcane_resistance",
+                                "slot": "amulet",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 7,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "arcane",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 13,
+                    "durability": 86,
+                    "maxDurability": 76,
+                    "baseMaxDurability": 89,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                }
+            },
+            "equipmentStorage": [
+                {
+                    "name": "[common]Healthy Common Head of Light[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_health_t1",
+                                "name": "Healthy",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "health",
+                                "slot": "head",
+                                "minVal": 4,
+                                "maxVal": 10,
+                                "baseValue": 4,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 1000,
+                                "categories": [
+                                    "health",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "holy_resistance_t1",
+                                "name": "of Light",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "holy_resistance",
+                                "slot": "head",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 8,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "holy",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 5,
+                    "durability": 49,
+                    "maxDurability": 70,
+                    "baseMaxDurability": 60,
+                    "defenseType": "evasion",
+                    "defenseValue": 13,
+                    "baseDefenseValue": 13,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Unstable Common Feet of the Storm[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "feet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "slot": "feet",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "lightning_resistance_t1",
+                                "name": "of the Storm",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "lightning_resistance",
+                                "slot": "feet",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 5,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "lightning",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 2,
+                    "durability": 35,
+                    "maxDurability": 52,
+                    "baseMaxDurability": 60,
+                    "defenseType": "energy_shield",
+                    "defenseValue": 7,
+                    "baseDefenseValue": 7,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.06,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Shielded Common Head of Entropy[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_energy_shield_t1",
+                                "name": "Shielded",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "energy_shield",
+                                "slot": "head",
+                                "minVal": 3,
+                                "maxVal": 8,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 1000,
+                                "categories": [
+                                    "energy_shield",
+                                    "defensive",
+                                    "defense"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "chaos_resistance_t1",
+                                "name": "of Entropy",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "chaos_resistance",
+                                "slot": "head",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "chaos",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 8,
+                    "durability": 77,
+                    "maxDurability": 58,
+                    "baseMaxDurability": 90,
+                    "defenseType": "energy_shield",
+                    "defenseValue": 18,
+                    "baseDefenseValue": 12,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Unstable Common Head of Recovery[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "slot": "head",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "hp_regen_t1",
+                                "name": "of Recovery",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "hp_regen",
+                                "slot": "head",
+                                "minVal": 1,
+                                "maxVal": 3,
+                                "baseValue": 1,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "health",
+                                    "regeneration",
+                                    "defensive",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 13,
+                    "durability": 112,
+                    "maxDurability": 76,
+                    "baseMaxDurability": 115,
+                    "defenseType": "armour",
+                    "defenseValue": 13,
+                    "baseDefenseValue": 13,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.06,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Striking Common Ring[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_damage_t1",
+                                "name": "Striking",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "damage",
+                                "slot": "ring",
+                                "minVal": 3,
+                                "maxVal": 7,
+                                "baseValue": 4,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 880,
+                                "categories": [
+                                    "damage",
+                                    "offensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 6,
+                    "durability": 56,
+                    "maxDurability": 56,
+                    "baseMaxDurability": 56,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 4,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[uncommon]Learning Uncommon Ring of Recovery[/uncommon]",
+                    "itemType": "equipment",
+                    "rarity": "uncommon",
+                    "value": 256000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_xp_gain_t1",
+                                "name": "Learning",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "xp_gain",
+                                "slot": "ring",
+                                "minVal": 10,
+                                "maxVal": 18,
+                                "baseValue": 14,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 700,
+                                "categories": [
+                                    "xp",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "hp_regen_t1",
+                                "name": "of Recovery",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "hp_regen",
+                                "slot": "ring",
+                                "minVal": 1,
+                                "maxVal": 2,
+                                "baseValue": 2,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 850,
+                                "categories": [
+                                    "health",
+                                    "regeneration",
+                                    "defensive",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        },
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "dark_resistance_t1",
+                                "name": "of Shadow",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "dark_resistance",
+                                "slot": "ring",
+                                "minVal": 5,
+                                "maxVal": 15,
+                                "baseValue": 9,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "dark",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 14,
+                    "durability": 142,
+                    "maxDurability": 114,
+                    "baseMaxDurability": 142,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Unstable Common Legs[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "legs",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "added_entropy_t1",
+                                "name": "Unstable",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "entropy",
+                                "slot": "legs",
+                                "minVal": 0.05,
+                                "maxVal": 0.1,
+                                "baseValue": 0.06,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "entropy",
+                                    "crafting",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 15,
+                    "durability": 90,
+                    "maxDurability": 80,
+                    "baseMaxDurability": 95,
+                    "defenseType": "armour",
+                    "defenseValue": 31,
+                    "baseDefenseValue": 31,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.06,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Head of Light[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "head",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "holy_resistance_t1",
+                                "name": "of Light",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "holy_resistance",
+                                "slot": "head",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "divine",
+                                    "holy",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 16,
+                    "durability": 128,
+                    "maxDurability": 66,
+                    "baseMaxDurability": 130,
+                    "defenseType": "evasion",
+                    "defenseValue": 25,
+                    "baseDefenseValue": 25,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Legs of the Mind[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "legs",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "psychic_resistance_t1",
+                                "name": "of the Mind",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "psychic_resistance",
+                                "slot": "legs",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 750,
+                                "categories": [
+                                    "resistance",
+                                    "psychic",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 16,
+                    "durability": 110,
+                    "maxDurability": 114,
+                    "baseMaxDurability": 114,
+                    "defenseType": "armour",
+                    "defenseValue": 30,
+                    "baseDefenseValue": 30,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Sturdy Common Feet of the Storm[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "feet",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_armour_t1",
+                                "name": "Sturdy",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "armour",
+                                "slot": "feet",
+                                "minVal": 7,
+                                "maxVal": 15,
+                                "baseValue": 12,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 900,
+                                "categories": [
+                                    "armour",
+                                    "defensive",
+                                    "defense"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "lightning_resistance_t1",
+                                "name": "of the Storm",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "lightning_resistance",
+                                "slot": "feet",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 8,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "lightning",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 10,
+                    "durability": 8,
+                    "maxDurability": 80,
+                    "baseMaxDurability": 80,
+                    "defenseType": "armour",
+                    "defenseValue": 15,
+                    "baseDefenseValue": 14,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Weapon of Plunder[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "weapon",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "increased_item_quantity_t1",
+                                "name": "of Plunder",
+                                "levelReq": 10,
+                                "tier": 1,
+                                "stat": "item_quantity",
+                                "slot": "weapon",
+                                "minVal": 5,
+                                "maxVal": 10,
+                                "baseValue": 6,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 550,
+                                "categories": [
+                                    "quantity",
+                                    "utility"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 19,
+                    "durability": 136,
+                    "maxDurability": 126,
+                    "baseMaxDurability": 145,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 19,
+                    "baseDamage": 19,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[common]Common Ring[/common]",
+                    "itemType": "equipment",
+                    "rarity": "common",
+                    "value": 500,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "ring",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": null
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": null
+                        }
+                    ],
+                    "level": 19,
+                    "durability": 144,
+                    "maxDurability": 107,
+                    "baseMaxDurability": 145,
+                    "defenseType": null,
+                    "defenseValue": 0,
+                    "baseDefenseValue": 0,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.0,
+                    "entropyResistance": 0.0,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                },
+                {
+                    "name": "[uncommon]Sturdy Uncommon Chest of the Storm[/uncommon]",
+                    "itemType": "equipment",
+                    "rarity": "uncommon",
+                    "value": 2048000,
+                    "stackable": false,
+                    "maxStack": 1,
+                    "slot": "chest",
+                    "prefixSlots": [
+                        {
+                            "kind": "prefix",
+                            "affix": {
+                                "id": "increased_armour_t1",
+                                "name": "Sturdy",
+                                "levelReq": 5,
+                                "tier": 1,
+                                "stat": "armour",
+                                "slot": "chest",
+                                "minVal": 8,
+                                "maxVal": 20,
+                                "baseValue": 9,
+                                "mastery": 0,
+                                "isPercent": true,
+                                "kind": "prefix",
+                                "weight": 950,
+                                "categories": [
+                                    "armour",
+                                    "defense",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "suffixSlots": [
+                        {
+                            "kind": "suffix",
+                            "affix": {
+                                "id": "lightning_resistance_t1",
+                                "name": "of the Storm",
+                                "levelReq": 1,
+                                "tier": 1,
+                                "stat": "lightning_resistance",
+                                "slot": "chest",
+                                "minVal": 5,
+                                "maxVal": 12,
+                                "baseValue": 8,
+                                "mastery": 0,
+                                "isPercent": false,
+                                "kind": "suffix",
+                                "weight": 900,
+                                "categories": [
+                                    "resistance",
+                                    "elemental",
+                                    "lightning",
+                                    "defensive"
+                                ],
+                                "locked": false,
+                                "soulbound": false,
+                                "isMythic": false,
+                                "isGlobal": false
+                            }
+                        }
+                    ],
+                    "level": 9,
+                    "durability": 21,
+                    "maxDurability": 127,
+                    "baseMaxDurability": 145,
+                    "defenseType": "armour",
+                    "defenseValue": 40,
+                    "baseDefenseValue": 37,
+                    "damage": 0,
+                    "baseDamage": 0,
+                    "damageType": null,
+                    "entropy": 0.0475,
+                    "entropyPreserved": false,
+                    "maxEntropy": 1.0,
+                    "baseEntropyResistance": 0.05,
+                    "entropyResistance": 0.05,
+                    "entropyLocked": false,
+                    "destabilised": false,
+                    "destabilisedAffixes": []
+                }
+            ],
+            "craftingInventory": {
+                "erasing_brittle": 1,
+                "erasing_erasing": 1,
+                "erasing_wasting": 1,
+                "erasing_prefix": 1,
+                "destabilisation_destabilisation": 1
+            },
+            "inventory": {
+                "stone": 1,
+                "cloth": 76,
+                "herbs": 160,
+                "diamond": 43,
+                "leather": 67,
+                "mana_essence": 12,
+                "crystal": 42,
+                "iron_ore": 21,
+                "wood": 48,
+                "ascended_essence": 46,
+                "bone": 38,
+                "soul": 65,
+                "dragon_scale": 34,
+                "ancient_wood": 40
+            },
+            "className": "Cultist",
+            "classDescription": "[class_cultist]A manic worshipper of demonic powers.[/class_cultist]\n[resource]Insanity[/resource]: At the start of combat, [resource]Insanity[/resource] is randomly set between your minimum and maximum. Base minimum = -50, Base maximum = 50\nPositive [resource]Insanity[/resource] ([resource]Manic[/resource]): +2% Increased [chaos]Chaos[/chaos] Damage per [resource]Insanity[/resource], -0.02 [speed]Speed[/speed] per [resource]Insanity[/resource], +1% [critical]Crit Chance[/critical] per 2 [resource]Insanity[/resource].\nNegative [resource]Insanity[/resource] ([resource]Stable[/resource]): +1% [resistance]Damage Reduction[/resistance] per 5 [resource]Insanity[/resource], +1% Max HP gained as [buff]Shield[/buff] at turn start per 10 [resource]Insanity[/resource].\n0 [resource]Insanity[/resource]: +50% Increased Damage, +25% [resistance]Damage Reduction[/resistance]. When attacking or attacked, [resource]Insanity[/resource] is randomly set between your minimum and maximum.\nAt maximum [resource]Insanity[/resource]: 75% Increased Damage, take 10% of damage dealt as [chaos]Chaos[/chaos] damage. [resource]Insanity[/resource] is randomly set between -1 and your minimum.\nAt minimum [resource]Insanity[/resource]: 25% of damage taken from next hit is gained as damage. Take no damage from the next hit. [resource]Insanity[/resource] is randomly set between 1 and your maximum.\nAt the start of every turn, [resource]Insanity[/resource] is randomly: Halved, Doubled, Inverted, or shifted by \u00b110.\nStarting Stats: 35 [health]Health[/health] | 7 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 160% [critical]Crit Damage[/critical] | [chaos]Chaos Damage[/chaos] | 0.9 [speed]Speed[/speed].",
+            "ascendancy": null,
+            "ascendancyDescription": null,
+            "maxLevel": 100,
+            "insanity": 33,
+            "minInsanity": -50,
+            "maxInsanity": 50
+        },
+        "camp": {
+            "campfire": {
+                "name": "Campfire",
+                "resourcesNeeded": {
+                    "wood": 20,
+                    "stone": 25,
+                    "iron_ore": 10
+                },
+                "level": 1,
+                "supplies": 62
+            },
+            "forge": {
+                "name": "Forge",
+                "resourcesNeeded": {
+                    "crystal": 40,
+                    "mana_essence": 20,
+                    "ancient_wood": 10
+                },
+                "level": 2,
+                "fuel": 45,
+                "blueprints": 23
+            },
+            "market": {
+                "name": "Market",
+                "resourcesNeeded": {
+                    "iron_ore": 50,
+                    "leather": 50,
+                    "cloth": 50,
+                    "bone": 25
+                },
+                "level": 1,
+                "tradeVouchers": 1,
+                "stock": {
+                    "[uncommon]Vigorous Uncommon Legs of Grounding[/uncommon]": {
+                        "amount": 1,
+                        "value": 6000,
+                        "item": {
+                            "name": "[uncommon]Vigorous Uncommon Legs of Grounding[/uncommon]",
+                            "itemType": "equipment",
+                            "rarity": "uncommon",
+                            "value": 2000,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "legs",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": {
+                                        "id": "increased_energy_shield_t1",
+                                        "name": "Guarding",
+                                        "levelReq": 5,
+                                        "tier": 1,
+                                        "stat": "energy_shield",
+                                        "slot": "legs",
+                                        "minVal": 8,
+                                        "maxVal": 20,
+                                        "baseValue": 11,
+                                        "mastery": 0,
+                                        "isPercent": true,
+                                        "kind": "prefix",
+                                        "weight": 950,
+                                        "categories": [
+                                            "energy_shield",
+                                            "defense",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                },
+                                {
+                                    "kind": "prefix",
+                                    "affix": {
+                                        "id": "added_health_t2",
+                                        "name": "Vigorous",
+                                        "levelReq": 10,
+                                        "tier": 2,
+                                        "stat": "health",
+                                        "slot": "legs",
+                                        "minVal": 31,
+                                        "maxVal": 52,
+                                        "baseValue": 44,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "prefix",
+                                        "weight": 880,
+                                        "categories": [
+                                            "health",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": {
+                                        "id": "entropy_resistance_t1",
+                                        "name": "of Grounding",
+                                        "levelReq": 8,
+                                        "tier": 1,
+                                        "stat": "entropy_resistance",
+                                        "slot": "legs",
+                                        "minVal": 6,
+                                        "maxVal": 12,
+                                        "baseValue": 10,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "suffix",
+                                        "weight": 800,
+                                        "categories": [
+                                            "entropy",
+                                            "resistance",
+                                            "utility"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                },
+                                {
+                                    "kind": "suffix",
+                                    "affix": {
+                                        "id": "earth_resistance_t1",
+                                        "name": "of Stone",
+                                        "levelReq": 1,
+                                        "tier": 1,
+                                        "stat": "earth_resistance",
+                                        "slot": "legs",
+                                        "minVal": 5,
+                                        "maxVal": 12,
+                                        "baseValue": 7,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "suffix",
+                                        "weight": 900,
+                                        "categories": [
+                                            "resistance",
+                                            "elemental",
+                                            "earth",
+                                            "defensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "level": 14,
+                            "durability": 114,
+                            "maxDurability": 114,
+                            "baseMaxDurability": 114,
+                            "defenseType": "energy_shield",
+                            "defenseValue": 38,
+                            "baseDefenseValue": 35,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.0,
+                            "baseEntropyResistance": 0.05,
+                            "entropyResistance": 0.15,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    },
+                    "[uncommon]Bypassing Uncommon Ring[/uncommon]": {
+                        "amount": 1,
+                        "value": 6000,
+                        "item": {
+                            "name": "[uncommon]Bypassing Uncommon Ring[/uncommon]",
+                            "itemType": "equipment",
+                            "rarity": "uncommon",
+                            "value": 2000,
+                            "stackable": false,
+                            "maxStack": 1,
+                            "slot": "ring",
+                            "prefixSlots": [
+                                {
+                                    "kind": "prefix",
+                                    "affix": {
+                                        "id": "added_resistance_penetration_t1",
+                                        "name": "Bypassing",
+                                        "levelReq": 5,
+                                        "tier": 1,
+                                        "stat": "resistance_penetration",
+                                        "slot": "ring",
+                                        "minVal": 5,
+                                        "maxVal": 10,
+                                        "baseValue": 6,
+                                        "mastery": 0,
+                                        "isPercent": false,
+                                        "kind": "prefix",
+                                        "weight": 925,
+                                        "categories": [
+                                            "penetration",
+                                            "offensive"
+                                        ],
+                                        "locked": false,
+                                        "soulbound": false,
+                                        "isMythic": false,
+                                        "isGlobal": false
+                                    }
+                                }
+                            ],
+                            "suffixSlots": [
+                                {
+                                    "kind": "suffix",
+                                    "affix": null
+                                }
+                            ],
+                            "level": 14,
+                            "durability": 142,
+                            "maxDurability": 142,
+                            "baseMaxDurability": 142,
+                            "defenseType": null,
+                            "defenseValue": 0,
+                            "baseDefenseValue": 0,
+                            "damage": 0,
+                            "baseDamage": 0,
+                            "damageType": null,
+                            "entropy": 0.0,
+                            "entropyPreserved": false,
+                            "maxEntropy": 1.0,
+                            "baseEntropyResistance": 0.05,
+                            "entropyResistance": 0.05,
+                            "entropyLocked": false,
+                            "destabilised": false,
+                            "destabilisedAffixes": []
+                        }
+                    }
+                },
+                "lastRestock": "2026-08-15T13:34:23.380080"
+            },
+            "questBoard": {
+                "name": "Quest Board",
+                "resourcesNeeded": {
+                    "wood": 30,
+                    "stone": 30
+                },
+                "level": 0,
+                "activeQuests": {},
+                "completedQuests": []
+            }
+        },
+        "game": {
+            "areaLevel": 10,
+            "battlesWon": 49,
+            "difficulty": "normal",
+            "hardcoreMode": false,
+            "saveNum": 1
+        }
     }
 }

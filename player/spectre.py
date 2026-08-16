@@ -4,27 +4,27 @@ import random
 
 SPECTRE_DESCRIPTIONS = {
     "Spectre": "[class_spectre]A vengeful ghost brimming with malice.[/class_spectre]\n"
-        "[resource]Ghostly[/resource]: When dealing [ethereal]Ethereal[/ethereal] Damage, heal equal to 10% of ignored Armour Rating on the target.\n"
-        "Starting Stats: 40 [health]HP[/health] | 6 [damage]Damage[/damage] | 3% [critical]Crit Chance[/critical] | 180% [critical]Crit Damage[/critical] | [ethereal]Ethereal Damage[/ethereal] | 1.15 [speed]Speed[/speed].",
+        "Ghostly: When dealing Ethereal Damage, heal equal to 10% of ignored Armour Rating on the target.\n"
+        "Starting Stats: 40 HP | 6 [damage]Damage[/damage] | 3% Crit Chance | 180% Crit Damage | [ethereal]Ethereal Damage[/ethereal] | 1.15 [speed]Speed[/speed].",
     #ascendancies
     "Wraith": "Ghostly now heals for 20% of ignored Armour Rating. If the target has no Armour Rating, they take 50% Increased Damage.\n"
         "For every 300 HP healed in combat through Ghostly, lose 1% Max HP permanently.\n"
-        "+10 HP. -1 Damage. -0.05 Speed. +10% Ethereal Resistance.",
+        "+10 HP. -1 [damage]Damage[/damage]. -0.05 [speed]Speed[/speed]. +10% Ethereal Resistance.",
     "Reaper": "Deal 15% Increased Damage to enemies below 30% Max HP. Execute Enemies under 5% Max HP on hit. Execute immediately kills the targeted enemy.\n"
         "When Executing enemies, heal for 10% of their Max HP and gain 5% of their damage as your own permanently.\n"
         "Ghostly also grants 5% of ignored Armour Rating gained as Shield.\n"
-        "-15 HP. +2 Damage. +0.05 Speed. +2% Crit Chance. +100 Armour.",
+        "-15 HP. +2 [damage]Damage[/damage]. +0.05 [speed]Speed[/speed]. +2% Crit Chance. +100 Armour.",
     "Phantasm": "30% Less Physical Damage Taken. Ghostly heals for 5% of ignored Armour Rating. Ethereal Damage has a 30% chance to apply Phased to a random enemy for 3 turns.\n"
         "Phased: -10% Damage Dealt, -0.2 Speed. When a Phased enemy hits you, you gain Shifting: 10% Increased Armour, Evasion, and Energy Shield for 2 turns.\n"
-        "+20 HP. +1 Damage. -0.1 Speed. -10% Stun Avoidance. +25% Crit Damage.",
+        "+20 HP. +1 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. -10% Stun Avoidance. +25% Crit Damage.",
     "Revenant": "Once per combat, upon taking lethal damage, survive at 1 HP and gain Intangible for 1 turn. Intangible: Immune to Damage, +30% Increased Ethereal Damage.\n"
         "If you take a hit larger than 30% of your Max HP whilst Intangible, you will die. Upon losing Intangible, heal equal to damage prevented whilst intangible.\n"
         "Upon killing an enemy, the next amount of damage you take heals you instead. The healing is doubled if the damage was Ethereal.\n"
-        "-10 HP. +3 Damage. +0.1 Speed. -10% Physical Resistance.",
+        "-10 HP. +3 [damage]Damage[/damage]. +0.1 [speed]Speed[/speed]. -10% Physical Resistance.",
     "Lich": "All sources of healing are applied to Energy Shield. Ghostly heals you for 15% of ignored Armour Rating.\n"
         "While your Energy Shield is above 50%: +10% Damage Dealt, +0.2 Speed, +10% Crit Chance. +30% Crit Damage.\n"
-        "10% of your Max Health is converted to Energy Shield. 25% of Chaos damage does not bypass Energy Shield."
-        "-25 HP. -2 Damage. +0.1 Speed. +5% Crit Chance. +50 Energy Shield. +10% Increased Energy Shield. -250 Armour. -250 Evasion.",
+        "10% of your Max Health is converted to Energy Shield. 25% of Chaos damage does not bypass Energy Shield.\n"
+        "-25 HP. -2 [damage]Damage[/damage]. +0.1 [speed]Speed[/speed]. +5% Crit Chance. +50 Energy Shield. +10% Increased Energy Shield. -250 Armour. -250 Evasion.",
 }
 
 class Spectre(Player):
@@ -202,7 +202,44 @@ class Spectre(Player):
 
         super().onBattleEnd()
 
+    def _removeOldAscendancy(self) -> bool:
+        if self._ascendancy == 'Wraith':
+            self._baseHealth -= 10
+            self._baseDamage += 1
+            self._baseSpeed += 0.05
+            self.ghostlyAmount = 0.1
+            self._stats['Permanent']['ethereal'] -= 10
+        elif self._ascendancy == 'Reaper':
+            self._baseHealth += 15
+            self._baseDamage -= 2
+            self._baseSpeed -= 0.05
+            self._stats['baseCritChance'] -= 0.02
+            self._stats['Permanent']['added_armour'] -= 100
+        elif self._ascendancy == 'Phantasm':
+            self._baseHealth -= 20
+            self._baseDamage -= 1
+            self._baseSpeed += 0.1
+            self.ghostlyAmount = 0.1
+            self._stats['Permanent']['stun_avoidance'] += 10
+            self._stats['baseCritMulti'] -= 0.25
+        elif self._ascendancy == 'Revenant':
+            self._baseHealth += 10
+            self._baseDamage -= 3
+            self._baseSpeed -= 0.1
+            self._stats['Permanent']['physical'] += 10
+        elif self._ascendancy == 'Lich':
+            self._baseHealth += 25
+            self._baseDamage += 2
+            self._baseSpeed -= 0.1
+            self._stats['baseCritChance'] -= 0.05
+            self._stats['Permanent']['added_energy_shield'] -= 50
+            self._stats['Permanent']['increased_energy_shield'] -= 10
+            self._stats['Permanent']['added_armour'] += 250
+            self._stats['Permanent']['added_evasion'] += 250
+        return True
+
     def updateAscendancy(self, ascendancy):
+        super().updateAscendancy(ascendancy)
         if ascendancy == 'Wraith':
             self._baseHealth += 10
             self._baseDamage -= 1
@@ -246,4 +283,4 @@ class Spectre(Player):
             self._stats['Permanent']['added_evasion'] -= 250
             self._ascendancy = 'Lich'
             self.ascendancyDescription = SPECTRE_DESCRIPTIONS["Lich"]
-        self._recalculateStats(False)
+        self._recalculateStats()

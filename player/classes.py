@@ -26,36 +26,36 @@ CLASSES: Dict[str, Player] = {
 }
 
 ASCENDANCIES = {
-    "Warrior": {
-        'Warlord', 'Pyromancer', 'Juggernaut', 'Blood Reaver', 'Flamewarden', 'Annihilist'
-    },
-    "Mage" : {
+    "Warrior": [
+        'Warlord', 'Juggernaut', 'Blood Reaver', 'Flamewarden', 'Annihilist'
+    ],
+    "Mage" : [
         'Elementalist', 'Arcanist', 'Battlemage', 'Stormbringer', 'Cryomancer', 'Calamity', 'Archon',
-    },
-    "Fighter": {
+    ],
+    "Fighter": [
         'Bladedancer', 'Champion', 'Barbarian', 'Brawler', 'Marshal'
-    },
-    "Druid": {
+    ],
+    "Druid": [
         'Primalist', 'Arbiter', 'Moonkin', 'Chimera', 'Earthshaper'
-    },
-    "Paladin": {
-        'Templar', 'Guardian', 'Inquisitor', 'Justicar', 'Crusader'
-    },
-    "Monk": {
+    ],
+    "Paladin": [
+        'Zealot', 'Guardian', 'Inquisitor', 'Justicar', 'Crusader'
+    ],
+    "Monk": [
         'Enlightened', 'Stormwalker', 'Glacierfist', 'Ascetic', 'Psychopath', 'Avatar'
-    },
-    'Cultist': {
-        'Umbralist', 'Harbinger', 'Doomsayer', 'Ritualist', 'Hellseer'
-    },
-    'Wanderer': {
+    ],
+    'Cultist': [
+        'Umbralist', 'Harbinger', 'Doomsayer', 'Ritualist', 'Anarchist', 'Desecrator'
+    ],
+    'Wanderer': [
         'Fractured', 'Manifestation', 'Weaver', 'Abyssal', 'Warper', 'Mindbreaker'
-    },
-    'Spectre': {
+    ],
+    'Spectre': [
         'Wraith', 'Reaper', 'Phantasm', 'Revenant', 'Lich'
-    },
-    "Wretch": {
+    ],
+    "Wretch": [
         'Exsanguinator', 'Bloodletter', 'Plaguebearer', 'Necrose', 'Necromancer'
-    }
+    ]
 }
 
 DESCRIPTIONS = {

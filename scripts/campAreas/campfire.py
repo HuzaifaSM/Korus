@@ -3,7 +3,7 @@ from .station import Station
 from scripts.items import CONSUMABLES
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
-    pause, printWarning, printError, printSuccess
+    pause, printWarning, printError, printSuccess, checkGlobalCommand
 )
 
 RECIPES = {
@@ -28,7 +28,9 @@ class Campfire(Station):
     
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
-            1: {"wood": 5, "stone": 5},
+            1: {"wood": 5, "stone": 5,
+                'description': "Enemies will begin to drop [resource]Supplies[/resource].\nA new option will be unlocked: [red]Rest[/red]. [resource]Supplies[/resource] are used to [red]Rest[/red] in order to recover health.\nAt the end of combat, [heal]heal[/heal] for 6% of your Max HP."
+                },
             2: {"wood": 20, "stone": 25, "iron_ore": 10},
             3: {"herbs": 30, "leather": 20, "iron_ore": 15},
             4: {"bone": 10, "wood": 60, "stone": 50, "iron_ore": 25},
@@ -50,7 +52,8 @@ class Campfire(Station):
             console.print("[dim]9.[/dim] Upgrade Campfire")
             
             choice = console.input("\n[cyan]>[/cyan] ").strip()
-            
+            checkGlobalCommand(choice)
+
             try:
                 choice = int(choice)
                 match choice:
@@ -75,7 +78,7 @@ class Campfire(Station):
 
     def applyHeal(self):
         if self.level > 0:
-            healAmount = round(self.player._maxHealth * (0.06 * self.level)) #max heal at lvl 5 always
+            healAmount = round(self.player._maxHealth * (0.06 * self.level))
             self.player.heal(healAmount)
             pause()
 

@@ -4,31 +4,31 @@ import random
 
 WANDERER_DESCRIPTIONS = {
     "Wanderer": "[class_wanderer]A lost soul searching for peace.[/class_wanderer]\n"
-        "[resource]Lost[/resource]: If a single hit deals more than 10% of your Max HP, your next attack will deal 50% More Damage and target all enemies.\n"
-        "Starting Stats: 45 [health]HP[/health] | 6 [damage]Damage[/damage] | 10% [critical]Crit Chance[/critical] | 160% [critical]Crit Damage[/critical] | [psychic]Psychic Damage[/psychic] | 1.1 [speed]Speed[/speed].",
+        "Lost: If a single hit deals more than 10% of your Max HP, your next attack will deal 50% More Damage and target all enemies.\n"
+        "Starting Stats: 45 HP | 6 [damage]Damage[/damage] | 10% Crit Chance | 160% Crit Damage | [psychic]Psychic Damage[/psychic] | 1.1 [speed]Speed[/speed].",
     #ascdenancies
     "Fractured": "Upon triggering Lost, gain Fracture, up to 5 stacks.\n"
         "Fracture: +5% Psychic Damage. +3% Crit Chance. At 5 Fracture, your next attack deals 150% Damage to all enemies, and Fracture is set to 0.\n"
         "Upon critically hitting an enemy, take Psychic damage equal to 2% of your Max HP.\n"
-        "-10 HP. +1 Damage. +0.05 Speed. +3% Crit Chance. +20% Crit Damage.",
+        "-10 HP. +1 [damage]Damage[/damage]. +0.05 [speed]Speed[/speed]. +3% Crit Chance. +20% Crit Damage.",
     "Manifestation": "Lost triggers upon taking more than 5% of your Max HP.\n"
         "Lost attacks have a 20% Chance to miss. Upon missing a Lost attack, apply Otherworld Exposure to all enemies.\n"
-        "+10 HP. -1 Damage. -0.05 Speed.",
-    "Weaver": "Non-psychic attacks deal 10% of Damage as Extra Psychic Damage.\n"
+        "+10 HP. -1 [damage]Damage[/damage]. -0.05 [speed]Speed[/speed].",
+    "Weaver": "Non-[psychic]psychic[/psychic] attacks deal 10% of Damage as Extra Psychic Damage.\n"
         "When Lost is triggered, apply Weaken and Exposed to all enemies and gain +10 Damage for the rest of combat.\n"
         "Upon killing an enemy, overkill damage is dealt evenly split to all living enemies.\n"
-        "+15 HP. -4 Damage. +20% Crit Damage. +10% Psychic Resistance.",
+        "+15 HP. -4 [damage]Damage[/damage]. +20% Crit Damage. +10% Psychic Resistance.",
     "Abyssal": "You are always Lost. Lost has no damage bonus. 10% Less Damage Dealt.\n"
         "Cumulative through combats, whenever you deal damage equal to 200% of your Max HP, gain +3% Psychic Damage permanently.\n"
-        "+30 HP. -4 Damage. +0.1 Speed. -3% Crit Chance. -10% Crit Damage. +5% All Res.",
+        "+30 HP. -4 [damage]Damage[/damage]. +0.1 [speed]Speed[/speed]. -3% Crit Chance. -10% Crit Damage. +5% [all]All[/all] Res.",
     "Warper": "Lost now triggers if a hit deals less than 5% of your Max HP or a hit deals more than 20% of your Max HP.\n"
-        "Gain 'Warped' on triggering Lost. Warped grants +20% Lifesteal to your next attack and +10% Crit Chance.\n"
+        "Gain Warped on triggering Lost. Warped grants +20% Lifesteal to your next attack and +10% Crit Chance.\n"
         "For every turn you are not Lost or Warped, take Psychic damage at the start of your turn equal to 2% of your Max HP.\n"
-        "+10 HP. +2 Damage. -0.1 Speed. +25% Crit Damage.",
-    "Mindbreaker": "All psychic damage permanently applies Torture on targets. Torture: +1% Damage Taken, -1% Damage Dealt.\n"
+        "+10 HP. +2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +25% Crit Damage.",
+    "Mindbreaker": "All [psychic]psychic[/psychic] damage permanently applies Torture on targets. Torture: +1% Damage Taken, -1% Damage Dealt.\n"
         "When Lost triggers, 1% Chance per Torture for damage dealt to each individual target to be doubled and apply Otherworld Exposure.\n"
         "Enemies lose all Torture upon critically hitting you.\n"
-        "-10 HP. +2 Damage. -0.1 Speed. +3% Crit Chance. +10% Psychic Resistance.",
+        "-10 HP. +2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +3% Crit Chance. +10% Psychic Resistance.",
 }
 
 class Wanderer(Player):
@@ -130,7 +130,46 @@ class Wanderer(Player):
         self.warped = False
         super().onBattleEnd()
 
+    def _removeOldAscendancy(self) -> bool:
+        if self._ascendancy == 'Fractured':
+            self._baseHealth += 10
+            self._baseDamage -= 1
+            self._baseSpeed -= 0.05
+            self._stats['baseCritChance'] -= 0.02
+            self._stats['baseCritMulti'] -= 0.2
+        elif self._ascendancy == 'Manifestation':
+            self._baseHealth -= 10
+            self._baseDamage += 1
+            self._baseSpeed += 0.05
+            self.lostPercent = 0.1
+            self.lostHitChance = 1.0
+        elif self._ascendancy == 'Weaver':
+            self._baseHealth -= 15
+            self._baseDamage += 4
+            self._stats['baseCritMulti'] -= 0.2
+            self._stats['Permanent']['psychic'] -= 10
+        elif self._ascendancy == 'Abyssal':
+            self._baseHealth -= 30
+            self._baseDamage += 4
+            self._baseSpeed -= 0.1
+            self._stats['baseCritChance'] += 0.03
+            self._stats['baseCritMulti'] += 0.1
+            self._stats['Permanent']['all'] -= 5
+        elif self._ascendancy == 'Warper':
+            self._baseHealth -= 10
+            self._baseDamage -= 2
+            self._baseSpeed += 0.1
+            self._stats['baseCritMulti'] -= 0.25
+        elif self._ascendancy == 'Mindbreaker':
+            self._baseHealth += 10
+            self._baseDamage -= 2
+            self._baseSpeed += 0.1
+            self._stats['baseCritChance'] -= 0.03
+            self._stats['Permanent']['psychic'] -= 10
+        return True
+
     def updateAscendancy(self, ascendancy):
+        super().updateAscendancy(ascendancy)
         if ascendancy == 'Fractured':
             self._baseHealth -= 10
             self._baseDamage += 1
@@ -180,4 +219,4 @@ class Wanderer(Player):
             self._stats['Permanent']['psychic'] += 10
             self._ascendancy = 'Mindbreaker'
             self.ascendancyDescription = WANDERER_DESCRIPTIONS['Mindbreaker']
-        self._recalculateStats(False)
+        self._recalculateStats()

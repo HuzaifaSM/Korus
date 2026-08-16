@@ -33,11 +33,13 @@ NEW AFFIXES:
         > multi-res roll 9-12
         > all res roll 7-10
   - thorns damage: head, feet, legs, boots - prefix
-  - all affixes should have a minimum of 6 tiers, preferably 7+
+    > deals flat physical damage back to the attacker
+    > tier 1 rolls 1-3, 7 max tiers, tier 7 could roll 60-80 or something
+    > semi-rare affix
   > mythic and soulbound affixes could include learning new abilities
 
 OTHER STUFF:
-  - camp main menu screen should show tier of each camp and resources needed to upgrade if not max tier
+  - 
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
   - more enemy abilities
   - add parallel and foresight runes
@@ -46,6 +48,10 @@ OTHER STUFF:
   - more assets, properly ths time: soundtracks, art, etc:
     > sprites, symbols, item icons, extra effort: top tier/soulbound/mythic/destabilised affix bonus visuals per item
   - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
+  - different colours for high amounts of damage (100, 500, 1000)
+  - put a class description depending on what your class is inside the help menu ("class help" submenu)
+  - make regular items such as wood more expensive, its too cheap, maybe increase baseline to 8g per thing
+  - a tutorial at the start can help
 
 CURRENTLY WORKING ON:
   - in the forge:
@@ -54,8 +60,16 @@ CURRENTLY WORKING ON:
       - rewrite _applyRune to become the new 'rune crafting menu'
     > when applying runes, rather than printing 10 at a time in a flat list, use a rich table to display a 2 column grid with 6 runes, aka 12 runes at a time (test and see if 3 columns also works (if text wraps inside of its own column))
       - same logic as equipment inventory
+    > add a new option that uses fuel + blueprints to combine x amount of items of the same rarity into 1 item of a higher rarity
+      - limited by forge level: 1 = uncommon, 2 = rare, 3 = epic, 4 = legendary, 5 = 5x legendary for mythic
 
-  - ability table needs line sbetween each ability
+  - camp upgrade menus should have a description about the benefits gained from upgrading
+    > level 0 -> 1 descriptions added, add the rest
+
+  - ability table needs lines between each ability for readability
+  - ability table needs a 'number of targets' column
+
+  - evasion should scale with level, at lower levels, less evasion is needed to achieve a similar dodge chance
 
   - for mythic items, if they don't have a mythic affix (e.g. removed by an erasing rune), for all runes that add affixes, add implementation to allow a new mythic affix to be rolled with a higher priority than standard affixes (e.g. add for growth, chaos, affix randomiser)
 
@@ -64,12 +78,18 @@ CURRENTLY WORKING ON:
 
     > Classes in progress:
       - paladin
+      - Cultist
 
   - rework fighter class
     > new mechanic uses stances: offensive and defensive
       - offensive deals more damage but takes more damage, defensive is reverse
       - ascendancies alter stances or add new opens
   - rework monk class
+  - rework mage ascendancies
+
+  - add a 'view class details' option in main menu which displays:
+    > class name, class description
+    > if ascendancy is not None: ascendancy name, ascendancy description
 
   - finish improving warrior ascendancies + implementation, then check over all ascendancies one final time
     > warrior abilities should cost rage and interact with their rage costs in different ways
@@ -102,13 +122,6 @@ CURRENTLY WORKING ON:
     > chance for inbetween wave events (more roguelike elements)
     > should predefine entire encounter list, then iterate through it
 
-RIGHT NOW IMPORTANT:
-- finish ascendancies descriptions + functionality
-  - add _removeOldAscendancy methods to add classes
-  - ascendancy shrine camp area
-    > also hosts changing ascendancy and subtypes
-    > when built: call player.gainClassAbilities() after an ascendancy change so ability overlays apply immediately
-
 FUN ADDITIONAL STUFF:
   - playtime per save file
 
@@ -138,13 +151,13 @@ FUN BONUS LIBRARIES:
 
 MARKET REWORK
   - need to fix/rework item value calculation and make it make logical sense
-    - based on amount of affixes on an item, item rarity, rarity of item affixes (based on weight), etc.
+    > based on amount of affixes on an item, item rarity, rarity of item affixes (based on weight), etc.
   - more exciting items, different items
   - market has a unique selection of affixes that are market-only
     > market items on average have higher tiers of affixes
     > e.g. % more damage, % damage reduction etc.
   - player can choose to 'vaporise' an item at the market to get a selection of runes of similar level to the item's level
-    - number of runes could be dictated by item level, number of affix slots, total tiers of items, total rarity of item affixes + item
+    > number of runes could be dictated by item level, number of affix slots, total tiers of items, total rarity of item affixes + item
 
 ITEM REWORK/IMPROVEMENTS
   - introduce item bases + base types

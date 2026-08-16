@@ -11,7 +11,7 @@ from scripts.enemy import Enemy, createEnemy
 from scripts.combat import CombatManager
 from scripts.items import RESOURCES, CONSUMABLES
 from scripts.camp import Camp
-from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, PATH, _decodeKorus
+from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, PATH, _decodeKorus, displayExistingSaves
 from scripts.debug import Debugger
 from scripts.difficulty import Difficulty
 from scripts.runeDrops import getRuneObject
@@ -22,7 +22,7 @@ from scripts.styles import (
     printWarning, printError, printInfo, printSuccess,
     displayDeath, displayVictory, formatRarity, formatDamageType,
     createAbilityTables, createCombatStatusTable, createEnemyPreview,
-    createEquipmentStoragePages
+    createEquipmentStoragePages, ReturnToMainMenu, GoToSaveMenu, checkGlobalCommand
 )
 
 class Game:
@@ -106,37 +106,8 @@ class Game:
             pause()
             return False
 
-        console.print("\n[bold cyan]=== Available Saves === [/bold cyan]\n")
-
         try:
-            saves = []
-            for filename in sorted(listdir(PATH)):
-                if filename.startswith('Save ') and filename.endswith('.korus'):
-                    saveNum = filename.replace("Save ", "").replace(".korus", "")
-                    try:
-                        tmpJson = f"{PATH}Save {saveNum}.tmp.json"
-                        if not _decodeKorus(f"{PATH}{filename}", tmpJson):
-                            raise Exception("Failed to decode save")
-                        with open(tmpJson, 'r') as f:
-                            data: Dict = json.load(f)
-                        remove(tmpJson)
-                        playerName = data.get('player', {}).get('name', 'The Hero')
-                        playerLevel = data.get('player', {}).get('level', 1)
-                        className = data.get('player', {}).get('className', 'player')
-                        difficulty = data.get('game', {}).get('difficulty', 'normal')
-                        hardcore = data.get('game', {}).get('hardcoreMode', False)
-
-                        difficultyObj = Difficulty(difficulty)
-                        diffDisplay = difficultyObj.getDisplayName()
-                        if hardcore:
-                            diffDisplay += " [bold red](HARDCORE)[/bold red]"
-
-                        console.print(f"[cyan]{saveNum}.[/cyan] [bold]{playerName}[/bold] | [class_{className}]{className}[/class_{className}] | Level {playerLevel}")
-                        console.print(f"    [dim]Difficulty: {diffDisplay}[/dim]\n")
-                        saves.append(saveNum)
-                    except Exception as e:
-                        printError(f"Error loading Save {saveNum}: {e}")
-                        console.print(f"[cyan]{saveNum}.[/cyan] [dim](Corrupted save file)[/dim]\n")
+            saves = displayExistingSaves()
 
             if not saves:
                 printWarning("No saves found.")
@@ -275,7 +246,10 @@ class Game:
     def mainMenu(self):
         while True:
             clearScreen()
-            printHeader(f"{self.player._name} - Level {self.player._level} {self.player.className}")
+            if self.player._ascendancy is None:
+                printHeader(f"{self.player._name} - Level {self.player._level} {self.player.className}")
+            else:
+                printHeader(f"{self.player._name} - Level {self.player._level} {self.player._ascendancy} ({self.player.className})")
 
             dType = formatDamageType(self.player._damageType.title(), self.player._damageType)
             console.print(f"[health]HP:[/health] {self.player._health}/{self.player._maxHealth} | "
@@ -304,16 +278,20 @@ class Game:
 
             console.print("[dim]0)[/dim] [red]Quit[/red]")
             console.print("[dim]1)[/dim] [green]Explore[/green] [dim](Find Enemies)[dim]")
-            console.print("[dim]2)[/dim] [cyan]View Inventory[/cyan]")
-            console.print("[dim]3)[/dim] [yellow]View Equipment[/yellow]")
-            console.print("[dim]4)[/dim] [magenta]View Abilities[/magenta]")
-            console.print("[dim]5)[/dim] [bright_cyan]Go to Camp[/bright_cyan]")
-            console.print("[dim]6)[/dim] [blue]View Quests[/blue]")
-            console.print("[dim]7)[/dim] [gold1]Change Difficulty[/gold1]")
-            console.print("[dim]8)[/dim] [green]Help Menu[/green]")
-            console.print("[dim]9)[/dim] [orange1]Manage Saves[/orange1]")
+            console.print("[dim]2)[/dim] [cyan]Player Menu[/cyan]")
+            console.print("[dim]3)[/dim] [bright_cyan]Go to Camp[/bright_cyan]")
+            console.print("[dim]4)[/dim] [blue]View Quests[/blue]")
+            console.print("[dim]5)[/dim] [grey58]Options Menu[/grey58]")
 
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
+
+            try:
+                checkGlobalCommand(choice)
+            except ReturnToMainMenu:
+                continue
+            except GoToSaveMenu:
+                self.saveMenu()
+                continue
 
             if choice.lower() == "debug" or choice.startswith("/"):
                 auto = None
@@ -337,25 +315,87 @@ class Game:
                     case 1:
                         self.explore()
                     case 2:
-                        self.player.showInventory()
+                        self.playerMenu()
                     case 3:
-                        self.equipmentMenu()
-                    case 4:
-                        self.player.showAbilities()
-                    case 5:
                         self.camp.mainMenu()
-                    case 6:
+                    case 4:
                         self.camp.questBoard.displayQuests()
-                    case 7:
-                        self.changeDifficulty()
-                    case 8:
-                        self.help.helpMenu()
-                    case 9:
-                        self.saveMenu()
+                    case 5:
+                        self.optionsMenu()
                     case _:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
                 printError(f"[ERROR] {e}")
+            except ReturnToMainMenu:
+                continue
+            except GoToSaveMenu:
+                self.saveMenu()
+                continue
+            pause()
+
+    def playerMenu(self):
+        while True:
+            clearScreen()
+            printHeader("Player Management")
+
+            printSeparator()
+            console.print("[dim]0.[/dim] [red]Exit[/red]")
+            console.print("[dim]1.[/dim] [cyan]View Resources[/cyan]")
+            console.print("[dim]2.[/dim] [green]View Runes[/green]")
+            console.print("[dim]3.[/dim] [yellow]Equipment Management[/yellow]")
+            console.print("[dim]4.[/dim] [magenta]View Abilities[/magenta]")
+
+            choice = console.input("[bold cyan]>[/bold cyan] ").strip()
+            checkGlobalCommand(choice)
+
+            try:
+                choice = int(choice)
+                match choice:
+                    case 0:
+                        break
+                    case 1:
+                        self.player.showInventory()
+                    case 2:
+                        self.player.showCraftingInventory()
+                    case 3:
+                        self.equipmentMenu()
+                    case 4:
+                        self.player.showAbilities()
+                    case _:
+                        printError("\nInvalid choice.\n")
+            except ValueError as e:
+                printError(f'[ERROR] {e}')
+            pause()
+
+    def optionsMenu(self):
+        while True:
+            clearScreen()
+            printHeader("Options Menu")
+
+            printSeparator()
+            console.print("[dim]0.[/dim] [red]Exit[/red]")
+            console.print("[dim]1.[/dim] [gold1]Change Difficulty[/gold1]")
+            console.print("[dim]2.[/dim] [green]Help Menu[/green]")
+            console.print("[dim]3.[/dim] [orange1]Save Menu[/orange1]")
+
+            choice = console.input("[bold cyan]>[/bold cyan] ").strip()
+            checkGlobalCommand(choice)
+
+            try:
+                choice = int(choice)
+                match choice:
+                    case 0:
+                        break
+                    case 1:
+                        self.changeDifficulty()
+                    case 2:
+                        self.help.helpMenu()
+                    case 3:
+                        self.saveMenu()
+                    case _:
+                        printError("\nInvalid choice.\n")
+            except ValueError as e:
+                printError(f'[ERROR] {e}')
             pause()
 
     def saveMenu(self):
@@ -375,33 +415,51 @@ class Game:
             console.print("[dim]3.[/dim] [orange1]Delete File[/orange1]")
             console.print("[dim]4.[/dim] [yellow]Undo Last Operation[/yellow]")
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
+            checkGlobalCommand(choice)
             try:
                 choice = int(choice)
                 match choice:
                     case 0:
                         break
                     case 1:
-                        saveNum = console.input("[cyan]Input the save number you want to save to:\n[bold]>[/bold][/cyan] ").strip()
-                        save(self, saveNum)
-                        try:
-                            self.saveNum = int(saveNum)
-                        except ValueError:
-                            pass
+                        displayExistingSaves()
+                        saveNum = console.input("[cyan]Input the save number you want to save to: (0 to cancel)\n[bold]>[/bold][/cyan] ").strip()
+                        checkGlobalCommand(saveNum)
+                        if saveNum == '0':
+                            printWarning("Cancelled Save")
+                            return
+                        else:
+                            save(self, saveNum)
+                            try:
+                                self.saveNum = int(saveNum)
+                            except ValueError:
+                                pass
                         break
                     case 2:
-                        saveNum = console.input("[cyan]Input the save number you want to load from:\n[bold]>[/bold][/cyan] ").strip()
-                        data = load(saveNum)
-                        if data:
-                            self.player = deserialisePlayer(data['player'])
-                            self.camp.deserialiseAll(data['camp'], self.player)
-                            self.deserialise(data['game'])
+                        displayExistingSaves()
+                        saveNum = console.input("[cyan]Input the save number you want to load from: (0 to cancel)\n[bold]>[/bold][/cyan] ").strip()
+                        checkGlobalCommand(saveNum)
+                        if saveNum == '0':
+                            printWarning("Cancelled Load")
+                            return
+                        else:
+                            data = load(saveNum)
+                            if data:
+                                self.player = deserialisePlayer(data['player'])
+                                self.camp.deserialiseAll(data['camp'], self.player)
+                                self.deserialise(data['game'])
                         try:
                             self.saveNum = int(saveNum) if not self.saveNum else self.saveNum
                         except ValueError:
                             pass
                         break
                     case 3:
-                        saveNum = console.input("[cyan]Input the save number you want to delete:\n[bold]>[/bold][/cyan] ").strip()
+                        displayExistingSaves()
+                        saveNum = console.input("[cyan]Input the save number you want to delete: (0 to cancel)\n[bold]>[/bold][/cyan] ").strip()
+                        checkGlobalCommand(saveNum)
+                        if saveNum == '0':
+                            printWarning("Cancelled Save Deletion")
+                            return
                         deleteSave(saveNum)
                     case 4:
                         undoLastOperation()
@@ -437,7 +495,8 @@ class Game:
             console.print("[dim]4.[/dim] [orange1]Compare Equipment[/orange1]")
             
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
-            
+            checkGlobalCommand(choice)
+
             try:
                 choice = int(choice)
                 match choice:
@@ -812,11 +871,12 @@ class Game:
 
         console.print("\n[bold cyan]=== Actions ===[/bold cyan]\n")
         console.print("[dim]C.[/dim] Use Consumable [dim](Free Action)[/dim]")
-        console.print("[dim]F.[/dim] [yellow]Flee from Combat.[/yellow]")
+        console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
+        console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
         if self.player.className == 'Druid':
             console.print(f"[dim]S.[/dim] [green]Force shapeshift [dim] (Free Action) | Current form: {self.player.form}[/dim][/green]")
         console.print()
-        
+
         if self.player._abilities:
             if hasattr(self.player, 'useableAbilities'):
                 abilities = self.player.useableAbilities()
@@ -831,27 +891,23 @@ class Game:
         while True:
             action = console.input("\n[cyan]Choose Action (number):[/cyan]\n> ").strip()
 
-            if action in ["enemies", "enemy", "view"]:
+            if action.lower() in ['d', 'data']:
                 clearScreen()
-                printHeader("Enemy Details")
-                enemyTable = createEnemyPreview(enemies)
-                console.print(enemyTable)
+                printHeader("Checking Enemy Data")
+                for e in enemies:
+                    console.print(e)
+                    for slot, eq in e._equipment.items():
+                        if eq is not None:
+                            console.print(f"{slot}:\n{eq}")
                 pause()
                 clearScreen()
                 printHeader(f"Your Turn: Round {self.combatManager.turnNumber}")
                 statusTable = createCombatStatusTable(self.player, enemies)
                 console.print(statusTable)
                 if abilities:
-                    abilityTables = createAbilityTables(abilities, maxPerTable=10) 
+                    abilityTables = createAbilityTables(abilities, maxPerTable=10)
                     console.print(abilityTables)
                     console.print()
-            elif action in ['data']:
-                clearScreen()
-                printHeader("Checking Enemy Data")
-                for e in enemies:
-                    console.print(e)
-                    for slot, eq in e._equipment.items():
-                        console.print(f"{slot}:\n{eq}")
             elif action.lower() == 'c':
                 self.useCombatConsumable()
                 continue
@@ -1025,7 +1081,7 @@ class Game:
                 if equipment.slot in self.player._equipment:
                     current = self.player._equipment[equipment.slot]
                     if current:
-                        console.print(f"[dim]{equipment.compareTo(current)}[/dim]")
+                        console.print(f"{equipment.compareTo(current)}")
 
                 if equipment.slot in self.player._equipment:
                     choice = console.input(f"\n    [cyan]Equip {equipment.name}? (y/n/s to store):[/cyan] [dim](default = store)[/dim]\n> ").strip().lower()

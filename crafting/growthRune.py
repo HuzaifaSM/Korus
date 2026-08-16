@@ -178,7 +178,7 @@ class PrefixGrowthRune(BaseGrowthRune):
     affixesToAdd = 1
     minAffixLevel = 0
     successEntropy = 0.07
-    dropWeight = 300
+    dropWeight = 280
 
     def getRandomEmptySlot(self, item):
         emptyPrefixes = [s for s in item.prefixSlots if s.isEmpty]
@@ -210,7 +210,7 @@ class SuffixGrowthRune(BaseGrowthRune):
     affixesToAdd = 1
     minAffixLevel = 0
     successEntropy = 0.07
-    dropWeight = 300
+    dropWeight = 280
 
     def getRandomEmptySlot(self, item):
         emptySuffixes = [s for s in item.suffixSlots if s.isEmpty]

@@ -669,6 +669,7 @@ class Entity:
             console.print(" [dim]- Empty[/dim]")
         else:
             for item, quantity in sorted(self._inventory.items()):
+                item = item.replace('_', ' ').title()
                 console.print(f" [cyan]- {item}:[/cyan] [gold]{quantity}[/gold]")
 
     def showEquipment(self):
@@ -704,7 +705,7 @@ class Entity:
         if not self._craftingInventory:
             console.print("[dim]No runes in crafting inventory[/dim]")
             return
-        
+
         for key, quantity in sorted(self._craftingInventory.items()):
             cat, rtype = key.split('_', 1)
             rune = getRuneObject(cat, rtype)
