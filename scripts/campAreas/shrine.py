@@ -18,19 +18,27 @@ class Shrine(Station):
             1: {"cloth": 20, "crystal": 5, "ascended_essence": 3,
                 'description': 'Unlock the option to [gold1 bold]Ascend[/gold1 bold] at level 20.\nYou will be given multiple choices of [gold1]Ascendancies[/gold1] to pick from, and are allowed to switch at any point with a [resource]resource cost[/resource].'
                 },
-            2: {},
-            3: {},
-            4: {},
-            5: {}
+            2: {
+                'description': 'Not yet implemented.'
+                },
+            3: {
+                'description': 'Not yet implemented.'
+                },
+            4: {
+                'description': 'Not yet implemented.'
+                },
+            5: {
+                'description': 'Not yet implemented.'
+                }
         }
 
     def playerAscend(self):
         if self.level == 0:
             printWarning("Shrine Level 1 required to ascend. Current Level: 0")
             return
-        # if self.player._level < 20:
-        #     printWarning("You must be at least level 20 to ascend!")
-        #     return
+        if self.player._level < 20:
+            printWarning("You must be at least level 20 to ascend!")
+            return
 
         def _displayDescriptions():
             printHeader("Available Ascendancies")
@@ -62,7 +70,7 @@ class Shrine(Station):
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case _:
                         if choice in validChoices:
                             chosen = ascendancies[choice]
@@ -95,7 +103,7 @@ class Shrine(Station):
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         self.playerAscend()
                     case 2:

@@ -277,6 +277,7 @@ class SoulboundRune(CraftingItem):
             levelReq=affixData.get('levelReq', 75),
             tier=0,
             stat=affixData['stat'],
+            slot=item.slot,
             minVal=minVal,
             maxVal=maxVal,
             isPercent=affixData.get('isPercent', False),

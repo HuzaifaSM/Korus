@@ -5,7 +5,8 @@ from typing import Dict, Any
 
 PALADIN_DESCRIPTIONS = {
     "Paladin": "[class_paladin]A holy warrior blessed with divine favour.[/class_paladin]\n"
-        "Favour: Gain 5-10 Favour per turn. Max 100 Favour. Gain +1 Max Favour on level up. At the start of your turn, you can decide whether Favour will be randomly spent this turn or not.\n"
+        "Favour: Gain 5-10 Favour per turn. Max 100 Favour. Gain +1 Max Favour on level up. Gain 5% Increased Favour effect on level up.\n"
+        "At the start of your turn, you can decide whether Favour will be randomly spent this turn or not.\n"
         "Possible attack buffs per Favour spent: +2 Damage, +2% Increased Damage, +1% Crit Chance, +3% Crit Damage.\n"
         "Possible defense buffs per Favour spent: -2 Damage Taken, +0.1% Damage Reduction, 1% Max HP gained as Shield.\n"
         "+5% Increased Effect of Favour buffs per level. Heal for 20% of remaining Favour at the end of battle.\n"
@@ -56,7 +57,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.favourEffect = 1.0
         self.favourSpent = 0
         self.favourBuffs = {
-            'critChance': 0, 'critMulti': 0
+            'crit_chance': 0, 'crit_multi': 0
         } # needed since not immediately applied, reset at turn start
         self.zealotry = 0
         self.zealotActiveLastTurn = False
@@ -140,15 +141,15 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.favour -= amount
         self.favourSpent += amount
         
-        buffType = random.choice(['damage', 'increased_damage', 'critChance', 'critMulti'])
+        buffType = random.choice(['damage', 'increased_damage', 'crit_chance', 'crit_multi'])
         val = 0
         if buffType == 'damage':
             val = 2
         elif buffType == 'increased_damage':
             val = 2
-        elif buffType == 'critChance':
+        elif buffType == 'crit_chance':
             val = 1
-        elif buffType == 'critMulti':
+        elif buffType == 'crit_multi':
             val = 3
             
         favourEffect = self.favourEffect
@@ -162,8 +163,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
             favourEffect += 0.3
 
         val = int(val * amount * favourEffect)
-        buff =  buffType.replace('crit', 'Crit ') if buffType.startswith('crit') else buffType.replace('_', ' ')
-        buff = buff.title()
+        buff = buffType.replace('_', ' ').title()
         ex = "" if buffType == 'damage' else "%"
         console.print(f"  [gold1]Spent {amount} Favour on offensive buff: +{val}{ex} {buff}.[/gold1]")
         pause()
@@ -217,7 +217,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
         return {buffType: val}
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType, target, combatManager)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
 
         spent = 0
         if self.favourSpendingEnabled and self.favour > 0:
@@ -292,7 +292,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
         return damageDealt, damageType
     
     def onHit(self, damageTaken, damageType, isCrit, attacker = None, combatManager=None):
-        super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
+        damageTaken, damageType = super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
     
         if self.favourSpendingEnabled and self.favour > 0:
             spent = random.randint(1, self.favour)
@@ -369,7 +369,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
 
     def rollCritical(self, target, damageDealt = None):
         target = target.entity
-        critChance = self.critChance + self.favourBuffs['critChance']
+        critChance = self.critChance + self.favourBuffs['crit_chance']
         
         if self._ascendancy == 'Zealot' and self.favour >= 50:
             critChance += 0.05
@@ -378,6 +378,11 @@ class Paladin(Player): #higher health, lower damage, holy damage
             critMulti = min(1.0, self.critMulti + self.favourBuffs['crit_multi'] * (1 - (target._stats['Bonuses']['crit_resistance'] / 100)))
             return True, critMulti
         return False, 1.0
+
+    def onCrit(self, targets, combatManager, critDamage):
+        if self._ascendancy == 'Justicar':
+            living = len(combatManager.allAlive)
+            self.favour = min(self.maxFavour, self.favour + (living * 5))
 
     def onTurnStart(self, combatManager=None):
         for k in self.favourBuffs.keys():

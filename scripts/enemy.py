@@ -82,14 +82,14 @@ class Enemy(Entity):
             self._stats['Temporary']['all'] -= self.ruin
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType, target, combatManager)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
 
         damageDealt = int(damageDealt * (1 - (self.tortureStacks * 0.01)))
 
         return damageDealt, damageType
     
     def onHit(self, damageTaken, damageType, crit = False, attacker = None, combatManager=None):
-        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
+        damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
         damageTaken = int(damageTaken * (1 + (self.tortureStacks * 0.01)))
 
@@ -105,6 +105,11 @@ class Enemy(Entity):
         damageTaken = int(damageTaken * 1 + (self.necrosis * 0.03))
 
         return damageTaken, damageType
+
+    def onCrit(self, targets, combatManager, critDamage):
+        if self.tortureStacks > 0:
+            self.tortureStacks = 0
+            console.print(f"[asc_mindbreaker]{self._name} has removed all their Torture stacks![/asc_mindbreaker]")
 
     def onTurnStart(self, combatManager=None):
         if self.phasedTurns > 0:
@@ -143,15 +148,17 @@ class Enemy(Entity):
 
     def _generateEquipment(self):
         slots = ['head', 'chest', 'legs', 'feet', 'weapon', 'amulet', 'ring']
-        maxEquipment = max(0, min(4, self._level // 15)) if self._level < 100 else 5
+        maxEquipment = max(1, min(4, self._level // 15)) if self._level < 100 else 5
         numEquipped = 0
         dropChance = {
-            ItemRarity.COMMON: 0.15 + round(self._level / 500, 4),
-            ItemRarity.UNCOMMON: 0.1 + round(self._level / 600, 4),
-            ItemRarity.RARE: 0.05 + round(self._level / 700, 4),
-            ItemRarity.EPIC: 0.02 + round(self._level / 900, 4),
-            ItemRarity.LEGENDARY: 0.01 + round(self._level / 1200, 4)
+            ItemRarity.COMMON: 0.3 + round(self._level / 500, 4),
+            ItemRarity.UNCOMMON: 0.2 + round(self._level / 600, 4),
+            ItemRarity.RARE: 0.125 + round(self._level / 700, 4),
+            ItemRarity.EPIC: 0.05 + round(self._level / 900, 4),
+            ItemRarity.LEGENDARY: 0.015 + round(self._level / 1200, 4)
         }
+        if self._level >= 60:
+            dropChance[ItemRarity.MYTHIC] = 0.003 + round(self._level / 1500, 4)
 
         if self._level > 20:
             for slot in slots:
@@ -266,12 +273,12 @@ class Enemy(Entity):
             return key
         return None
 
-def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, glacierfist: bool = False) -> Enemy:
+def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1) -> Enemy:
     if rarity != 1:
         rarity += 1
     if quantity != 1:
         quantity += 1  
-    
+
     element = random.choice(DAMAGE_TYPES)
     baseHealth = random.randint(10, 20) + (level * (random.randint(1, 5))) // 2
     baseDamage = random.randint(2, 5) + level // 6
@@ -294,8 +301,6 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1, g
         loot.addResource(res, minAmt, maxAmt, dropChance)
 
     name = f"{ELEMENTAL_NAME[element]} {random.choice(NAMES)}"
-    if glacierfist:
-        baseSpeed = round(baseSpeed * 0.8, 2)
     enemy = Enemy(name, level, baseHealth, baseDamage, baseCritChance, baseCritMulti, element, baseSpeed, loot)
     enemy._health = enemy._maxHealth
     

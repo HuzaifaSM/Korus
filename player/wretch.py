@@ -139,7 +139,7 @@ class Wretch(Player):
         return {}
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType)
 
         if self._ascendancy == 'Plaguebearer' and self.bloodScent > 0:
             damageDealt = int(damageDealt * (1.1 * self.bloodScent))
@@ -153,6 +153,7 @@ class Wretch(Player):
         return damageDealt, damageType
 
     def onHit(self, damageTaken, damageType, crit = False, attacker = None, combatManager=None):
+        damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
         if self._ascendancy == 'Bloodletter':
             self.healthLost += damageTaken
             if damageType in DIVINE_RES or damageType in OTHERWORLD_RES:
@@ -161,7 +162,25 @@ class Wretch(Player):
         if self._ascendancy == 'Necrose' and self.under40LastTurn:
             damageTaken = int(damageTaken * 0.95)
 
-        return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
+        return damageTaken, damageType
+
+    def onCrit(self, targets, combatManager, critDamage):
+        if self._ascendancy == 'Exsanguinator':
+            for t in targets:
+                t.bloodSpike = 0
+
+    def onCriticallyHit(self, attacker, combatManager, critDamage, damageType):
+        if self._ascendancy == 'Plaguebearer':
+            self.gainBloodScent()
+
+        elif self._ascendancy == 'Necrose':
+            perc = 0.05 * attacker.necrosis
+            reflect = int(critDamage * perc)
+            console.print(f"[asc_necrose]Necrose: Reflected [/asc_necrose]{int(perc*100)}[asc_necrose]% of the damage to the enemy![/asc_necrose]")
+            critDamage -= reflect
+            attacker.damage(reflect, damageType)
+
+        return critDamage
 
     def onTurnEnd(self):
         if self._ascendancy == 'Necrose' and self.rotTurns > 0:
@@ -217,7 +236,7 @@ class Wretch(Player):
                 self.under20LastTurn = True
                 self._stats['Temporary']['lifesteal'] += 10
             elif self.under20LastTurn and self._health > (self._maxHealth * 0.2):
-                self._stats['Temporary']['increased_dark_resistance'] -= 30
+                self._stats['Temporary']['increased_dark_damage'] -= 30
                 self._stats['Temporary']['lifesteal'] -= 10
                 self.under20LastTurn = False
 

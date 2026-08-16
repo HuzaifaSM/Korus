@@ -50,7 +50,7 @@ class Wanderer(Player):
         self.abyssalHealThreshold = self._maxHealth * 2
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType, target, combatManager)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
         if self.lostTrigger and self._ascendancy != 'Abyssal':
             damageDealt = int(damageDealt * 1.5)
             self.lostTrigger = False
@@ -79,7 +79,7 @@ class Wanderer(Player):
         return damageDealt, damageType
 
     def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
-        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
+        damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
         if damageTaken >= round(self._maxHealth * self.lostPercent):
             self.lostTrigger = True
             console.print(f"\n[buff]Wanderer: Took more than 10% of max health as damage! Lost has been activated.[/buff]")

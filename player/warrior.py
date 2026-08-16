@@ -2,69 +2,63 @@ from .base import Player, ELEMENTAL_RES, DIVINE_RES
 from scripts.styles import console, formatDamageType, pause
 import random
 
-"""
-replace flamewarden with new Tyrant ascendancy:
-    - take 20% less damage from attacks that deal less damage than your base damage
-    - added armour. taking damage hsa no effect on rage, gain rage based on amount of damage prevented from armour
-    - intended as 'armour stacking' ascendancy
-"""
-
 WARRIOR_DESCRIPTIONS = {
-    "Warrior": "[class_warrior]A proud and tenacious warrior, emboldened by the thrill of battle.[/class_warrior]\n"
-        "+3 Damage dealt per Rage. +1 Rage per 6 damage dealt. -1 Rage per 8 damage taken. +2 HP per leftover Rage at the end of combat.\n"
-        "Dealing [fire]Fire[/fire] damage grants +1 Rage. Taking [fire]Fire[/fire] damage reduces Rage loss by 2.\n"
-        "Starting Stats: 50 [health]Health[/health] | 4 [damage]Damage[/damage] | 5% Crit Chance | 200% Crit Damage | [fire]Fire Damage[/fire] | 0.8 [speed]Speed[/speed] | Max 50 Rage | +1 Rage on Level Up.",
+    "Warrior": "[class_warrior]A proud and tenacious combatant, emboldened by the thrill of battle.[/class_warrior]\n"
+        "+3 Damage dealt per Rage. +1 Rage per 6 damage dealt. +1 Rage per 10 damage taken. +2 HP per leftover Rage at the end of combat.\n"
+        "Dealing Fire damage grants +1 Rage. Taking Fire damage increases Rage gain by 10%.\n"
+        "Starting Stats: 50 Health | 4 Damage | 5% Crit Chance | 200% Crit Damage | Fire Damage[ | 0.85 Speed | Max 50 Rage | +1 Rage on Level Up.",
     #ascendancies
-    "Warlord": "50% less Rage decay, gain Fury stacks on attack if you have more than 50 Rage.\n"
-        "Fury: 2% Increased Damage, +2% Lifesteal. Max 10 stacks of Fury. At max Fury, your next attack deals 200% Increased Damage to all enemies and consumes all Fury.\n"
+    "Warlord": "20% Increased Rage gained from dealing damage. Gain 1 Fury on attack if you have more than 50 Rage.\n"
+        "Fury: 5% Increased Damage, +2% Lifesteal. Max 10 stacks of Fury. At max Fury, your next attack deals 100% Increased Damage to all enemies and consumes all Fury.\n"
         "While above 40 Rage, gain 15% Damage Reduction. Upon dealing a Critical Hit, gain +20% Crit Multi per stack of Fury.\n"
         "Gain 1% Damage Reduction per 20 Rage. All damage prevented from Damage Reduction is gained as Shield. Whenever an enemy attacks you, deal 50 Fire Damage to them.\n"
-        "-1% Crit Chance per 50 Shield. Deal 1% Increased Damage per 25 Shield. Whenever your shield is broken, heal for 3% of your Max HP and deal [fire]Fire[/fire] damage to all enemies equal to 5% of current HP.\n"
-        "-10 HP. +2 [damage]Damage[/damage]. +0.05 [speed]Speed[/speed]. +15% Fire Resistance. +10% Physical Resistance.",
-    "Juggernaut": "You have 1 Fortify per 10 Rage, up to 20 stacks. +1% Damage Reduction, +2% Crit Chance, +5% Crit Damage per Fortify.\n"
-        "50% Slower Rage Decay. At max Fortify your next attack hits all enemies, applies [cc]Stun[/cc] and consumes 100 Rage.\n"
-        "Whenever you are critically hit, take 35% less damage from that hit and gain Bastion until the end of your next turn.\n"
-        "Bastion: +5% Damage Reduction, +20% Crit Chance, +50% Crit Damage, -0.2 Speed.\n"
-        "+20 HP. -2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +50% Stun Avoidance. +10% Fire Resistance.",
-    "Blood Reaver": "Attacks cost 5% Current HP and deal 50% Increased Damage. Gain +3% Lifesteal per 10 Rage, up to a maximum of +45% Lifesteal at 150 Rage.\n"
-        "When your Rage exceeds your Max Rage, overflow is converted to healing at 3 HP per excess Rage. At the end of combat, heal 1% Max HP per 1% Rage.\n"
-        "At the start of your turn, if you are below 20% Max HP, gain Bloodlust: +10% Lifesteal, +10% Crit Chance, +25% Physical Resistance.\n"
-        "Upon killing an enemy, gain 1% Increased Damage per 50 damage dealt for the rest of combat.\n"
-        "+15 HP. -2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +5% Lifesteal.",
-    "Flamewarden": "Phoenix Aspect: Whilst above 50 Rage, you have Phoenix Aspect, allowing you to survive one lethal hit.\n"
-        "Upon consuming Phoenix Aspect, consume all Rage and heal 2% Max HP per Rage consumed and gain Phoenix Form for 3 turns.\n"
-        "Phoenix Form: All attacks apply 2 stacks of Burn, Deal 50% Increased Fire damage, +0.2 Speed, +10 Rage per turn.\n"
-        "Whilst you are above 40% Max HP, gain: 25% Increased Fire damage, +2% Max HP Regenerated at the start of your turn, +0.2 Speed.\n"
-        "If you kill an enemy with a critical hit, regain Phoenix Aspect if it was used up.\n"
-        "+5 HP. +1 Damage. -0.1 Speed. +20% Fire Resistance. +10 HP Regen",
-    "Annihilist": "Gain 1 Annihilation per 30 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
-        "Annihilation: +20% Fire Damage, +0.1 Speed, +5% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
-        "Rage no longer heals you at the end of combat. Whenever you critically hit an enemy, gain 2% of the enemy's damage as your own per stack of Annihilation you have.\n"
-        "-20 HP. +3 [damage]Damage[/damage]. -0.05 [speed]Speed[/speed]. +25% Crit Damage.",
+        "-1% Crit Chance per 50 Shield. Deal 1% Increased Damage per 25 Shield. Whenever your shield is broken, heal for 3% of your Max HP and deal Fire damage to all enemies equal to 5% of current HP.\n"
+        "-10 HP. +5 Damage. +0.05 Speed. +15% Fire Resistance. +10% Physical Resistance.",
+    "Juggernaut": "You have 1 Fortify per 10 Rage, up to 15 stacks. +1% Damage Reduction, +2% Crit Chance, +5% Crit Damage per Fortify.\n"
+        "25% Increased Rage gained from taking damage. At max Fortify your next attack hits all enemies, applies [cc]Stun[/cc] and consumes 100 Rage.\n"
+        "Whenever you are critically hit, gain Bastion until the start of your next turn. Take 25% Less Damage from critical hits.\n"
+        "Bastion: +25% Ailment Avoidance, +30% Crit Avoidance, 10% Less Damage taken.\n"
+        "+20 HP. -4 Damage. -0.1 Speed. +50% Stun Avoidance. +10% Fire Resistance.",
+    "Annihilist": "Gain 1 Annihilation per 50 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
+        "Annihilation: +10% Fire Damage, +10% Crit Damage, +3% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
+        "Rage no longer heals you at the end of combat. Whenever you critically hit an enemy, gain 2% of the enemy's damage as your own for the rest of combat per stack of Annihilation you have.\n"
+        "Whenever an enemy critically hits you, they take 5% of their Max HP as Fire damage per Annihilation stack you have. Killing an enemy this way is treated as if you killed them with a critical hit.\n"
+        "-20 HP. +6 Damage. -0.05 Speed. +25% Crit Damage.",
+    "Tyrant": "Whenever you are attacked, if the damage taken is less than your base damage, take 20% Less Damage from that attack.\n"
+        "Taking damage does not grant Rage. When you are attacked, gain Rage equal to 25% of the Damage prevented by Armour and Damage Prevention.\n"
+        "Non-critical attacks gain 2% of your Armour value as Bonus Damage. Convert 25% of your Evasion and Energy Shield into Armour.\n"
+        "Whilst above 50 Rage: 10% Less Armour, 25% Increased Damage. Whenever you attack an enemy, gain Rage equal to 10% of the Damage prevented by their Armour.\n"
+        "If your attack is fully absorbed by Energy Shield or dodged due to Evasion, lose 40% of your current Rage and Heal 1 HP per Rage lost.\n"
+        "-25 HP. +8 Damage. +0.05 Speed. -50% Crit Multi. +100 Armour.",
+    "Conqueror": "Gain 20% Less Rage from dealing and taking damage. At the start of your turn, deal Fire damage to a random enemy equal to your current rage.\n"
+        "At the start of combat, if you are fighting more than 1 enemy, for every enemy you are fighting, gain 10% Increased Damage, +0.05 Speed and 5% Less Damage Taken.\n"
+        "Gain 10% of Armour as Evasion. Gain 10% of Evasion as Armour. Whenever you reduce damage from an incoming hit due to Armour, gain 50% of the prevented damage as damage on your next attack.\n"
+        "Whenever you dodge an attack due to Evasion, heal and gain Rage equal to 10% of the evaded damage.\n"
+        "Whenever you kill an enemy, gain HP Regeneration equal to 1% of their Max HP for 3 turns.\n"
+        "+25 HP. +4 Damage. -0.1 Speed. +20% Healing Magnitude. +10% Physical Resistance. +25 Armour. +25 Evasion."
 }
 
-class Warrior(Player): # higher damage, lower speed, fire damage
-    def __init__(self, name, health = 50, damage = 4, damageType = "fire", speed = 0.8):
+class Warrior(Player):
+    def __init__(self, name, health = 50, damage = 4, damageType = "fire", speed = 0.85):
         super().__init__(name, health, damage, 0.05, 2.0, damageType, speed, className="Warrior", classDescription=WARRIOR_DESCRIPTIONS['Warrior'])
         self._rage = 0 # build rage during combat, 1 rage = +3 damage
         self._maxRage = 30
 
-        self._rageEffect = 1.0 # multiplier on rage effectiveness
         self._fury = 0
         self._maxFury = 10
-        self.phoenixUsed = False
         self._fortify = 0
-        self._maxFortify = 20
+        self._maxFortify = 15
+        self.bastion = False
         self.annihilationRage = 0
         self.annihilation = 0
         self.annihilationBuffs = {
-            'fire': 0, 'speed': 0, 'critChance': 0
+            'fire': 0, 'critMulti': 0, 'critChance': 0
         }
+        self.annihilistDamage = 0
         self.rageGeneration = 0
-
-    @property
-    def phoenixAspect(self):
-        return self._rage >= 50 and not self.phoenixUsed
+        self.conquerorEnemies = 0
+        self.conquerorDamageGain = 0
+        self.conquerorRegenBuffs = {3: 0, 2: 0, 1: 0} # keys = number of turns left
 
     def __str__(self):
         baseStr = super().__str__()
@@ -87,110 +81,147 @@ class Warrior(Player): # higher damage, lower speed, fire damage
         self._maxRage = data.get('maxRage', 30)
         self.rageGeneration = data.get('rageGeneration', 0)
 
+    def _recalculateStats(self, doPrint = True, inCombat = False):
+        super()._recalculateStats(doPrint, inCombat)
+
+        if self._ascendancy == 'Tyrant':
+            evConverted = int(0.25 * self.evasion)
+            esConverted = int(0.25 * self.energyShield)
+            self._stats['armour'] += evConverted + esConverted
+            self._stats['evasion'] -= evConverted
+            self._stats['energy_shield'] -= esConverted
+
+            if inCombat and self._rage > 50:
+                self._stats['armour'] = int(self.armour * 0.9)
+
+            if doPrint:
+                console.print(f"[asc_tyrant]Tyrant:[/asc_tryant] Converted {evConverted} Evasion and {esConverted} Energy Shield into Armour")
+
+        elif self._ascendancy == 'Conqueror':
+            evGainedAsArmour = int(0.1 * self.evasion)
+            armourGainedAsEv = int(0.1 * self.armour)
+            self._stats['armour'] += evGainedAsArmour
+            self._stats['evasion'] += armourGainedAsEv
+
+            if doPrint:
+                console.print(f"[asc_conqueror]Conqueror:[/asc_conqueror] Gained 10% of Evasion {evGainedAsArmour} as Armour. Gained 10% of Armour {armourGainedAsEv} as Evasion.")
+
     def rollCritical(self, target, damageDealt=None):
         critChance = self.critChance
         critMulti = self.critMulti
 
         if self._ascendancy == 'Annihilist':
             critChance += self.annihilationBuffs['critChance']
+            critMulti += self.annihilationBuffs['critMulti']
+
+        elif self._ascendancy == 'Warlord':
+            critChance = max(0, critChance - 0.01 * (self._shield // 50))
 
         if random.random() < critChance:
             return True, critMulti
         return False, 1.0
 
-    def damage(self, damage, damageType, combatUnit=None):
-        if self._ascendancy == 'Flamewarden' and self.phoenixAspect and not self.phoenixUsed:
-            if combatUnit:
-                resistMod = combatUnit.getResistanceModifier(damageType)
-            else:
-                resistMod = self._stats['Resistances'].get(damageType, 0) / 100
-                if damageType in ELEMENTAL_RES:
-                    resistMod += self._stats['Resistances']['elemental'] / 100
-                elif damageType in DIVINE_RES:
-                    resistMod += self._stats['Resistances']['divine'] / 100
-                resistMod += self._stats['Resistances']['all'] / 100
-                resistMod = min(0.75, resistMod)
-            damage = damage - round(damage * resistMod)
-            trueDamage = damage - self._shield
-            damagePrevented = damage - trueDamage
-            self._shield -= damagePrevented
-            self._health -= damage
-            damageTypeFormatted = formatDamageType(damageType, damageType)
-            console.print(f" [damage]- {self._name} took {damage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
-            if self._health <= 0 and not self._isDead: # prevented from phoenix
-                self._health = 1
-                healPercent = min(1, self._rage / 100)
-                healAmount = self._maxHealth * healPercent
-                console.print(f"\n[success] Flamewarden: You were dealt a fatal blow, but your Phoenix Aspect saved you!\n")
-                self.heal(healAmount)
-                self.phoenixUsed = True
-                pause()
-        else:
-            super().damage(damage, damageType, combatUnit)
+    def onCrit(self, targets, combatManager, critDamage):
+        if self._ascendancy == 'Annihilist':
+            damageGain = 0
+            for t in targets:
+                damageGain += int(t._damage * 0.02 * self.annihilation)
+            self.annihilistDamage += damageGain
+
+    def onCriticallyHit(self, attacker, combatManager, critDamage, damageType):
+        if self._ascendancy == 'Juggernaut':
+            critDamage = int(critDamage * 0.75)
+            self.gainBastion()
+        elif self._ascendancy == 'Annihilist':
+            damage = int(0.05 * attacker._maxHealth * self.annihilation)
+            attacker.damage(damage, 'fire')
+            if attacker._isDead:
+                self.onCrit([attacker], combatManager, critDamage)
+                self.onKill(attacker, {}, combatManager)
+
+    def gainBastion(self):
+        if not self.bastion and self._ascendancy == 'Juggernaut':
+            self._stats['Temporary']['ailment_avoidance'] += 25
+            self._stats['Temporary']['crit_avoidance'] += 30
+            self.bastion = True
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType, target, combatManager)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
         rageGain = damageDealt // 6
+
+        if self._ascendancy == 'Warlord':
+            rageGain = int(rageGain * 1.2)
+
+        elif self._ascendancy == 'Conqueror':
+            rageGain = int(rageGain * 0.8)
+
         if damageType == 'fire' and damageDealt > 0:
             rageGain += 1
 
         self._rage = min(self._maxRage, self._rage + rageGain)
         self.annihilationRage += rageGain
         if rageGain > 0:
-            console.print(f"\n[damage]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/damage]")
-        
+            console.print(f"\n[class_warrior]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/class_warrior]")
+
         if self._ascendancy == 'Annihilist':
-            while self.annihilationRage >= 30:
-                self.annihilationRage -= 30
+            while self.annihilationRage >= 50:
+                self.annihilationRage -= 50
                 self.annihilation += 1
 
-        if self._ascendancy == 'Annihilist' and damageType == 'fire':
-            damageDealt = round(damageDealt * (1 + self.annihilationBuffs['fire']))
+            if damageType == 'fire':
+                damageDealt = round(damageDealt * (1 + self.annihilationBuffs['fire']))
 
-        if self._ascendancy == 'Warlord' and self._rage >= 30 and self._fury < self._maxFury:
+        elif self._ascendancy == 'Warlord' and self._rage >= 30 and self._fury < self._maxFury:
             self._fury += 1
+            self._stats['Temporary']['lifesteal'] += 2
             console.print(f"\n[bold damage]Your fury increases! Current Fury: {self._fury} / {self._maxFury}[/bold damage]")
 
-        damageDealt = damageDealt + ((self._rage * 3) * self._rageEffect)
+        elif self._ascendancy == 'Conqueror':
+            damageDealt += self.conquerorDamageGain
+            self.conquerorDamageGain = 0
+            if self.conquerorEnemies > 0:
+                damageDealt = int(damageDealt * (0.1 * self.conquerorEnemies))
+
+        damageDealt = damageDealt + ((self._rage * 3))
 
         if self._ascendancy == 'Warlord':
-            damageDealt = int(damageDealt * (1 + (0.02 * self._fury)))
+            damageDealt = int(damageDealt * (1 + (0.05 * self._fury)))
             damageDealt = int(damageDealt * (1 + (0.01 * (self._shield // 25))))
-            self.heal(damageDealt * (0.02 * self._fury)) # lifesteal 2% per fury
 
-        if self._ascendancy == 'Blood Reaver':
-            healthPercent = (damageDealt // 50) / 100
-            healthLoss = self._maxHealth * healthPercent
-            damageMult = 1 + 0.01 * (healthLoss // 20)
-            dmgPerc = (damageMult - 1) * 100
-            damageDealt = damageDealt * damageMult
-            if (self._health - healthLoss) < 1: # not through damage method
-                self._health = 1
-            else:
-                self._health -= healthLoss
-            console.print(f"\n[warning]You sacrifice {healthPercent} of your life ({healthLoss} HP) to deal {dmgPerc}% More Damage.[/warning]")
-            lifestealPercent = min(30, self._rage // 10) / 100
-            lifestealHeal = self._maxHealth * lifestealPercent
-            console.print(f"\n[success]{lifestealPercent}% Blood Reaver Lifesteal:\n[/success]")
-            self.heal(lifestealHeal)
+        elif self._ascendancy == 'Tyrant':
+            if self._rage > 50:
+                damageDealt = int(damageDealt * 1.25)
 
         return damageDealt, damageType
-    
+
     def onHit(self, damageTaken, damageType, isCrit, attacker, combatManager):
-        super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
-        if self._rage > 0:
-            rageLoss = max(0, damageTaken // 8)
-            if damageType != 'fire':
-                rageLoss += 2
+        damageTaken, damageType = super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
+        rageGain = max(0, damageTaken // 10)
+        if damageType == 'fire':
+            rageGain += 2
 
-            if self._ascendancy == 'Warlord':
-                damageTaken = int(damageTaken * (1 - (0.01 * (self._shield // 50))))
-                rageLoss = rageLoss // 2
-                if self._rage > 40:
-                    damageTaken = int(damageTaken * 0.85)
+        if self._ascendancy == 'Warlord':
+            if self._rage > 40:
+                damageTaken = int(damageTaken * 0.85)
 
-            self._rage = max(0, min(self._maxRage, self._rage - rageLoss))
-            console.print(f"\n[warning]Your Rage wanes! -{rageLoss} Rage. Current Rage: {self._rage} / {self._maxRage}[/warning]")
+        elif self._ascendancy == 'Juggernaut':
+            rageGain = int(rageGain * 1.25)
+            if self.bastion:
+                damageTaken = int(damageTaken * 0.9)
+
+        elif self._ascendancy == 'Tyrant':
+            if damageTaken < self._baseDamage:
+                damageTaken = int(damageTaken * 0.8)
+            rageGain = 0 # no rage change from taking damage
+
+        elif self._ascendancy == 'Conqueror':
+            if self.conquerorEnemies > 0:
+                damageTaken = int(damageTaken * (1 - (0.05 * self.conquerorEnemies)))
+            rageGain = int(rageGain * 0.8)
+
+        self._rage = min(self._maxRage, self._rage + rageGain)
+        if rageGain > 0:
+            console.print(f"\n[class_warrior]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/class_warrior]")
 
         return damageTaken, damageType
 
@@ -201,46 +232,62 @@ class Warrior(Player): # higher damage, lower speed, fire damage
                 heal = int(self._maxHealth * 0.05)
                 console.print("  [heal]- Annihilist: Consumed 1 Annihilation stack to Heal 5% Max HP![/heal]")
                 self.heal(heal)
+        elif self._ascendancy == 'Conqueror' and entity:
+            regen = int(entity._maxHealth * 0.01)
+            self.conquerorRegenBuffs[3] += regen
         return None
 
     def onBattleEnd(self):
         healAmount = self._rage // 2
-        if self._ascendancy == 'Blood Reaver':
-            healAmount += self._rage * 2
         if self._ascendancy != 'Annihilist':
             self.heal(healAmount)
         self._rage = 0
         self._fury = 0
         self._fortify = 0
-        self.phoenixUsed = False
+        self.bastion = False
         self.annihilationBuffs = {
-            'fire': 0, 'speed': 0, 'critChance': 0
+            'fire': 0, 'critMulti': 0, 'critChance': 0
         }
         self.annihilation = 0
-        self.damageToRecoup = 0
+        self.conquerorEnemies = 0
+        self.conquerorDamageGain = 0
+        self.conquerorRegenBuffs = {3: 0, 2: 0, 1: 0}
         super().onBattleEnd()
 
     def onTurnStart(self, combatManager=None):
         if self.rageGeneration > 0:
             self._rage = min(self._maxRage, self._rage + self.rageGeneration)
             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
+
         if self._ascendancy == 'Juggernaut':
-            self._fortify = min(self._maxFortify, self._rage // 10)
-            console.print(f"[gold1]Juggernaut: Fortify set to {self._fortify} stacks. Current rage: {self._rage} / {self._maxRage} Rage.[/gold1]")
-        
-        if self._ascendancy == 'Juggernaut':
+            self._stats['Temporary']['all'] -= self._fortify
             self._fortify = min(self._maxFortify, self._rage // 10)
             console.print(f"\n[earth] Juggernaut: You now have {self._fortify} / {self._maxFortify} Fortify Stacks. (+{self._fortify}% All Resistance)")
-        
+            self._stats['Temporary']['all'] += self._fortify
+
+            if self.bastion:
+                self._stats['Temporary']['ailment_avoidance'] -= 25
+                self._stats['Temporary']['crit_avoidance'] -= 30
+                self.bastion = False
+
         elif self._ascendancy == 'Annihilist':
+            self._stats['Temporary']['crit_multi'] -= self.annihilationBuffs['critMulti']
+            self._stats['Temporary']['crit_chance'] -= self.annihilationBuffs['critChance']
             self.annihilationBuffs = {
-                'fire': 0.2 * self.annihilation,
-                'speed': 0.1 * self.annihilation,
-                'critChance': 0.05 * self.annihilation
+                'fire': 0.1 * self.annihilation,
+                'critMulti': 0.1 * self.annihilation,
+                'critChance': 0.03 * self.annihilation
             }
-            self._stats['Temporary']['speed'] += self.annihilationBuffs['speed']
+            self._stats['Temporary']['crit_multi'] += self.annihilationBuffs['critMulti']
             self._stats['Temporary']['crit_chance'] += self.annihilationBuffs['critChance']
-        
+
+        elif self._ascendancy == 'Conqueror':
+            totalHeal = sum(self.conquerorRegenBuffs.values())
+            self.conquerorRegenBuffs[1] = self.conquerorRegenBuffs[2]
+            self.conquerorRegenBuffs[2] = self.conquerorRegenBuffs[3]
+            self.conquerorRegenBuffs[3] = 0
+            self.heal(totalHeal)
+
         super().onTurnStart()
 
     def _levelUp(self):
@@ -250,61 +297,72 @@ class Warrior(Player): # higher damage, lower speed, fire damage
     def _removeOldAscendancy(self):
         if self._ascendancy == 'Warlord':
             self._baseHealth -= 10
-            self._baseDamage -= 1
+            self._baseDamage -= 5
             self._baseSpeed += 0.05
         elif self.ascendancy == 'Juggernaut':
             self._baseHealth -= 15
-            self._damage += 1
+            self._damage += 4
             self._baseSpeed += 0.05
             self._stats['Permanent']['stun_avoidance'] -= 50
-        elif self.ascendancy == 'Blood Reaver':
-            self._baseHealth -= 10
-            self._baseDamage -= 1
-            self._baseSpeed -= 0.05
-        elif self.ascendancy == 'Flamewarden':
-            self._baseHealth -= 5
-            self._baseDamage -= 1
-            self._stats['Permanent']['fire'] -= 20
         elif self.ascendancy == 'Annihilist':
             self._baseHealth += 20
-            self._baseDamage -= 3
+            self._baseDamage -= 6
             self._baseSpeed += 0.05
             self._stats['baseCritMulti'] -= 0.25
+        elif self._ascendancy == 'Tyrant':
+            self._baseHealth += 25
+            self._baseDamage -= 8
+            self._baseSpeed -= 0.05
+            self._stats['baseCritMulti'] += 0.5
+            self._stats['Permanent']['added_armour'] -= 100
+        elif self.ascendancy == 'Conqueror':
+            self._baseHealth -= 25
+            self._baseDamage -= 4
+            self._baseSpeed += 0.1
+            self._stats['Permanent']['healing_magnitude'] -= 20
+            self._stats['Permanent']['physical'] -= 10
+            self._stats['Permanent']['added_armour'] -= 25
+            self._stats['Permanent']['added_evasion'] -= 25
 
     def updateAscendancy(self, ascendancy):
         if self._ascendancy is not None:
             self._removeOldAscendancy()
         if ascendancy == 'Warlord':
             self._baseHealth += 10
-            self._baseDamage += 1
+            self._baseDamage += 5
             self._baseSpeed -= 0.05
             self._ascendancy = 'Warlord'
             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Warlord']
         elif ascendancy == 'Juggernaut':
             self._baseHealth += 15
-            self._damage -= 1
+            self._damage -= 4
             self._baseSpeed -= 0.05
             self._stats['Permanent']['stun_avoidance'] += 50
             self._ascendancy = 'Juggernaut'
             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Juggernaut']
-        elif ascendancy == 'Blood Reaver':
-            self._baseHealth += 10
-            self._baseDamage += 1
-            self._baseSpeed += 0.05
-            self._ascendancy = 'Blood Reaver'
-            self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Blood Reaver']
-        elif ascendancy == 'Flamewarden':
-            self._baseHealth += 5
-            self._baseDamage += 1
-            self._stats['Permanent']['fire'] += 20
-            self._ascendancy = 'Flamewarden'
-            self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Flamewarden']
         elif ascendancy == 'Annihilist':
             self._baseHealth -= 20
-            self._baseDamage += 3
+            self._baseDamage += 6
             self._baseSpeed -= 0.05
             self._stats['baseCritMulti'] += 0.25
             self._ascendancy = 'Annihilist'
             self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Annihilist']
+        elif ascendancy == 'Tyrant':
+            self._baseHealth -= 25
+            self._baseDamage += 8
+            self._baseSpeed += 0.05
+            self._stats['baseCritMulti'] -= 0.5
+            self._stats['Permanent']['added_armour'] += 100
+            self._ascendancy = 'Tyrant'
+            self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Tyrant']
+        elif ascendancy == 'Conqueror':
+            self._baseHealth += 25
+            self._baseDamage += 4
+            self._baseSpeed -= 0.1
+            self._stats['Permanent']['healing_magnitude'] += 20
+            self._stats['Permanent']['physical'] += 10
+            self._stats['Permanent']['added_armour'] += 25
+            self._stats['Permanent']['added_evasion'] += 25
+            self._ascendancy = 'Conqueror'
+            self.ascendancyDescription = WARRIOR_DESCRIPTIONS['Conqueror']
         self._recalculateStats(False)
-

@@ -11,8 +11,8 @@ class Player(Entity):
         super().__init__(health, damage, baseCritChance, baseCritMulti, damageType, speed, name, className)
         self.defaultDamageType = damageType
         self.classDescription = classDescription
-        self._ascendancy = ascendancy
-        self.ascendancyDescription = ascendancyDescription
+        self._ascendancy: str = ascendancy
+        self.ascendancyDescription: str = ascendancyDescription
         self.dungeonKeys = {}
         self._maxLevel = 100
         self.isPlayer = True
@@ -60,7 +60,7 @@ class Player(Entity):
             self._xp -= self._xpToNextLevel
             self._level += 1
             self.calcXpRequirement()
-            self.gainClassAbilities()
+            self.gainClassAbilities(True)
 
             self._baseHealth += 5
             self._baseDamage += 1
@@ -75,7 +75,7 @@ class Player(Entity):
             self._health = self._maxHealth
             pause()
 
-    def gainClassAbilities(self):
+    def gainClassAbilities(self, levelUp: bool = False):
         if not self.className or self.className not in CLASS_ABILITIES:
             return
 
@@ -91,7 +91,7 @@ class Player(Entity):
             isNew = name not in self._abilities
             self._abilities[name] = resolved
 
-            if isNew:
+            if isNew and levelUp: # won't print on deserialising or on init
                 console.print(f"\n[bold]{'='*50}[/bold]")
                 console.print(f"[gold1]🌟 CLASS ABILITY LEARNED: {name} 🌟[/gold1]")
                 console.print(f"[bold]{'='*50}[/bold]")

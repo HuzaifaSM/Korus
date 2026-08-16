@@ -2,6 +2,43 @@ from .base import Player
 from scripts.styles import console
 import random
 
+"""
+FIGHTER REWORK — planned base mechanic (not yet implemented):
+
+[class_fighter]An expert of combat, balancing precision and recklessness to dismantle their foes.[/class_fighter]
+Start combat with 25 Aggression and Discipline. Gain 3 Aggression when you attack, and 1 Aggression per 10 Damage Dealt. Gain 3 Discipline when you use a non-damaging ability, and 1 Discipline per 15 Damage Taken.
+At the start of your turn, gain 2 Aggression and 2 Discipline.
+The combined total of your Aggression and Discipline cannot exceed 100. Aggression and Discipline have no maximum, but have a minimum of -50.
+You cannot fall below 0 Aggression or Discipline unless an Ability puts you under the threshold.
+There are 5 thresholds for Aggression and Discipline: Complacent (-50 to 0), Neutral (0 to 35), Trained (35 to 75), Dedicated (80 to 120), All-In (120+). Neutral has no stat changes.
+Aggression Threshold Changes:
+  - Complacent: -0.3 Speed, 30% Less Damage Dealt, -10% Crit Chance.
+  - Trained: 20% Increased Physical Damage, +5% Lifesteal, +25% Crit Multi.
+  - Dedicated: 50% Increased Physical Damage, +15% Lifesteal, +60% Crit Multi.
+  - All-In: 100% Increased Physical Damage, +30% Lifesteal, upon landing a critical hit: heal for 10% of the damage dealt, and deal damage to all other enemies equal to your base damage. 40% Reduced Defenses.
+Discipline Threshold Changes:
+  - Complacent: 30% More Damage taken, 25% Reduced Defenses, -20% Stun Avoidance.
+  -
+Starting Stats: 40 HP | 3 Damage | 7.5% Crit Chance | 175% Crit Damage | Physical Damage | 1.15 Speed.
+
+resource boundaries (Base):
+-50 - 0: complacent
+    > discipline: increased damage taken, reduced defenses
+    > aggression: reduced speed, reduced damage dealt, reduced crit chance
+0 - 35: neutral
+    > no changes
+35 - 75: trained
+    > discipline: increased defenses, passive health + stamina regeneration, increased crit chance
+    > aggression: increased damage dealt, lifesteal, increased crit damage
+80 - 120: dedicated
+    > greatly increased existing buffs
+120+ : all-in
+    > discipline: 100% increased defenses. if you evade an attack, mitigate more than half of an attack's damage with armour, or fully prevent damage with energy shield, your next attack is a guaranteed crit with +75% crit multiplier. 20% less damage dealt
+    > aggression: +50% lifesteal, +0.5 speed, dealing critical hits heals you for 10% of the damage dealt, and deals your base damage as physical damage to all other enemies. 40% reduced defenses
+
+Once this lands, every existing Fighter ascendancy (Bladedancer, Champion, Barbarian, Brawler, Marshal) needs a pass to hook into Aggression/Discipline instead of the old Combo mechanic.
+"""
+
 FIGHTER_DESCRIPTIONS = {
     "Fighter": "[class_fighter]A combo-focused brawler.[/class_fighter]"
         "\nEach hit grants +1 [resource]Combo[/resource] for the rest of combat. +2 Damage per [resource]combo[/resource]. No [resource]combo[/resource] maximum."
@@ -89,7 +126,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         return crit, critMulti
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType, target, combatManager)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
         comboGained = False
         bonus = 0
         damageDealt = int(damageDealt * (self._combo / 100) * self.comboEffect)

@@ -120,7 +120,7 @@ class Monk(Player): # higher speed, higher health, lower damage, lightning + col
         return damageDealt, damageType
 
     def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
-        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
+        damageTaken, damageType, shieldPrev = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
         if self._ascendancy == 'Ascetic':
             damageTaken = int(damageTaken * 0.9)
             if damageType == 'psychic':
@@ -134,7 +134,7 @@ class Monk(Player): # higher speed, higher health, lower damage, lightning + col
                 self._damageType = 'cold'
             console.print(f"\n[info]Your elemental affinity changes your damage type to {formatDamageType(self._damageType, self._damageType)}[/info]")
 
-        return damageTaken, damageType
+        return damageTaken, damageType, shieldPrev
 
     def rollCritical(self, target, damageDealt=None):
         crit, multi = super().rollCritical(target, damageDealt)

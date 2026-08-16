@@ -44,7 +44,7 @@ class Station:
 
         costTable = displayResourceCost(required, self.player._inventory)
         console.print(costTable)
-        description = required['description']
+        description = required.get('description', '')
         console.print(description)
 
         confirm = console.input("\n[bold]Proceed with upgrade? (y/n): [/bold]").strip().lower()

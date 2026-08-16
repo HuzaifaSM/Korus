@@ -48,14 +48,14 @@ class Spectre(Player):
         if self._ascendancy == 'Lich':
             conversion = int(self._maxHealth * 0.1)
             self._maxHealth -= conversion
-            self._stats['maxEnergyShield'] += conversion
+            self._stats['max_energy_shield'] += conversion
             if not inCombat:
-                self._stats['energyShield'] += conversion
+                self._stats['energy_shield'] += conversion
             if doPrint:
                 console.print(f"  [ethereal]Lich: Converted {conversion} HP to Energy Shield![/ethereal]")
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType, target, combatManager)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
         if target:
             target = target.entity
 
@@ -114,11 +114,11 @@ class Spectre(Player):
             magnitude = self._stats['Bonuses']['healingMagnitude'] / 100
             modifiedAmount = int(amount * magnitude)
             if modifiedAmount > 0:
-                self._stats['energyShield'] = min(
+                self._stats['energy_shield'] = min(
                     self.maxEnergyShield,
                     self.energyShield + modifiedAmount
                 )
-                console.print(f"[success]{self._name} gained {modifiedAmount} Energy Shield from healing![/success] [dim]Energy Shield: {self._stats['energyShield']} / {self._stats['maxEnergyShield']}[/dim]")
+                console.print(f"[success]{self._name} gained {modifiedAmount} Energy Shield from healing![/success] [dim]Energy Shield: {self._stats['energy_shield']} / {self._stats['max_energy_shield']}[/dim]")
         else:
             super().heal(amount, doPrint)
 
@@ -158,7 +158,7 @@ class Spectre(Player):
             shieldHit = int(damageTaken * 0.25)
             if self.energyShield > 0 and shieldHit > 0:
                 shieldDmg = min(shieldHit, self.energyShield)
-                self._stats['energyShield'] -= shieldDmg
+                self._stats['energy_shield'] -= shieldDmg
                 damageTaken -= shieldDmg
                 console.print(f"  [ethereal]Lich: Energy Shield absorbed {shieldDmg} chaos damage![/ethereal]")
 
@@ -177,12 +177,12 @@ class Spectre(Player):
                 self.heal(heal)
 
         if self._ascendancy == 'Lich':
-            if self._stats['energyShield'] > (self._stats['maxEnergyShield'] * 0.5) and not self.lichBuffsActive:
+            if self._stats['energy_shield'] > (self._stats['max_energy_shield'] * 0.5) and not self.lichBuffsActive:
                 self._stats['Temporary']['speed'] += 0.2
                 self._stats['Temporary']['crit_chance'] += 0.1
                 self._stats['Temporary']['crit_multi'] += 0.3
                 self.lichBuffsActive = True
-            if self._stats['energyShield'] < (self._stats['maxEnergyShield'] * 0.5):
+            if self._stats['energy_shield'] < (self._stats['max_energy_shield'] * 0.5):
                 self._stats['Temporary']['speed'] -= 0.2
                 self._stats['Temporary']['crit_chance'] -= 0.1
                 self._stats['Temporary']['crit_multi'] -= 0.3

@@ -1,6 +1,21 @@
 from .base import Player
-from scripts.styles import console, formatDamageType
+from scripts.styles import console
 import random
+
+"""
+ascendancy changes:
+- remove elementalist, arcanist, battlemage and fluxweaver
+- calamity:
+    > all 'elemental' needs to be replaced with divine counterparts
+    > remove mana sickness debuff, instead: dealing a critical hit or more than 20% of an enemy's Max Hp as damage in a single hit grants significantly increased mana regeneration
+    > if an ability does not use mana between 10% and 40% of your Max Mana, it consumes no mana and you gain 50% of the mana that would have been spent as mana
+- archon and calamity both need to interact with mana
+- archon:
+    > archon buff grants +flat mana regeneration per archon stack
+    > archon deals %increased arcane damage based on how high their mana is
+        - at 100% mana, deal 50% increased damage, at 50% mana, deal no increased damage (1% increased per 1% mana above 50%)
+    > upon being hit by elemental damage, instead of nullifying the damage, gain mana equal to 10% of the damage taken
+"""
 
 MAGE_DESCRIPTIONS = {
     "Mage": "[class_mage]A master of the arcane arts.[/class_mage]\n"
@@ -83,20 +98,11 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
     def deserialise(self, data):
         super().deserialise(data)
-        if hasattr(self, '_rage'):
-            delattr(self, '_rage')
-        if hasattr(self, '_maxRage'):
-            delattr(self, '_maxRage')
-        if hasattr(self, '_maxThorns'):
-            delattr(self, '_maxThorns')
-        if hasattr(self, '_form'):
-            delattr(self, '_form')
-        
         self.arcanistKills = data.get('arcanistKills', 0)
         self.knowledgeStacks = data.get('knowledgeStacks', 0)
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType)
 
         manaSpent = 0
 
@@ -174,7 +180,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         return damageDealt, damageType
 
     def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
-        super().onHit(damageTaken, damageType, crit, attacker, combatManager)
+        damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
         if self._ascendancy == 'Calamity' and damageType not in ELEMENTAL and random.random() < 0.2:
             if attacker and combatManager:

@@ -168,6 +168,7 @@ class BaseTierRandomiserRune(BaseRandomiserRune):
                 levelReq=chosen.levelReq,
                 tier=chosen.tier,
                 stat=chosen.stat,
+                slot=item.slot,
                 minVal=chosen.minVal,
                 maxVal=chosen.maxVal,
                 isPercent=chosen.isPercent,

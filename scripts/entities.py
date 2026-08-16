@@ -6,7 +6,7 @@ from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, BasicAttack
 from .runeDrops import getRuneObject
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo,
-    formatDamageType, formatRarity, createHealthBar,
+    formatDamageType, formatDamageValue, formatRarity, createHealthBar,
     formatEffectsDetailed, formatAbilityCost, pause
 )
 
@@ -73,17 +73,22 @@ class Entity:
                 'holy': 0,
                 'dark': 0,
                 'psychic': 0,
+                'chaos': 0,
+                'ethereal': 0,
                 'arcane': 0,
                 'divine': 0,
+                'elemental': 0,
                 'otherworld': 0,
                 'all': 0,
                 'resistance_penetration': 0,
                 'stun_avoidance': 0,
                 'dot_resistance': 0,
                 'ailment_avoidance': 0,
+                'healing_magnitude': 0,
                 'crit_resistance': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
+                'increased_damage_reduction': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
                 'added_multihits': 0,
@@ -111,6 +116,7 @@ class Entity:
                 'resistance_peneration': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
+                'increased_damage_reduction': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
                 'added_multihits': 0,
@@ -183,15 +189,15 @@ class Entity:
 
     @property
     def critChance(self) -> float:
-        return self._stats['baseCritChance'] + self._getExtraBonuses('crit_chance')
+        return self._stats['baseCritChance'] + self._stats['Bonuses']['crit_chance'] + self._getExtraBonuses('crit_chance')
 
     @property
     def critMulti(self) -> float:
-        return self._stats['baseCritMulti'] + (self._stats['Bonuses']['crit_multi']) + self._getExtraBonuses('crit_multi')
+        return self._stats['baseCritMulti'] + self._stats['Bonuses']['crit_multi'] + self._getExtraBonuses('crit_multi')
 
     @property
     def numMultihits(self) -> int:
-        return 2 + self._getExtraBonuses('added_multihits')
+        return 2 + self._getExtraBonuses('added_multihits') + self._stats['Bonuses']['added_multihits']
 
     def __rich__(self):
         return self.__str__()
@@ -293,7 +299,7 @@ class Entity:
     def calcXpRequirement(self):
         self._xpToNextLevel = max(int((self._level * 25) ** 0.717), (3 * self._level) ** 2)
 
-    def damage(self, damage: int, damageType: str, combatUnit = None, *, lethal: bool = True):
+    def damage(self, damage: int, damageType: str, combatUnit = None, *, lethal: bool = True) -> int:
         """'true' damageType means no resistances apply"""
         if combatUnit:
             resistMod = combatUnit.getResistanceModifier(damageType)
@@ -309,19 +315,27 @@ class Entity:
             resistMod = min(0.75, resistMod)
         if damageType == 'true':
             resistMod = 0
+
+        damageReductionValue = min(damage, max(0, self._stats['Bonuses']['damage_reduction'] - damage))
+        damage = max(0, damage - self._stats['Bonuses']['damage_reduction'])
+
         damage = int(round(damage * (1 - resistMod)))
         trueDamage = max(0, damage - self._shield)
         damagePrevented = damage - trueDamage
         self._shield -= damagePrevented
+        
         if trueDamage > 0:
             self._health -= trueDamage
             if not lethal and self._health <= 0:
                 self._health = 1
                 console.print(f"  [warning]Non-lethal damage dealt![/warning]")
             damageTypeFormatted = formatDamageType(damageType, damageType)
-            console.print(f"  [damage]- {self._name} took {trueDamage} {damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
-            if  self._isDead: # dies
+            dmgColour = formatDamageValue(trueDamage)
+            console.print(f"  [damage]- {self._name} took[/damage] [{dmgColour}]{trueDamage}[/{dmgColour}] [damage]{damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
+            if self._isDead:
                 self.death()
+
+        return damageReductionValue
 
     def heal(self, amount: int, doPrint: bool = True) -> int:
         """returns true healed amount"""
@@ -521,7 +535,7 @@ class Entity:
     def _getExtraBonuses(self, stat: str) -> int: # gets temporary + permanent buffs for a stat
         perm = self._stats['Permanent'].get(stat, 0)
         temp = self._stats['Temporary'].get(stat, 0)
-        if 'increased_' in stat or stat in ['crit_chance', 'crit_multi']:
+        if 'increased_' in stat:
             return (perm + temp / 100)
         return perm + temp
 
@@ -557,8 +571,7 @@ class Entity:
             if equipment:
                 hFlat, hInc, _ = equipment.getStatBonuses('health')
                 healthFlat += hFlat
-                extra = self._getExtraBonuses('increased_health')
-                healthInc += hInc + extra
+                healthInc += hInc
 
                 if equipment.slot == 'weapon':
                     dmgFlat += equipment.damage
@@ -570,39 +583,64 @@ class Entity:
                 sFlat, sInc, _ = equipment.getStatBonuses('speed')
                 spdFlat += sFlat
                 spdInc += sInc
-                
+
                 if slot == "weapon":
                     self._damageType = equipment.getDamageType() if equipment.getDamageType() else self._damageType
 
                 for damageType in self._stats['Resistances'].keys():
                     resFlat, _, _ = equipment.getStatBonuses(f'{damageType}_resistance')
-                    extra = self._getExtraBonuses(damageType)
                     self._stats['Resistances'][damageType] = min(
-                        self._stats['Resistances'][damageType] + resFlat + extra,
+                        self._stats['Resistances'][damageType] + resFlat,
                         75
                     )
 
                 for bonus in self._stats['Bonuses'].keys():
-
                     bonusFlat, bonusInc, _ = equipment.getStatBonuses(bonus)
-                    extra = self._getExtraBonuses(bonus)
-                    self._stats['Bonuses'][bonus] += round((bonusFlat + extra) * (1 + bonusInc))
+                    if bonus in ('crit_chance', 'crit_multi'):
+                        # affix values are stored as percentage points (e.g. 67 == +67%), unlike
+                        # baseCritChance/baseCritMulti which are raw fractions, so convert here
+                        self._stats['Bonuses'][bonus] += (bonusFlat / 100) * (1 + bonusInc)
+                    else:
+                        self._stats['Bonuses'][bonus] += round(bonusFlat * (1 + bonusInc))
 
                 if hasattr(equipment, 'defenseType') and equipment.defenseType:
                     if equipment.defenseType == 'armour':
-                        armour += equipment.defenseValue + self._getExtraBonuses('added_armour')
+                        armour += equipment.defenseValue
                     elif equipment.defenseType == 'evasion':
-                        evasion += equipment.defenseValue + self._getExtraBonuses('added_evasion')
+                        evasion += equipment.defenseValue
                     elif equipment.defenseType == 'energy_shield':
-                        es += equipment.defenseValue + self._getExtraBonuses('added_energy_shield')
+                        es += equipment.defenseValue
 
                 if equipment.slot == 'amulet':
                     _, _, gIncArm = equipment.getStatBonuses('armour')
-                    globalArmourInc += gIncArm + self._getExtraBonuses('increased_armour')
+                    globalArmourInc += gIncArm
                     _, _, gIncEva = equipment.getStatBonuses('evasion')
-                    globalEvasionInc += gIncEva + self._getExtraBonuses('increased_evasion')
+                    globalEvasionInc += gIncEva
                     _, _, gIncEs = equipment.getStatBonuses('energy_shield')
-                    globalEsInc += gIncEs + self._getExtraBonuses('increased_energy_shield')
+                    globalEsInc += gIncEs
+
+        # ascendancy-derived (Permanent + Temporary) bonuses are applied exactly once here,
+        # regardless of how many equipment slots are filled - see entities.py stat recalc discussion
+        for damageType in self._stats['Resistances'].keys():
+            extra = self._getExtraBonuses(damageType)
+            self._stats['Resistances'][damageType] = min(
+                self._stats['Resistances'][damageType] + extra,
+                75
+            )
+
+        for bonus in self._stats['Bonuses'].keys():
+            if bonus in ('crit_chance', 'crit_multi'):
+                # applied live in the critChance/critMulti properties instead - see there
+                continue
+            self._stats['Bonuses'][bonus] += round(self._getExtraBonuses(bonus))
+
+        healthInc += self._getExtraBonuses('increased_health')
+        globalArmourInc += self._getExtraBonuses('increased_armour')
+        globalEvasionInc += self._getExtraBonuses('increased_evasion')
+        globalEsInc += self._getExtraBonuses('increased_energy_shield')
+        armour += self._getExtraBonuses('added_armour')
+        evasion += self._getExtraBonuses('added_evasion')
+        es += self._getExtraBonuses('added_energy_shield')
 
         self._damage = int((self._baseDamage + dmgFlat) * (1 + dmgInc))
         self._maxHealth = int((self._maxHealth + healthFlat) * (1 + healthInc))
@@ -614,9 +652,6 @@ class Entity:
         self._stats['Bonuses']['dot_resistance'] = min(self._stats['Bonuses']['dot_resistance'], 100)
 
         globalIncDef = self._getExtraBonuses('increased_defenses')
-        armour += self._getExtraBonuses('added_armour')
-        evasion += self._getExtraBonuses('added_evasion')
-        es += self._getExtraBonuses('added_energy_shield')
         finalArmour = int(armour * (1 + globalArmourInc + globalIncDef))
         finalEvasion = int(evasion * (1 + globalEvasionInc + globalIncDef))
         finalEs = int(es * (1 + globalEsInc + globalIncDef))
@@ -646,14 +681,6 @@ class Entity:
                 for r, v in resistances.items():
                     console.print(f"-  [{r}]{r.title()}[/{r}]: [cyan]{v}%[/cyan]")
 
-            activeBonuses = {k: v for k, v in self._stats['Bonuses'].items() if v > 0}
-
-            if activeBonuses.get('healing_magnitude') == 100:
-                activeBonuses.pop('healing_magnitude')
-            if activeBonuses:
-                console.print("\n[bold]Bonuses:[/bold]")
-                for bonus, val in activeBonuses.items():
-                    console.print(f"  [buff]{bonus.replace('_', ' ').title()}: {val}%[/buff]")
             console.print()
             pause()
 
@@ -746,8 +773,6 @@ class Entity:
                     printWarning(f"{armour.name} has broken!")
                     self.unequip(slot)
 
-        damageTaken = max(0, damageTaken - self._stats['Bonuses']['damage_reduction'])
-
         return damageTaken, damageType
 
     def onKill(self, entity: Entity, attackData: Dict, combatManager=None) -> Optional[Dict]:
@@ -757,6 +782,14 @@ class Entity:
 
     def onHeal(self, healAmout: int):
         """Rewrite per class"""
+        pass
+
+    def onCrit(self, targets: list[Entity], combatManager, critDamage: int) -> int:
+        """Rewrite per class, called when dealing a critical hit. Returns critDamage"""
+        pass
+
+    def onCriticallyHit(self, attacker: Entity, combatManager, critDamage: int, damageType: str) -> int:
+        """Rewrite per class, called when being critically hit. Returns critDamage"""
         pass
 
     def onTurnStart(self, combatManager=None):

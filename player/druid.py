@@ -276,7 +276,7 @@ class Druid(Player): # balanced damage and speed, earth damage
         super().onTurnStart(combatManager)
 
     def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        super().onAttack(damageDealt, damageType, target, combatManager)
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
 
         verdanceGained = damageDealt // 10
         if self._ascendancy == 'Arbiter':

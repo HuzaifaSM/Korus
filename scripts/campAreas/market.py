@@ -21,12 +21,20 @@ class Market(Station):
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
             1: {"wood": 50, "stone": 50, "iron_ore": 10, "leather": 20,
-                'description': "Enemies will begin to drop [resource]Trade Vouchers[/resource].\n[resource]Trade Vouchers[/resource] are used to restock the Market's inventory.\nThe market can stock [common]Common[/common] and [uncommon]Uncommon[/uncommon] equipment."
+                'description': "Enemies will begin to drop [resource]Trade Vouchers[/resource].\n[resource]Trade Vouchers[/resource] are used to restock the Market's inventory.\nThe market can stock Common and Uncommon equipment."
                 },
-            2: {"iron_ore": 50, "leather": 50, "cloth": 50, "bone": 25},
-            3: {"crystal": 25, "bone": 50, "soul": 25},
-            4: {"mana_essence": 40, "diamond": 20, "soul": 50},
-            5: {"dragon_scale": 15, "ascended_essence": 10, "diamond": 25}
+            2: {"iron_ore": 50, "leather": 50, "cloth": 50, "bone": 25,
+                'description': "The market can now stock Rare resources. The market stocks an additional 2 pieces of Equipment. The market can stock Rare equipment."
+                },
+            3: {"crystal": 25, "bone": 50, "soul": 25,
+                'description': "The market stocks an additional 2 pieces of Equipment. The market can stock Epic equipment. The market no longer stocks Common equipment."
+                },
+            4: {"mana_essence": 40, "diamond": 20, "soul": 50,
+                'description': "The market can now stock Epic resources. The market stocks an additional 2 pieces of Equipment. The market can stock Legendary equipment. The market no longer stocks Uncommon equipment."
+                },
+            5: {"dragon_scale": 15, "ascended_essence": 10, "diamond": 25,
+                'description': "The market stocks an additional 2 pieces of Equipment. The market is less likely to stock Rare equipment."
+                }
         }
 
     def _serialise(self):
@@ -64,7 +72,7 @@ class Market(Station):
         # resources
         resourceCount = 3 + self.level
         availableResources = list(RESOURCES.keys())
-        if self.level < 2: #higher levels have better resources
+        if self.level < 2:
             availableResources = [r for r in availableResources
                                   if RESOURCES[r].rarity.value in ['common', 'uncommon']]
         elif self.level < 4:
@@ -75,27 +83,27 @@ class Market(Station):
                                   if RESOURCES[r].rarity.value in ['common', 'uncommon', 'rare', 'epic']]
         selectedResources = random.sample(availableResources, min(len(availableResources), resourceCount))
         for resource in selectedResources:
-            quantity = random.randint(10 + self.level * 5, 30 + self.level * 10)
+            quantity = random.randint(10 + self.level * 4, 30 + self.level * 10)
             basePrice = RESOURCES[resource].value * 8
             self.stock[resource] = (quantity, basePrice)
         # equipment
-        equipmentCount = 2 + self.level
+        equipmentCount = 2 * self.level + random.randint(1, 3)
         for _ in range(equipmentCount):
-            equipLevel = self.player._level + random.randint(0, self.level * 2) #shop equipment is slightly better
+            equipLevel = self.player._level + random.randint(1, 1 + self.level * 3)
             slot = random.choice(['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet'])
-            rarityChances = { #based on market level
-                1: [ItemRarity.COMMON, ItemRarity.UNCOMMON],
-                2: [ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.RARE],
-                3: [ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC],
-                4: [ItemRarity.RARE, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY],
-                5: [ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.EPIC, ItemRarity.LEGENDARY]
+            rarityChances = {
+                1: [ItemRarity.COMMON, ItemRarity.COMMON, ItemRarity.UNCOMMON],
+                2: [ItemRarity.COMMON, ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.UNCOMMON, ItemRarity.RARE],
+                3: [ItemRarity.UNCOMMON, ItemRarity.UNCOMMON, ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.RARE, ItemRarity.EPIC],
+                4: [ItemRarity.RARE, ItemRarity.RARE, ItemRarity.RARE, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.EPIC, ItemRarity.LEGENDARY],
+                5: [ItemRarity.RARE, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.EPIC, ItemRarity.EPIC, ItemRarity.LEGENDARY]
             }
             possibleRarities = rarityChances.get(self.level, [ItemRarity.COMMON, ItemRarity.UNCOMMON])
             rarity = random.choice(possibleRarities)
             equipment = Equipment._generateEquipmentPiece(equipLevel, slot, rarity, className=self.player.className)
-            price = round((random.uniform(2, 3) * equipment.value * 10) + 5000 * self.level // 5)
-            price = equipment.value * random.randint(1, 3)
-            self.stock[equipment.name] = (1, price, equipment) # include equipment object to transfer later
+            price = int((random.uniform(1, 3) * equipment.value * 5) + 1000)
+            price = int(equipment.value * random.uniform(1, 3))
+            self.stock[equipment.name] = (1, price, equipment)
         # consumables
         if self.level >= 2:
             consumableCount = 1 + self.level
@@ -120,7 +128,7 @@ class Market(Station):
             printWarning(f"Market Level 1 required to force restock. Current level: {self.level}")
             pause()
             return
-        cost = 10 + (self.level * 5)
+        cost = self.level * 5
         console.print(f"\n[bold]Force Market Restock for {cost} Trade Vouchers?[/bold]")
         confirm = console.input("\n[cyan]Confirm? (y/n):\n> [/cyan]").strip().lower()
         if confirm == 'y':
@@ -154,7 +162,7 @@ class Market(Station):
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         self.buyItems()
                     case 2:
@@ -186,8 +194,8 @@ class Market(Station):
         for i, (itemName, itemData) in enumerate(stockList, 1):
             if len(itemData) == 3:  # equipment
                 quantity, price, equipment = itemData
-                console.print(f"  [cyan]{i}.[/cyan] {itemName} x{quantity} - [dim]{price}g/each[/dim]")
-                console.print(f"     [dim]{equipment._formatStats()}[/dim]")
+                console.print(f"  [cyan]{i}.[/cyan] {itemName} - [dim]{price}g/each[/dim]")
+                console.print(f"     [dim]{equipment}[/dim]")
             else:  # resource or consumable
                 quantity, price = itemData
                 console.print(f"  [cyan]{i}.[/cyan] {itemName} x{quantity} - [dim]{price}g/each[/dim]")

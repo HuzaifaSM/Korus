@@ -169,6 +169,7 @@ class FusionRune(CraftingItem):
             levelReq=chosenAffix.levelReq,
             tier=chosenAffix.tier,
             stat=chosenAffix.stat,
+            slot=item.slot,
             minVal=chosenAffix.minVal,
             maxVal=chosenAffix.maxVal,
             isPercent=chosenAffix.isPercent,

@@ -4,58 +4,27 @@ from .mage import Mage, MAGE_DESCRIPTIONS
 from .fighter import Fighter, FIGHTER_DESCRIPTIONS
 from .druid import Druid, DRUID_DESCRIPTIONS
 from .paladin import Paladin, PALADIN_DESCRIPTIONS
-from .monk import Monk, MONK_DESCRIPTIONS
 from .cultist import Cultist, CULTIST_DESCRIPTIONS
 from .wanderer import Wanderer, WANDERER_DESCRIPTIONS
 from .spectre import Spectre, SPECTRE_DESCRIPTIONS
 from .wretch import Wretch, WRETCH_DESCRIPTIONS
+from .marauder import Marauder, MARAUDER_DESCRIPTIONS
+from .tempest import Tempest, TEMPEST_DESCRIPTIONS
 
 from typing import Dict
 
 CLASSES: Dict[str, Player] = {
-    "Warrior": Warrior,
-    "Mage": Mage,
-    "Fighter": Fighter,
-    "Druid": Druid,
-    "Paladin": Paladin,
-    "Monk": Monk,
     "Cultist": Cultist,
-    "Wanderer": Wanderer,
+    "Druid": Druid,
+    "Fighter": Fighter,
+    "Mage": Mage,
+    #"Marauder": Marauder,
+    "Paladin": Paladin,
     "Spectre": Spectre,
+    "Tempest": Tempest,
+    "Wanderer": Wanderer,
+    "Warrior": Warrior,
     "Wretch": Wretch,
-}
-
-ASCENDANCIES = {
-    "Warrior": [
-        'Warlord', 'Juggernaut', 'Blood Reaver', 'Flamewarden', 'Annihilist'
-    ],
-    "Mage" : [
-        'Elementalist', 'Arcanist', 'Battlemage', 'Stormbringer', 'Cryomancer', 'Calamity', 'Archon',
-    ],
-    "Fighter": [
-        'Bladedancer', 'Champion', 'Barbarian', 'Brawler', 'Marshal'
-    ],
-    "Druid": [
-        'Primalist', 'Arbiter', 'Moonkin', 'Chimera', 'Earthshaper'
-    ],
-    "Paladin": [
-        'Zealot', 'Guardian', 'Inquisitor', 'Justicar', 'Crusader'
-    ],
-    "Monk": [
-        'Enlightened', 'Stormwalker', 'Glacierfist', 'Ascetic', 'Psychopath', 'Avatar'
-    ],
-    'Cultist': [
-        'Umbralist', 'Harbinger', 'Doomsayer', 'Ritualist', 'Anarchist', 'Desecrator'
-    ],
-    'Wanderer': [
-        'Fractured', 'Manifestation', 'Weaver', 'Abyssal', 'Warper', 'Mindbreaker'
-    ],
-    'Spectre': [
-        'Wraith', 'Reaper', 'Phantasm', 'Revenant', 'Lich'
-    ],
-    "Wretch": [
-        'Exsanguinator', 'Bloodletter', 'Plaguebearer', 'Necrose', 'Necromancer'
-    ]
 }
 
 DESCRIPTIONS = {
@@ -65,13 +34,15 @@ DESCRIPTIONS = {
 
     "Fighter": FIGHTER_DESCRIPTIONS,
 
-    "Monk": MONK_DESCRIPTIONS,
-
     "Mage": MAGE_DESCRIPTIONS,
+
+    "Marauder": MARAUDER_DESCRIPTIONS,
 
     "Paladin": PALADIN_DESCRIPTIONS,
 
     "Spectre": SPECTRE_DESCRIPTIONS,
+
+    "Tempest": TEMPEST_DESCRIPTIONS,
 
     "Wanderer": WANDERER_DESCRIPTIONS,
 
@@ -79,3 +50,10 @@ DESCRIPTIONS = {
 
     "Wretch": WRETCH_DESCRIPTIONS,
 }
+
+ASCENDANCIES: dict[str, list[str]] = {}
+for className, descriptions in DESCRIPTIONS.items():
+    ASCENDANCIES[className] = []
+    for asc in descriptions.keys():
+        if asc != className:
+            ASCENDANCIES[className].append(asc)

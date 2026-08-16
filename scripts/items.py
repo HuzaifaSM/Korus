@@ -903,7 +903,7 @@ class Equipment(Item):
         self.name = name
 
     def compareTo(self, other: Optional['Equipment']) -> str:
-        """'Other' is the current equipment piece, self is the new equipment piece"""
+        """'Other' is the new equipment piece, self is the current equipment piece"""
         if self.slot != other.slot:
             return f"[error][bold]ERROR:[/bold] Selected items do not have the same base types.[/error]"
 
@@ -914,12 +914,10 @@ class Equipment(Item):
             return change, symbol, colour
 
         if not other:
-            return f"\nNEW: {self.name}\n    {self._formatStats()}"
+            return f"\nNEW: {self.name}\n"
         comparison = ""
-        comparison += f"\n [cyan]Current:[/cyan] {other.name}"
-        comparison += f"\n   {other._formatStats()}"
-        comparison += f"\n [cyan]New:[/cyan] {self.name}"
-        comparison += f"\n   {self._formatStats()}"
+        comparison += f"\n [cyan bold]Current:[/cyan bold] {other.name}\n"
+        comparison += f"\n [gold1 bold]New:[/gold1 bold] {self.name}\n"
         comparison += "\n[bold yellow3]Changes:[/bold yellow3]" if self.slot not in ['ring', 'amulet'] else ""
         # compare each stat
         oldStats = other.stats.copy()
@@ -948,6 +946,9 @@ class Equipment(Item):
             elif newDtype is not None and oldDtype is None:
                 comparison += f"\n[success] [+] Damage Type: {newDtype}[/success]"
 
+        newStats = [a for a in newStats if a.stat not in ['damage', 'armour', 'energy_shield', 'evasion']]
+        oldStats = [a for a in oldStats if a.stat not in ['damage', 'armour', 'energy_shield', 'evasion']]
+
         if len(newStats) > 0:
             comparison += "\n[bold green3 underline]Gains:[/bold green3 underline]"
             newStats = {a.stat.replace('_', ' ').title(): a.value for a in newStats
@@ -956,6 +957,7 @@ class Equipment(Item):
                         }
             for k, v in newStats.items(): # k = stat, v = value
                 comparison += f"\n[success] [+] {v} {k}[/success]"
+        console.print()
         if len(oldStats) > 0:
             comparison += "\n[bold red3 underline]Losses:[/bold red3 underline]"
             oldStats = {a.stat.replace('_', ' ').title(): a.value for a in oldStats
@@ -966,12 +968,6 @@ class Equipment(Item):
                 comparison += f"\n[error] [-] {v} {k}[/error]"
 
         return comparison
-
-    def _formatStats(self) -> str:
-        statStrings = []
-        for stat in self.stats:
-            statStrings.append(f"{stat}")
-        return "\n- ".join(statStrings)
 
     def takeDamage(self, amount: int):
         durabilityLoss = max(1, amount // 10) #1 durability loss per 10 damage

@@ -94,8 +94,8 @@ class Camp:
                 f"[dim]1)[/dim] [red]Campfire[/red] | Current Level: {self.campfire.level}\n  [dim]Upgrade Requirements:[/dim] {self.campfire.formatUpgradeRequirements()}",
                 f"[dim]2)[/dim] [yellow]Forge[/yellow] | Current Level: {self.forge.level}\n  [dim]Upgrade Requirements:[/dim] {self.forge.formatUpgradeRequirements()}",
                 f"[dim]3)[/dim] [green]Market[/green] | Current Level: {self.market.level}\n  [dim]Upgrade Requirements:[/dim] {self.market.formatUpgradeRequirements()}",
-                f"[dim]4)[/dim] [blue]Quest Board[/blue] | Current Level: {self.questBoard.level}\n  [dim]Upgrade Requirements:[/dim] {self.questBoard.formatUpgradeRequirements()}",
-                f"[dim]5)[/dim] [gold1]Shrine[/gold1] | Current Level: {self.shrine.level}\n  [dim]Upgrade Requirements:[/dim] {self.shrine.formatUpgradeRequirements()}"
+                f"[dim]4)[/dim] [gold1]Shrine[/gold1] | Current Level: {self.shrine.level}\n  [dim]Upgrade Requirements:[/dim] {self.shrine.formatUpgradeRequirements()}"
+                #f"[dim]4)[/dim] [blue]Quest Board[/blue] | Current Level: {self.questBoard.level}\n  [dim]Upgrade Requirements:[/dim] {self.questBoard.formatUpgradeRequirements()}",
             ]
             for line in campLines:
                 console.print(line + "\n")
@@ -106,7 +106,7 @@ class Camp:
                 match choice:
                     case 0:
                         printInfo("Leaving Camp...")
-                        break
+                        return
                     case 1:
                         self.campfire.mainMenu()
                     case 2:
@@ -114,9 +114,6 @@ class Camp:
                     case 3:
                         self.market.mainMenu()
                     case 4:
-                        printWarning("The Quest Board is currently under maintenance!")
-                        #self.questBoard.mainMenu()
-                    case 5:
                         self.shrine.mainMenu()
                     case _:
                         printWarning("\nInvalid choice.")

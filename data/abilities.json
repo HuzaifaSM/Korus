@@ -26,7 +26,6 @@
                         }
                     }
                 },
-                "requierments": {},
                 "description": "Lash out with chaotic energy, striking your target.\n  - Cooldown: 2 Turns\n  - Deal 3 Damage + 30% of your base damage.\n  - Apply 1 stack of Curse to your target.",
                 "evolutions": {
                     "25": {
@@ -159,7 +158,6 @@
                         }
                     }
                 },
-                "requirements": {},
                 "description": "Forge a pact with demonic forces, sacrificing your flesh for power.\n  - Cooldown: 3 Turns\n  - Take 5% of your Max HP as Chaos damage.\n  - Gain Shield equal to 3% of your Max HP for 3 turns.\n  - Gain 5% Damage Reduction for 2 turns.",
                 "evolutions": {
                     "30": {
@@ -692,6 +690,9 @@
                 "resources": {
                     "gain": {
                         "verdance": 2
+                    },
+                    "required": {
+                        "form": "beast"
                     }
                 },
                 "level": 1,
@@ -703,9 +704,6 @@
                             "stacks": 1
                         }
                     }
-                },
-                "requirements": {
-                    "form": "beast"
                 },
                 "description": "Maul your target in Beast Form.\n  - Cooldown: 2 Turns\n  - Gain 2 Verdance.\n  - Deal 5 Damage + 30% of your base damage\n  - Apply 1 stack of Bleed to your target.",
                 "evolutions": {
@@ -838,7 +836,8 @@
                 "stamina_cost": 35,
                 "resources": {
                     "required": {
-                        "verdance": 3
+                        "verdance": 3,
+                        "form": "human"
                     }
                 },
                 "level": 5,
@@ -854,9 +853,6 @@
                             "amount": 0.05
                         }
                     }
-                },
-                "requirements": {
-                    "form": "human"
                 },
                 "description": "Call upon nature for a boon in Human Form.\n  - Cooldown: 3 Turns\n  - Only useable whilst above 3 Verdance\n  - Heal 10 HP + 1% Max HP.\n  - Gain 10 HP Regeneration and 5% Damage Reduction for 2 turns.",
                 "evolutions": {
@@ -1000,8 +996,10 @@
                         }
                     }
                 },
-                "requierments": {
-                    "forms": "beast"
+                "resources": {
+                    "required": {
+                        "form": "beast"
+                    }
                 },
                 "description": "Let out a furious roar in Beast Form.\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage.\n  - All enemies gain 20% Vulnerable for 2 turns.",
                 "evolutions": {
@@ -1118,6 +1116,9 @@
                 "resources": {
                     "gain": {
                         "verdance": 2
+                    },
+                    "required": {
+                        "form": "beast"
                     }
                 },
                 "level": 15,
@@ -1131,7 +1132,7 @@
                         }
                     }
                 },
-                "description": "Slam into the ground, causing an earthquake.\n  - Cooldown: 4 Turns\n  - Gain 2 Verdance.\n  - Deal 30 Damage + 20% of your base damage\n  - 20% Chance to Stun all enemies for 1 turn.",
+                "description": "Call upon the forces of nature, or slam the ground, causing an earthquake.\n  - Cooldown: 4 Turns\n  - Gain 2 Verdance.\n  - Deal 30 Damage + 20% of your base damage\n  - 20% Chance to Stun all enemies for 1 turn.",
                 "evolutions": {
                     "40": {
                         "damage_base": 60,
@@ -1257,6 +1258,11 @@
                             "speed": -0.1,
                             "damage": 0.95
                         }
+                    }
+                },
+                "resources": {
+                    "required": {
+                        "form": "beast"
                     }
                 },
                 "description": "Unleash your bestial rage and rip your foe to shreds.\n  - Cooldown: 3 Turns\n  - Deal 50 Damage + 60% of your base damage\n  - Apply 2 stacks of Bleed. Inflict Daze for 2 turns: -0.1 Speed, 5% less damage dealt.",
@@ -2730,656 +2736,6 @@
         "Fluxweaver": {},
         "Calamity": {},
         "Archon": {}
-    },
-    "Monk": {
-        "base": {
-            "Thunder Palm": {
-                "name": "Thunder Palm",
-                "category": "damage",
-                "tags": [
-                    "damage",
-                    "lightning",
-                    "strike",
-                    "prowess",
-                    "elemental",
-                    "shock"
-                ],
-                "damage_base": 5,
-                "damage_scaling": 30,
-                "damage_type": "lightning",
-                "stamina_cost": 15,
-                "level": 1,
-                "cooldown": 2,
-                "targets": 1,
-                "effects": {
-                    "target": {
-                        "shock": {
-                            "turns": 2,
-                            "amount": 0.1
-                        }
-                    }
-                },
-                "description": "Strike with a palm charged by lightning.\n  - Cooldown: 2 Turns\n  - Deal 5 Damage + 30% of your base damage as Lightning.\n  - Apply 10% Shock for 2 turns.",
-                "evolutions": {
-                    "25": {
-                        "damage_base": 25,
-                        "damage_scaling": 50,
-                        "level": 25,
-                        "stamina_cost": 40,
-                        "effects": {
-                            "target": {
-                                "shock": {
-                                    "turns": 2,
-                                    "amount": 0.15
-                                }
-                            }
-                        },
-                        "description": "Strike with a palm charged by lightning.\n  - Cooldown: 2 Turns\n  - Deal 25 Damage + 50% of your base damage. 15% Shock for 2 turns."
-                    },
-                    "50": {
-                        "damage_base": 70,
-                        "damage_scaling": 80,
-                        "level": 50,
-                        "stamina_cost": 70,
-                        "tags+": [
-                            "chill"
-                        ],
-                        "effects": {
-                            "target": {
-                                "shock": {
-                                    "turns": 2,
-                                    "amount": 0.2
-                                },
-                                "chill": {
-                                    "stacks": 1,
-                                    "turns": 2,
-                                    "amount": 0.15
-                                }
-                            }
-                        },
-                        "description": "Strike with a palm charged by lightning.\n  - Cooldown: 2 Turns\n  - Deal 70 Damage + 80% of your base damage.\n  - 20% Shock and 15% Chill for 2 turns."
-                    },
-                    "75": {
-                        "damage_base": 165,
-                        "damage_scaling": 120,
-                        "level": 75,
-                        "stamina_cost": 120,
-                        "tags+": [
-                            "elemental_exposure"
-                        ],
-                        "effects": {
-                            "target": {
-                                "shock": {
-                                    "turns": 3,
-                                    "amount": 0.25
-                                },
-                                "chill": {
-                                    "stacks": 2,
-                                    "turns": 2,
-                                    "amount": 0.2
-                                },
-                                "elemental_exposure": {
-                                    "turns": 2,
-                                    "amount": 20
-                                }
-                            }
-                        },
-                        "description": "Strike with a palm charged by lightning.\n  - Cooldown: 2 Turns\n  - Deal 165 Damage + 120% of your base damage.\n  - 25% Shock, 2x 20% Chill, 20% Elemental Exposure for 2-3 turns."
-                    }
-                }
-            },
-            "Inner Focus": {
-                "name": "Inner Focus",
-                "category": "buff",
-                "tags": [
-                    "buff",
-                    "heal",
-                    "stoneskin",
-                    "speed",
-                    "prowess"
-                ],
-                "heal_base": 8,
-                "heal_percent": 1,
-                "damage_type": "heal",
-                "stamina_cost": 30,
-                "level": 5,
-                "cooldown": 3,
-                "effects": {
-                    "self": {
-                        "stoneskin": {
-                            "turns": 2,
-                            "amount": 0.05
-                        },
-                        "speed": {
-                            "turns": 2,
-                            "amount": 0.1
-                        }
-                    }
-                },
-                "description": "Centre yourself, finding inner peace.\n  - Cooldown: 3 Turns\n  - Heal 8 HP + 1% Max HP.\n  - 5% Damage Reduction and +0.1 Speed for 2 turns.",
-                "evolutions": {
-                    "30": {
-                        "heal_base": 25,
-                        "heal_percent": 2,
-                        "level": 30,
-                        "stamina_cost": 65,
-                        "tags+": [
-                            "regeneration"
-                        ],
-                        "effects": {
-                            "self": {
-                                "stoneskin": {
-                                    "turns": 2,
-                                    "amount": 0.08
-                                },
-                                "speed": {
-                                    "turns": 2,
-                                    "amount": 0.15
-                                },
-                                "regeneration": {
-                                    "turns": 2,
-                                    "amount_flat": 10,
-                                    "amount_percent": 1
-                                }
-                            }
-                        },
-                        "description": "Centre yourself, finding inner peace.\n  - Cooldown: 3 Turns\n  - Heal 25 HP + 2% Max HP.\n  - 8% Damage Reduction, +0.15 Speed, 10 HP + 1% Max HP Regen for 2 turns."
-                    },
-                    "55": {
-                        "heal_base": 55,
-                        "heal_percent": 4,
-                        "level": 55,
-                        "stamina_cost": 110,
-                        "tags+": [
-                            "haste"
-                        ],
-                        "effects": {
-                            "self": {
-                                "stoneskin": {
-                                    "turns": 3,
-                                    "amount": 0.1
-                                },
-                                "haste": {
-                                    "turns": 2,
-                                    "speed": 0.15,
-                                    "damage": 1.15
-                                },
-                                "regeneration": {
-                                    "turns": 3,
-                                    "amount_flat": 25,
-                                    "amount_percent": 2
-                                }
-                            }
-                        },
-                        "description": "Centre yourself, finding inner peace.\n  - Cooldown: 3 Turns\n  - Heal 55 HP + 4% Max HP.\n  - 10% Damage Reduction for 3 turns. Haste: +0.15 Speed, +15% Damage for 2 turns.\n  - 25 HP + 2% Max HP Regen for 3 turns."
-                    },
-                    "80": {
-                        "heal_base": 110,
-                        "heal_percent": 8,
-                        "level": 80,
-                        "stamina_cost": 175,
-                        "effects": {
-                            "self": {
-                                "stoneskin": {
-                                    "turns": 3,
-                                    "amount": 0.15
-                                },
-                                "haste": {
-                                    "turns": 3,
-                                    "speed": 0.25,
-                                    "damage": 1.25
-                                },
-                                "regeneration": {
-                                    "turns": 3,
-                                    "amount_flat": 40,
-                                    "amount_percent": 3
-                                }
-                            }
-                        },
-                        "description": "Centre yourself, finding inner peace.\n  - Cooldown: 3 Turns\n  - Heal 110 HP + 8% Max HP.\n  - 15% Damage Reduction, Haste: +0.25 Speed, +25% Damage, 40 HP + 3% Max HP Regen for 3 turns."
-                    }
-                }
-            },
-            "Kiai": {
-                "name": "Kiai",
-                "category": "buff",
-                "tags": [
-                    "buff",
-                    "debuff",
-                    "aoe",
-                    "prowess",
-                    "vulnerable",
-                    "elemental",
-                    "haste"
-                ],
-                "stamina_cost": 40,
-                "level": 10,
-                "cooldown": 4,
-                "targets": "all",
-                "effects": {
-                    "self": {
-                        "haste": {
-                            "turns": 2,
-                            "speed": 0.15,
-                            "damage": 1.1
-                        }
-                    },
-                    "target": {
-                        "vulnerable": {
-                            "turns": 2,
-                            "amount": 0.15
-                        }
-                    }
-                },
-                "description": "Release your ki in a fierce shout.\n  - Cooldown: 4 Turns\n  - Haste: +0.15 Speed, +10% Damage for 2 turns.\n  - All enemies gain 15% Vulnerable for 2 turns.",
-                "evolutions": {
-                    "35": {
-                        "level": 35,
-                        "stamina_cost": 75,
-                        "tags+": [
-                            "elemental_exposure"
-                        ],
-                        "effects": {
-                            "self": {
-                                "haste": {
-                                    "turns": 2,
-                                    "speed": 0.2,
-                                    "damage": 1.15
-                                }
-                            },
-                            "target": {
-                                "vulnerable": {
-                                    "turns": 2,
-                                    "amount": 0.25
-                                },
-                                "elemental_exposure": {
-                                    "turns": 2,
-                                    "amount": 15
-                                }
-                            }
-                        },
-                        "description": "Release your ki in a fierce shout.\n  - Cooldown: 4 Turns\n  - Haste: +0.2 Speed, +15% Damage for 2 turns.\n  - All enemies gain 25% Vulnerable and 15% Elemental Exposure for 2 turns."
-                    },
-                    "60": {
-                        "level": 60,
-                        "stamina_cost": 130,
-                        "tags+": [
-                            "stoneskin",
-                            "slow"
-                        ],
-                        "effects": {
-                            "self": {
-                                "haste": {
-                                    "turns": 2,
-                                    "speed": 0.25,
-                                    "damage": 1.25
-                                },
-                                "stoneskin": {
-                                    "turns": 2,
-                                    "amount": 0.08
-                                }
-                            },
-                            "target": {
-                                "vulnerable": {
-                                    "turns": 2,
-                                    "amount": 0.4
-                                },
-                                "elemental_exposure": {
-                                    "turns": 2,
-                                    "amount": 25
-                                },
-                                "slow": {
-                                    "turns": 2,
-                                    "amount": 0.2
-                                }
-                            }
-                        },
-                        "description": "Release your ki in a fierce shout.\n  - Cooldown: 4 Turns\n  - Haste: +0.25 Speed, +25% Damage. 8% Damage Reduction for 2 turns.\n  - All enemies gain 40% Vulnerable, 25% Elemental Exposure, 20% Slow for 2 turns."
-                    },
-                    "85": {
-                        "level": 85,
-                        "stamina_cost": 220,
-                        "tags+": [
-                            "weaken"
-                        ],
-                        "effects": {
-                            "self": {
-                                "haste": {
-                                    "turns": 3,
-                                    "speed": 0.3,
-                                    "damage": 1.4
-                                },
-                                "stoneskin": {
-                                    "turns": 3,
-                                    "amount": 0.1
-                                }
-                            },
-                            "target": {
-                                "vulnerable": {
-                                    "turns": 3,
-                                    "amount": 0.6
-                                },
-                                "elemental_exposure": {
-                                    "turns": 3,
-                                    "amount": 35
-                                },
-                                "slow": {
-                                    "turns": 2,
-                                    "amount": 0.3
-                                },
-                                "weaken": {
-                                    "turns": 2,
-                                    "amount": 0.25
-                                }
-                            }
-                        },
-                        "description": "Release your ki in a fierce shout.\n  - Cooldown: 4 Turns\n  - Haste: +0.3 Speed, +40% Damage. 10% Damage Reduction for 3 turns.\n  - All enemies gain 60% Vulnerable, 35% Elemental Exposure, 30% Slow, 25% Weaken for 2-3 turns."
-                    }
-                }
-            },
-            "Cyclone Kick": {
-                "name": "Cyclone Kick",
-                "category": "damage",
-                "tags": [
-                    "damage",
-                    "aoe",
-                    "cold",
-                    "lightning",
-                    "elemental",
-                    "stun",
-                    "chill"
-                ],
-                "damage_base": 20,
-                "damage_scaling": 20,
-                "damage_type": "cold",
-                "stamina_cost": 50,
-                "level": 15,
-                "cooldown": 4,
-                "targets": "all",
-                "effects": {
-                    "target": {
-                        "chill": {
-                            "stacks": 1,
-                            "turns": 2,
-                            "amount": 0.15
-                        },
-                        "stun": {
-                            "turns": 1,
-                            "chance": 0.15
-                        }
-                    }
-                },
-                "description": "Spin into a devastating cyclone kick, striking all enemies.\n  - Cooldown: 4 Turns\n  - Deal 20 Damage + 20% of your base damage as Cold.\n  - 15% Chill for 2 turns. 15% Stun chance.",
-                "evolutions": {
-                    "40": {
-                        "damage_base": 50,
-                        "damage_scaling": 40,
-                        "level": 40,
-                        "stamina_cost": 80,
-                        "tags+": [
-                            "shock"
-                        ],
-                        "effects": {
-                            "target": {
-                                "chill": {
-                                    "stacks": 2,
-                                    "turns": 2,
-                                    "amount": 0.2
-                                },
-                                "shock": {
-                                    "turns": 2,
-                                    "amount": 0.15
-                                },
-                                "stun": {
-                                    "turns": 1,
-                                    "chance": 0.25
-                                }
-                            }
-                        },
-                        "description": "Spin into a devastating cyclone kick.\n  - Cooldown: 4 Turns\n  - Deal 50 Damage + 40% of your base damage.\n  - 2x 20% Chill, 15% Shock for 2 turns. 25% Stun."
-                    },
-                    "65": {
-                        "damage_base": 95,
-                        "damage_scaling": 65,
-                        "level": 65,
-                        "stamina_cost": 150,
-                        "tags+": [
-                            "elemental_exposure"
-                        ],
-                        "effects": {
-                            "target": {
-                                "chill": {
-                                    "stacks": 3,
-                                    "turns": 2,
-                                    "amount": 0.25
-                                },
-                                "shock": {
-                                    "turns": 2,
-                                    "amount": 0.2
-                                },
-                                "stun": {
-                                    "turns": 1,
-                                    "chance": 0.35
-                                },
-                                "elemental_exposure": {
-                                    "turns": 2,
-                                    "amount": 20
-                                }
-                            }
-                        },
-                        "description": "Spin into a devastating cyclone kick.\n  - Cooldown: 4 Turns\n  - Deal 95 Damage + 65% of your base damage.\n  - 3x 25% Chill, 20% Shock, 20% Elemental Exposure for 2 turns. 35% Stun."
-                    },
-                    "90": {
-                        "damage_base": 185,
-                        "damage_scaling": 90,
-                        "level": 90,
-                        "stamina_cost": 260,
-                        "tags+": [
-                            "freeze"
-                        ],
-                        "effects": {
-                            "target": {
-                                "chill": {
-                                    "stacks": 4,
-                                    "turns": 3,
-                                    "amount": 0.3
-                                },
-                                "shock": {
-                                    "turns": 3,
-                                    "amount": 0.25
-                                },
-                                "stun": {
-                                    "turns": 1,
-                                    "chance": 0.45
-                                },
-                                "elemental_exposure": {
-                                    "turns": 3,
-                                    "amount": 30
-                                },
-                                "freeze": {
-                                    "turns": 1,
-                                    "chance": 0.15
-                                }
-                            }
-                        },
-                        "description": "Spin into a devastating cyclone kick.\n  - Cooldown: 4 Turns\n  - Deal 185 Damage + 90% of your base damage.\n  - 4x 30% Chill, 25% Shock, 30% Elemental Exposure for 3 turns. 45% Stun, 15% Freeze."
-                    }
-                }
-            },
-            "Dragon Strike": {
-                "name": "Dragon Strike",
-                "category": "damage",
-                "tags": [
-                    "damage",
-                    "lightning",
-                    "cold",
-                    "strike",
-                    "prowess",
-                    "elemental",
-                    "shock",
-                    "chill"
-                ],
-                "damage_base": 40,
-                "damage_scaling": 50,
-                "damage_type": "lightning",
-                "stamina_cost": 55,
-                "level": 20,
-                "cooldown": 3,
-                "targets": 1,
-                "effects": {
-                    "target": {
-                        "shock": {
-                            "turns": 2,
-                            "amount": 0.15
-                        },
-                        "chill": {
-                            "stacks": 1,
-                            "turns": 2,
-                            "amount": 0.15
-                        },
-                        "vulnerable": {
-                            "turns": 2,
-                            "amount": 0.2
-                        }
-                    }
-                },
-                "description": "Channel your prowess into a devastating dual-element strike.\n  - Cooldown: 3 Turns\n  - Deal 40 Damage + 50% of your base damage.\n  - 15% Shock, 15% Chill and 20% Vulnerable for 2 turns.",
-                "evolutions": {
-                    "45": {
-                        "damage_base": 85,
-                        "damage_scaling": 75,
-                        "level": 45,
-                        "stamina_cost": 85,
-                        "tags+": [
-                            "weaken"
-                        ],
-                        "effects": {
-                            "target": {
-                                "shock": {
-                                    "turns": 2,
-                                    "amount": 0.2
-                                },
-                                "chill": {
-                                    "stacks": 2,
-                                    "turns": 2,
-                                    "amount": 0.2
-                                },
-                                "vulnerable": {
-                                    "turns": 2,
-                                    "amount": 0.3
-                                },
-                                "weaken": {
-                                    "turns": 2,
-                                    "amount": 0.15
-                                }
-                            }
-                        },
-                        "description": "Channel your prowess into a devastating dual-element strike.\n  - Cooldown: 3 Turns\n  - Deal 85 Damage + 75% of your base damage.\n  - 20% Shock, 2x 20% Chill, 30% Vulnerable and 15% Weaken for 2 turns."
-                    },
-                    "70": {
-                        "damage_base": 145,
-                        "damage_scaling": 100,
-                        "level": 70,
-                        "stamina_cost": 155,
-                        "tags+": [
-                            "haste",
-                            "onKill",
-                            "regeneration"
-                        ],
-                        "effects": {
-                            "self": {
-                                "haste": {
-                                    "turns": 2,
-                                    "speed": 0.15,
-                                    "damage": 1.15
-                                }
-                            },
-                            "target": {
-                                "shock": {
-                                    "turns": 2,
-                                    "amount": 0.25
-                                },
-                                "chill": {
-                                    "stacks": 3,
-                                    "turns": 2,
-                                    "amount": 0.25
-                                },
-                                "vulnerable": {
-                                    "turns": 2,
-                                    "amount": 0.4
-                                },
-                                "weaken": {
-                                    "turns": 2,
-                                    "amount": 0.25
-                                }
-                            },
-                            "onKill": {
-                                "regeneration": {
-                                    "turns": 3,
-                                    "amount_flat": 0,
-                                    "amount_percent": 2
-                                }
-                            }
-                        },
-                        "description": "Channel your prowess into a devastating dual-element strike.\n  - Cooldown: 3 Turns\n  - Deal 145 Damage + 100% of your base damage.\n  - Haste: +0.15 Speed, +15% Damage for 2 turns.\n  - 25% Shock, 3x 25% Chill, 40% Vulnerable, 25% Weaken for 2 turns.\n  - On Kill: Regen 2% Max HP for 3 turns."
-                    },
-                    "95": {
-                        "damage_base": 210,
-                        "damage_scaling": 135,
-                        "level": 95,
-                        "stamina_cost": 280,
-                        "tags+": [
-                            "elemental_exposure"
-                        ],
-                        "effects": {
-                            "self": {
-                                "haste": {
-                                    "turns": 3,
-                                    "speed": 0.25,
-                                    "damage": 1.25
-                                }
-                            },
-                            "target": {
-                                "shock": {
-                                    "turns": 3,
-                                    "amount": 0.3
-                                },
-                                "chill": {
-                                    "stacks": 4,
-                                    "turns": 3,
-                                    "amount": 0.3
-                                },
-                                "vulnerable": {
-                                    "turns": 3,
-                                    "amount": 0.5
-                                },
-                                "weaken": {
-                                    "turns": 3,
-                                    "amount": 0.35
-                                },
-                                "elemental_exposure": {
-                                    "turns": 2,
-                                    "amount": 25
-                                }
-                            },
-                            "onKill": {
-                                "regeneration": {
-                                    "turns": 3,
-                                    "amount_flat": 0,
-                                    "amount_percent": 4
-                                }
-                            }
-                        },
-                        "description": "Channel your prowess into a devastating dual-element strike.\n  - Cooldown: 3 Turns\n  - Deal 210 Damage + 135% of your base damage.\n  - Haste: +0.25 Speed, +25% Damage for 3 turns.\n  - 30% Shock, 4x 30% Chill, 50% Vulnerable, 35% Weaken, 25% Elemental Exposure for 2-3 turns.\n  - On Kill: Regen 4% Max HP for 3 turns."
-                    }
-                }
-            }
-        },
-        "Stormwalker": {},
-        "Glacierfist": {},
-        "Ascetic": {},
-        "Psychopath": {},
-        "Avatar": {}
     },
     "Paladin": {
         "base": {
@@ -5447,15 +4803,25 @@
                 "damage_scaling": 30,
                 "damage_type": "fire",
                 "stamina_cost": 15,
+                "resources": {
+                    "required": {
+                        "rage": 6
+                    }
+                },
                 "level": 1,
                 "cooldown": 2,
                 "targets": 1,
                 "effects": {},
-                "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 4 Damage + 30% of your base damage as Fire.\n  - Generates extra Rage from fire damage bonus (+1 Rage).",
+                "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 4 Damage + 30% of your base damage as Fire.\n  - Requires 6 Rage to use.",
                 "evolutions": {
                     "25": {
                         "damage_base": 25,
                         "damage_scaling": 55,
+                        "resources": {
+                            "required": {
+                                "rage": 13
+                            }
+                        },
                         "level": 25,
                         "stamina_cost": 40,
                         "tags+": [
@@ -5469,11 +4835,16 @@
                                 }
                             }
                         },
-                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 25 Damage + 55% of your base damage as Fire.\n  - Apply 1 Burn. Generates extra Rage."
+                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 25 Damage + 55% of your base damage as Fire.\n  - Apply 1 Burn. Requires 13 Rage to use."
                     },
                     "50": {
                         "damage_base": 72,
                         "damage_scaling": 80,
+                        "resources": {
+                            "required": {
+                                "rage": 25
+                            }
+                        },
                         "level": 50,
                         "stamina_cost": 70,
                         "tags+": [
@@ -5490,11 +4861,16 @@
                                 }
                             }
                         },
-                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 72 Damage + 80% of your base damage as Fire.\n  - 2 Burn. 20% Vulnerable for 2 turns. Generates extra Rage."
+                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 72 Damage + 80% of your base damage as Fire.\n  - 2 Burn. 20% Vulnerable for 2 turns. Requires 25 Rage to use."
                     },
                     "75": {
                         "damage_base": 180,
                         "damage_scaling": 125,
+                        "resources": {
+                            "required": {
+                                "rage": 45
+                            }
+                        },
                         "level": 75,
                         "stamina_cost": 120,
                         "tags+": [
@@ -5515,7 +4891,7 @@
                                 }
                             }
                         },
-                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 180 Damage + 125% of your base damage as Fire.\n  - 3 Burn. 30% Vulnerable, 20% Weaken for 2 turns. Generates extra Rage."
+                        "description": "Strike with a crushing fire-laced blow, fuelling your rage.\n  - Cooldown: 2 Turns\n  - Deal 180 Damage + 125% of your base damage as Fire.\n  - 3 Burn. 30% Vulnerable, 20% Weaken for 2 turns. Requires 45 Rage to use."
                     }
                 }
             },
@@ -5546,7 +4922,7 @@
                         }
                     }
                 },
-                "description": "Steel yourself against the enemy, converting pain to fury.\n  - Cooldown: 3 Turns\n  - Heal 5 HP + 1% Max HP.\n  - 8% Damage Reduction for 2 turns. Gain 8 Rage.",
+                "description": "Steel yourself against the enemy, converting pain to fury.\n  - Cooldown: 3 Turns\n  - Heal 5 HP + 1% Max HP.\n  - 8% Damage Reduction for 2 turns.",
                 "evolutions": {
                     "30": {
                         "heal_base": 20,
@@ -5572,7 +4948,7 @@
                                 }
                             }
                         },
-                        "description": "Steel yourself against the enemy.\n  - Cooldown: 3 Turns\n  - Heal 20 HP + 2% Max HP.\n  - 10% Damage Reduction, 10 HP + 1% Max HP Regen for 2 turns. Gain 12 Rage."
+                        "description": "Steel yourself against the enemy.\n  - Cooldown: 3 Turns\n  - Heal 20 HP + 2% Max HP.\n  - 10% Damage Reduction, 10 HP + 1% Max HP Regen for 2 turns."
                     },
                     "55": {
                         "heal_base": 50,
@@ -5602,7 +4978,7 @@
                                 }
                             }
                         },
-                        "description": "Steel yourself against the enemy.\n  - Cooldown: 3 Turns\n  - Heal 50 HP + 4% Max HP.\n  - 12% Damage Reduction for 3 turns. 25 HP + 2% Max HP Regen for 3 turns.\n  - +0.1 Speed for 2 turns. Gain 18 Rage."
+                        "description": "Steel yourself against the enemy.\n  - Cooldown: 3 Turns\n  - Heal 50 HP + 4% Max HP.\n  - 12% Damage Reduction for 3 turns. 25 HP + 2% Max HP Regen for 3 turns.\n  - +0.1 Speed for 2 turns."
                     },
                     "80": {
                         "heal_base": 100,
@@ -5633,12 +5009,12 @@
                                 }
                             }
                         },
-                        "description": "Steel yourself against the enemy.\n  - Cooldown: 3 Turns\n  - Heal 100 HP + 7% Max HP.\n  - 15% Damage Reduction for 3 turns. 40 HP + 3% Max HP Regen for 3 turns.\n  - Haste: +0.1 Speed, +15% Damage for 2 turns. Gain 25 Rage."
+                        "description": "Steel yourself against the enemy.\n  - Cooldown: 3 Turns\n  - Heal 100 HP + 7% Max HP.\n  - 15% Damage Reduction for 3 turns. 40 HP + 3% Max HP Regen for 3 turns.\n  - Haste: +0.1 Speed, +15% Damage for 2 turns."
                     }
                 }
             },
-            "Intimidating Roar": {
-                "name": "Intimidating Roar",
+            "Battle Cry": {
+                "name": "Battle Cry",
                 "category": "buff",
                 "tags": [
                     "buff",
@@ -5650,6 +5026,11 @@
                     "haste"
                 ],
                 "stamina_cost": 40,
+                "resources": {
+                    "gain": {
+                        "rage": 5
+                    }
+                },
                 "level": 10,
                 "cooldown": 4,
                 "targets": "all",
@@ -5671,11 +5052,16 @@
                         }
                     }
                 },
-                "description": "Release a ferocious roar that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 5 Rage. Haste: +0.1 Speed, +10% Damage for 2 turns.\n  - All enemies gain 20% Vulnerable for 2 turns.",
+                "description": "Release a ferocious shout that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 5 Rage. Haste: +0.1 Speed, +10% Damage for 2 turns.\n  - All enemies gain 20% Vulnerable for 2 turns.",
                 "evolutions": {
                     "35": {
                         "level": 35,
                         "stamina_cost": 75,
+                        "resources": {
+                            "gain": {
+                                "rage": 8
+                            }
+                        },
                         "tags+": [
                             "weaken",
                             "slow"
@@ -5706,11 +5092,16 @@
                                 }
                             }
                         },
-                        "description": "Release a ferocious roar that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 8 Rage. Haste: +0.15 Speed, +15% Damage for 2 turns.\n  - All enemies gain 30% Vulnerable, 15% Weaken, 15% Slow for 2 turns."
+                        "description": "Release a ferocious shout that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 8 Rage. Haste: +0.15 Speed, +15% Damage for 2 turns.\n  - All enemies gain 30% Vulnerable, 15% Weaken, 15% Slow for 2 turns."
                     },
                     "60": {
                         "level": 60,
                         "stamina_cost": 130,
+                        "resources": {
+                            "gain": {
+                                "rage": 15
+                            }
+                        },
                         "tags+": [
                             "burn",
                             "dot",
@@ -5749,11 +5140,16 @@
                                 }
                             }
                         },
-                        "description": "Release a ferocious roar that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 12 Rage. Haste: +0.2 Speed, +25% Damage. 8% Damage Reduction for 2 turns.\n  - All enemies gain 45% Vulnerable, 25% Weaken, 25% Slow for 2 turns. 1 Burn."
+                        "description": "Release a ferocious shout that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 15 Rage. Haste: +0.2 Speed, +25% Damage. 8% Damage Reduction for 2 turns.\n  - All enemies gain 45% Vulnerable, 25% Weaken, 25% Slow for 2 turns. 1 Burn."
                     },
                     "85": {
                         "level": 85,
                         "stamina_cost": 220,
+                        "resources": {
+                            "gain": {
+                                "rage": 22
+                            }
+                        },
                         "tags+": [
                             "daze"
                         ],
@@ -5795,7 +5191,7 @@
                                 }
                             }
                         },
-                        "description": "Release a ferocious roar that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 18 Rage. Haste: +0.3 Speed, +40% Damage. 10% Damage Reduction for 3 turns.\n  - All enemies gain 60% Vulnerable, 35% Weaken, 35% Slow for 3 turns. 2 Burn.\n  - Daze: -0.15 Speed, 10% less Damage for 2 turns."
+                        "description": "Release a ferocious shout that weakens all enemies and fuels your rage.\n  - Cooldown: 4 Turns\n  - Gain 22 Rage. Haste: +0.3 Speed, +40% Damage. 10% Damage Reduction for 3 turns.\n  - All enemies gain 60% Vulnerable, 35% Weaken, 35% Slow for 3 turns. 2 Burn.\n  - Daze: -0.15 Speed, 10% less Damage for 2 turns."
                     }
                 }
             },
@@ -5936,6 +5332,11 @@
                 "damage_scaling": 52,
                 "damage_type": "fire",
                 "stamina_cost": 55,
+                "resources": {
+                    "required": {
+                        "rage": 15
+                    }
+                },
                 "level": 20,
                 "cooldown": 3,
                 "targets": 1,
@@ -5950,11 +5351,16 @@
                         }
                     }
                 },
-                "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 40 Damage + 52% of your base damage as Fire.\n  - 2 Burn. 20% Vulnerable for 2 turns.\n  - Damage scales strongly with current Rage (+3 per Rage from class mechanic).",
+                "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 40 Damage + 52% of your base damage as Fire.\n  - 2 Burn. 20% Vulnerable for 2 turns.\n  - Requires 15 Rage to use.",
                 "evolutions": {
                     "45": {
                         "damage_base": 88,
                         "damage_scaling": 78,
+                        "resources": {
+                            "required": {
+                                "rage": 22
+                            }
+                        },
                         "level": 45,
                         "stamina_cost": 85,
                         "tags+": [
@@ -5977,12 +5383,17 @@
                                 }
                             }
                         },
-                        "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 88 Damage + 78% of your base damage as Fire.\n  - 3 Burn. 30% Vulnerable, 15% Weaken for 2 turns."
+                        "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 88 Damage + 78% of your base damage as Fire.\n  - 3 Burn. 30% Vulnerable, 15% Weaken for 2 turns. Requires 22 Rage to use."
                     },
                     "70": {
-                        "damage_base": 148,
-                        "damage_scaling": 108,
+                        "damage_base": 150,
+                        "damage_scaling": 110,
                         "level": 70,
+                        "resources": {
+                            "required": {
+                                "rage": 35
+                            }
+                        },
                         "stamina_cost": 155,
                         "tags+": [
                             "haste",
@@ -6027,11 +5438,16 @@
                                 }
                             }
                         },
-                        "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 148 Damage + 108% of your base damage as Fire.\n  - Haste: +0.1 Speed, +15% Damage for 2 turns. Gain 10 Rage.\n  - 4 Burn. 40% Vulnerable, 25% Weaken, 20% Slow for 2 turns.\n  - On Kill: Gain 15 Rage. Regen 2% Max HP for 3 turns."
+                        "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 150 Damage + 110% of your base damage as Fire.\n  - Haste: +0.1 Speed, +15% Damage for 2 turns. Gain 10 Rage.\n  - 4 Burn. 40% Vulnerable, 25% Weaken, 20% Slow for 2 turns.\n  - Requires 35 Rage to use.\n  - On Kill: Gain 15 Rage. Regen 2% Max HP for 3 turns."
                     },
                     "95": {
                         "damage_base": 220,
-                        "damage_scaling": 142,
+                        "damage_scaling": 140,
+                        "resources": {
+                            "required": {
+                                "rage": 50
+                            }
+                        },
                         "level": 95,
                         "stamina_cost": 280,
                         "tags+": [
@@ -6081,17 +5497,17 @@
                                 }
                             }
                         },
-                        "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 220 Damage + 142% of your base damage as Fire.\n  - Haste: +0.15 Speed, +25% Damage for 3 turns. Gain 15 Rage.\n  - 6 Burn. 50% Vulnerable, 35% Weaken, 30% Slow for 2-3 turns.\n  - Daze: -0.15 Speed, 10% less Damage for 2 turns.\n  - On Kill: Gain 20 Rage. Regen 4% Max HP for 3 turns."
+                        "description": "Channel all your rage into a devastating fire strike.\n  - Cooldown: 3 Turns\n  - Deal 220 Damage + 140% of your base damage as Fire.\n  - Haste: +0.15 Speed, +25% Damage for 3 turns. Gain 15 Rage.\n  - 6 Burn. 50% Vulnerable, 35% Weaken, 30% Slow for 2-3 turns.\n  - Daze: -0.15 Speed, 10% less Damage for 2 turns.\n  - Requires 50 Rage to use.\n  - On Kill: Gain 20 Rage. Regen 4% Max HP for 3 turns."
                     }
                 }
             }
         },
         "Warlord": {},
-        "Pyromancer": {},
         "Juggernaut": {},
         "Blood Reaver": {},
-        "Flamewarden": {},
-        "Annihilist": {}
+        "Annihilist": {},
+        "Tyrant": {},
+        "Conqueror": {}
     },
     "Wretch": {
         "base": {
@@ -6116,7 +5532,6 @@
                     }
                 },
                 "effects": {},
-                "requirements": {},
                 "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 8 Health.\n  - Deal 6 Damage + 45% of your base damage.",
                 "evolutions": {
                     "25": {
@@ -6185,7 +5600,6 @@
                         }
                     }
                 },
-                "requirements": {},
                 "description": "Carve a deep wound into your target, leaving it bleeding freely.\n  - Cooldown: 2 Turns\n  - Costs 6% of your Max HP.\n  - Deal 15 Damage + 30% of your base damage.\n  - Apply 1 stack of Bleed to your target.",
                 "evolutions": {
                     "30": {
@@ -6286,7 +5700,6 @@
                         }
                     }
                 },
-                "requirements": {},
                 "description": "Drink deep from a fresh wound, sustaining yourself with the spoils.\n  - Cooldown: 2 Turns\n  - Costs 7% of your Max HP.\n  - Deal 20 Damage + 35% of your base damage.\n  - Gain 10 HP + 1% Max HP Regeneration for 2 turns.",
                 "evolutions": {
                     "35": {
@@ -6394,7 +5807,6 @@
                         }
                     }
                 },
-                "requirements": {},
                 "description": "Bind your own blood into a ward, turning your suffering into strength.\n  - Cooldown: 3 Turns\n  - Costs 5% of your Max HP.\n  - Gain Shield equal to 4% of your Max HP for 3 turns.\n  - Gain 6% Damage Reduction for 2 turns.",
                 "evolutions": {
                     "40": {
@@ -6528,7 +5940,6 @@
                         }
                     }
                 },
-                "requirements": {},
                 "description": "Call on the blood you've already spilled to finish the ritual.\n  - Cooldown: 3 Turns\n  - Costs 8% of your Max HP.\n  - Deal 35 Damage + 45% of your base damage.\n  - Deals 50% Increased Damage against targets below 50% Health.\n  - Apply 10% Exposed to your target for 2 turns.",
                 "evolutions": {
                     "45": {

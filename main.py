@@ -282,6 +282,7 @@ class Game:
             console.print("[dim]3)[/dim] [bright_cyan]Go to Camp[/bright_cyan]")
             console.print("[dim]4)[/dim] [blue]View Quests[/blue]")
             console.print("[dim]5)[/dim] [grey58]Options Menu[/grey58]")
+            console.print("[dim]6.[/dim] [gold3]View Class Details[/gold3]")
 
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
 
@@ -322,6 +323,16 @@ class Game:
                         self.camp.questBoard.displayQuests()
                     case 5:
                         self.optionsMenu()
+                    case 6:
+                        clearScreen()
+                        printHeader("Player Class Details")
+                        playerAsc = self.player._ascendancy
+                        ascStr = f"[asc_{playerAsc.lower()}]{playerAsc}[/asc_{playerAsc.lower()}]\n[bold cyan]Description:[/bold cyan]\n{self.player.ascendancyDescription}\n" if playerAsc is not None else ""
+                        console.print(f"[{self.player.className.lower()}]{self.player.className}[/{self.player.className.lower()}]")
+                        console.print(f"[bold cyan]Description:[/bold cyan]")
+                        console.print(self.player.classDescription)
+                        console.print(ascStr)
+                        pause()
                     case _:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
@@ -352,7 +363,7 @@ class Game:
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         self.player.showInventory()
                     case 2:
@@ -385,7 +396,7 @@ class Game:
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         self.changeDifficulty()
                     case 2:
@@ -420,7 +431,7 @@ class Game:
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         displayExistingSaves()
                         saveNum = console.input("[cyan]Input the save number you want to save to: (0 to cancel)\n[bold]>[/bold][/cyan] ").strip()
@@ -501,7 +512,7 @@ class Game:
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         self.equipFromStorage()
                     case 2:
@@ -645,7 +656,7 @@ class Game:
                     currentPage = (currentPage - 2) % totalPages + 1
                     continue
                 else:
-                    break
+                    return
             else:
                 pause()
                 break
@@ -779,27 +790,22 @@ class Game:
         numEnemies = int(numEnemies * multiplier)
         numEnemies = min(numEnemies, 8) # hard cap at 8 enemies
 
-        pAsc = getattr(self.player, '_ascendancy')
-        glacierfist = False
-        if pAsc == 'Glacerfist':
-            glacierfist = True
-
         enemies = []
         for _ in range(numEnemies):
             enemyLevel = self.areaLevel + (self.player._level) - 1
             enemyLevel = max(1, enemyLevel) # ensures minimum enemy level 1
             difficulty = self.difficulty.getMultiplier()
-            enemies.append(createEnemy(enemyLevel, difficulty, glacierfist=glacierfist))
+            enemies.append(createEnemy(enemyLevel, difficulty))
 
         return enemies
-    
+
     def startCombat(self, enemies: List[Enemy]):
         clearScreen()
         printHeader("Combat Start")
 
         enemyTable = createEnemyPreview(enemies)
         console.print(enemyTable)
-            
+
         pause()
 
         self.combatManager.startBattle(self.player, enemies)
@@ -874,7 +880,7 @@ class Game:
         console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
         console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
         if self.player.className == 'Druid':
-            console.print(f"[dim]S.[/dim] [green]Force shapeshift [dim] (Free Action) | Current form: {self.player.form}[/dim][/green]")
+            console.print(f"[dim]S.[/dim] [green]Force shapeshift [dim] (Free Action) | Current Form: {self.player.form.title()}[/dim][/green]")
         console.print()
 
         if self.player._abilities:
@@ -882,7 +888,7 @@ class Game:
                 abilities = self.player.useableAbilities()
             else:
                 abilities = self.player._abilities
-            abilityTables = createAbilityTables(abilities, maxPerTable=10)
+            abilityTables = createAbilityTables(abilities)
             console.print(abilityTables)
             console.print()
             
@@ -905,7 +911,7 @@ class Game:
                 statusTable = createCombatStatusTable(self.player, enemies)
                 console.print(statusTable)
                 if abilities:
-                    abilityTables = createAbilityTables(abilities, maxPerTable=10)
+                    abilityTables = createAbilityTables(abilities)
                     console.print(abilityTables)
                     console.print()
             elif action.lower() == 'c':
@@ -914,7 +920,7 @@ class Game:
             elif action.lower() == 's' and self.player.className == 'Druid':
                 self.player._shapeShift()
                 abilities = self.player._abilities
-                abilityTables = createAbilityTables(abilities, maxPerTable=10)
+                abilityTables = createAbilityTables(abilities)
                 console.print(abilityTables)
                 console.print()
                 continue
@@ -932,10 +938,11 @@ class Game:
                     if 0 <= abilityIndex < len(availableAbilities):
                         abilityName, ability = availableAbilities[abilityIndex]
 
-                        if ability.cooldown:
-                            printWarning(f"{abilityName} is on cooldown for {ability.cooldown} more turn(s).")
+                        success, message = ability.canUse(self.player)
+                        if not success:
+                            printWarning(message)
                             continue
-                        
+
                         if ability.targets in ["all", "multiple"]:
                             target = aliveEnemies[0]
                             console.print(f"\n[buff]{abilityName} will hit {'ALL enemies' if ability.targets == 'all' else 'MULTIPLE enemies'}[/buff]")

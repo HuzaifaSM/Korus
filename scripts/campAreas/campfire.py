@@ -29,12 +29,20 @@ class Campfire(Station):
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
             1: {"wood": 5, "stone": 5,
-                'description': "Enemies will begin to drop [resource]Supplies[/resource].\nA new option will be unlocked: [red]Rest[/red]. [resource]Supplies[/resource] are used to [red]Rest[/red] in order to recover health.\nAt the end of combat, [heal]heal[/heal] for 6% of your Max HP."
+                'description': "Enemies will begin to drop [resource]Supplies[/resource].\nA new option will be unlocked: [red]Rest[/red]. [resource]Supplies[/resource] are used to [red]Rest[/red] in order to recover health.\nAt the end of combat, heal for 6% of your Max HP."
                 },
-            2: {"wood": 20, "stone": 25, "iron_ore": 10},
-            3: {"herbs": 30, "leather": 20, "iron_ore": 15},
-            4: {"bone": 10, "wood": 60, "stone": 50, "iron_ore": 25},
-            5: {"soul": 30, "iron_ore": 50, "diamond": 10}
+            2: {"wood": 20, "stone": 25, "iron_ore": 10,
+                'description': "A new option will be unlocked: [green]Brew Potions[/green]. Use supplies to brew potions to use during combat.\nAt the end of combat, heal for 12% of your Max HP."
+                },
+            3: {"herbs": 30, "leather": 20, "iron_ore": 15,
+                'description': "At the end of combat, heal for 18% of your Max HP"
+                },
+            4: {"bone": 10, "wood": 60, "stone": 50, "iron_ore": 25,
+                'description': "At the end of combat, heal for 24% of your Max HP"
+                },
+            5: {"soul": 30, "iron_ore": 50, "diamond": 10,
+                'description': "At the end of combat, heal for 30% of your Max HP"
+                }
         }
 
     def mainMenu(self):
@@ -58,23 +66,20 @@ class Campfire(Station):
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         if self.level >= 1:
                             self.rest()
-                            pause()
                     case 2:
                         if self.level >= 2:
                             self.brew()
-                            pause()
                     case 9:
                         self.upgrade()
                     case _:
                         printWarning("Invalid choice!")
-                        pause()
             except ValueError:
                 printError("Invalid input!")
-                pause()
+            pause()
 
     def applyHeal(self):
         if self.level > 0:

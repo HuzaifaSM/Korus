@@ -28,12 +28,20 @@ class Forge(Station):
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
             1: {"iron_ore": 5, "stone": 25, "wood": 10,
-                'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair equipment. [resource]Blueprints[/resource] are used to craft new peices of equipment.'
+                'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair equipment. [resource]Blueprints[/resource] are used to craft new peices of equipment.\nYou are able to craft Common and Uncommon equipment.'
                 },
-            2: {"iron_ore": 50, "crystal": 15, "bone": 10},
-            3: {"crystal": 40, "mana_essence": 20, "ancient_wood": 10},
-            4: {"mana_essence": 50, "diamond": 30, "dragon_scale": 10},
-            5: {"dragon_scale": 30, "ascended_essence": 20, "diamond": 100}
+            2: {"iron_ore": 50, "crystal": 15, "bone": 10,
+                'description': "Repairing items grants 20% more durability recovered. You can now craft Rare equipment"
+                },
+            3: {"crystal": 40, "mana_essence": 20, "ancient_wood": 10,
+                'description': "Repairing items grants 20% more durability recovered. You can now craft Epic equipment"
+                },
+            4: {"mana_essence": 50, "diamond": 30, "dragon_scale": 10,
+                'description': "Repairing items grants 20% more durability recovered. You can now craft Legendary equipment. Crafted equipment cannot be Common"
+                },
+            5: {"dragon_scale": 30, "ascended_essence": 20, "diamond": 100,
+                'description': "Repairing items grants 20% more durability recovered. Crafted equipment cannot be Uncommon"
+                }
         }
 
     @property
@@ -80,7 +88,7 @@ class Forge(Station):
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         self.craftingMenu()
                     case 2:
@@ -181,19 +189,19 @@ class Forge(Station):
             index = int(choice) - 1
             if 0 <= index < len(allEquipment):
                 _, equip = allEquipment[index]
-                # calculate repair cost
+
                 durabilityNeeded = equip.maxDurability - equip.durability
                 fuelCost = max(1, durabilityNeeded // 10)
-                # resource cost based on rarity
+
                 resourceCost = {
-                    ItemRarity.COMMON: ("iron_ore", 5),
-                    ItemRarity.UNCOMMON: ("iron_ore", 10),
+                    ItemRarity.COMMON: ("stone", 3),
+                    ItemRarity.UNCOMMON: ("iron_ore", 5),
                     ItemRarity.RARE: ("crystal", 5),
                     ItemRarity.EPIC: ("mana_essence", 3),
                     ItemRarity.LEGENDARY: ("dragon_scale", 2)
                 }
                 resource, amount = resourceCost.get(equip.rarity, ("iron_ore", 5))
-                amount *= equip.level
+                amount *= equip.level * int(1 + 0.2 * self.level)
 
                 console.print("\n[yellow]Repair cost:[/yellow]\n"
                       f"  - [white]Fuel: {fuelCost}[/white]\n"
@@ -240,12 +248,12 @@ class Forge(Station):
                 break
 
             console.print("[cyan]Options:[/cyan]")
+            console.print("  [dim]0.[/dim] Finish Crafting")
             console.print("  [dim]1.[/dim] View Crafting Inventory")
             console.print("  [dim]2.[/dim] Apply Rune")
             if len(self.runePages) > 1:
                 console.print("  [dim]3.[/dim] Next Rune Page")
                 console.print("  [dim]4.[/dim] Previous Rune Page")
-            console.print("  [dim]0.[/dim] Finish Crafting")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
             checkGlobalCommand(choice)
@@ -253,7 +261,7 @@ class Forge(Station):
             try:
                 choice = int(choice)
                 if choice == 0:
-                    break
+                    return
                 elif choice == 1:
                     self._viewCraftingInventory()
                 elif choice == 2:

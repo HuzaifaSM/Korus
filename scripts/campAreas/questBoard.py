@@ -76,7 +76,7 @@ class QuestBoard(Station):
                 choice = int(choice)
                 match choice:
                     case 0:
-                        break
+                        return
                     case 1:
                         self.displayQuests()
                         pause()

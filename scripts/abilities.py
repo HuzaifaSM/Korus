@@ -37,10 +37,10 @@ class Ability:
 
     # -- true values -- #
     def calculateDamage(self, playerDamage: int) -> int:
-        return int(self.baseDamage + (playerDamage * self.damageScaling))
+        return max(0 ,int(self.baseDamage + (playerDamage * self.damageScaling)))
 
     def calculateHeal(self, playerMaxHp: int) -> int:
-        return int(self.healBase + (playerMaxHp * self.healPercent))
+        return max(0, int(self.healBase + (playerMaxHp * self.healPercent)))
     
     # -- resources -- #
     def canUse(self, player) -> Tuple[bool, str]:
@@ -52,17 +52,16 @@ class Ability:
 
         required: Dict[str, Any] = self.resources.get('required', {})
         for resource, amount in required.items():
-            resolved = _resolveResourceAmount(player, resource, amount)
-            playerVal = getattr(player, f'_{resource}', None)
-            if playerVal is None: # check if resource doesn't have underscore before it
-                playerVal = getattr(player, resource, 0)
-            if playerVal < resolved:
-                return False, f"Not enough {resource}: {playerVal} / {resolved}"
-
-        if hasattr(self, 'requirements') and self.requirements:
-            ok, reason = self._checkRequirements(player)
-            if not ok:
-                return False, reason
+            if resource == 'form':
+                if amount.lower() != player.form.lower():
+                    return False, f"{player._name} is not in the correct Form. Form Required: {amount.title()}"
+            else:
+                resolved = _resolveResourceAmount(player, resource, amount)
+                playerVal = getattr(player, f'_{resource}', None)
+                if playerVal is None: # check if resource doesn't have underscore before it
+                    playerVal = getattr(player, resource, 0)
+                if playerVal < resolved:
+                    return False, f"Not enough {resource}: {playerVal} / {resolved}"
 
         return True, ""
     
@@ -81,6 +80,8 @@ class Ability:
         """Deduct required resouces and grant resources"""
         required = self.resources.get('required', {})
         for resource, amount in required.items():
+            if resource == 'form':
+                continue
             resolved = _resolveResourceAmount(player, resource, amount)
             if resource == 'health':
                 player.spendHealthForAbility(resolved)
