@@ -283,6 +283,8 @@ class Game:
             console.print("[dim]4)[/dim] [blue]View Quests[/blue]")
             console.print("[dim]5)[/dim] [grey58]Options Menu[/grey58]")
             console.print("[dim]6.[/dim] [gold3]View Class Details[/gold3]")
+            if self.areaLevel > 1:
+                console.print("[dim]7.[/dim] [dark_red]Reduce Area Level by 1[/dark_red] [dim](Costs 3 Souls)[/dim]")
 
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
 
@@ -333,6 +335,16 @@ class Game:
                         console.print(self.player.classDescription)
                         console.print(ascStr)
                         pause()
+                    case 7:
+                        if self.areaLevel > 1:
+                            playerSouls = self.player.getItem('soul')
+                            if playerSouls >= 3:
+                                self.player.removeItem('soul', 3)
+                                self.areaLevel -= 1
+                                printSuccess("Area Level successfully reduced by 1!")
+                            else:
+                                printWarning(f"Not enough Souls! You currently have {playerSouls}/3 Souls.")
+                            pause()
                     case _:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
@@ -880,7 +892,7 @@ class Game:
         console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
         console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
         if self.player.className == 'Druid':
-            console.print(f"[dim]S.[/dim] [green]Force shapeshift [dim] (Free Action) | Current Form: {self.player.form.title()}[/dim][/green]")
+            console.print(f"[dim]S.[/dim] [green]Shapeshift [dim] (Free Action) | Current Form: {self.player.form.title()}[/dim][/green]")
         console.print()
 
         if self.player._abilities:

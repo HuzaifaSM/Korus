@@ -3,10 +3,7 @@ NOTES:
   - make sure all 'crit damage' or similar is variable named to critMulti
 
 BUGS:
-- shop item display isn't very readable - should just play equipment pieces
-- warrior rage isn't displayed in combat tables
 - can accquire '0x resource'
-- druid ability fail due to wrong form still consumes turn
 - abilities should show if they add stacks of a mechanic e.g. wretch abilities adding extra blood spike, druid abilities adding verdance, etc.
 - druid verdance buff display for beast is incorrect. case: current verdance 2/30, buffs: +" damage, +200.0% elemental res (WRONG), +0.00 speed, same for human form (percentages seem to be 100x larger than they should be)
 - druid form abilities should have form as part of the requirement/cost field
@@ -39,35 +36,27 @@ NEW AFFIXES:
   > mythic and soulbound affixes could include learning new abilities
 
 OTHER STUFF:
-  - 
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
-  - more enemy abilities
   - add parallel and foresight runes
     > foresight rune might need a complex system:
       - chatgpt recommended: give each item an id, and whenever a foresight is used and any craft results are previewed, save that result as the only result rollable from that specific item
-  - more assets, properly ths time: soundtracks, art, etc:
-    > sprites, symbols, item icons, extra effort: top tier/soulbound/mythic/destabilised affix bonus visuals per item
+      - for example: all equipment get a 'foresightResults' dict, whenver a rune is 'applied' to them, the result is stored as:
+        > {rune: result} and whenever that rune is re-applied, the existing result is used instead "if self.name in item.foresightResults"
+        > foresightResults cleared whenever a rune is actually applied
   - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
-  - different colours for high amounts of damage (100, 500, 1000)
-  - put a class description depending on what your class is inside the help menu ("class help" submenu)
-  - make regular items such as wood more expensive, its too cheap, maybe increase baseline to 8g per thing
-  - a tutorial at the start can help
+  - a tutorial option on the start menu
 
 CURRENTLY WORKING ON:
   - in the forge:
     > move next/previous rune page options into the actual crafting menu
     > remove the 'crafting interface' entirely and replace it with going straight into actual rune crafting
       - rewrite _applyRune to become the new 'rune crafting menu'
-    > when applying runes, rather than printing 10 at a time in a flat list, use a rich table to display a 2 column grid with 6 runes, aka 12 runes at a time (test and see if 3 columns also works (if text wraps inside of its own column))
+    > when applying runes, rather than printing 10 at a time in a flat list, use a rich table to display a 2 column grid with 8 rows
+      - additionally, if the player has more than 2 pages of runes (len(player._craftingInventory) > 36), instead show the categories of runes the player has available with a description per category, then display the tables again within the category menus
+      - also add an option to 'search' by typing keywords or full rune names, then matching input.replace('_','').strip().lower() to all rune.name.strip().lower() and showing a page with only valid search results to the player
       - same logic as equipment inventory
     > add a new option that uses fuel + blueprints to combine x amount of items of the same rarity into 1 item of a higher rarity
       - limited by forge level: 1 = uncommon, 2 = rare, 3 = epic, 4 = legendary, 5 = 5x legendary for mythic
-
-  - camp upgrade menus should have a description about the benefits gained from upgrading
-    > level 0 -> 1 descriptions added, add the rest
-
-  - ability table needs lines between each ability for readability
-  - ability table needs a 'number of targets' column
 
   - evasion should scale with level, at lower levels, less evasion is needed to achieve a similar dodge chance
 
@@ -75,41 +64,19 @@ CURRENTLY WORKING ON:
 
   - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
     > Classes complete:
+      - Cultist: 159 HP, 51 Damage, 1.09 Speed, 107 Armour, 131 Evasion. Resistances: 8% Lightning, 7% Arcane, 18% Psychic, 7% Divine (40% total)
 
     > Classes in progress:
       - paladin
-      - Cultist
 
   - rework fighter class
     > new mechanic uses stances: offensive and defensive
       - offensive deals more damage but takes more damage, defensive is reverse
       - ascendancies alter stances or add new opens
-  - rework monk class
   - rework mage ascendancies
-
-  - add a 'view class details' option in main menu which displays:
-    > class name, class description
-    > if ascendancy is not None: ascendancy name, ascendancy description
-
-  - finish improving warrior ascendancies + implementation, then check over all ascendancies one final time
-    > warrior abilities should cost rage and interact with their rage costs in different ways
-      - e.g. increased effect per rage consumed, increased damage per rage consumed, etc.
-      - once done, rewrite base warrior class: "Gain 1 Rage per 8 Damage taken." instead of "lose 1 per 8"
-
-  - remove or rework any ascendancies that directly prohibit main class mechanic (e.g. Monk ascendancy disabling switching, Druid ascendancies disabling form changes)
-    > ^unless there is a good reason for it, e.g. monk psychopath is a good example of a correctly made ascendancy
-  - make sure all ascendancies interact with main class mechanic in at least 1 way, 2+ if possible
-  
-  - expand ascendancy descriptions to be more clear on everything without making them too long to read in preparation for ascendancy shrine
-    > ascendancy shrine displays all ascendancies and descriptions and lets you choose which to become. can only be built after level 15 (gives player time to get resources)
 
   - ascendancy abilities:
     > ascendancies add 2 abilities each, with 2 evolutions, and edit up to 2 existing base class abilities
-
-  - remake main.py main menu
-    > add a 'player management' section which contains viewing inventory, viewing equipment, and view abilities
-    > add a 'settings' section which contains changing difficulty, help menu, and saving
-    > add an option to reduce the area level by 1 at the cost of 3 Souls
 
   - completely rewrite help.py and all sections of Help to better explain everything
     > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.
@@ -218,7 +185,7 @@ ITEM REWORK/IMPROVEMENTS
           > crafters dream item
           > should be similar rarity to strong legendary or mythic items
           > [3, 4]p/[3, 4]s base affix slots
-          > blank items have no entropy and no entropy resistance (entropy = float('inf') for all purposes)
+          > blank items have no entropy and no entropy resistance (entropy = float('inf'))
           > upon interacting with a blank item:
             - a new menu opens up
             - a random selection of powerful runes are shown to the player
@@ -227,6 +194,7 @@ ITEM REWORK/IMPROVEMENTS
             - once the player confirms their item, it is 'destabilised'
               > not a true destabilisation unless player used the rune
               > only in name to prevent further modification to the item
+          > before being revealed, name should be just the name of the item e.g. "Axe" with ethereal theme tint
     - add a quick sell option when getting an item at the end of combat (simple QoL)
 
 - ENEMY REWORK
@@ -236,7 +204,6 @@ ITEM REWORK/IMPROVEMENTS
     > never attempt an action that won't succeed e.g. using an ability without the resources for it
     > utility/buff skills used if a buff expires or the enemy has no buffs <or other reasons as well>
   - enemies drop less loot in terms of resources and equipment
-    > note: check if enemy equipment loses durability whilst they are using it (might not be the case)
   - enemies should be able to access their own loot tables as if it was their inventory
     > main use would be to be able to use consumables
   - rework enemy name system
@@ -269,6 +236,9 @@ ITEM REWORK/IMPROVEMENTS
     +----------------------------------------------------+--------------+
   > in combat or during any secondary menu, side buttons (or input line) can be swapped to revelant buttons
     - e.g. 'attack', 'use ability', 'inspect enemies', etc.
+
+- more assets, properly ths time: soundtracks, art, etc:
+  > sprites, symbols, item icons, extra effort: top tier/soulbound/mythic/destabilised affix bonus visuals per item
 
 - lowest priority: (EXPANSION IDEAS)
 
