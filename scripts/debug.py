@@ -186,7 +186,7 @@ class Debugger:
                 console.print(f"\n[success]Generated equipment![/success]")
                 console.print(f"[cyan]Slot:[/cyan] {slot} | [cyan]Level:[/cyan] {level} | [cyan]Rarity:[/cyan] {formatRarity(rarity.value, rarity.value)}")
                 console.print(f"{equipName}")
-                console.print(f"[dim]{equipment._formatStats()}[/dim]")
+                console.print(f"[dim]{equipment}[/dim]")
                 pause()
                 break
 

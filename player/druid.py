@@ -4,7 +4,7 @@ from typing import Dict
 import random
 
 DRUID_DESCRIPTIONS = {
-    "Druid": "[class_druid]A nature mystic who channels the primal forces.[/class_druid]\n"
+    "Druid": "A nature mystic who channels the primal forces.\n"
         "Shapeshifting: Deal Earth damage to swap forms. Your forms grow in power with each level.\n"
         "Per Level Buffs: Human: +1 Damage, +1% Elemental Resistance, +0.01 Speed | Beast: +1.5% Crit Damage, +2% Increased Earth Damage, -0.02 Speed, +0.4% Damage Taken.\n"
         "Gain 1 stack of Verdance per 10 damage dealt, to a max of 30 stacks. Verdance: 0.5% Damage Reduction, 1% Increased Earth Damage. Heal 1% Max HP per Verdance at the end of combat.\n"
@@ -182,9 +182,9 @@ class Druid(Player): # balanced damage and speed, earth damage
         self._recalculateStats(False)
 
         if self.form == 'human':
-            console.print(f"  [green]+{self.formBonuses['damage']} Damage, +{self.formBonuses['elemental']*100:.1f}% Elemental Res, +{self.formBonuses['speed']:.2f} Speed[/green]")
+            console.print(f"  [green]+{self.formBonuses['damage']} Damage, +{self.formBonuses['elemental']:.0f}% Elemental Res, +{self.formBonuses['speed']:.2f} Speed[/green]")
         elif self.form == 'beast':
-            console.print(f"  [yellow]+{self.formBonuses['critMulti']*100:.1f}% Crit Damage, +{self.formBonuses['earthDamage']*100:.0f}% Earth Damage, {self.formBonuses['speed']:.2f} Speed, +{self.formBonuses['damageTaken']*100:.1f}% Damage Taken[/yellow]")
+            console.print(f"  [yellow]+{self.formBonuses['critMulti']*100:.1f}% Crit Damage, +{self.formBonuses['earthDamage']:.0f}% Earth Damage, {self.formBonuses['speed']:.2f} Speed, +{self.formBonuses['damageTaken']:.1f}% Damage Taken[/yellow]")
         elif self.form == 'moonkin':
             console.print(f"  [cyan]+{self.formBonuses['damage']} Damage, +{self.formBonuses['speed']} Speed, +{self.formBonuses['critChance']}% Crit Chance, +{self.formBonuses['critMulti']*100:.1f}% Crit Damage.[/cyan]")
 

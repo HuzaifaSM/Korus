@@ -2,7 +2,7 @@ from typing import List, Optional, Tuple
 from enum import Enum
 from copy import deepcopy
 import random
-from .entities import Entity
+from .entities import Entity, ELEMENTAL_RES, DIVINE_RES
 from .enemy import Enemy
 from .abilities import Effects, StatusEffect, resolveEffects
 from .styles import (
@@ -51,6 +51,10 @@ class CombatUnit:
         self.entropyTracker = EntropyTracker()
 
     def resetTurn(self):
+        self.hasActed = False
+
+        self._recalculateInitiative()
+
         if not self.statusEffects:
             return
 
@@ -63,10 +67,6 @@ class CombatUnit:
         for effect in expiredEffects:
             self.statusEffects.remove(effect)
             console.print(f"  [dim]- {effect.name.capitalize()} has worn off![/dim]")
-
-        self.hasActed = False
-
-        self._recalculateInitiative()
 
     def rollStunAvoidance(self) -> bool:
         avoidance = self.entity._stats['Bonuses']['stun_avoidance']
@@ -110,7 +110,7 @@ class CombatUnit:
                 multiplier *= (1 - amount)
 
         multiplier = round(multiplier, 2)
-        self.initiative = round(self._baseInitiative, )
+        self.initiative = round(self._baseInitiative)
 
     def getDamageModifier(self) -> float:
         modifier = 1.0
@@ -226,6 +226,8 @@ class CombatManager:
             self._setPhaseForUnit(self.turnOrder[0])
        
     def nextTurn(self):
+        if len(self.allAlive) == 0:
+            return
         if not self.battleActive or not self.turnOrder:
             return
         
@@ -319,34 +321,52 @@ class CombatManager:
     def applyDamageWithDefenses(self, target: Entity, damage: int, damageType: str, combatUnit: CombatUnit=None, armourIgnorePercent: float = 0.0) -> Tuple[int, bool]:
         finalDamage = damage
 
+        evasion = target.evasion
+        armour = target.armour
+        energyShield = target.energyShield
+
         didEvade = False
         armourDamageReduction = 0
         esDamagePrevented = 0
         if damageType != 'true': # true damage ignores all defenses
             if damageType != 'psychic': # psychic ignores evasion
+                if target.className == 'Marauder' and target._ascendancy == 'Harrower' and not combatUnit.hasActed:
+                    target._stats['evasion'] = int(target.evason * 1.5)
+
                 didEvade = combatUnit.checkEvade()
+
+                if target.className == 'Marauder' and target._ascendancy == 'Harrower' and not combatUnit.hasActed:
+                    target._stats['evasion'] = evasion
+
                 if didEvade:
                     target.onEvade()
-                    console.print(f"    [buff]{target._name} dodged the attack![/buff]")
                     return 0, armourDamageReduction, esDamagePrevented, True
 
             if damageType != 'ethereal': # ethereal ignores armour
+                if target.className == 'Marauder' and target._ascendancy == 'Colossus' and damageType in ELEMENTAL_RES:
+                    target._stats['armour'] = int(target.armour * 1.3)
+
                 reduction = combatUnit.calculateArmourReduction(finalDamage, armourIgnorePercent)
                 reducedAmount = int(finalDamage * reduction)
                 armourDamageReduction = finalDamage - reducedAmount
                 finalDamage -= reducedAmount
 
+                if target.className == 'Marauder' and target._ascendancy == 'Colossus' and damageType in ELEMENTAL_RES:
+                    target._stats['armour'] = armour
+
                 if reducedAmount > 0:
                     console.print(f"    [cyan]{target._name}'s armour reduced damage by {reducedAmount}![/cyan]")
 
             if damageType != 'chaos': # chaos ignores energy shield
-                currentES = target.energyShield
-                if currentES > 0:
-                    if finalDamage >= currentES:
-                        esDamagePrevented = currentES - finalDamage
-                        finalDamage -= currentES
+                if energyShield > 0:
+                    if finalDamage >= energyShield:
+                        esDamagePrevented = energyShield - finalDamage
+                        finalDamage -= energyShield
                         target._stats['energy_shield'] = 0
                         console.print(f"    [warning]{target._name}'s energy shield was broken![/warning]")
+
+                        if target.className == 'Marauder' and target._ascendancy == 'Colossus' and not target.colossusEsBroken:
+                            target.colossusEsBroken = True
                     else:
                         esDamagePrevented = finalDamage
                         target._stats['energy_shield'] -= finalDamage
@@ -373,16 +393,12 @@ class CombatManager:
             ability = attacker._abilities[abilityName]
             console.print(f"\n[cyan]{attacker._name}[/cyan] uses [bold]{abilityName}[/bold]")
 
+            if ability.cooldown > 0:
+                printWarning(f"  - {abilityName} is on cooldown for {ability.cooldown} more turn(s).")
+                return False
+
             if attackerUnit.team == 'player':
-                canUse, reason = ability.canUse(attacker)
-                if not canUse:
-                    printWarning(f"  - {abilityName} cannot be used: {reason}")
-                    return False
                 ability.applyResourceCosts(attacker)
-            else:
-                if ability.cooldown > 0:
-                    printWarning(f"  - {abilityName} is on cooldown for {ability.cooldown} more turn(s).")
-                    return False
 
             selfEffects = ability.effects.get('self', {})
             if selfEffects:
@@ -461,7 +477,6 @@ class CombatManager:
                     if random.random() < 0.3:
                         exposure = Effects.createElementalExposure()
                         effectsBeforeTargeting.append(exposure)
-                        console.print(f'[wind]Fluxweaver: Applied Elemental Exposure![/wind]')
 
             elif attacker.className == 'Warrior':
                 if attacker._ascendancy == 'Warlord':
@@ -503,11 +518,16 @@ class CombatManager:
 
             elif attacker.className == 'Tempest':
                 tempestCritIncrease = False
-                if attacker._speed > targets[0]:
+                if attacker._speed > targets[0]._speed:
                     tempestCritIncrease = True
                     difference = attacker._speed - targets[0]._speed
-                    attacker._stats['Temporary']['crit_chance'] += 0.25 * difference
-                    attacker._stats['Temporary']['crit_multi'] += difference
+                    attacker._stats['Temporary']['crit_chance'] += round(0.25 * difference, 4)
+                    attacker._stats['Temporary']['crit_multi'] += round(difference, 4)
+
+            elif attacker.className == 'Marauder':
+                if attacker._ascendancy == 'Sovereign' and not targetUnit.hasActed:
+                    attacker._stats['Temporary']['crit_chance'] += 0.25
+                    attacker._stats['Temporary']['crit_multi'] += 0.75
 
             # CRITICAL
 
@@ -515,8 +535,13 @@ class CombatManager:
 
             if attacker.className == 'Tempest':
                 if tempestCritIncrease:
-                    attacker._stats['Temporary']['crit_chance'] -= 0.25 * difference
-                    attacker._stats['Temporary']['crit_multi'] -= difference
+                    attacker._stats['Temporary']['crit_chance'] -= round(0.25 * difference, 4)
+                    attacker._stats['Temporary']['crit_multi'] -= round(difference, 4)
+
+            elif attacker.className == 'Marauder':
+                if attacker._ascendancy == 'Sovereign' and not targetUnit.hasActed:
+                    attacker._stats['Temporary']['crit_chance'] -= 0.25
+                    attacker._stats['Temporary']['crit_multi'] -= 0.75
 
             if isCrit:
                 damage = int(damage * critMult)
@@ -584,11 +609,36 @@ class CombatManager:
                             if attacker._ascendancy == 'Tyrant':
                                 finalDamage += int(0.02 * attacker.armour)
 
-                        if target.className == 'Warrior':
+                        if t.className == 'Warrior':
                             if target._ascendancy == 'Warlord':
                                 warlordHadShield = target._shield > 0
                                 console.print(f"[asc_warlord]Warlord: {attacker._name} takes 50 Fire Damage from attacking you![/asc_warlord]")
                                 attacker.damage(50, 'fire')
+
+                        elif t.className == 'Marauder':
+                            if targetUnit.hasActed:
+                                if t._ascendancy == 'Sovereign':
+                                    if damageType in DIVINE_RES:
+                                        finalDamage = round(finalDamage * 0.7)
+                                    else:
+                                        finalDamage = round(finalDamage * 0.8)
+                                else:
+                                    finalDamage = round(finalDamage * 0.9)
+                                if t._ascendancy == 'Dreadnought':
+                                    damage = int(t._maxHealth * 0.05)
+                                    attacker.damage(damage, 'true')
+                                    t.heal(damage)
+                            else:
+                                if t._ascendancy == 'Dreadnought' and attacker._health < t._health:
+                                    finalDamage = int(finalDamage * 0.85)
+                                    t.gainDamageReduction()
+                                else:
+                                    if t.siphonedDamage > 0:
+                                        t.siphonedDamage -= 1
+                                        attacker._baseDamage += 1
+                                        console.print(f"[warning]{attacker._name} stole 1 Siphoned Damage from you![/warning]")
+                                    else:
+                                        t.gainDamageReduction()
 
                         finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self)
 
@@ -601,6 +651,8 @@ class CombatManager:
                         finalDamage, armourDamagePrevented, esDamagePrevented, evaded = self.applyDamageWithDefenses(target, finalDamage, damageType, targetUnit, armourIgnorePercent)
                         finalDamage, damageType = t.onHit(finalDamage, damageType, isCrit, attacker, self)
 
+                        # ON HIT EFFECTS
+
                         if attacker.className == 'Warrior' and attacker._ascendancy == 'Tyrant':
                             if evaded or (esDamagePrevented > 0 and finalDamage == 0):
                                 rageLoss = int(attacker._rage * 0.4)
@@ -610,6 +662,50 @@ class CombatManager:
                             rageGain = int(armourDamagePrevented * 0.1)
                             attacker._rage = min(attacker._maxRage, attacker._rage + rageGain)
                             console.print(f"[asc_tyrant]Tyrant: Gained 10% of damage prevented ({rageGain}) as Rage.[/asc_tyrant]")
+
+                        elif attacker.className == 'Marauder':
+                            harrowerExecute = False
+                            if targetUnit.hasActed:
+                                if attacker._ascendancy == 'Colossus':
+                                    t.applyCrush()
+                                    attacker.echoDamage[t] = int(finalDamage * 0.15)
+                                else:
+                                    attacker.echoDamage[t] = int(finalDamage * 0.35)
+
+                                if attacker._ascendancy == 'Butcher':
+                                    t.applyCarved()
+
+                            else:
+                                if attacker._ascendancy == 'Dreadnought':
+                                    heal = int(finalDamage * 0.1)
+                                    attacker.heal(heal, False)
+
+                                elif attacker._ascendancy == 'Sovereign':
+                                    if damageType == 'cold':
+                                        finalDamage = int(finalDamage * 1.25)
+                                    heal = int(finalDamage * 0.1)
+                                    attacker.heal(heal)
+                                    t._baseSpeed -= round(attacker._speed * 0.01, 2)
+
+                                if attacker.siphonedDamage < attacker.maxSiphon and t._baseDamage > 5:
+                                    dread = 1 if attacker._ascendancy != 'Dreadnought' else 2
+                                    maxSiphon = min(
+                                        3 * dread,
+                                        (t._baseDamage + 5) - 3,
+                                        attacker.maxSiphon - attacker.siphonedDamage)
+                                    siphon = random.randint(1, maxSiphon)
+
+                                    if attacker._ascendancy == 'Harrower':
+                                        siphon = siphon / 50 # 1 damage = 0.02 speed
+                                        t._baseSpeed -= siphon
+                                        attacker._stats['Temporary']['speed'] = min(0.5, attacker._stats['Temporary']['speed'] + siphon)
+                                        console.print(f"[asc_harrower]Harrower: Siphoned {siphon:.2f} speed from {t._name}![/asc_harrower]")
+                                        attacker.checkHarrowerBuff()
+                                        harrowerExecute = True
+                                    else:
+                                        t._baseDamage -= siphon
+                                        attacker.siphonedDamage += siphon
+                                        console.print(f"[class_marauder]Marauder: Siphoned {siphon} damage from {t._name}![/class_marauder]")
 
                         if t.className == 'Cultist' and t._ascendancy == 'Harbinger':
                             if attacker.corruption > 0 and t.insanity < 0:
@@ -623,7 +719,7 @@ class CombatManager:
                             elif t._ascendancy == 'Plaguebearer' and attacker.bloodSpike == 7:
                                 finalDamage = int(finalDamage * 0.8)
                             elif t._ascendancy == 'Necrose':
-                                attacker.gainNecrosis()
+                                attacker.applyNecrosis()
                                 t.necrosisApplied += 1
 
                         elif t.className == 'Warrior' and t._ascendancy == 'Conqueror':
@@ -634,6 +730,32 @@ class CombatManager:
                                 console.print(f"[asc_conqueror]Conqueror: Dodged the attack! Healed for {gain} HP and gained {gain} Rage.[/asc_conqueror]")
                             t.conquerorDamageGain += armourDamagePrevented // 2
 
+                        elif t.className == 'Tempest':
+                            if attacker._speed > t._speed:
+                                if len(self.allAlive) == 1:
+                                    t.gainStatic()
+                                t.gainStatic()
+                            elif attacker._speed < t._speed:
+                                if len(self.allAlive) == 1:
+                                    t.gainFlow()
+                                t.gainFlow()
+
+                        elif t.className == 'Marauder':
+                            if targetUnit.hasActed:
+                                if t._ascendancy == 'Colossus':
+                                    t.colossusDamage += armourDamagePrevented + esDamagePrevented
+                                elif t._ascendancy == 'Harrower':
+                                    spdReduction = round(attacker._speed * 0.05, 2)
+                                    attacker._speed -= spdReduction
+                                    attacker.damage(attacker._baseDamage, 'cold')
+                                elif t._ascendancy == 'Butcher':
+                                    attacker.damage(t.siphonedDamage, 'cold')
+
+                            if t._ascendancy == 'Dreadnought':
+                                if finalDamage > 0:
+                                    t.dreadnoughtDeferredDamage[2] += finalDamage // 2
+                                    finalDamage = round(finalDamage / 2)
+
                         if attacker._stats['Bonuses']['lifesteal'] > 0:
                             heal = int(finalDamage * (attacker._stats['Bonuses']['lifesteal'] / 100))
                             attacker.heal(heal)
@@ -641,9 +763,9 @@ class CombatManager:
                         if not evaded:
                             damageReductionValue = t.damage(finalDamage, damageType)
                         else:
-                            console.print(f'[wind bold]{t._name} dodged the attack![/wind bold]')
+                            console.print(f'[evasion bold]{t._name} evaded the attack![/evasion bold]')
 
-                        # AFTER-HIT EFFECTS
+                        # POST-HIT EFFECTS
 
                         if t.className == 'Warrior' and t._ascendancy == 'Tyrant':
                             rageGain = int((armourDamagePrevented + damageReductionValue) * 0.25)
@@ -698,6 +820,11 @@ class CombatManager:
                             if attacker._ascendancy == 'Plaguebearer':
                                 attacker.gainBloodScent()
 
+                        elif attacker.className == 'Marauder' and attacker._ascendancy == 'Butcher':
+                            if t.marked:
+                                for e in self.allAlive:
+                                    e.damage(t._baseDamage, 'cold')
+
                     else:
 
                         if attacker.className == 'Spectre' and attacker._ascendancy == 'Reaper':
@@ -715,7 +842,7 @@ class CombatManager:
                         elif attacker.className == 'Wretch':
                             if target.bloodSpike > 0:
                                 if t._health <= (t._maxHealth * (0.02 * t.bloodSpike)):
-                                    console.print(f"[dark_red bold]Wretch: {t._name} Executed from Blood Spike![/dark_red bold]")
+                                    console.print(f"[class_wretch]Wretch: {t._name} has been Executed from Blood Spike![/class_wretch]")
 
                                     if attacker._ascendancy == 'Necromancer':
                                         otherEnemies = [e for e in self.allAlive if e != t]
@@ -751,6 +878,14 @@ class CombatManager:
                                         attacker.gainRot()
 
                                     attacker.onKill(t, {'executed': True}, self)
+
+                        elif attacker.className == 'Marauder' and attacker._ascendancy == 'Harrower':
+                            if harrowerExecute and t._health <= (t._maxHealth * 0.08):
+                                console.print(f"[asc_harrower]Harrower: {t._name} has been Executed![/asc_harrower]")
+
+                                t.damage(t._health, 'true')
+                                self.checkDead(t)
+                                attacker.onKill(t, {'executed': True}, self)
 
             ability.cooldown = ability.maxCooldown
             return True

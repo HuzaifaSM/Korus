@@ -18,7 +18,7 @@ ascendancy changes:
 """
 
 MAGE_DESCRIPTIONS = {
-    "Mage": "[class_mage]A master of the arcane arts.[/class_mage]\n"
+    "Mage": "[class_mage]A master of the arcane arts, using the mystic forces as your own.[/class_mage]\n"
         "[resource]Mana[/resource]: You have no [stamina]Stamina[/stamina]. Start with a [resource]mana[/resource] pool that increases with level. Regenerate a base of 5 [resource]mana[/resource] per turn.\n"
         "Upon attacking with Elemental or [arcane]Arcane[/arcane] damage, spend [resource]mana[/resource] equal to 20% of damage dealt. Gain damage equal to [resource]mana[/resource] spent on attacks.\n"
         "Starting Stats: 40 [health]HP[/health] | 7 [damage]Damage[/damage] | 5% [critical]Crit Chance[/critical] | 175% [critical]Crit Damage[/critical] | [arcane]Arcane Damage[/arcane] | 1 [speed]Speed[/speed].",

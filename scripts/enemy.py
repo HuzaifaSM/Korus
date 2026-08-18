@@ -31,7 +31,7 @@ class Enemy(Entity):
     def __init__(self, name: str, level: int = 1, health: int = 20, damage: int = 3, critChance: float = 0.05, critMulti: float = 1.5, damageType: str = "physical",
                  speed: float = 0.8, lootTable: LootTable = None):
         scaledHealth = health + (level - 1) * random.randint(2, 5)
-        scaledDamage = damage + ((level - 1) // 2) * random.randint(1, 3)
+        scaledDamage = round(damage + ((level - 1) / 2.5) * random.uniform(1, 2.2))
         scaledSpeed = round(speed + ((level + random.randint(-10, 10)) / 100), 2)
         scaledCritChance = round(critChance + (random.randint(0, 5) + level / 10) / 100, 2)
         scaledCritMulti = round(critMulti + (random.randint(5, 15) + level / 5) / 100, 2)
@@ -44,7 +44,6 @@ class Enemy(Entity):
 
         self.ai = EnemyAI(self)
 
-        self.overwhelmStacks = 0
         self.tortureStacks = 0
         self.hauntedStacks = 0
         self.phasedTurns = 0
@@ -56,6 +55,10 @@ class Enemy(Entity):
         self.ruin = 0
         self.bloodSpike = 0
         self.necrosis = 0
+        self.crush = 0
+        self.shameTurns = 0
+        self.marked = False
+        self.carved = 0
 
         self._generateEquipment()
         self._generateInventory()
@@ -69,10 +72,30 @@ class Enemy(Entity):
     def desecrated(self):
         return self.ruin >= 10
 
-    def gainNecrosis(self):
+    def applyNecrosis(self):
         if self.necrosis < 10:
             self.necrosis += 1
             self._stats['Temporary']['speed'] -= 0.02
+            console.print(f"[asc_necrose]{self._name} has gained 1 Necrosis![/asc_necrose]")
+
+    def applyCrush(self):
+        if self.crush < 3:
+            self.crush += 1
+            self._stats['Temporary']['increased_armour'] -= 15
+            console.print(f"[asc_colossus]{self._name} has gained 1 Crush![/asc_colossus]")
+
+    def applyShame(self):
+        if self.shameTurns == 0:
+            self._stats['Temporary']['speed'] -= 0.1
+        console.print(f"[asc_sovereign]{self._name} has been afflicted with 2 turns of Shame![/asc_sovereign]")
+        self.shameTurns = 2
+
+    def applyCarved(self):
+        if self.carved < 3:
+            self.carved += 1
+            self._stats['Temporary']['crit_chance'] -= 0.05
+            self._stats['Temporary']['increased_defenses'] -= 5
+            console.print(f"[asc_butcher]{self._name} has gained 1 Carved![/asc_butcher]")
 
     def _recalculateStats(self, doPrint = True, inCombat = False):
         super()._recalculateStats(doPrint, inCombat)
@@ -86,8 +109,14 @@ class Enemy(Entity):
 
         damageDealt = int(damageDealt * (1 - (self.tortureStacks * 0.01)))
 
+        if self.shameTurns > 0:
+            damageDealt = int(damageDealt * 0.9)
+
+        if self.marked:
+            damageDealt = int(damageDealt * 1.1)
+
         return damageDealt, damageType
-    
+
     def onHit(self, damageTaken, damageType, crit = False, attacker = None, combatManager=None):
         damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
@@ -104,12 +133,17 @@ class Enemy(Entity):
 
         damageTaken = int(damageTaken * 1 + (self.necrosis * 0.03))
 
+        if self.marked:
+            damageTaken = int(damageTaken * 1.25)
+
         return damageTaken, damageType
 
     def onCrit(self, targets, combatManager, critDamage):
         if self.tortureStacks > 0:
             self.tortureStacks = 0
             console.print(f"[asc_mindbreaker]{self._name} has removed all their Torture stacks![/asc_mindbreaker]")
+
+        return critDamage
 
     def onTurnStart(self, combatManager=None):
         if self.phasedTurns > 0:
@@ -140,6 +174,11 @@ class Enemy(Entity):
             if allEnemies and random.random() < (self.corruption * 0.1):
                 enemy = random.choice(allEnemies)
                 enemy.corruption += 1
+
+        if self.shameTurns > 0:
+            self.shameTurns -= 1
+            if self.shameTurns == 0:
+                self._stats['Temporary']['speed'] += 0.1
 
         super().onTurnStart(combatManager)
 
@@ -191,10 +230,10 @@ class Enemy(Entity):
                 finalDropChance = min(0.9, dropChance.get(rarity, 0.3) + 0.25)
                 self._lootTable.addEquipment(equipment, finalDropChance)
 
-        else: # rules for enemies level 1-10: guaranteed 1 equipment piece. unable to roll epic/legendary equipment
+        else: # rules for enemies level 1-10: guaranteed 1 equipment piece. unable to roll epic/legendary equipment, 50% chance to reroll rares
             slot = random.choice(slots)
             rarity = None
-            while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]:
+            while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC] or (rarity == ItemRarity.RARE and random.random() < 0.5):
                 rarity = rollRarity(self._level)
             equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
             self.equip(equipment, False)
@@ -267,7 +306,7 @@ class Enemy(Entity):
         return True
 
     def rollDungeonMap(self):
-        from expansions.dungeons.dungeons import generateDungeonMap
+        from dungeons.dungeons import generateDungeonMap
         key = generateDungeonMap(self._level)
         if key:
             return key
@@ -287,7 +326,7 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1) -
     baseCritMulti = round(random.uniform(1.1 + level / 300, 1.5 + level / 200), 2)
 
     baseHealth = round(baseHealth * difficulty)
-    baseDamage = min(level + (level // 5), round(baseDamage * difficulty))
+    baseDamage = min(level + (level // 3), round(baseDamage * difficulty))
 
     loot = LootTable()
     numDrops = random.randint(1, max(2, 2 + level // 6))

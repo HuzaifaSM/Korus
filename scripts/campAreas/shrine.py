@@ -16,7 +16,7 @@ class Shrine(Station):
     def _getUpgradeRequirements(self):
         return {
             1: {"cloth": 20, "crystal": 5, "ascended_essence": 3,
-                'description': 'Unlock the option to [gold1 bold]Ascend[/gold1 bold] at level 20.\nYou will be given multiple choices of [gold1]Ascendancies[/gold1] to pick from, and are allowed to switch at any point with a [resource]resource cost[/resource].'
+                'description': 'Unlock the option to [gold1 bold]Ascend[/gold1 bold] at level 20.\nYou will be given multiple choices of [gold1]Ascendancies[/gold1] to pick from, and are allowed to switch at any point for free.'
                 },
             2: {
                 'description': 'Not yet implemented.'
@@ -40,18 +40,23 @@ class Shrine(Station):
             printWarning("You must be at least level 20 to ascend!")
             return
 
+        playerClass = self.player.className
+
         def _displayDescriptions():
             printHeader("Available Ascendancies")
-            for i, (ascendancy, description) in enumerate(DESCRIPTIONS[self.player.className].items()):
-                if ascendancy == self.player.className:
+            for i, (ascendancy, description) in enumerate(DESCRIPTIONS[playerClass].items()):
+                if ascendancy == playerClass:
                     continue
 
-                console.print(f"[cyan]{i}:[/cyan] [bold]{ascendancy}:[/bold]\n{description}")
+                lore, description = description.split('[/lore]')
+                lore += '[/lore]'
+
+                console.print(f"[cyan]{i}:[/cyan] [asc_{ascendancy.lower()}]{ascendancy}:[/asc_{ascendancy.lower()}] {lore}\n{description}")
                 sleep(0.5)
                 console.print()
 
         ascendancies: dict[int, str] = {}
-        for i, ascendancy in enumerate(ASCENDANCIES[self.player.className]):
+        for i, ascendancy in enumerate(ASCENDANCIES[playerClass]):
             ascendancies[i+1] = ascendancy
 
         while True:
@@ -61,7 +66,7 @@ class Shrine(Station):
             console.print("[dim]0.[/dim] Return")
             for i, asc in ascendancies.items():
                 grammar = "an" if asc[0].lower() in ['a', 'e', 'i', 'o', 'u'] else "a"
-                console.print(f"[dim]{i}.[/dim] Become {grammar} [asc_{asc.lower()}]{asc}[/asc_{asc.lower()}]")
+                console.print(f"[dim]{i}.[/dim] [class_{playerClass}]Become {grammar}[/class_{playerClass}] [asc_{asc.lower()}]{asc}[/asc_{asc.lower()}]")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
             validChoices = range(1, len(ascendancies) + 1)
@@ -78,6 +83,7 @@ class Shrine(Station):
                             grammar = "an" if chosen[0].lower() in ['a', 'e', 'i', 'o', 'u'] else "a"
                             printSuccess(f"You have successfully ascended into {grammar} [asc_{chosen.lower()}]{chosen}[/asc_{chosen.lower()}]")
                             pause()
+                            return
                         else:
                             printWarning(f"Invalid choice: {choice}")
             except ValueError as e:

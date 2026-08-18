@@ -10,33 +10,21 @@ Start combat with 25 Aggression and Discipline. Gain 3 Aggression when you attac
 At the start of your turn, gain 2 Aggression and 2 Discipline.
 The combined total of your Aggression and Discipline cannot exceed 100. Aggression and Discipline have no maximum, but have a minimum of -50.
 You cannot fall below 0 Aggression or Discipline unless an Ability puts you under the threshold.
-There are 5 thresholds for Aggression and Discipline: Complacent (-50 to 0), Neutral (0 to 35), Trained (35 to 75), Dedicated (80 to 120), All-In (120+). Neutral has no stat changes.
+There are 5 thresholds for Aggression and Discipline: Complacent (-50 to -1), Neutral (0 to 34), Trained (35 to 74), Dedicated (75 to 120), All-In (120+). Neutral has no stat changes.
+
 Aggression Threshold Changes:
   - Complacent: -0.3 Speed, 30% Less Damage Dealt, -10% Crit Chance.
   - Trained: 20% Increased Physical Damage, +5% Lifesteal, +25% Crit Multi.
   - Dedicated: 50% Increased Physical Damage, +15% Lifesteal, +60% Crit Multi.
   - All-In: 100% Increased Physical Damage, +30% Lifesteal, upon landing a critical hit: heal for 10% of the damage dealt, and deal damage to all other enemies equal to your base damage. 40% Reduced Defenses.
-Discipline Threshold Changes:
+
+  Discipline Threshold Changes:
   - Complacent: 30% More Damage taken, 25% Reduced Defenses, -20% Stun Avoidance.
-  -
-Starting Stats: 40 HP | 3 Damage | 7.5% Crit Chance | 175% Crit Damage | Physical Damage | 1.15 Speed.
+  - Trained: +10% Damage Reduction, 5% Increased Defenses, +1% of Max HP regenerated as HP per turn.
+  - Dedicated: +15% Less Damage Taken, Gain Thorns equal to your base damage, 10% Increased Defenses, +3% of Max HP regenerated as HP per turn
+  - All-In: You are unable to critically hit. Gain Thorns equal to 5x your base damage, upon killing an enemy: gain their base damage as damage for the rest of combat, heal equal to 10% of their Max HP. Take 30% Less Damage from all hits. Damage prevented is gained as damage on your next attack.
 
-resource boundaries (Base):
--50 - 0: complacent
-    > discipline: increased damage taken, reduced defenses
-    > aggression: reduced speed, reduced damage dealt, reduced crit chance
-0 - 35: neutral
-    > no changes
-35 - 75: trained
-    > discipline: increased defenses, passive health + stamina regeneration, increased crit chance
-    > aggression: increased damage dealt, lifesteal, increased crit damage
-80 - 120: dedicated
-    > greatly increased existing buffs
-120+ : all-in
-    > discipline: 100% increased defenses. if you evade an attack, mitigate more than half of an attack's damage with armour, or fully prevent damage with energy shield, your next attack is a guaranteed crit with +75% crit multiplier. 20% less damage dealt
-    > aggression: +50% lifesteal, +0.5 speed, dealing critical hits heals you for 10% of the damage dealt, and deals your base damage as physical damage to all other enemies. 40% reduced defenses
-
-Once this lands, every existing Fighter ascendancy (Bladedancer, Champion, Barbarian, Brawler, Marshal) needs a pass to hook into Aggression/Discipline instead of the old Combo mechanic.
+Starting Stats: 40 HP | 6 Damage | 5% Crit Chance | 175% Crit Damage | Physical Damage | 1.05 Speed.
 """
 
 FIGHTER_DESCRIPTIONS = {

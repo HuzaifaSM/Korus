@@ -194,8 +194,7 @@ class Market(Station):
         for i, (itemName, itemData) in enumerate(stockList, 1):
             if len(itemData) == 3:  # equipment
                 quantity, price, equipment = itemData
-                console.print(f"  [cyan]{i}.[/cyan] {itemName} - [dim]{price}g/each[/dim]")
-                console.print(f"     [dim]{equipment}[/dim]")
+                console.print(f"  [cyan]{i}.[/cyan] [dim]{price}g\n{equipment}")
             else:  # resource or consumable
                 quantity, price = itemData
                 console.print(f"  [cyan]{i}.[/cyan] {itemName} x{quantity} - [dim]{price}g/each[/dim]")

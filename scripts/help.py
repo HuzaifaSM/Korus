@@ -140,27 +140,6 @@ class Help:
 
         guide = """
     [bold cyan]Player Classes:[/bold cyan] (REDO COMPLETELY)
-
-    [class_cultist]Cultist[/class_cultist] | [chaos]Chaos Damage[/chaos]
-
-    [class_druid]Druid[/class_druid] | [earth]Earth Damage[/earth]
-
-    [class_fighter]Fighter[/class_fighter] | [physical]Physical Damage[/physical]
-
-    [class_mage]Mage[/class_mage] | [arcane]Arcane Damage[/arcane]
-
-    [class_monk]Monk[/class_monk] | [lightning]Lightning[/lightning] and [cold]Cold[/cold] Damage
-
-    [class_paladin]Paladin[/class_paladin] | [holy]Holy Damage[/holy]
-    
-    [class_spectre]Spectre[/class_spectre] | [ethereal]Ethereal Damage[/ethereal]
-
-    [class_wanderer]Wanderer[/class_wanderer] | [psychic]Psychic Damage[/psychic]
-
-    [class_warrior]Warrior[/class_warrior] | [fire]Fire Damage[/fire]
-
-    [class_wretch]Wretch[/class_wretch] | [dark]Dark Damage[/dark]
-
     [dim]Press Enter to return...[/dim]
     """
         console.print(guide)

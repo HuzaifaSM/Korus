@@ -109,9 +109,17 @@ class Player(Entity):
                 console.print(f"[bold]{'='*50}[/bold]\n")
                 pause()
 
+    def onBattleEnd(self):
+        for a in self._abilities.values():
+            a.cooldown = 0
+        self._stamina = self._maxHealth
+        self._stats['energy_shield'] = self.maxEnergyShield
+
+        super().onBattleEnd()
+
     def _recalculateStats(self, doPrint: bool = True, inCombat: bool = False):
         super()._recalculateStats(doPrint, inCombat)
-        if not self._equipment['weapon']:
+        if not self._equipment['weapon'].damageType:
             self._damageType = self.defaultDamageType
 
     def _removeOldAscendancy(self) -> bool:

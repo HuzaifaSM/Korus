@@ -3,15 +3,12 @@ NOTES:
   - make sure all 'crit damage' or similar is variable named to critMulti
 
 BUGS:
-- can accquire '0x resource'
-- abilities should show if they add stacks of a mechanic e.g. wretch abilities adding extra blood spike, druid abilities adding verdance, etc.
 - druid verdance buff display for beast is incorrect. case: current verdance 2/30, buffs: +" damage, +200.0% elemental res (WRONG), +0.00 speed, same for human form (percentages seem to be 100x larger than they should be)
-- druid form abilities should have form as part of the requirement/cost field
-- abilities don't display damage type sometimes
-- should display armour and evasion amount using values from combatManager
-- +crit multi adds as flat, meaning it's 100x more effective than it should be (+67 crit multi = +6700% crit multi)
+  > ignore for now (druid needs a rework anyway)
 - burn debuff labelled as 'fire'
-- debuffs/effects still apply to entities that have dodged attacks
+- defense randomiser runes from armour/evasion -> energy shield keep higher base than ES would have, vice versa most likely also true
+- unsure if exposure debuffs are working correctly
+- Dreadnought (marauder ascendancy) currently does not grant +5% max cold resistance. must be implemented after max resistances are added/implemented properly
 
 NEW AFFIXES:
   - health/stamina on hit/kill suffixes on weapons and rings
@@ -35,7 +32,17 @@ NEW AFFIXES:
     > semi-rare affix
   > mythic and soulbound affixes could include learning new abilities
 
+- debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
+  > Classes complete:
+    - Cultist: 159 HP, 51 Damage, 1.09 Speed, 107 Armour, 131 Evasion. Resistances: 8% Lightning, 7% Arcane, 18% Psychic, 7% Divine (40% total)
+
+  > Classes in progress:
+    - paladin
+    - wretch
+
 OTHER STUFF:
+  - all ascendancy descriptions should have a 'lore line' using mythic styling to give a 'lore reason' for the conversion from base class
+    > finished: cultist, warrior, wretch
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
   - add parallel and foresight runes
     > foresight rune might need a complex system:
@@ -43,10 +50,22 @@ OTHER STUFF:
       - for example: all equipment get a 'foresightResults' dict, whenver a rune is 'applied' to them, the result is stored as:
         > {rune: result} and whenever that rune is re-applied, the existing result is used instead "if self.name in item.foresightResults"
         > foresightResults cleared whenever a rune is actually applied
-  - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, etc.)
+  - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, forge runePages, etc.)
   - a tutorial option on the start menu
+  - should display armour and evasion amount using values from combatManager
+  - playtime per save file
 
-CURRENTLY WORKING ON:
+CURRENTLY WORKING ON: (main order of implementation)
+  - implement marauder and tempest classes
+  - look over paladin ascendancies and base class, see if anything small needs to be added/tweaked
+  - add 1 more mechanic for wanderer, potentially spectre as well
+  - rework fighter class
+    > new mechanic uses stances: offensive and defensive
+      - offensive deals more damage but takes more damage, defensive is reverse
+      - ascendancies alter stances or add new opens
+  - rework mage ascendancies
+  - rework druid
+
   - in the forge:
     > move next/previous rune page options into the actual crafting menu
     > remove the 'crafting interface' entirely and replace it with going straight into actual rune crafting
@@ -58,25 +77,28 @@ CURRENTLY WORKING ON:
     > add a new option that uses fuel + blueprints to combine x amount of items of the same rarity into 1 item of a higher rarity
       - limited by forge level: 1 = uncommon, 2 = rare, 3 = epic, 4 = legendary, 5 = 5x legendary for mythic
 
-  - evasion should scale with level, at lower levels, less evasion is needed to achieve a similar dodge chance
-
   - for mythic items, if they don't have a mythic affix (e.g. removed by an erasing rune), for all runes that add affixes, add implementation to allow a new mythic affix to be rolled with a higher priority than standard affixes (e.g. add for growth, chaos, affix randomiser)
-
-  - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
-    > Classes complete:
-      - Cultist: 159 HP, 51 Damage, 1.09 Speed, 107 Armour, 131 Evasion. Resistances: 8% Lightning, 7% Arcane, 18% Psychic, 7% Divine (40% total)
-
-    > Classes in progress:
-      - paladin
-
-  - rework fighter class
-    > new mechanic uses stances: offensive and defensive
-      - offensive deals more damage but takes more damage, defensive is reverse
-      - ascendancies alter stances or add new opens
-  - rework mage ascendancies
 
   - ascendancy abilities:
     > ascendancies add 2 abilities each, with 2 evolutions, and edit up to 2 existing base class abilities
+
+  - new main menu option:
+    > instead of 'explore' to fight a random group of enemies, "fight waves of enemies"
+      - either explore is split into 'random group' vs 'waves' or its available directly in main menu, probably better inside explore
+    > waves of enemies option only unlocks after level 20
+    > simply spawns multiple encounters with a minimum enemy count of 2 per encounter, ranging from 2-x waves, could be increased by player level
+    > players get .onBattleEnd procs at the end of waves, letting them heal, potentially added heal on top if too challenging
+    > all loot is savec in a large loot table, then distributed accordingly at the end of the waves
+    > might be sensible to max wave encounters scale off of (areaLevel // 2) so that it feels like 'a swarm of slightly weaker than usual' enemies
+    > actual benefits to wave encounters:
+      - increased xp and gold gain per wave defeated
+      - increased equipment/runes from per wave defeated
+        > added + randomly rolled extras separate from actual enemy drops
+        > higher average rarity gear per number of waves defeated
+
+  - consumable rework
+
+  - item rework
 
   - completely rewrite help.py and all sections of Help to better explain everything
     > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.
@@ -88,9 +110,9 @@ CURRENTLY WORKING ON:
       > create a new dict attribute in dungeons to keep track of dungeon stat changes, split between enemy and player
     > chance for inbetween wave events (more roguelike elements)
     > should predefine entire encounter list, then iterate through it
-
-FUN ADDITIONAL STUFF:
-  - playtime per save file
+    > dungeons should be able to drop from level 10+
+      - at low levels, should feel like 'a quick challenge' - still difficult but doable, without needing bosses at the end
+    > dungeons would be easier to design once enemy rework is done
 
 FUN BONUS LIBRARIES:
   - markovify library
@@ -108,13 +130,11 @@ FUN BONUS LIBRARIES:
     > "discrete-event simultation library"
     > can simulate combat and other things outside of main game loop to test balance
 
-- keep adding more classes, more ascendancies, more sub types whenever you think of anything cool
-  > upon levelling up to level 20, gain an ascendancy point which is used to unlock an ascendancy
-    - LATER ASCENDANCY BUFF IDEA:
-      > every 20 levels, continue to gain an ascendancy point, which can be used to unlock a buff, mechanic or other boon
-      > more than 4 upgrades, but ascendancy points capped at 4 (gain 1 at 40/60/80/100)
-        - e.g. Warlord buff could be: "Gain Fury stacks on attack if you have more than 40 (previously 50) Rage. Gain 5% Damage Reduction"
-          > essentially, only upgrades and buffs, similar to PoE ascendancy system (unlock ascendancy then gain extra things to add to it)
+- LATER ASCENDANCY BUFF IDEA:
+  > every 20 levels, continue to gain an ascendancy point, which can be used to unlock a buff, mechanic or other boon
+  > more than 4 upgrades, but ascendancy points capped at 4 (gain 1 at 40/60/80/100)
+    - e.g. Warlord buff could be: "Gain Fury stacks on attack if you have more than 40 (previously 50) Rage. Gain 5% Damage Reduction"
+      > essentially, only upgrades and buffs, similar to PoE ascendancy system (unlock ascendancy then gain extra things to add to it)
 
 MARKET REWORK
   - need to fix/rework item value calculation and make it make logical sense
@@ -197,25 +217,35 @@ ITEM REWORK/IMPROVEMENTS
           > before being revealed, name should be just the name of the item e.g. "Axe" with ethereal theme tint
     - add a quick sell option when getting an item at the end of combat (simple QoL)
 
+CONSUMABLES REWORK
+ - currently, the only consumables are health potions which heal flat amonuts
+ - should be re-done into health and stamina potions (mana for mage, just a rename)
+ - potions should heal based on max% rather than a flat value
+ IF REALLY WANTED:
+  > could add actual 'items'/'gear' as consumables, like things that apply debuffs
+    - e.g. smoke bomb to apply blind, molotov to apply burn, poison dart for poison, throwing knife for bleed, etc.
+    - shouldn't encompass every single debuff, should only be 1-per-combat per debuff
+    - problem becomes: since consumables are free actions, game just becomes: stock consumables, use every turn, then attack
+      > doesn't feel that great in theory
+
 - ENEMY REWORK
-  - enemies have smarter thinking + decision making
-    > weight based
-    > on attack, attempt to use an attack the player does not have a lot of resistance toward
-    > never attempt an action that won't succeed e.g. using an ability without the resources for it
+  - enemy rarity system
+    > similar to item rarity. rarity dictates level of challenge for any given enemy. rarities: common, rare, epic, legendary
+      - common enemies are standard, rares have a higher AI difficulty + better stats and rewards, more space for affixes, epics have more than rare
+      - bosses could then simply become legendary enemies: high difficulty enemies with high ai difficulty. would remove the need to actually hardcode bosses into the game
     > utility/buff skills used if a buff expires or the enemy has no buffs <or other reasons as well>
-  - enemies drop less loot in terms of resources and equipment
   - enemies should be able to access their own loot tables as if it was their inventory
     > main use would be to be able to use consumables
   - rework enemy name system
     > change it into enemy affix system
-      - each enemy affix does a combination of : adding stats, adding mechanics
+      - each enemy affix does a combination of : adding stats, adding mechanics, adding abilities
       - some affixes could affect enemy behaviour/decision making too
         > e.g. more aggressive, more intelligent (more buff timers + attack patterns)
       - enemy affixes should also affect their own item quantity + rarity
         > not abundant levels of rarity/quantity but a noticeable amount still
         > affixes are made/applied before loot table is made so item buffs can be applied correctly
 
-- TEXTUAL OVERHAUL (would require a very large rework for a lot of things)
+- TEXTUAL OVERHAUL (would require a very large rework for a lot of things) (or just use pygame instead!!!)
   > overhaul all rich with textual integration slowly
   > will require mid-level system rewrites
     - closer to pygame structure: act on input rather than wait for action
@@ -241,13 +271,6 @@ ITEM REWORK/IMPROVEMENTS
   > sprites, symbols, item icons, extra effort: top tier/soulbound/mythic/destabilised affix bonus visuals per item
 
 - lowest priority: (EXPANSION IDEAS)
-
-  > New zones unlocked at levels, granting access to brand new mechanics/events/places to explore
-    > New campfire zones
-    > Explorable 'landmarks'
-      > Map implementation - grid based rather than plain GUI
-        - allows for actual tactical combat + more abilities being implemented (e.g. teleports, dashes, aoe)
-          - could be easier in pygame
 
   > Dungeons - enemies very rarely drop dungeon keys/maps -> allows entrance into a dungeon
     -> similar to PoE maps

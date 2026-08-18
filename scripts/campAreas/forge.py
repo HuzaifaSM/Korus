@@ -45,14 +45,20 @@ class Forge(Station):
         }
 
     @property
-    def runePages(self) -> Dict[int, List[Dict[str, int]]]:
+    def runePages(self) -> Dict[int, List[Dict[str, int]]]: # NEEDS TO BE CACHED
         temp = {}
         for i in range(20):
             temp[i+1] = []
+        runesAdded = 0
         playerRunes = self.player._craftingInventory
-        for i, (rune, quant) in enumerate(playerRunes.items()):
-            page = i // 10 + 1
-            temp[page].append({rune: quant})
+        for rune, quant in playerRunes.items():
+            page = runesAdded // 10 + 1
+            if self.currentItem:
+                cat, rType = rune.split('_', 1)
+                runeLevel = getRuneObject(cat,rType).minItemLevel or 1
+                if self.currentItem.level >= runeLevel:
+                    temp[page].append({rune: quant})
+                    runesAdded += 1
         for k, v in temp.copy().items():
             if v == []:
                 temp.pop(k)
@@ -158,9 +164,8 @@ class Forge(Station):
         equipment = Equipment._generateEquipmentPiece(self.player._level, slot, rarity)
         self.blueprints -= blueprintCost
         console.print(f"\n[success]Crafted:[/success] {formatRarity(equipment.name, equipment.rarity.value)}")
-        console.print(f"    [dim]{equipment._formatStats()}[/dim]")
+        console.print(f"    [dim]{equipment}[/dim]")
         self.player.addEquipmentToStorage(equipment)
-
 
     def repairEquipment(self):
         clearScreen()
@@ -249,8 +254,8 @@ class Forge(Station):
 
             console.print("[cyan]Options:[/cyan]")
             console.print("  [dim]0.[/dim] Finish Crafting")
-            console.print("  [dim]1.[/dim] View Crafting Inventory")
-            console.print("  [dim]2.[/dim] Apply Rune")
+            console.print("  [dim]1.[/dim] Apply Rune")
+            console.print("  [dim]2.[/dim] View Crafting Inventory")
             if len(self.runePages) > 1:
                 console.print("  [dim]3.[/dim] Next Rune Page")
                 console.print("  [dim]4.[/dim] Previous Rune Page")
@@ -263,9 +268,9 @@ class Forge(Station):
                 if choice == 0:
                     return
                 elif choice == 1:
-                    self._viewCraftingInventory()
-                elif choice == 2:
                     self._applyRune()
+                elif choice == 2:
+                    self._viewCraftingInventory()
                 elif choice == 3 and len(self.runePages) > 1:
                     self.currentCraftingPage = min(len(self.runePages), self.currentCraftingPage + 1)
                     console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
@@ -274,8 +279,6 @@ class Forge(Station):
                     self.currentCraftingPage = max(1, self.currentCraftingPage - 1)
                     console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
                     pause()
-                elif choice == 5:
-                    self._viewItemDetails()
                 else:
                     printWarning("Invalid choice")
                     pause()
@@ -332,6 +335,8 @@ class Forge(Station):
                 if confirm == 'y':
                     result = rune.apply(self.currentItem)
                     outcome = result.outcome
+
+                    self.player._recalculateStats(False)
 
                     self._showCraftingResult(result, rune.name)
                     pause()
@@ -433,3 +438,4 @@ class Forge(Station):
 
         return None
 
+...

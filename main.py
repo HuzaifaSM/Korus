@@ -29,6 +29,7 @@ class Game:
     def __init__(self):
         self.player: Optional[Player] = None
         self.combatManager = CombatManager()
+        self.debugAllowed = False
         self.areaLevel = 1
         self.battlesWon = 0
         self.debugger = Debugger(self)
@@ -40,6 +41,7 @@ class Game:
 
     def _serialise(self):
         return {
+            'debugAllowed': self.debugAllowed,
             'areaLevel': self.areaLevel,
             'battlesWon': self.battlesWon,
             'difficulty': self.difficulty.value,
@@ -48,6 +50,7 @@ class Game:
         }
 
     def deserialise(self, data: Dict):
+        self.debugAllowed = data.get('debugAllowed', False)
         self.areaLevel = data.get('areaLevel', 1)
         self.battlesWon = data.get('battlesWon', 0)
         difficulty = data.get('difficulty', 'normal')
@@ -304,9 +307,9 @@ class Game:
                 continue
             elif choice.lower() == "data":
                 console.print("\n[bold cyan]=== ALL GAME DATA ===[/bold cyan]")
-                console.print(f"[dim]{self._serialise()}[/dim]")
-                console.print(f"[dim]{self.player.serialise()}[/dim]")
-                console.print(f"[dim]{self.camp._serialiseAll()}[/dim]")
+                console.print(f"[red]{self._serialise()}[/red]")
+                console.print(f"[green]{self.player.serialise()}[/green]")
+                console.print(f"[gold1]{self.camp._serialiseAll()}[/gold1]")
                 pause()
                 continue
             try:
@@ -400,6 +403,8 @@ class Game:
             console.print("[dim]1.[/dim] [gold1]Change Difficulty[/gold1]")
             console.print("[dim]2.[/dim] [green]Help Menu[/green]")
             console.print("[dim]3.[/dim] [orange1]Save Menu[/orange1]")
+            debugStr = "Enable" if not self.debugAllowed else "Disable"
+            console.print(f"[dim]4.[/dim] [dim cyan]{debugStr} Debugging[/dim cyan]")
 
             choice = console.input("[bold cyan]>[/bold cyan] ").strip()
             checkGlobalCommand(choice)
@@ -415,6 +420,10 @@ class Game:
                         self.help.helpMenu()
                     case 3:
                         self.saveMenu()
+                    case 4:
+                        self.debugAllowed = not self.debugAllowed
+                        debugStr = "enabled" if self.debugAllowed else "disabled"
+                        printSuccess(f"Debug commands have been {debugStr}")
                     case _:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
@@ -615,8 +624,8 @@ class Game:
         console.print("\n[bold cyan]=== Equipped Items ===[/bold cyan]")
         for i, (slot, equip) in enumerate(equippedSlots, 1):
             equipName = formatRarity(equip.name, equip.rarity.value)
-            console.print(f"  [cyan]{i}.[/cyan] [{slot.upper()}] {equipName}")
-            console.print(f"    [dim]{equip._formatStats()}[/dim]")
+            console.print(f"[cyan]{i}.[/cyan] [{slot.upper()}] {equipName}")
+            console.print(f"{equip}")
         
         choice = console.input("\n[cyan]Choose item to unequip (0 to cancel):[/cyan]\n> ").strip()
         try:
@@ -686,7 +695,6 @@ class Game:
         
         if len(allEquipment) < 2:
             printWarning("Need at least 2 equipment pieces to compare!")
-            pause()
             return
         
         console.print("\n[bold cyan]=== Select First Item ===[/bold cyan]")
@@ -699,7 +707,6 @@ class Game:
             index1 = int(choice1) - 1
             if not (0 <= index1 < len(allEquipment)):
                 printWarning("Invalid choice!")
-                pause()
                 return
             
             console.print("\n[bold cyan]=== Select Second Item ===[/bold cyan]")
@@ -724,20 +731,14 @@ class Game:
             console.print("\n" + "="*50)
             console.print(equip1.compareTo(equip2))
             console.print("="*50)
-            pause()
             
         except ValueError:
             printWarning("Invalid input!")
-            pause()
+        pause()
 
     def postBattle(self, result: str, enemies: List[Enemy]):
         if result == "victory":
             self.player.onBattleEnd()
-            if self.player._abilities:
-                for ability in self.player._abilities.values():
-                    ability.cooldown = 0 # reset all ability cooldowns back to 0
-            self.player._stamina = self.player._maxStamina
-            self.player._stats['energy_shield'] = self.player.maxEnergyShield
             self.battlesWon += 1
             currentAreaLevel = self.areaLevel
             if self.areaLevel > 100:
@@ -753,7 +754,6 @@ class Game:
                 printHeader("Area Level Increased!")
                 console.print(f"[gold1]=== New Area Level: {self.areaLevel} ===[/gold1]")
                 console.print("[warning]Enemies will be stronger, and rewards will be greater...[/warning]")
-                pause()
             self.victory(enemies)
         elif result == "defeat":
             clearScreen()
@@ -765,9 +765,7 @@ class Game:
             console.print(f"[info]Difficulty:[/info] {self.difficulty.getDisplayName()}")
 
             if self.hardcoreMode:
-                console.print("\n[bold red]╔══════════════════════════════════════╗[/bold red]")
-                console.print(  "[bold red]║     HARDCORE MODE - SAVE DELETED     ║[/bold red]")
-                console.print(  "[bold red]╚══════════════════════════════════════╝[/bold red]")
+                printHeader("HARDCORE MODE - SAVE DELETED", style="bold red")
 
                 try:
                     savePath = f"Korus/data/saves/Save {self.saveNum}.json"
@@ -778,10 +776,7 @@ class Game:
                     printError(f"Failed to delete save: {e}")
 
             addToDeathLog(self)
-            pause()
             exit()
-        else:
-            pause()
 
     def explore(self):
         clearScreen()
@@ -811,6 +806,15 @@ class Game:
 
         return enemies
 
+    def _monitorCombatResults(self, enemies):
+        """returns True if combat ended, False if still going"""
+        result = self.combatManager.checkBattleEnd()
+        if result:
+            result = "victory" if result == "player" else "defeat"
+            self.postBattle(result, enemies)
+            return False
+        return True
+
     def startCombat(self, enemies: List[Enemy]):
         clearScreen()
         printHeader("Combat Start")
@@ -830,25 +834,24 @@ class Game:
             pause()
 
         while self.combatManager.battleActive:
-            result = self.combatManager.checkBattleEnd()
-            if result:
-                return "victory" if result == "player" else "defeat"
+            if self._monitorCombatResults(enemies):
             
-            currentUnit = self.combatManager.getCurrentUnit()
-            if not currentUnit:
+                currentUnit = self.combatManager.getCurrentUnit()
+                if not currentUnit:
+                    break
+
+                if currentUnit.team == "player":
+                    self.playerTurn(enemies)
+                else:
+                    self.enemyTurn(currentUnit)
+
+            else:
                 break
 
-            if currentUnit.team == "player":
-                self.playerTurn(enemies)
-            else:
-                self.enemyTurn(currentUnit)
-        
-        printError(f"No current units left in combat manager: {self.combatManager.units}")
         return ""
     
     def useCombatConsumable(self):
-        consumables = [item for item in self.player._inventory.keys()
-                       if 'Potion' in item]
+        consumables = self.player.hasConsumables
         
         if not consumables:
             printWarning("No consumables available!")
@@ -874,42 +877,40 @@ class Game:
             pass
 
     def playerTurn(self, enemies: List[Enemy]):
-        clearScreen()
-        printHeader(f"Your Turn: Round {self.combatManager.turnNumber}")
-
         self.player.consumableUsed = False
 
-        self.player.onTurnStart()
-        createCombatStatusTable(self.player, enemies)
+        self.player.onTurnStart(self.combatManager)
 
-        console.print("\n[bold red]Enemies:[/bold red]")
-        aliveEnemies = [e for e in enemies if not e._isDead]
-        for i, enemy in enumerate(aliveEnemies, 1):
-            console.print(f"  [red]{i}. {enemy._name}[/red]")
-
-        console.print("\n[bold cyan]=== Actions ===[/bold cyan]\n")
-        console.print("[dim]C.[/dim] Use Consumable [dim](Free Action)[/dim]")
-        console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
-        console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
-        if self.player.className == 'Druid':
-            console.print(f"[dim]S.[/dim] [green]Shapeshift [dim] (Free Action) | Current Form: {self.player.form.title()}[/dim][/green]")
-        console.print()
-
-        if self.player._abilities:
-            if hasattr(self.player, 'useableAbilities'):
-                abilities = self.player.useableAbilities()
-            else:
-                abilities = self.player._abilities
-            abilityTables = createAbilityTables(abilities)
-            console.print(abilityTables)
-            console.print()
-            
-        availableAbilities = list(abilities.items())
+        if not self._monitorCombatResults(enemies):
+            return
 
         while True:
+            clearScreen()
+            printHeader(f"Your Turn: Round {self.combatManager.turnNumber}")
+            createCombatStatusTable(self.player, enemies)
+
+            aliveEnemies = [e for e in enemies if not e._isDead]
+
+            console.print("\n[bold cyan]=== Actions ===[/bold cyan]\n")
+            if self.player.hasConsumables:
+                console.print("[dim]C.[/dim] Use Consumable [dim](Free Action)[/dim]")
+            console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
+            console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
+            console.print("[dim]P. Pass Turn[/dim]")
+            if self.player.className == 'Druid':
+                console.print(f"[dim]S.[/dim] [green]Shapeshift [dim] (Free Action) | Current Form: {self.player.form.title()}[/dim][/green]")
+            console.print()
+
+            if self.player._abilities:
+                abilities = self.player._abilities
+                abilityTables = createAbilityTables(abilities, self.player._damageType)
+                console.print(abilityTables)
+                console.print()
+
+            availableAbilities = list(abilities.items())
             action = console.input("\n[cyan]Choose Action (number):[/cyan]\n> ").strip()
 
-            if action.lower() in ['d', 'data']:
+            if action.lower() == 'd':
                 clearScreen()
                 printHeader("Checking Enemy Data")
                 for e in enemies:
@@ -918,32 +919,24 @@ class Game:
                         if eq is not None:
                             console.print(f"{slot}:\n{eq}")
                 pause()
-                clearScreen()
-                printHeader(f"Your Turn: Round {self.combatManager.turnNumber}")
-                statusTable = createCombatStatusTable(self.player, enemies)
-                console.print(statusTable)
-                if abilities:
-                    abilityTables = createAbilityTables(abilities)
-                    console.print(abilityTables)
-                    console.print()
             elif action.lower() == 'c':
                 self.useCombatConsumable()
                 continue
             elif action.lower() == 's' and self.player.className == 'Druid':
                 self.player._shapeShift()
                 abilities = self.player._abilities
-                abilityTables = createAbilityTables(abilities)
+                abilityTables = createAbilityTables(abilities, self.player._damageType)
                 console.print(abilityTables)
                 console.print()
                 continue
             elif action.lower() == 'f':
                 console.print("[red]Fled from battle.[/red]")
-                pause()
                 self.combatManager.battleActive = False
-                for _, ability in self.player._abilities.items():
-                    ability.cooldown = 0
-                self.player._stamina = self.player._maxStamina
+                self.player.onBattleEnd()
                 return
+            elif action.lower() == 'p':
+                console.print("[dim red1]You skipped your turn...[/dim red1]")
+                time.sleep(0.5)
             else:
                 try:
                     abilityIndex = int(action) - 1
@@ -953,6 +946,7 @@ class Game:
                         success, message = ability.canUse(self.player)
                         if not success:
                             printWarning(message)
+                            pause()
                             continue
 
                         if ability.targets in ["all", "multiple"]:
@@ -1043,7 +1037,7 @@ class Game:
 
             for category, runeType in runes:
                 allRunes.append((category, runeType))
-        
+
         xpBonus = self.player._stats['Bonuses']['xp_gain']
         if xpBonus > 0:
             effectiveBonus = xpBonus / (1 + (xpBonus / 100))

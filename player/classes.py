@@ -18,7 +18,7 @@ CLASSES: Dict[str, Player] = {
     "Druid": Druid,
     "Fighter": Fighter,
     "Mage": Mage,
-    #"Marauder": Marauder,
+    "Marauder": Marauder,
     "Paladin": Paladin,
     "Spectre": Spectre,
     "Tempest": Tempest,

@@ -300,11 +300,12 @@ class PerfectAffixRandomiserRune(BaseAffixRandomiserRune):
 
 class DefenseRandomiserRune(BaseRandomiserRune):
     name = '[dodger_blue2]Defense Randomiser Rune[/dodger_blue2]'
-    description = 'Randomises the defense type of an item.'
+    description = 'Randomises the defense type and base defense value of an item.'
     successEntropy = 0.05
     dropWeight = 150
 
     def apply(self, item):
+        from scripts.items import Equipment
         output = super().apply(item)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
@@ -319,7 +320,7 @@ class DefenseRandomiserRune(BaseRandomiserRune):
         oldDefense = item.defenseType
         defenses.remove(oldDefense)
         newDefense = random.choice(defenses)
-        item.defenseType = newDefense
+        item.defenseType, item.baseDefenseValue = Equipment._calculateDefenseRoll(item.slot, item.level, item.rarity, newDefense)
         equipType = item.slot
 
         # swap old defense affixes for new defense affixes

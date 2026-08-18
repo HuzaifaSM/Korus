@@ -52,24 +52,20 @@ def calculateRuneWeight(runeMinLevel: int, enemyLevel: int, baseWeight: float = 
 
 def getDropChanceForLevel(level: int) -> Tuple[float, float]:
     if level <= 20:
-        return (0.12, 0.02)
+        return (0.15, 0.03)
     elif level <= 40:
-        return (0.18, 0.05)
+        return (0.225, 0.06)
     elif level <= 60:
-        return (0.25, 0.10)
+        return (0.35, 0.10)
     elif level <= 80:
-        return (0.35, 0.15)
+        return (0.45, 0.15)
     elif level <= 100:
-        return (0.45, 0.25)
+        return (0.65, 0.25)
     else:
-        return (0.55, 0.35)
-    
+        return (0.8, 0.35)
+
 def rollRuneDrops(level: int, isBoss: bool = False) -> List[Tuple[str, str]]:
     baseChance, multiChance = getDropChanceForLevel(level)
-
-    if isBoss:
-        baseChance = min(0.95, baseChance * 2.0)
-        multiChance = min(0.75, multiChance * 2.5)
 
     drops = []
 
@@ -78,7 +74,7 @@ def rollRuneDrops(level: int, isBoss: bool = False) -> List[Tuple[str, str]]:
         if rune:
             drops.append(rune)
 
-        maxDrops = 3 if not isBoss else 5
+        maxDrops = 3 + (level // 12)
         while random.random() < multiChance and len(drops) < maxDrops:
             rune = _rollSingleRune(level)
             if rune:

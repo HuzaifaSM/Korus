@@ -519,39 +519,42 @@ class Equipment(Item):
         return excludedPre, excludedSuf
 
     @staticmethod
-    def _calculateDefenseRoll(slot: str, level: int, rarity: ItemRarity) -> List[str, int]:
+    def _calculateDefenseRoll(slot: str, level: int, rarity: ItemRarity, defenseType: str = None) -> List[str, int]:
         if slot not in ARMOUR_SLOTS:
             return None, 0
-        
-        defenseTypes = ['armour', 'evasion', 'energy_shield']
-        selectedType = random.choice(defenseTypes)
+
+        if not defenseType:
+            defenseTypes = ['armour', 'evasion', 'energy_shield']
+            selectedType = random.choice(defenseTypes)
+        else:
+            selectedType = defenseType
 
         defenseRanges = {
             'head': {
-            'armour': (8, 15),
-            'evasion': (11, 18),
-            'energy_shield': (5, 10)
+            'armour': (10, 17),
+            'evasion': (13, 20),
+            'energy_shield': (4, 9)
             },
             'chest': {
-                'armour': (16, 30),
-                'evasion': (19, 33),
-                'energy_shield': (9, 19)
+                'armour': (18, 32),
+                'evasion': (21, 35),
+                'energy_shield': (8, 13)
             },
             'legs': {
-                'armour': (16, 30),
-                'evasion': (19, 33),
-                'energy_shield': (9, 19)
+                'armour': (18, 32),
+                'evasion': (21, 35),
+                'energy_shield': (8, 13)
             },
             'feet': {
-                'armour': (8, 15),
-                'evasion': (11, 18),
-                'energy_shield': (5, 10)
+                'armour': (10, 17),
+                'evasion': (13, 20),
+                'energy_shield': (4, 9)
             }
         }
 
         baseMin, baseMax = defenseRanges[slot][selectedType]
-        baseMin += level // 3
-        baseMax += level
+        baseMin += int(level / 2.5)
+        baseMax += int(level / 1.25)
 
         rarityMultipliers = {
             ItemRarity.COMMON: 1,
@@ -559,8 +562,11 @@ class Equipment(Item):
             ItemRarity.RARE: 1.5,
             ItemRarity.EPIC: 1.8,
             ItemRarity.LEGENDARY: 2.2,
+            ItemRarity.MYTHIC: 2.5
         }
         multiplier = rarityMultipliers.get(rarity, 1) + level / 100
+        if selectedType == 'energy_shield':
+            multiplier = round(multiplier / 2, 3)
 
         minVal = int(baseMin * multiplier)
         maxVal = int(baseMax * multiplier)
@@ -928,7 +934,8 @@ class Equipment(Item):
             oldDef = other.defenseValue
             change, symbol, colour = diff(newDef, oldDef)
             if other.defenseType == self.defenseType:
-                comparison += f"\n[{colour}]{symbol} {change} {self.defenseType}[/{colour}]"
+                dType = self.defenseType.replace('_', ' ').title()
+                comparison += f"\n[{colour}]{symbol} {change} {dType}[/{colour}]"
             else: # different defense types
                 nType = self.defenseType.replace('_', ' ').title()
                 oType = other.defenseType.replace('_', ' ').title()
@@ -953,7 +960,7 @@ class Equipment(Item):
             comparison += "\n[bold green3 underline]Gains:[/bold green3 underline]"
             newStats = {a.stat.replace('_', ' ').title(): a.value for a in newStats
                         if not ((self.slot == 'weapon' and a.stat == 'damage')
-                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield']))
+                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield'] and not a.stat.isGlobal))
                         }
             for k, v in newStats.items(): # k = stat, v = value
                 comparison += f"\n[success] [+] {v} {k}[/success]"
@@ -962,7 +969,7 @@ class Equipment(Item):
             comparison += "\n[bold red3 underline]Losses:[/bold red3 underline]"
             oldStats = {a.stat.replace('_', ' ').title(): a.value for a in oldStats
                         if not ((self.slot == 'weapon' and a.stat == 'damage')
-                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield']))
+                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield'] and not a.stat.isGlobal))
                         }
             for k, v in oldStats.items():
                 comparison += f"\n[error] [-] {v} {k}[/error]"

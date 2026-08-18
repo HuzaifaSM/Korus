@@ -25,6 +25,23 @@ class Entity:
         self._damageType = damageType or "physical"
         self._speed = speed
         self._stats = {
+            'Max_Resistances': {
+                'physical': 75,
+                'fire': 75,
+                'cold': 75,
+                'lightning': 75,
+                'dark': 75,
+                'holy': 75,
+                'arcane': 75,
+                'earth': 75,
+                'psychic': 75,
+                'ethereal': 75,
+                'chaos': 75,
+                'all': 75,
+                'elemental': 75,
+                'otherworld': 75,
+                'divine': 75,
+            },
             'Resistances': {
                 'physical': 0,
                 'fire': 0,
@@ -63,6 +80,7 @@ class Entity:
                 'hp_regen': 0,
                 'stamina_regen': 0,
                 'increased_defenses': 0,
+                'increased_health': 0,
             },
             'Permanent': {
                 'physical': 0,
@@ -91,6 +109,7 @@ class Entity:
                 'increased_damage_reduction': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
+                'enemy_quantity': 0,
                 'added_multihits': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
@@ -99,6 +118,7 @@ class Entity:
                 'increased_armour': 0,
                 'increased_evasion': 0,
                 'increased_energy_shield': 0,
+                'increased_health': 0,
                 # for everything that needs to be permanent and doesn't get affected by recalculated stats
                 # e.g. all resistances, all base types that could be modified by classes/ascendancies
             },
@@ -127,7 +147,7 @@ class Entity:
                 'increased_armour': 0,
                 'increased_evasion': 0,
                 'increased_energy_shield': 0,
-                'increased_dark_damage': 0,
+                'increased_health': 0,
             },
             'baseCritChance': baseCritChance or 0.05,
             'baseCritMulti': baseCritMulti or 1.5,
@@ -198,6 +218,10 @@ class Entity:
     @property
     def numMultihits(self) -> int:
         return 2 + self._getExtraBonuses('added_multihits') + self._stats['Bonuses']['added_multihits']
+
+    @property
+    def hasConsumables(self) -> bool:
+        return 'Potion' in [i for i in self._inventory.keys()]
 
     def __rich__(self):
         return self.__str__()
@@ -343,18 +367,19 @@ class Entity:
         modifiedAmount = int(amount * magnitude)
         if modifiedAmount > 0:
             self._health = min(self._health + modifiedAmount, self._maxHealth)
+            self.onHeal(modifiedAmount)
             if doPrint:
                 console.print(f"[success]{self._name} healed for {modifiedAmount} HP.[/success] [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
         elif modifiedAmount < 0:
             damageTaken = abs(modifiedAmount)
             self._health -= damageTaken
             if doPrint:
-                console.print(f"[error]{self._name}'s negative healing dealt {damageTaken} damage![/error] [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
+                printError(f"{self._name}'s negative Healing Magnitude dealt {damageTaken} damage! [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
             if  self._isDead:
                 self.death()
         else:
             if doPrint:
-                console.print(f"[warning]{self._name}'s healing was nullified![/warning]")
+                printWarning(f"[warning]{self._name}'s healing was nullified![/warning]")
         return modifiedAmount
 
     def death(self):
@@ -363,7 +388,6 @@ class Entity:
 
     def rollCritical(self, target: Entity, damageDealt: int=None) -> tuple[bool, float]:
         """target is combatUnit"""
-        target = target.entity
         if random.random() < self.critChance:
             return True, self.critMulti
         return False, 1.0
@@ -536,7 +560,7 @@ class Entity:
         perm = self._stats['Permanent'].get(stat, 0)
         temp = self._stats['Temporary'].get(stat, 0)
         if 'increased_' in stat:
-            return (perm + temp / 100)
+            return ((perm + temp) / 100)
         return perm + temp
 
     def _recalculateStats(self, doPrint: bool = True, inCombat: bool = False):
@@ -591,7 +615,7 @@ class Entity:
                     resFlat, _, _ = equipment.getStatBonuses(f'{damageType}_resistance')
                     self._stats['Resistances'][damageType] = min(
                         self._stats['Resistances'][damageType] + resFlat,
-                        75
+                        self._stats['Max_Resistances'][damageType], 90
                     )
 
                 for bonus in self._stats['Bonuses'].keys():
@@ -757,10 +781,6 @@ class Entity:
                     printWarning(f"{accessory.name} has broken!")
                     self.unequip(slot)
 
-        incStr = f'increased_{damageType}_damage'
-        if self._stats['Temporary'].get(incStr, 0) > 0:
-            damageDealt += int(damageDealt * self._stats['Temporary'][incStr])
-
         return damageDealt, damageType
 
     def onHit(self, damageTaken: int, damageType: str, crit: bool=False, attacker: Entity=None, combatManager=None):
@@ -780,17 +800,17 @@ class Entity:
         attackData should include: final attack damage, damage type, mechanics of ability used"""
         return {}
 
-    def onHeal(self, healAmout: int):
+    def onHeal(self, healAmount: int):
         """Rewrite per class"""
         pass
 
     def onCrit(self, targets: list[Entity], combatManager, critDamage: int) -> int:
         """Rewrite per class, called when dealing a critical hit. Returns critDamage"""
-        pass
+        return critDamage
 
     def onCriticallyHit(self, attacker: Entity, combatManager, critDamage: int, damageType: str) -> int:
         """Rewrite per class, called when being critically hit. Returns critDamage"""
-        pass
+        return critDamage
 
     def onTurnStart(self, combatManager=None):
         """Recalculates stats for temp + permanent additions, use at end of onTurnStart methods"""
@@ -798,6 +818,8 @@ class Entity:
         heal = self._stats['Bonuses']['hp_regen']
         self.heal(heal, False)
         self._stamina = min(self._maxStamina, self._stamina + 3 + self._stats['Bonuses']['stamina_regen'])
+        if self._speed < 0.2: # minimum speed is 0.2
+            self._speed = 0.2
 
     def onTurnEnd(self):
         """Rewrite per class"""

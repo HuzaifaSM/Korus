@@ -434,7 +434,7 @@ def addToDeathLog(game):
                 allData = {}
 
         allData[deathTime] = {
-            "player": game.player._serialise(),
+            "player": game.player.serialise(),
             "camp":   game.camp._serialiseAll(),
             "game":   game._serialise()
         }

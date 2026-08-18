@@ -17,7 +17,7 @@ KORUS_THEME = Theme({
     "rare": "blue",
     "epic": "magenta",
     "legendary": "gold1 bold",
-    "mythic": "magenta1 bold",
+    "mythic": "deep_pink3 bold",
     "blank": "bold thistle1 italic",
 
     "ability": "dim cyan",
@@ -29,7 +29,6 @@ KORUS_THEME = Theme({
     "dark": "magenta",
     "holy": "gold1",
     "arcane": "purple",
-    "wind": "bright_green",
     "earth": "green4",
     "heal": "green",
     "chaos": "dark_magenta",
@@ -59,6 +58,7 @@ KORUS_THEME = Theme({
     "damage": "orange1",
     "speed": "bright_cyan",
     "stamina": "sky_blue1",
+
     "armour": "grey53",
     "evasion": "chartreuse3",
     "energy_shield": "deep_sky_blue1",
@@ -73,13 +73,14 @@ KORUS_THEME = Theme({
     "lifesteal": "red3 bold",
     "regen": "spring_green3",
 
+    "lore": "medium_violet_red dim bold",
+
     # class colours
     "class_warrior": "dark_red bold",
     "class_fighter": "white bold",
     "class_mage": "purple bold",
     "class_wanderer": "bright_magenta bold",
     "class_wretch": "magenta bold",
-    "class_druid": "green4 bold",
     "class_paladin": "gold1 bold",
     "class_spectre": "grey85 bold",
     "class_cultist": "dark_magenta bold",
@@ -123,15 +124,22 @@ KORUS_THEME = Theme({
     "asc_necrose": "grey39 bold",
     "asc_necromancer": "medium_purple4 bold",
 
-    # Druid ascendancy family
-    "asc_primalist": "chartreuse3 bold",
-    "asc_arbiter": "green3 bold",
-    "asc_moonkin": "slate_blue1 bold",
-    "asc_chimera": "dark_turquoise bold",
-    "asc_earthshaper": "khaki3 bold",
-
     # Tempest ascendancy family
-    "asc_alternator": "light_yellow3 bold"
+    "asc_alternator": "light_yellow3 bold",
+
+    # Warrior ascendancy family
+    "asc_warlord": "orange_red1 bold",
+    "asc_juggernaut": "grey46 bold",
+    "asc_annihilist": "red3 bold",
+    "asc_tyrant": "dark_orange3 bold",
+    "asc_conqueror": "tan bold",
+
+    # Marauder ascendancy family
+    "asc_colossus": "deep_sky_blue3 bold",
+    "asc_dreadnought": "royal_blue1 bold",
+    "asc_sovereign": "light_slate_blue bold",
+    "asc_harrower": "dark_cyan bold",
+    "asc_butcher": "light_steel_blue1 bold"
 })
 
 # -- keyword highlighting: maps literal keyword text to a theme style key.
@@ -162,7 +170,7 @@ KEYWORDS: Dict[str, str] = {
 
     # damage types
     "Physical": "physical", "Fire": "fire", "Cold": "cold", "Lightning": "lightning",
-    "Dark": "dark", "Holy": "holy", "Arcane": "arcane", "Wind": "wind",
+    "Dark": "dark", "Holy": "holy", "Arcane": "arcane",
     "Earth": "earth", "Chaos": "chaos", "Psychic": "psychic", "Ethereal": "ethereal",
 
     # umbrella resistance categories
@@ -194,13 +202,6 @@ KEYWORDS: Dict[str, str] = {
     "Valour": "asc_crusader",
     "Blessing": "asc_inquisitor",
 
-    # Druid ascendancy mechanics
-    "Residual": "asc_primalist",
-    "Adaptation": "asc_arbiter",
-    "Moonkin": "asc_moonkin", "Lunar Empowerment": "asc_moonkin", "Lunar Fury": "asc_moonkin",
-    "Chimera": "asc_chimera",
-    "Earthbound": "asc_earthshaper",
-
     # Wanderer ascendancy mechanics
     "Fracture": "asc_fractured",
     "Warped": "asc_warper",
@@ -216,8 +217,20 @@ KEYWORDS: Dict[str, str] = {
     "Necrosis": "asc_necrose", "Rot": "asc_necrose",
 
     # Tempest ascendancy mechanics
-    "Discharge": "class_tempest",
-    "Positive": "asc_alternator", "Negative": "asc_alternator"
+    "Unleash": "class_tempest",
+    "Positive": "asc_alternator", "Negative": "asc_alternator",
+
+    # Marauder ascendancy mechanics
+    "Echo": "class_marauder", "Siphon": "class_marauder", "Siphoned": "class_marauder",
+    "Crush": "asc_colossus",
+    "Deferred": "asc_dreadnought",
+    "Shame": "asc_sovereign",
+    "Empowerment": "asc_harrower",
+    "Marked": "asc_butcher", "Slaughter": "asc_butcher", "Carved": "asc_butcher",
+
+    # Warrior ascendancy mechanics
+    "Fortify": "asc_juggernaut", "Bastion": "asc_juggernaut",
+    "Annihilation": "asc_annihilist",
 }
 
 # matches an opening or closing rich markup tag, e.g. "[gold1 bold]" or "[/health]"
@@ -283,7 +296,6 @@ DAMAGE_TYPE_COLOURS = {
     "dark": "dark",
     "holy": "holy",
     "arcane": "arcane",
-    "wind": "wind",
     "earth": "earth",
     "chaos": "chaos",
     "psychic": "psychic",
@@ -765,11 +777,36 @@ def createCombatStatusTable(player, enemies: List) -> Table:
                 col.append(f"[class_wanderer]Lost Active:[/class_wanderer] {player.lostTrigger}")
             elif player.className == 'Paladin':
                 col.append(f"[class_paladin]Favour:[/class_paladin] {player.favour}/{player.maxFavour}")
-            elif player.className == 'Druid':
-                col.append(f"[class_druid]Form:[/class_druid] {player.form.title()}")
-                col.append(f"[class_druid]Verdance:[/class_druid] {player.verdance}/{player.maxVerdance}")
             elif player.className == 'Cultist':
                 col.append(f"[class_cultist]Insanity:[/class_cultist] {player.insanity}")
+        else:
+            if entity.tortureStacks > 0:
+                col.append(f"Torture Stacks: {entity.tortureStacks}")
+            if entity.hauntedStacks > 0:
+                col.append(f"Haunted Stacks: {entity.hauntedStacks}")
+            if entity.phasedTurns > 0:
+                col.append("Phased")
+            if entity.cursedTurns > 0:
+                col.append("Cursed")
+            if entity.earthboundTurns > 0:
+                col.append("Earthbound")
+            if entity.corruption > 0:
+                col.append(f"Corruption: {entity.corruption}")
+            if entity.ruin > 0:
+                col.append(f"Ruin: {entity.ruin}")
+            if entity.bloodSpike > 0:
+                executeHp = int(entity._maxHealth * 0.02 * entity.bloodSpike)
+                col.append(f"Blood Spikes: {entity.bloodSpike} (Execute at {executeHp} HP)")
+            if entity.necrosis > 0:
+                col.append(f"Necrosis Stacks: {entity.necrosis}")
+            if entity.crush > 0:
+                col.append(f"Crush Stacks: {entity.crush}")
+            if entity.shameTurns > 0:
+                col.append(f"Shamed for {entity.shameTurns} turn{'s' if entity.shameTurns > 1 else ''}")
+            if entity.marked:
+                col.append(f"Marked")
+            if entity.carved > 0:
+                col.append(f"Carved Stacks: {entity.carved}")
 
         col.append("")
 
@@ -841,7 +878,7 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         console.print(tableN)
         enemyIndex += batchSize
 
-def createAbilityTables(abilities: dict) -> Table:
+def createAbilityTables(abilities: dict, playerDamageType: str) -> Table:
     table = Table(show_header=True, header_style="bold cyan", box=box.ROUNDED, padding=(0, 1), show_lines=True)
     table.add_column("#", style="dim", width=2)
     table.add_column("Ability", style="cyan")
@@ -861,7 +898,7 @@ def createAbilityTables(abilities: dict) -> Table:
 
         damageStr = str(ability.baseDamage) if ability.baseDamage else "-"
         scalingStr = f"{ability.damageScaling*100:.0f}%" if ability.damageScaling else "-"
-        dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else "-"
+        dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else formatDamageType(playerDamageType, playerDamageType)
         healStr = f"{ability.healBase}+{ability.healPercent*100:.0f}%" if (ability.healBase or ability.healPercent) else "-"
         costStr = formatAbilityCost(ability.resources.get('required'), ability.staminaCost)
         gainLines = formatResourceGainDetailed(ability.resources.get('gain'))

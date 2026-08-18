@@ -384,6 +384,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
             living = len(combatManager.allAlive)
             self.favour = min(self.maxFavour, self.favour + (living * 5))
 
+        return critDamage
+
     def onTurnStart(self, combatManager=None):
         for k in self.favourBuffs.keys():
             self.favourBuffs[k] = 0
@@ -499,6 +501,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
 
     def updateAscendancy(self, ascendancy):
         super().updateAscendancy(ascendancy)
+        self._ascendancy = ascendancy
+        self.ascendancyDescription = PALADIN_DESCRIPTIONS[ascendancy]
         if ascendancy == 'Zealot':
             self._baseHealth += 10
             self._baseDamage += 2
@@ -506,8 +510,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._stats['Permanent']['holy'] += 15
             self._stats['Permanent']['psychic'] -= 10
             self.maxFavour -= 25
-            self._ascendancy = 'Zealot'
-            self.ascendancyDescription = PALADIN_DESCRIPTIONS["Zealot"]
         elif ascendancy == 'Guardian':
             self._baseHealth += 20
             self._baseDamage -= 2
@@ -517,8 +519,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._stats['Permanent']['added_energy_shield'] += 30
             self.favourMinGain += 3
             self.favourMaxGain += 3
-            self._ascendancy = 'Guardian'
-            self.ascendancyDescription = PALADIN_DESCRIPTIONS["Guardian"]
         elif ascendancy == 'Justicar':
             self._baseHealth -= 20
             self._baseDamage += 1
@@ -526,16 +526,12 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._stats['baseCritMulti'] += 0.5
             self._stats['Permanent']['dark'] += 5
             self._stats['Permanent']['holy'] += 5
-            self._ascendancy = 'Justicar'
-            self.ascendancyDescription = PALADIN_DESCRIPTIONS["Justicar"]
         elif ascendancy == 'Crusader':
             self._baseHealth -= 15
             self._baseDamage += 2
             self._baseSpeed += 0.05
             self._stats['baseCritMulti'] += 0.25
             self._stats['Permanent']['divine'] += 5
-            self._ascendancy = 'Crusader'
-            self.ascendancyDescription = PALADIN_DESCRIPTIONS["Crusader"]
         elif ascendancy == 'Inquisitor':
             self._baseHealth += 10
             self._baseDamage += 2
@@ -544,6 +540,4 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._stats['Permanent']['hp_regen'] += 5
             self._stats['Permanent']['added_armour'] += 100
             self.maxFavour += 50
-            self._ascendancy = 'Inquisitor'
-            self.ascendancyDescription = PALADIN_DESCRIPTIONS["Inquisitor"]
         self._recalculateStats()
