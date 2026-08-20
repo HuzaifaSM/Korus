@@ -55,7 +55,7 @@ class BaseDestabilisationRune(CraftingItem):
             self.data = json.load(f)
 
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'

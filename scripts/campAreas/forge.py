@@ -333,7 +333,7 @@ class Forge(Station):
                 confirm = console.input("\n[cyan]Confirm? (y/n):\n>[/cyan] ").strip().lower()
 
                 if confirm == 'y':
-                    result = rune.apply(self.currentItem)
+                    result = rune.apply(self.currentItem, self.player)
                     outcome = result.outcome
 
                     self.player._recalculateStats(False)

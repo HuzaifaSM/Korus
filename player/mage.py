@@ -1,5 +1,6 @@
 from .base import Player
 from scripts.styles import console
+from scripts.abilities import Effects
 import random
 
 """
@@ -11,10 +12,12 @@ ascendancy changes:
     > if an ability does not use mana between 10% and 40% of your Max Mana, it consumes no mana and you gain 50% of the mana that would have been spent as mana
 - archon and calamity both need to interact with mana
 - archon:
+    > rename (tempest ascendancy fits 'Archon' better) - 'Sorcerer'? -> fits the 'master of mana' well enough, or Archmage
     > archon buff grants +flat mana regeneration per archon stack
     > archon deals %increased arcane damage based on how high their mana is
         - at 100% mana, deal 50% increased damage, at 50% mana, deal no increased damage (1% increased per 1% mana above 50%)
     > upon being hit by elemental damage, instead of nullifying the damage, gain mana equal to 10% of the damage taken
+    > gain flat added stamina regen at the start of each combat turn (e.g. +2 mana regen at the start of every turn)
 """
 
 MAGE_DESCRIPTIONS = {
@@ -101,8 +104,26 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self.arcanistKills = data.get('arcanistKills', 0)
         self.knowledgeStacks = data.get('knowledgeStacks', 0)
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType)
+    def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
+        if self._ascendancy == 'Elementalist' and damageType in ELEMENTAL:
+            if self.elementalistAttackCount % 3 == 0:
+                if len(combatManager.allAlive) == 1:
+                    damage *= 2
+                    targets = combatManager.allAlive
+                    console.print('[gold1]Elementalist: 3rd elemental attack! Single target: 200% damage![/gold1]')
+                else:
+                    damage = int(damage * 0.6)
+                    targets = combatManager.allAlive
+                    console.print('[gold1]Elementalist: 3rd elemental attack! Hitting all enemies for 60% damage![/gold1]')
+
+        elif self._ascendancy == 'Fluxweaver' and damageType in ELEMENTAL:
+            if random.random() < 0.3:
+                self._queueEffect(Effects.createElementalExposure())
+
+        return damage, damageType, targets
+
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
 
         manaSpent = 0
 
@@ -209,6 +230,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         return damageTaken, damageType
 
     def onKill(self, entity, attackData, combatManager=None):
+        super().onKill()
         if self._ascendancy == 'Arcanist' and attackData['damageType'] == 'arcane':
             self.arcanistKills += 1
             console.print(f"[arcane]Arcanist: +1% Increased Arcane Damage permanently! ({int(self.arcanistKills)}% total)[/arcane]")
@@ -275,7 +297,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 self._stats['Temporary']['elemental'] = self._stats['Temporary'].get('elemental', 0) + 15
                 console.print(f"[buff]Mana Sickness expired![/buff]")
         
-    def onBattleEnd(self):
+    def onCombatEnd(self):
         self._mana = self._maxMana
         self.symphony = 0
         self.lastSymphonyElement = None
@@ -284,7 +306,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self.flux = 0
         self.manaSicknessTurns = 0
         self.archon = 0
-        super().onBattleEnd()
+        super().onCombatEnd()
 
     def _recalculateStats(self, doPrint=True, inCombat=False):
         super()._recalculateStats(doPrint, inCombat)

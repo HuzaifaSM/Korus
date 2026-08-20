@@ -59,7 +59,7 @@ class FusionRune(CraftingItem):
         return random.sample(allFilled, k=amount)
 
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item is unmodifiable'
@@ -264,7 +264,7 @@ class BaseConversionRune(CraftingItem):
         return None, None
 
     def apply(self, item):
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item is unmodifiable'
@@ -326,7 +326,7 @@ class EquilibriumRune(CraftingItem):
         return rune
 
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item is unmodifiable'
@@ -491,7 +491,7 @@ class SacrificeRune(CraftingItem):
         return filled
 
     def apply(self, item):
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item is unmodifiable'

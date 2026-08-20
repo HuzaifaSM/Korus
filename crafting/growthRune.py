@@ -28,7 +28,7 @@ class BaseGrowthRune(CraftingItem):
         return random.choice(allEmpty)
 
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'
@@ -246,7 +246,7 @@ class DuplicatingGrowthRune(BaseGrowthRune):
     dropWeight = 80
 
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'
@@ -344,7 +344,7 @@ class ImitatingGrowthRune(BaseGrowthRune):
     dropWeight = 80
 
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'

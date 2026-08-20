@@ -1,4 +1,4 @@
-from .base import Player
+from .base import Player, ELEMENTAL_RES, DIVINE_RES
 from scripts.styles import console, pause
 import random
 
@@ -69,6 +69,8 @@ class Marauder(Player):
         self.butcherMarkedTarget = None
         self.butcherDamage = 0
         self.butcherSlaughter = 0
+        self._harrowerExecuteReady = False
+        self._sovereignCritBuffed = False
 
     @property
     def maxSiphon(self):
@@ -128,8 +130,138 @@ class Marauder(Player):
         if self._ascendancy == 'Dreadnought' and random.random() < 0.3:
             self.dreadnoughtEchoHeal += healAmount // 2
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
+    def getEffectiveEvasion(self, damageType, combatUnit):
+        if self._ascendancy == 'Harrower' and not combatUnit.hasActed:
+            return self.evasion * 1.5
+        return super().getEffectiveEvasion(damageType, combatUnit)
+
+    def getEffectiveArmour(self, damageType, combatUnit):
+        if self._ascendancy == 'Colossus' and damageType in ELEMENTAL_RES:
+            return self.armour * 1.3
+        return super().getEffectiveArmour(damageType, combatUnit)
+
+    def onEnergyShieldBroken(self, combatManager):
+        if self._ascendancy == 'Colossus' and not self.colossusEsBroken:
+            self.colossusEsBroken = True
+
+    def onBeforeCritRoll(self, targetUnit, targets, combatManager):
+        self._sovereignCritBuffed = False
+        if self._ascendancy == 'Sovereign' and targetUnit and not targetUnit.hasActed:
+            self._stats['Temporary']['crit_chance'] += 0.25
+            self._stats['Temporary']['crit_multi'] += 0.75
+            self._sovereignCritBuffed = True
+
+    def onAfterCritRoll(self, targetUnit, targets, combatManager):
+        if self._sovereignCritBuffed:
+            self._stats['Temporary']['crit_chance'] -= 0.25
+            self._stats['Temporary']['crit_multi'] -= 0.75
+            self._sovereignCritBuffed = False
+
+    def onBeforeHit(self, finalDamage, damageType, attacker, combatManager):
+        finalDamage = super().onBeforeHit(finalDamage, damageType, attacker, combatManager)
+        hasActed = self.combatUnit.hasActed if self.combatUnit else False
+        if hasActed:
+            if self._ascendancy == 'Sovereign':
+                if damageType in DIVINE_RES:
+                    finalDamage = round(finalDamage * 0.7)
+                else:
+                    finalDamage = round(finalDamage * 0.8)
+            else:
+                finalDamage = round(finalDamage * 0.9)
+            if self._ascendancy == 'Dreadnought':
+                dmg = int(self._maxHealth * 0.05)
+                attacker.damage(dmg, 'true')
+                self.heal(dmg)
+        else:
+            if self._ascendancy == 'Dreadnought' and attacker._health < self._health:
+                finalDamage = int(finalDamage * 0.85)
+                self.gainDamageReduction()
+            else:
+                if self.siphonedDamage > 0:
+                    self.siphonedDamage -= 1
+                    attacker._baseDamage += 1
+                    console.print(f"[warning]{attacker._name} stole 1 Siphoned Damage from you![/warning]")
+                else:
+                    self.gainDamageReduction()
+        return finalDamage
+
+    def onDealDamage(self, target, targetUnit, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, combatManager):
+        finalDamage = super().onDealDamage(target, targetUnit, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, combatManager)
+
+        self._harrowerExecuteReady = False
+        if targetUnit.hasActed:
+            if self._ascendancy == 'Colossus':
+                target.applyCrush()
+                self.echoDamage[target] = int(finalDamage * 0.15)
+            else:
+                self.echoDamage[target] = int(finalDamage * 0.35)
+
+            if self._ascendancy == 'Butcher':
+                target.applyCarved()
+
+        else:
+            if self._ascendancy == 'Dreadnought':
+                heal = int(finalDamage * 0.1)
+                self.heal(heal, False)
+
+            elif self._ascendancy == 'Sovereign':
+                if damageType == 'cold':
+                    finalDamage = int(finalDamage * 1.25)
+                heal = int(finalDamage * 0.1)
+                self.heal(heal)
+                target._baseSpeed -= round(self._speed * 0.01, 2)
+
+            if self.siphonedDamage < self.maxSiphon and target._baseDamage > 5:
+                dread = 1 if self._ascendancy != 'Dreadnought' else 2
+                maxSiphon = min(
+                    3 * dread,
+                    (target._baseDamage + 5) - 3,
+                    self.maxSiphon - self.siphonedDamage)
+                siphon = random.randint(1, maxSiphon)
+
+                if self._ascendancy == 'Harrower':
+                    siphon = siphon / 50 # 1 damage = 0.02 speed
+                    target._baseSpeed -= siphon
+                    self._stats['Temporary']['speed'] = min(0.5, self._stats['Temporary']['speed'] + siphon)
+                    console.print(f"[asc_harrower]Harrower: Siphoned {siphon:.2f} speed from {target._name}![/asc_harrower]")
+                    self.checkHarrowerBuff()
+                    self._harrowerExecuteReady = True
+                else:
+                    target._baseDamage -= siphon
+                    self.siphonedDamage += siphon
+                    console.print(f"[class_marauder]Marauder: Siphoned {siphon} damage from {target._name}![/class_marauder]")
+
+        return finalDamage
+
+    def onAfterMitigation(self, attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager):
+        finalDamage = super().onAfterMitigation(attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager)
+        hasActed = self.combatUnit.hasActed if self.combatUnit else False
+        if hasActed:
+            if self._ascendancy == 'Colossus':
+                self.colossusDamage += armourDamagePrevented + esDamagePrevented
+            elif self._ascendancy == 'Harrower':
+                spdReduction = round(attacker._speed * 0.05, 2)
+                attacker._speed -= spdReduction
+                attacker.damage(attacker._baseDamage, 'cold')
+            elif self._ascendancy == 'Butcher':
+                attacker.damage(self.siphonedDamage, 'cold')
+
+        if self._ascendancy == 'Dreadnought':
+            if finalDamage > 0:
+                self.dreadnoughtDeferredDamage[2] += finalDamage // 2
+                finalDamage = round(finalDamage / 2)
+
+        return finalDamage
+
+    def onExecuteCheck(self, target, combatManager):
+        if self._harrowerExecuteReady and target._health <= (target._maxHealth * 0.08):
+            console.print(f"[asc_harrower]Harrower: {target._name} has been Executed![/asc_harrower]")
+            target.damage(target._health, 'true')
+            combatManager.checkDead(target)
+            self.onKill(target, {'executed': True}, combatManager)
+
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
 
         damageDealt += self.siphonedDamage
 
@@ -152,7 +284,7 @@ class Marauder(Player):
 
         return damageDealt, damageType
 
-    def onTurnStart(self, combatManager=None):
+    def onTurnStart(self, combatManager):
         dType = 'cold'
         if self._ascendancy == 'Colossus':
             dType = 'true'
@@ -185,6 +317,7 @@ class Marauder(Player):
         return critDamage
 
     def onKill(self, entity, attackData, combatManager=None):
+        super().onKill()
         if self._ascendancy == 'Colossus':
             gainedArmour = int(entity.armour * 0.2)
             esGain = int(max(entity.maxEnergyShield * 0.1, entity.armour * 0.1))
@@ -197,7 +330,12 @@ class Marauder(Player):
                 console.print(f"[asc_butcher]Butcher: Killed your Marked target! +{entity._baseDamage} Damage for the rest of combat.[/asc_butcher]")
                 self.applyButcherMark(combatManager.allAlive)
 
-    def onBattleEnd(self):
+    def onCombatStart(self, combatManager, combatUnit):
+        super().onCombatStart(combatManager, combatUnit)
+        if self._ascendancy == 'Butcher':
+            self.applyButcherMark(combatManager.allAlive)
+
+    def onCombatEnd(self):
         heal = int(self._maxHealth * (max(30, self.siphonedDamage) / 100))
         self.heal(heal)
 
@@ -216,7 +354,7 @@ class Marauder(Player):
         self.butcherDamage = 0
         self.butcherSlaughter = 0
 
-        super().onBattleEnd()
+        super().onCombatEnd()
 
     def _removeOldAscendancy(self):
         if self._ascendancy == 'Colossus':

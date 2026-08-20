@@ -275,8 +275,8 @@ class Druid(Player): # balanced damage and speed, earth damage
 
         super().onTurnStart(combatManager)
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
 
         verdanceGained = damageDealt // 10
         if self._ascendancy == 'Arbiter':
@@ -344,6 +344,7 @@ class Druid(Player): # balanced damage and speed, earth damage
         return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
     
     def onKill(self, entity, attackData, combatManager=None):
+        super().onKill()
         if self._ascendancy == 'Arbiter':
             old = self.form
             switch = self._chooseArbiterForm()
@@ -363,7 +364,7 @@ class Druid(Player): # balanced damage and speed, earth damage
 
         return {}
 
-    def onBattleEnd(self):
+    def onCombatEnd(self):
         heal = int(self._maxHealth * 0.01 * self.verdance)
         self.heal(heal)
         console.print(f"[earth]Healed {heal} HP from {self.verdance} Verdance.[/earth]")
@@ -375,7 +376,7 @@ class Druid(Player): # balanced damage and speed, earth damage
 
         self.verdance = 0
 
-        super().onBattleEnd()
+        super().onCombatEnd()
 
     def _levelUp(self):
         super()._levelUp()

@@ -81,6 +81,11 @@ class Entity:
                 'stamina_regen': 0,
                 'increased_defenses': 0,
                 'increased_health': 0,
+                'health_on_hit': 0,
+                'health_on_kill': 0,
+                'stamina_on_hit': 0,
+                'stamina_on_kill': 0,
+                'thorns': 0,
             },
             'Permanent': {
                 'physical': 0,
@@ -126,10 +131,13 @@ class Entity:
                 'elemental': 0,
                 'divine': 0,
                 'otherworld': 0,
+                'physical': 0,
                 'all': 0,
                 'healing_magnitude': 0,
                 'stun_avoidance': 0,
                 'dot_resistance': 0,
+                'ailment_avoidance': 0,
+                'crit_avoidance': 0,
                 'speed': 0,
                 'crit_chance': 0,
                 'crit_multi': 0,
@@ -139,6 +147,7 @@ class Entity:
                 'increased_damage_reduction': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
+                'chance_to_multihit': 0,
                 'added_multihits': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
@@ -186,6 +195,8 @@ class Entity:
         self._ascendancy = None
         self.ascendancyDescription = None
         self.isPlayer = isPlayer
+        self.combatUnit = None
+        self._pendingEffects = []
 
     @property
     def _isDead(self) -> bool:
@@ -323,10 +334,11 @@ class Entity:
     def calcXpRequirement(self):
         self._xpToNextLevel = max(int((self._level * 25) ** 0.717), (3 * self._level) ** 2)
 
-    def damage(self, damage: int, damageType: str, combatUnit = None, *, lethal: bool = True) -> int:
+    def damage(self, damage: int, damageType: str='physical', combatUnit = None, *, lethal: bool = True, attacker: Entity = None) -> int:
         """'true' damageType means no resistances apply"""
         if combatUnit:
-            resistMod = combatUnit.getResistanceModifier(damageType)
+            resistMod = combatUnit.getResistanceModifier(damageType, attacker)
+            stoneskinMod = combatUnit.getStoneskinModifier()
         else:
             resistMod = self._stats['Resistances'].get(damageType, 0) / 100
             if damageType in ELEMENTAL_RES:
@@ -337,13 +349,15 @@ class Entity:
                 resistMod += self._stats['Resistances']['otherworld'] / 100
             resistMod += self._stats['Resistances']['all'] / 100
             resistMod = min(0.75, resistMod)
+            stoneskinMod = 0
         if damageType == 'true':
             resistMod = 0
+            stoneskinMod = 0
 
         damageReductionValue = min(damage, max(0, self._stats['Bonuses']['damage_reduction'] - damage))
         damage = max(0, damage - self._stats['Bonuses']['damage_reduction'])
 
-        damage = int(round(damage * (1 - resistMod)))
+        damage = int(round(damage * (1 - resistMod) * (1 - stoneskinMod)))
         trueDamage = max(0, damage - self._shield)
         damagePrevented = damage - trueDamage
         self._shield -= damagePrevented
@@ -586,6 +600,7 @@ class Entity:
 
         healthFlat = 0
         healthInc = 0
+        staminaFlat = 0
         dmgFlat = 0
         dmgInc = 0
         spdFlat = 0
@@ -596,6 +611,9 @@ class Entity:
                 hFlat, hInc, _ = equipment.getStatBonuses('health')
                 healthFlat += hFlat
                 healthInc += hInc
+
+                stFlat, _, _ = equipment.getStatBonuses('added_stamina')
+                staminaFlat += stFlat
 
                 if equipment.slot == 'weapon':
                     dmgFlat += equipment.damage
@@ -621,8 +639,6 @@ class Entity:
                 for bonus in self._stats['Bonuses'].keys():
                     bonusFlat, bonusInc, _ = equipment.getStatBonuses(bonus)
                     if bonus in ('crit_chance', 'crit_multi'):
-                        # affix values are stored as percentage points (e.g. 67 == +67%), unlike
-                        # baseCritChance/baseCritMulti which are raw fractions, so convert here
                         self._stats['Bonuses'][bonus] += (bonusFlat / 100) * (1 + bonusInc)
                     else:
                         self._stats['Bonuses'][bonus] += round(bonusFlat * (1 + bonusInc))
@@ -643,8 +659,6 @@ class Entity:
                     _, _, gIncEs = equipment.getStatBonuses('energy_shield')
                     globalEsInc += gIncEs
 
-        # ascendancy-derived (Permanent + Temporary) bonuses are applied exactly once here,
-        # regardless of how many equipment slots are filled - see entities.py stat recalc discussion
         for damageType in self._stats['Resistances'].keys():
             extra = self._getExtraBonuses(damageType)
             self._stats['Resistances'][damageType] = min(
@@ -654,7 +668,6 @@ class Entity:
 
         for bonus in self._stats['Bonuses'].keys():
             if bonus in ('crit_chance', 'crit_multi'):
-                # applied live in the critChance/critMulti properties instead - see there
                 continue
             self._stats['Bonuses'][bonus] += round(self._getExtraBonuses(bonus))
 
@@ -668,6 +681,9 @@ class Entity:
 
         self._damage = int((self._baseDamage + dmgFlat) * (1 + dmgInc))
         self._maxHealth = int((self._maxHealth + healthFlat) * (1 + healthInc))
+        self._maxStamina = self._maxStamina + staminaFlat
+        self._speed = (self._speed + spdFlat) * (1 + spdInc)
+        self._speed += self._getExtraBonuses('speed')
         self._speed = round(self._speed, 2)
 
         # cap bonuses
@@ -762,9 +778,109 @@ class Entity:
             rune = getRuneObject(cat, rtype)
             console.print(rune)
             console.print(f'[dim]Quantity: {quantity}[/dim]')
+    
+    # ===================================================================================== #
+    # COMBAT HOOKS
+    # Called by CombatManager.performAttack/applyDamageWithDefenses in this order, per attack:
+    #   1. onBeforeDamage    (attacker) -> retarget/reroll before anything is finalised
+    #   1.5. onMultihitActivated (Attacher) -> only called if a multihit is activated
+    #   2. onBeforeCritRoll  (attacker) -> rollCritical() -> onAfterCritRoll (attacker)
+    #   3. onCrit (attacker) / onCriticallyHit (target)      - only if the roll crit
+    #   4. per target, once per multihit:
+    #        onPrepareHit (attacker)     - attacker adjusts the hit for this specific target
+    #        onBeforeHit (target)        - target reacts before mitigation is applied
+    #        getArmourIgnorePercent (attacker)
+    #        onAttack (attacker)
+    #        getEffectiveEvasion / getEffectiveArmour (target) / onEnergyShieldBroken (target)
+    #          - used inside applyDamageWithDefenses while rolling evasion/armour/energy shield
+    #        onHit (target)              - target reacts to the mitigated damage number
+    #        onDealDamage (attacker)     - attacker reacts, before damage is actually applied
+    #        onAfterMitigation (target)  - target's last chance to change finalDamage
+    #        onEvade (target)            - called if the hit was evaded, rendering further functions irrelevant
+    #        damage is applied to target
+    #        onDamaged (target)          - target reacts to the damage that just landed
+    #   5. once per target, after all multihits: mechanics/status effects applied, death checked
+    #   6. onKill (attacker) if the target died, else onExecuteCheck (attacker)
+    # Any hook may queue a StatusEffect via self._queueEffect() instead of returning one -
+    # CombatManager drains _pendingEffects after the hook call and applies it to the
+    # relevant target(s) once evasion has been resolved.
+    # Every hook default here is a no-op/pass-through; rewrite per class as needed.
+    # ===================================================================================== #
 
-    def onAttack(self, damageDealt: int, damageType: str, target=None, combatManager=None):
-        """Target should be combatUnit"""
+    def _queueEffect(self, effect):
+        """Queues a StatusEffect (or list of them) to be applied once the current hit resolves.
+        Use from any combat hook instead of calling combatManager.addStatusEffect directly when the
+        effect should only land if the attack isn't evaded."""
+        if isinstance(effect, list):
+            self._pendingEffects.extend(effect)
+        else:
+            self._pendingEffects.append(effect)
+
+    def onBeforeDamage(self, ability: Ability, damage: int, damageType: str, targets: list[Entity], combatManager):
+        """Rewrite per class. Returns: damage, damageType, targets"""
+        return damage, damageType, targets
+
+    def onBeforeCritRoll(self, targetUnit, targets: list[Entity], combatManager):
+        """Rewrite per class"""
+        pass
+
+    def onAfterCritRoll(self, targetUnit, targets: list, combatManager):
+        """Rewrite per class. Undo whatever onBeforeCritRoll applied. No return value."""
+        pass
+
+    def getArmourIgnorePercent(self) -> float:
+        """Rewrite per class. Returns the fraction (0-1) of the target's armour this attack ignores."""
+        return 0.0
+
+    def getEffectiveEvasion(self, damageType: str, combatUnit) -> float:
+        """Rewrite per class. Returns the evasion value to roll against for this hit."""
+        return self.evasion
+
+    def getEffectiveArmour(self, damageType: str, combatUnit) -> float:
+        """Rewrite per class. Returns the armour value to mitigate this hit with."""
+        return self.armour
+
+    def onEnergyShieldBroken(self, combatManager):
+        """Rewrite per class. Called the moment this entity's energy shield is reduced to 0."""
+        pass
+
+    def onBeforeHit(self, finalDamage: int, damageType: str, attacker: Entity, combatManager) -> int:
+        """Rewrite per class. return finalDamage"""
+        return finalDamage
+
+    def onAfterMitigation(self, attacker: Entity, finalDamage: int, damageType: str, evaded: bool,
+                           armourDamagePrevented: int, esDamagePrevented: int, preMitigationDamage: int,
+                           combatManager) -> int:
+        """Rewrite per class. return finalDamage"""
+        return finalDamage
+
+    def onPrepareHit(self, target: Entity, targetUnit, finalDamage: int, damageType: str, combatManager) -> int:
+        """Rewrite per class. return finalDamage"""
+        return finalDamage
+
+    def onDamaged(self, attacker: Entity, damageReductionValue: int, armourDamagePrevented: int, combatManager):
+        """Rewrite per class"""
+        pass
+
+    def onDealDamage(self, target: Entity, targetUnit, finalDamage: int, damageType: str, evaded: bool,
+                      armourDamagePrevented: int, esDamagePrevented: int, combatManager) -> int:
+        """Rewrite per class. return finalDamage"""
+        return finalDamage
+
+    def onExecuteCheck(self, target: Entity, combatManager):
+        """Rewrite per class"""
+        pass
+
+    def onEvade(self, combatManager):
+        """Rewrite per class"""
+        return
+
+    def onMultihitActivated(self):
+        """Rewrite per class"""
+        return
+
+    def onAttack(self, damageDealt: int, damageType: str, target, combatManager, ability: Ability):
+        """Target should be combatUnit. Fires once per target before mitigation (once per multihit)."""
         durabilityLoss = max(1, damageDealt // 25)
         if self._equipment.get('weapon'):
             weapon = self._equipment.get('weapon')
@@ -781,9 +897,11 @@ class Entity:
                     printWarning(f"{accessory.name} has broken!")
                     self.unequip(slot)
 
+        ability.cooldown = ability.maxCooldown
+
         return damageDealt, damageType
 
-    def onHit(self, damageTaken: int, damageType: str, crit: bool=False, attacker: Entity=None, combatManager=None):
+    def onHit(self, damageTaken: int, damageType: str, crit: bool, attacker: Entity, combatManager):
         durabilityLoss = max(1, damageTaken // 30)
         for slot in ['head', 'chest', 'legs', 'feet']:
             if self._equipment.get(slot):
@@ -793,11 +911,16 @@ class Entity:
                     printWarning(f"{armour.name} has broken!")
                     self.unequip(slot)
 
+        self.heal(self._stats['Bonuses']['health_on_hit'])
+        self._stamina = min(self._maxStamina, self._stamina + self._stats['Bonuses']['stamina_on_hit'])
+
         return damageTaken, damageType
 
-    def onKill(self, entity: Entity, attackData: Dict, combatManager=None) -> Optional[Dict]:
-        """Rewrite per class, always return None/dict\n
+    def onKill(self, entity: Entity=None, attackData: Dict=None, combatManager=None) -> Optional[Dict]:
+        """Rewrite per class. Call super() first (applies health/stamina on kill), always return None/dict\n
         attackData should include: final attack damage, damage type, mechanics of ability used"""
+        self.heal(self._stats['Bonuses']['health_on_kill'])
+        self._stamina = min(self._maxStamina, self._stamina + self._stats['Bonuses']['stamina_on_kill'])
         return {}
 
     def onHeal(self, healAmount: int):
@@ -812,7 +935,7 @@ class Entity:
         """Rewrite per class, called when being critically hit. Returns critDamage"""
         return critDamage
 
-    def onTurnStart(self, combatManager=None):
+    def onTurnStart(self, combatManager):
         """Recalculates stats for temp + permanent additions, use at end of onTurnStart methods"""
         self._recalculateStats(False, True)
         heal = self._stats['Bonuses']['hp_regen']
@@ -837,9 +960,14 @@ class Entity:
         """Rewrite per class"""
         pass
 
-    def onBattleEnd(self):
-        """Sets all temporary stats to 0, use at end of onBattleEnd methods."""
+    def onCombatStart(self, combatManager, combatUnit):
+        """Assigns given combatUnit to self. run at the start of each onCombatStart"""
+        self.combatUnit = combatUnit
+
+    def onCombatEnd(self):
+        """Sets all temporary stats to 0 and sets self.combatUnit to None, use at end of onCombatEnd methods."""
         for stat in self._stats['Temporary'].keys():
             self._stats['Temporary'][stat] = 0
+        self.combatUnit = None
 
 ...

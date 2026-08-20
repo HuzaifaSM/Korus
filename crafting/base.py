@@ -83,7 +83,7 @@ class CraftingItem:
         string = f"[cyan bold]Name:[/cyan bold] {self.name}\n[cyan bold]Description:[/cyan bold] {self.description}\n[red3]Entropy Added:[/red3] {self.successEntropy} | [dim]Minimum Item Level: {self.minItemLevel}[/dim]"
         return string
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         return NotImplementedError
 
 ...

@@ -180,77 +180,80 @@ class Market(Station):
                 pause()
 
     def buyItems(self):
-        clearScreen()
-        printHeader("Buy Items")
-        console.print(f"[gold]Your Gold: {self.player._gold}[/gold]\n")
-        
-        if not self.stock:
-            printWarning("Market is empty!")
-            pause()
-            return
-        
-        console.print("[gold]Available items:[/gold]")
-        stockList = list(self.stock.items())
-        for i, (itemName, itemData) in enumerate(stockList, 1):
-            if len(itemData) == 3:  # equipment
-                quantity, price, equipment = itemData
-                console.print(f"  [cyan]{i}.[/cyan] [dim]{price}g\n{equipment}")
-            else:  # resource or consumable
-                quantity, price = itemData
-                console.print(f"  [cyan]{i}.[/cyan] {itemName} x{quantity} - [dim]{price}g/each[/dim]")
-
-        choice = console.input("\n[cyan]Choose item to buy (0 to cancel):\n> [/cyan]").strip()
-        try:
-            index = int(choice) - 1
-            if 0 <= index < len(stockList):
-                itemName, itemData = stockList[index]
-                
-                if len(itemData) == 3:
+        while True:
+            clearScreen()
+            printHeader("Buy Items")
+            console.print(f"[gold]Your Gold: {self.player._gold}[/gold]\n")
+            
+            if not self.stock:
+                printWarning("Market is empty!")
+                pause()
+                return
+            
+            console.print("[gold]Available items:[/gold]")
+            stockList = list(self.stock.items())
+            for i, (itemName, itemData) in enumerate(stockList, 1):
+                if len(itemData) == 3:  # equipment
                     quantity, price, equipment = itemData
-                else:
+                    console.print(f"  [cyan]{i}.[/cyan] [dim]{price}g\n{equipment}")
+                else:  # resource or consumable
                     quantity, price = itemData
-                    equipment = None
-                
-                if not equipment:
-                    amount = console.input(f"[bold]How many? (max {quantity}):[/bold]\n[cyan]> [/cyan]").strip()
-                    amount = int(amount)
-                else:
-                    amount = 1
-                
-                if amount <= 0 or amount > quantity:
-                    printWarning("Invalid amount!")
-                    pause()
+                    console.print(f"  [cyan]{i}.[/cyan] {itemName} x{quantity} - [dim]{price}g/each[/dim]")
+
+            choice = console.input("\n[cyan]Choose item to buy (0 to cancel):\n> [/cyan]").strip()
+            try:
+                if choice == '0':
                     return
-                
-                cost = price * amount
-                if self.player._gold >= cost:
-                    self.player._gold -= cost
-
-                    if equipment:
-                        for _ in range(amount):
-                            self.player.addEquipmentToStorage(itemData[2])
-                    else:
-                        self.player.addItem(itemName, amount)
-
-                    if len(itemData) == 3:
-                        new_quantity = quantity - amount
-                        if new_quantity > 0:
-                            self.stock[itemName] = (new_quantity, price, equipment)
-                        else:
-                            del self.stock[itemName]
-                    else:
-                        new_quantity = quantity - amount
-                        if new_quantity > 0:
-                            self.stock[itemName] = (new_quantity, price)
-                        else:
-                            del self.stock[itemName]
+                index = int(choice) - 1
+                if 0 < index < len(stockList):
+                    itemName, itemData = stockList[index]
                     
-                    printSuccess(f"\nPurchased {amount}x {itemName} for {cost}g!")
-                else:
-                    printWarning(f"\nNeed {cost}g! (Current: {self.player._gold}g)")
-        except ValueError:
-            printError("Invalid input!")
-        pause()
+                    if len(itemData) == 3:
+                        quantity, price, equipment = itemData
+                    else:
+                        quantity, price = itemData
+                        equipment = None
+                    
+                    if not equipment:
+                        amount = console.input(f"[bold]How many? (max {quantity}):[/bold]\n[cyan]> [/cyan]").strip()
+                        amount = int(amount)
+                    else:
+                        amount = 1
+                    
+                    if amount <= 0 or amount > quantity:
+                        printWarning("Invalid amount!")
+                        pause()
+                        return
+                    
+                    cost = price * amount
+                    if self.player._gold >= cost:
+                        self.player._gold -= cost
+
+                        if equipment:
+                            for _ in range(amount):
+                                self.player.addEquipmentToStorage(itemData[2])
+                        else:
+                            self.player.addItem(itemName, amount)
+
+                        if len(itemData) == 3:
+                            new_quantity = quantity - amount
+                            if new_quantity > 0:
+                                self.stock[itemName] = (new_quantity, price, equipment)
+                            else:
+                                del self.stock[itemName]
+                        else:
+                            new_quantity = quantity - amount
+                            if new_quantity > 0:
+                                self.stock[itemName] = (new_quantity, price)
+                            else:
+                                del self.stock[itemName]
+                        
+                        printSuccess(f"\nPurchased {amount}x {itemName} for {cost}g!")
+                    else:
+                        printWarning(f"\nNeed {cost}g! (Current: {self.player._gold}g)")
+            except ValueError:
+                printError("Invalid input!")
+            pause()
 
     def sellItems(self):
         clearScreen()

@@ -227,7 +227,7 @@ class Cultist(Player):
         return crit, multi
 
     def onKill(self, entity, attackData, combatManager=None):
-
+        super().onKill()
         if self._ascendancy == 'Anarchist':
             self.volatility = min(self.maxVolatility, self.volatility + 15)
 
@@ -237,10 +237,40 @@ class Cultist(Player):
             self.heal(heal)
             self.insanity = min(self.maxInsanity, self.insanity + iGain)
 
+        elif self._ascendancy == 'Harbinger' and combatManager:
+            if entity.corruption >= 5 and len(combatManager.allAlive) > 0:
+                aoeDamage = int(entity._maxHealth * 0.1)
+                for e in combatManager.allAlive:
+                    e.damage(aoeDamage, 'chaos')
+
         return {}
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
+    def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
+        if self._ascendancy == 'Harbinger' and self.insanity == self.maxInsanity:
+            self._queueEffect(Effects.createCurse(2))
+
+        elif self._ascendancy == 'Anarchist':
+            if self.volatility == self.maxVolatility and self.insanity > 0:
+                if combatManager.allAlive:
+                    aoeDamage = int(self._maxHealth * (0.01 * (self.insanity // 5)))
+                    for e in combatManager.allAlive:
+                        e.damage(aoeDamage, 'chaos')
+                        combatManager.checkDead(e)
+                self.volatility = 0
+                self._randomiseInsanity(min=-10, max=30)
+
+        return damage, damageType, targets
+
+    def onAfterMitigation(self, attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager):
+        finalDamage = super().onAfterMitigation(attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager)
+        if self._ascendancy == 'Harbinger':
+            if attacker.corruption > 0 and self.insanity < 0:
+                attacker.corruption -= 1
+                console.print(f"  [chaos]You were attacked while your Insanity is negative! {attacker._name} is cleansed of 1 Corruption.[/chaos]")
+        return finalDamage
+
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
 
         if self.absorbedToAdd > 0:
             damageDealt += self.absorbedToAdd
@@ -429,7 +459,7 @@ class Cultist(Player):
 
         super().onTurnStart(combatManager)
 
-    def onBattleEnd(self):
+    def onCombatEnd(self):
         self.insanity = 0
         self.combatStart = True
         self.absorbedToAdd = 0
@@ -441,7 +471,7 @@ class Cultist(Player):
         self.faithless = 0
         self.volatility = 0
 
-        super().onBattleEnd()
+        super().onCombatEnd()
 
     def _removeOldAscendancy(self) -> bool:
         if self._ascendancy == 'Umbralist':

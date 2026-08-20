@@ -235,6 +235,7 @@ class Equipment(Item):
         self.baseEntropyResistance = ENTROPY_RESISTANCE[rarity]
         self.destabilised = False
         self.destabilisedAffixes = []
+        self.parallel = False
 
         self.mastery = 0
 
@@ -271,6 +272,12 @@ class Equipment(Item):
             if slot.soulbound:
                 return True
         return False
+
+    @property
+    def craftable(self) -> bool:
+        return not (
+            self.entropyLocked or self.destabilised or self.parallel
+        )
 
     @property
     def preservable(self) -> bool:
@@ -435,8 +442,11 @@ class Equipment(Item):
         destabilisedString = ""
         if self.destabilised:
             destabilisedString = '[dark_red bold underline]DESTABILISED[/dark_red bold underline] | '
+        parStr = ""
+        if self.parallel:
+            parStr = " [misty_rose3 bold underline]Parallel Item[/misty_rose3 bold underline] | "
         masteryString = f" | [gold1]Mastery:[/gold1] {self.mastery}%"
-        return f"{destabilisedString}{self.name} | [bold]Durability:[/bold] {self.durability} / {self.maxDurability}{masteryString}{entropyString}{damageString}{defenseString}\n{stat_string}{corruptedString}"
+        return f"{destabilisedString}{parStr}{self.name} | [bold]Durability:[/bold] {self.durability} / {self.maxDurability}{masteryString}{entropyString}{damageString}{defenseString}\n{stat_string}{corruptedString}"
 
     def calculateMaxDurability(self):
         if hasattr(self, 'maxDurability') and hasattr(self, 'durability'):
@@ -734,17 +744,17 @@ class Equipment(Item):
 
         mythicPre = 0
         mythicSuf = 0
-        if rarity == ItemRarity.MYTHIC:
-            mythicType = random.choice(['prefix', 'suffix'])
-            mythicAffix = rollMythicAffix(slot, mythicType, level, rarity, set(), defenseType)
-            if mythicType == 'prefix':
-                mythicPre = 1
-                prefixes.append(mythicAffix)
-                excludedPrefixIds.add(mythicAffix.id.split('_t')[0])
-            else:
-                mythicSuf = 1
-                suffixes.append(mythicAffix)
-                excludedSuffixIds.add(mythicAffix.id.split('_t')[0])
+        # if rarity == ItemRarity.MYTHIC: # CURRENTLY DISABLED - MYTHIC AFFIXES NEED A REWORK, this allows mythic items to still be rolled, just without mythic affixes
+        #     mythicType = random.choice(['prefix', 'suffix'])
+        #     mythicAffix = rollMythicAffix(slot, mythicType, level, rarity, set(), defenseType)
+        #     if mythicType == 'prefix':
+        #         mythicPre = 1
+        #         prefixes.append(mythicAffix)
+        #         excludedPrefixIds.add(mythicAffix.id.split('_t')[0])
+        #     else:
+        #         mythicSuf = 1
+        #         suffixes.append(mythicAffix)
+        #         excludedSuffixIds.add(mythicAffix.id.split('_t')[0])
 
         tierBias = calculateTierBias(level, rarity)
 

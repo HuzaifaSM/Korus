@@ -31,7 +31,7 @@ class BaseChaosRune(CraftingItem):
         return [s for s in item.prefixSlots + item.suffixSlots if s.isEmpty]
     
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'

@@ -83,7 +83,7 @@ class BaseRevealingRune(CraftingItem):
                 console.print('[red]Invalid Input[/red]')
 
     def apply(self, item) -> CraftResult:
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'

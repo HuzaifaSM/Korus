@@ -253,29 +253,24 @@ class StatusEffect:
         mult = 1 if not inverse else -1
         if self.name == 'bleed':
             self.target._stats['Temporary']['speed'] -= self.data['speedReduction'] * mult
-        elif self.name == 'burn':
-            for dt in DAMAGE_TYPES:
-                self.target._stats['Temporary'][dt] -= self.data['resistanceReduction'] * mult
         elif self.name == 'poison':
             self.target._stats['Temporary']['healing_magnitude'] -= self.data['healingReduction'] * mult
         elif self.name in ['stun', 'freeze']:
             self.target._stats['Temporary']['stun_avoidance'] += self.data['grantsAvoidance'] * mult
-        elif self.name in ['chill', 'slow']: # has a more complex calculation to implement later, stacks non-linearly up to a max of 99%
+        elif self.name in ['chill', 'slow']:
             self.target._stats['Temporary']['speed'] -= self.data['amount'] * mult
-        elif self.name == 'exposed':
-            self.target._stats['Temporary']['all'] -= self.data['allResistanceReduction'] * mult
-        elif self.name == 'elemental_exposure':
-            self.target._stats['Temporary']['elemental'] -= self.data['elementalResistanceReduction'] * mult
-        elif self.name == 'divine_exposure':
-            self.target._stats['Temporary']['divine'] -= self.data['divineResistanceReduction'] * mult
-        elif self.name == 'physical_exposure':
-            self.target._stats['Temporary']['physical'] -= self.data['physicalResistanceReduction'] * mult
-        elif self.name == 'otherworld_exposure':
-            self.target._stats['Temporary']['otherworld'] -= self.data['otherworldResistanceReduction'] * mult
         elif self.name == 'daze':
             self.target._stats['Temporary']['speed'] -= self.data['speedReduction'] * mult
         elif self.name == 'haste':
             self.target._stats['Temporary']['speed'] += self.data['speedBonus'] * mult
+        elif self.name == 'shield_generation':
+            if not inverse:
+                amount = int(self.attacker._maxHealth * self.data.get('shieldAmount', 0))
+                self.data['_grantedShield'] = amount
+                self.target._shield += amount
+            else:
+                granted = self.data.get('_grantedShield', 0)
+                self.target._shield = max(0, self.target._shield - granted)
 
     def tick(self) -> bool:
         if not self.applied:
@@ -297,8 +292,10 @@ class StatusEffect:
             self.target.damage(damage, damageType)
             console.print(f" - [dot]{self.name}[/dot] deals [damage]{damage}[/damage] damage")
 
-        elif self.effectType == 'shield_generation':
-            self.target._shield += self.data['shield']
+        elif self.name == 'regeneration':
+            healAmount = self.data.get('healFlatPerTurn', 0) + int(self.attacker._maxHealth * self.data.get('healPercentPerTurn', 0))
+            if healAmount > 0:
+                self.target.heal(healAmount)
 
         self.turns -= 1
         if self.turns == 0:
@@ -331,9 +328,7 @@ class Effects:
     - Shield Generation
     - Regeneration
     - Haste (speed+dmg multiplier)
-    - Might
     - Stokeskin
-    - First Strike
     """
     @staticmethod
     def createBleed(stacks: int = 1) -> List[StatusEffect]:
@@ -343,7 +338,7 @@ class Effects:
 
     @staticmethod
     def createBurn(stacks: int = 1) -> List[StatusEffect]:
-        return [StatusEffect('fire', 'dot', turns=2, damageType='fire',
+        return [StatusEffect('burn', 'dot', turns=2, damageType='fire',
                             baseDamage=10, damagePercent=0.12, resistanceReduction=5)
                             for _ in range(stacks)]
 
@@ -429,7 +424,7 @@ class Effects:
 
     # Buffs
     @staticmethod
-    def createShieldGeneration(turns: int, amount: int) -> StatusEffect:
+    def createShieldGeneration(turns: int, amount: float) -> StatusEffect:
         return StatusEffect("shield_generation", "buff", turns=turns, shieldAmount=amount)
 
     @staticmethod
@@ -443,21 +438,11 @@ class Effects:
                         speedBonus=speed, damageMultiplier=damage)
 
     @staticmethod
-    def createMight(turns: int, flatGain: int, percentGain: float) -> StatusEffect:
-        return StatusEffect("might", "buff", turns=turns,
-                            damageBuffFlat=flatGain, damageBuffPercent=percentGain)
-
-    @staticmethod
     def createStoneskin(turns: int, amount: float) -> StatusEffect:
         return StatusEffect("stoneskin", "buff", turns=turns,
                             damageReduction=amount)
 
     # Special
-    @staticmethod
-    def createFirstStrike(multiplier: float=2.0) -> StatusEffect:
-        return StatusEffect("first_strike", "special", turns=1,
-                            damageMultiplier=multiplier)
-
     @staticmethod
     def createCustom(*, name: str, effectType: str, turns: int,
                      **kwargs):
@@ -606,6 +591,10 @@ def resolveEffects(effectsDict: Dict) -> List[StatusEffect]:
                 statusEffects = [Effects.createHaste(
                     params.get('turns', 2), params.get('speed', 0.1), params.get('damage', 1.1)
                 )]
+            case 'shield_generation':
+                statusEffects = [Effects.createShieldGeneration(
+                    params.get('turns', 2), params.get('amount_percent', 0)
+                )]
 
         result.extend(statusEffects)
 
@@ -632,6 +621,7 @@ class EnemyAbility:
         self.weight = weight
         self.effects = effects
         self.description = description
+        self.tags = []
 
     def calculateDamage(self, enemyBaseDamage: int) -> int:
         return int(self.baseDamage + (enemyBaseDamage * self.damageScaling))

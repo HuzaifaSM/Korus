@@ -1,50 +1,54 @@
-from .base import Player
+from .base import Player, OTHERWORLD_RES
 from scripts.styles import console, pause
 import random
 from typing import Dict, Any
 
 PALADIN_DESCRIPTIONS = {
-    "Paladin": "[class_paladin]A holy warrior blessed with divine favour.[/class_paladin]\n"
-        "Favour: Gain 5-10 Favour per turn. Max 100 Favour. Gain +1 Max Favour on level up. Gain 5% Increased Favour effect on level up.\n"
-        "At the start of your turn, you can decide whether Favour will be randomly spent this turn or not.\n"
-        "Possible attack buffs per Favour spent: +2 Damage, +2% Increased Damage, +1% Crit Chance, +3% Crit Damage.\n"
-        "Possible defense buffs per Favour spent: -2 Damage Taken, +0.1% Damage Reduction, 1% Max HP gained as Shield.\n"
-        "+5% Increased Effect of Favour buffs per level. Heal for 20% of remaining Favour at the end of battle.\n"
-        "Starting Stats: 55 Health | 4 [damage]Damage[/damage] | 5% Crit Chance | 175% Crit Damage | [holy]Holy Damage[/holy] | 1.05 [speed]Speed[/speed].",
+    "Paladin": "[class_paladin]A holy warrior blessed with divine favour, cleaving their foes in the name of divinity.[/class_paladin]\n"
+        "- Favour: Gain 5-10 Favour per turn. Max 100 Favour. Gain +1 Max Favour on level up. Gain 5% Increased Favour effect on level up.\n"
+        "- At the start of your turn, you can decide whether Favour will be randomly spent this turn or not. A minimum of 5 Favour is required to be allowed to spend Favour.\n"
+        "- Possible attack buffs per Favour spent: +2 Damage, +2% Increased Damage, +1% Crit Chance, +3% Crit Damage.\n"
+        "- Possible defense buffs per Favour spent: -2 Damage Taken, +0.1% Damage Reduction, 1% Max HP gained as Shield.\n"
+        "- Heal for 20% of remaining Favour at the end of battle.\n"
+        "[bold]Starting Stats:[/bold] 55 Health | 4 Damage | 5% Crit Chance | 175% Crit Damage | Holy Damage | 1.05 Speed.",
     #ascendancies
-    "Zealot": "-25 Max Favour. Attack buffs from Favour have 50% Increased Effect. Defense buffs from Favour have 20% Less Effect.\n"
-        "Whilst at or above 50 Favour, gain 20% Increased Damage, +5% Crit Chance and +10% Lifesteal.\n"
-        "Upon spending Favour on attack buffs, gain 1 stack of Zealotry per 15 Favour spent. Zealotry has no max stack limit.\n"
-        "Zealotry: +2% Increased Holy Damage, +1 Damage, +0.3% Damage Taken. At the end of combat, heal HP equal to Zealotry stacks.\n"
-        "+10 HP. +2 [damage]Damage[/damage]. -0.15 [speed]Speed[/speed]. +15% Holy Resistance. -10% Psychic Resistance",
-    "Guardian": "Attack buffs from Favour have 25% Less Effect. Defense buffs from Favour have 75% Increased Effect and 20% Increased Cost.\n"
-        "+3 Favour Generated. At the start of your turn, gain Shield equal to 5% of your current Favour.\n"
-        "Whilst at or above 60 Favour, gain 10% Increased Damage, 10% Damage Reduction, 50% Ailment Avoidance, and +10 HP Regeneration.\n"
-        "Upon taking damage, spend up to 20 Favour and gain +0.5% Damage Reduction per Favour Spent. Whenever you spend at least 16 Favour this way, gain 1 Bulwark.\n"
-        "Bulwark: +2% Damage Reduction, -0.05 Speed, +5% Increased Holy Damage. Bulwark has a maximum of 5 stacks.\n"
-        "+20 HP. -2 [damage]Damage[/damage]. -0.1 [speed]Speed[/speed]. +20% Stun Avoidance. +100 Armour. +30 Energy Shield.",
-    "Justicar": "Gain 1 Favour per 10 damage taken. Gain 2 Favour per 10 damage taken if the damage type was Otherworldly.\n"
-        "Favour buffs have 20% Increased Effect and 10% Increased Cost. While you are at or above 70 Favour, your next attack deals 80% Increased Damage and consumes 40 Favour.\n"
-        "Upon taking damage, gain Shield equal to a percentage of damage taken. The percentage is equal to your current Favour percentage, to a maximum of 30%.\n"
-        "Upon killing an enemy, gain Justice for 3 turns: +25% Increased Holy Damage, +5% Damage Reduction, +10% Crit Chance, +0.2 Speed.\n"
-        "Upon dealing a critical hit, gain 5 Favour per living enemy in combat.\n"
-        "-20 HP. +1 [damage]Damage[/damage]. +0.1 [speed]Speed[/speed]. +50% Crit Damage. +5% Dark Resistance. +5% Holy Resistance",
-    "Crusader": "Favour generation is doubled while below 50% Max HP. For every 15 Favour spent throughout combat, heal 1 HP at the start of your turn.\n"
-        "Attacks have +1% Increased Damage per 10 Favour spent on that attack. Defensive buffs have 5% Increased Effect per 10 Favour spent on them.\n"
-        "While above 75% Max HP, gain 15% Increased Holy Damage, +5% Crit Chance and +0.2 Speed.\n"
-        "Upon dealing damage greater than 10% of your Max HP, or upon killing an enemy, gain 1 stack of Valour. Valour has 10 Max Stacks.\n"
-        "Valour: 10% Increased Holy Damage, +0.05 Speed, +1% Damage Taken, +2% Lifesteal.\n"
-        "At the end of combat, gain +1 Permanent Max Favour Generation per 6 stacks of Valour.\n"
-        "-15 HP. +2 [damage]Damage[/damage]. +0.05 [speed]Speed[/speed]. +25% Crit Damage. +5% Divine Resistance.",
-    "Inquisitor": "50% Increased Favour generation. +50 Max Favour. Holy Damage has 5% Lifesteal.\n"
-        "If you have 80+ Favour when attacking, consume 50% of your current Favour to deal 75% Increased Damage.\n"
-        "If you have 60+ Favour when being attacked, consume 40% of your current Favour to gain Blessing for 2 turns.\n"
-        "Blessing: +5 Favour Generation, +20 HP Regeneration, 10% Increased Holy Damage, 5% Damage Reduction.\n"
-        "All Favour buffs have 30% Increased Effect, but have a minimum cost of 20 Favour.\n"
-        "+10 HP. +2 [damage]Damage[/damage]. -0.2 [speed]Speed[/speed]. +15% Holy Resistance. +5 HP Regeneration. +100 Armour.",
+    "Zealot": "[lore]Your faith demands action. Your favour demands sacrifice. Give everything, and divinity shall give you more.[/lore]\n"
+        "- -25 Max Favour. Attack buffs from Favour have 50% Increased Effect. Defense buffs from Favour have 20% Less Effect.\n"
+        "- Whilst at or above 50 Favour, gain 20% Increased Damage, +5% Crit Chance and +10% Lifesteal.\n"
+        "- Upon spending Favour on attack buffs, gain 1 stack of Zealotry per 15 Favour spent. Zealotry has no max stack limit.\n"
+        "- Zealotry: +2% Increased Holy Damage, +1 Damage, +0.3% Damage Taken. At the end of combat, heal HP equal to Zealotry stacks.\n"
+        "[bold]Stat Changes:[/bold] +10 HP. +2 Damage. -0.15 Speed. +15% Holy Resistance. -10% Psychic Resistance",
+    "Guardian": "[lore]Stand firm. Hold your ground. Let them exhaust themselves against the bulwark of your faith.[/lore]\n"
+        "- Attack buffs from Favour have 25% Less Effect. Defense buffs from Favour have 75% Increased Effect and 20% Increased Cost.\n"
+        "- +3 Favour Generated. At the start of your turn, gain Shield equal to 5% of your current Favour.\n"
+        "- Whilst at or above 60 Favour, gain 10% Increased Damage, 10% Damage Reduction, 50% Ailment Avoidance, and +10 HP Regeneration.\n"
+        "- Upon taking damage, spend up to 20 Favour and gain +0.5% Damage Reduction per Favour Spent. Whenever you spend at least 16 Favour this way, gain 1 Bulwark.\n"
+        "- Bulwark: -0.05 Speed, +15% Increased Holy Damage. Bulwark has a maximum of 5 stacks.\n"
+        "[bold]Stat Changes:[/bold] +20 HP. -2 Damage. -0.1 Speed. +20% Stun Avoidance. +100 Armour. +30 Energy Shield.",
+    "Justicar": "[lore]Their judgement has come. Their sentence has ended. Fear not their evils. Rise, and smite them down.[/lore]\n"
+        "- Gain 1 Favour per 10 damage taken. Gain 2 Favour per 10 damage taken if the damage type was Otherworld.\n"
+        "- Favour buffs have 20% Increased Effect and 10% Increased Cost. While you are at or above 70 Favour, your next attack deals 80% Increased Damage and consumes 40 Favour.\n"
+        "- Upon taking damage, gain Shield equal to a percentage of damage taken. The percentage is equal to your current Favour percentage, to a maximum of 30%.\n"
+        "- Upon killing an enemy, gain Justice for 3 turns: +25% Increased Holy Damage, +5% Damage Reduction, +10% Crit Chance, +0.2 Speed.\n"
+        "- Upon dealing a critical hit, gain 5 Favour per living enemy in combat.\n"
+        "[bold]Stat Changes:[/bold] -20 HP. +1 Damage. +0.1 Speed. +50% Crit Damage. +5% Dark Resistance. +5% Holy Resistance",
+    "Crusader": "[lore]Raise the banner of divinity. Let it glorify their graves. Every victory shall bring you closer to enlightenment.[/lore]\n"
+        "- Favour generation is doubled while below 50% Max HP. For every 15 Favour spent throughout combat, heal 1 HP at the start of your turn.\n"
+        "- Deal 2% Increased Damage per 5 Favour spent at the start of your turn. Defensive buffs have 5% Increased Effect per 10 Favour spent on them.\n"
+        "- While above 75% Max HP, gain 15% Increased Holy Damage, +5% Crit Chance and +0.2 Speed.\n"
+        "- Upon dealing damage greater than 10% of your Max HP, or upon killing an enemy, gain 1 stack of Valour. Valour has 10 Max Stacks.\n"
+        "- Valour: 10% Increased Holy Damage, +0.05 Speed, +1% Damage Taken, +2% Lifesteal.\n"
+        "- At 10 Valour: +20% Crit Chance, +50% Crit Damage, +5% Lifesteal.\n"
+        "- At the end of combat, gain +1 Permanent Max Favour Generation per 6 stacks of Valour.\n"
+        "[bold]Stat Changes:[/bold] -15 HP. +2 Damage. +0.05 Speed. +25% Crit Damage. +5% Divine Resistance.",
+    "Inquisitor": "[lore]Do not seek their repentance. Do not ask for their forgiveness. Deliver judgement, swift and pitiless, and let the divine empower you.[/lore]\n"
+        "- 50% Increased Favour generation. +50 Max Favour. Holy Damage has 5% Lifesteal.\n"
+        "- If you have 80+ Favour when attacking, consume 50% of your current Favour to deal 75% Increased Damage.\n"
+        "- If you have 60+ Favour when being attacked, consume 40% of your current Favour to gain Blessing for 2 turns.\n"
+        "- Blessing: +5 Favour Generation, +10 HP Regeneration, 10% Increased Holy Damage, 5% Damage Reduction.\n"
+        "- All Favour buffs have 30% Increased Effect, but have a minimum cost of 20 Favour.\n"
+        "[bold]Stat Changes:[/bold] +10 HP. +2 Damage. -0.2 Speed. +15% Holy Resistance. +100 Armour.",
 }
-
-OTHERWORLDLY = ['psychic', 'chaos', 'ethereal']
 
 class Paladin(Player): #higher health, lower damage, holy damage
     def __init__(self, name, health = 55, damage = 4, damageType = "holy", speed = 1.05):
@@ -56,9 +60,9 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.favourSpendingEnabled = False
         self.favourEffect = 1.0
         self.favourSpent = 0
-        self.favourBuffs = {
-            'crit_chance': 0, 'crit_multi': 0
-        } # needed since not immediately applied, reset at turn start
+        self.favourSpentThisTurn = 0
+        self.favourOffenseBuffs = {}
+        self.favourDefenseBuffs = {}
         self.zealotry = 0
         self.zealotActiveLastTurn = False
         self.bulwark = 0
@@ -111,6 +115,21 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self.crusaderActiveLastTurn = False
         return False
 
+    def crusaderGainValour(self):
+        if self.valour < 10:
+            self.valour += 1
+            self._stats['Temporary']['speed'] += 0.05
+            self._stats['Temporary']['lifesteal'] += 2
+            if self.valour == 10:
+                self._stats['Temporary']['crit_chance'] += 0.2
+                self._stats['Temporary']['crit_multi'] += 0.5
+                self._stats['Temporary']['lifesteal'] += 5
+
+    def inquisitorGainBlessing(self):
+        if self.blessingTurns == 0:
+            self._stats['Temporary']['hp_regen'] += 10
+        self.blessingTurns = 2
+
     def _serialise(self):
         temp = super()._serialise()
         temp['maxFavour'] = self.maxFavour
@@ -129,17 +148,25 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.maxFavour += 1
         self.favourEffect += 0.05
 
-    def _spendFavourOffensive(self, amount: int) -> Dict[str, int]:
-        if self.favour < amount or not self.favourSpendingEnabled or amount == 0:
-            return {}
+    def _spendFavourOffensive(self) -> Dict[str, int]:
+        amount = random.randint(5, self.favour)
+
         if self._ascendancy == 'Inquisitor':
             if self.favour >= 20:
                 amount = max(20, amount)
             else:
                 return {}
-        
+        elif self._ascendancy == 'Justicar':
+            amount = max(amount, int(amount * 1.1))
+        elif self._ascendancy == 'Zealot':
+            zGain = amount // 15
+            if zGain > 0:
+                self.zealotry += zGain
+                console.print(f"[asc_zealot]Zealot: Gained {zGain} Zealotry![/asc_zealot]")
+
         self.favour -= amount
         self.favourSpent += amount
+        self.favourSpentThisTurn += amount
         
         buffType = random.choice(['damage', 'increased_damage', 'crit_chance', 'crit_multi'])
         val = 0
@@ -169,17 +196,22 @@ class Paladin(Player): #higher health, lower damage, holy damage
         pause()
         return {buffType: val}
 
-    def _spendFavourDefensive(self, amount: int) -> Dict[str, int]:
-        if self.favour < amount or not self.favourSpendingEnabled or amount == 0:
-            return {}
+    def _spendFavourDefensive(self) -> Dict[str, int]:
+        amount = random.randint(5, self.favour)
+
         if self._ascendancy == 'Inquisitor':
             if self.favour >= 20:
                 amount = max(20, amount)
             else:
                 return {}
-        
+        elif self._ascendancy == 'Justicar':
+            amount = max(amount, int(amount * 1.1))
+        elif self._ascendancy == 'Guardian':
+            amount = max(amount, int(amount * 1.2))
+
         self.favour -= amount
         self.favourSpent += amount
+        self.favourSpentThisTurn += amount
 
         buffType = random.choice(['damage_reduction', 'percent_damage_reduction', 'shield'])
         val = 0
@@ -216,31 +248,16 @@ class Paladin(Player): #higher health, lower damage, holy damage
         console.print(f"  [gold1]Spent {amount} Favour on defensive buff: +{strVal}{ex} {buff}.[/gold1]")
         return {buffType: val}
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
 
-        spent = 0
-        if self.favourSpendingEnabled and self.favour > 0:
-            spent = random.randint(1, self.favour)
-
-            if self._ascendancy == 'Zealot':
-                zGain = spent // 15
-                if zGain > 0:
-                    self.zealotry += zGain
-                    console.print(f"[gold1]Zealot: Gained {zGain} Zealotry![/gold1]")
-
-            elif self._ascendancy == 'Justicar':
-                spent = int(spent * 1.1)
-
-            buffs = self._spendFavourOffensive(spent)
-            if buffs:
-                buff, val = list(buffs.items())[0]
-                if buff == 'damage':
-                    damageDealt += val
-                elif buff == 'increased_damage':
-                    damageDealt = int(damageDealt * (1 + (val / 100)))
-                else: # crit chance/multi
-                    self.favourBuffs[buff] += val / 100
+        buffs = self.favourOffenseBuffs
+        if buffs:
+            buff, val = list(buffs.items())[0]
+            if buff == 'damage':
+                damageDealt += val
+            elif buff == 'increased_damage':
+                damageDealt = int(damageDealt * (1 + (val / 100)))
 
         if self._ascendancy == 'Zealot':
             if self.zealotry > 0:
@@ -254,7 +271,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
             if self.guardianActive:
                 damageDealt = int(damageDealt * 1.1)
             if self.bulwark > 0:
-                damageDealt = int(damageDealt * (1 + (self.bulwark * 0.05)))
+                damageDealt = int(damageDealt * (1 + (self.bulwark * 0.15)))
 
         elif self._ascendancy == 'Justicar':
             if self.justiceTurns > 0 and damageType == 'holy':
@@ -265,7 +282,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
                 console.print("  [holy]Justicar: Spent 40 Favour to gain +80% Increased Damage![/holy]")
 
         elif self._ascendancy == 'Crusader':
-            bonus = 1 + (spent // 10 * 0.01)
+            bonus = 1 + ((self.favourSpentThisTurn // 5) * 0.02)
             damageDealt = int(damageDealt * bonus)
 
             if self.valour > 0 and damageType == 'holy':
@@ -274,10 +291,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
             if damageType == 'holy' and self.crusaderActive:
                 damageDealt = int(damageDealt * 1.15)
 
-            if damageDealt > self._maxHealth * 0.1 and self.valour < 10:
-                self.valour += 1
-                self._stats['Temporary']['speed'] += 0.05
-                self._stats['Temporary']['lifesteal'] += 2
+            if damageDealt > self._maxHealth * 0.1:
+                self.crusaderGainValour()
 
         elif self._ascendancy == 'Inquisitor':
             if self.favour >= 80:
@@ -294,24 +309,16 @@ class Paladin(Player): #higher health, lower damage, holy damage
     def onHit(self, damageTaken, damageType, isCrit, attacker = None, combatManager=None):
         damageTaken, damageType = super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
     
-        if self.favourSpendingEnabled and self.favour > 0:
-            spent = random.randint(1, self.favour)
-
-            if self._ascendancy == 'Guardian':
-                spent = int(spent * 1.2) # 20% increased cost, will auto-fail if not enough
-            elif self._ascendancy == 'Justicar':
-                spent = int(spent * 1.1)
-
-            buffs = self._spendFavourDefensive(spent)
-            if buffs:
-                buff, val = list(buffs.items())[0]
-                if buff == 'shield':
-                    gain = int(self._maxHealth * val)
-                    self._shield += gain
-                elif buff == 'damage_reduction':
-                    damageTaken = max(0, damageTaken - val)
-                elif buff == 'percent_damage_reduction':
-                    damageTaken = int(damageTaken * (1 - val))
+        buffs = self.favourDefenseBuffs
+        if buffs:
+            buff, val = list(buffs.items())[0]
+            if buff == 'shield':
+                gain = int(self._maxHealth * val)
+                self._shield += gain
+            elif buff == 'damage_reduction':
+                damageTaken = max(0, damageTaken - val)
+            elif buff == 'percent_damage_reduction':
+                damageTaken = int(damageTaken * (1 - val))
 
         if self._ascendancy == 'Zealot' and self.zealotry > 0:
             bonus = 1 + (self.zealotry * 0.003)
@@ -320,8 +327,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
         elif self._ascendancy == 'Guardian' and self.favour > 0:
             if self.guardianActive:
                 damageTaken = int(damageTaken * 0.9)
-            if self.bulwark > 0:
-                damageTaken = int(damageTaken * (1 - (self.bulwark * 0.02)))
             spent = min(20, self.favour)
             dr = spent * 0.005
             console.print(f"  [holy]Guardian: Spent {spent} Favour to gain an additional +{(dr*100)}% Damage Reduction.[/holy]")
@@ -334,7 +339,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
             if self.justiceTurns > 0:
                 damageTaken = int(damageTaken * 0.95)
 
-            fGain = damageTaken // 10 * (2 if damageType in OTHERWORLDLY else 1)
+            fGain = damageTaken // 10 * (2 if damageType in OTHERWORLD_RES else 1)
             self.favour = min(self.maxFavour, self.favour + fGain)
 
             sGainPercent = min(0.3, round(self.favour / self.maxFavour, 2))
@@ -347,23 +352,22 @@ class Paladin(Player): #higher health, lower damage, holy damage
         elif self._ascendancy == 'Inquisitor':
             if self.favour >= 60:
                 self.favour = int(self.favour * 0.6)
-                self.blessingTurns = 2
+                self.inquisitorGainBlessing()
             if self.blessingTurns > 0:
                 damageTaken = int(damageTaken * 0.95)
 
         return damageTaken, damageType
 
     def onKill(self, entity, attackData, combatManager=None):
+        super().onKill()
         if self._ascendancy == 'Justicar':
             if self.justiceTurns == 0:
                 self._stats['Temporary']['crit_chance'] += 0.1
                 self._stats['Temporary']['speed'] += 0.2
             self.justiceTurns = 3
 
-        elif self._ascendancy == 'Crusader' and self.valour < 10:
-            self.valour += 1
-            self._stats['Temporary']['speed'] += 0.05
-            self._stats['Temporary']['lifesteal'] += 2
+        elif self._ascendancy == 'Crusader':
+            self.crusaderGainValour()
 
         return {}
 
@@ -375,7 +379,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
             critChance += 0.05
 
         if random.random() < critChance:
-            critMulti = min(1.0, self.critMulti + self.favourBuffs['crit_multi'] * (1 - (target._stats['Bonuses']['crit_resistance'] / 100)))
+            critMulti = round(self.critMulti + self.favourBuffs['crit_multi'], 2)
             return True, critMulti
         return False, 1.0
 
@@ -387,8 +391,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
         return critDamage
 
     def onTurnStart(self, combatManager=None):
-        for k in self.favourBuffs.keys():
-            self.favourBuffs[k] = 0
+        self.favourOffenseBuffs = {}
+        self.favourDefenseBuffs = {}
 
         fgain = random.randint(self.favourMinGain, self.favourMaxGain)
         if self._ascendancy == 'Crusader':
@@ -402,11 +406,9 @@ class Paladin(Player): #higher health, lower damage, holy damage
                 self.blessingTurns -= 1
                 if self.blessingTurns == 0:
                     console.print("[warning]Inquisitor: Blessing has worn off![/warning]")
-                else:
-                    self.heal(20)
-            fgain = int(fgain * 1.5)
             if self.blessingTurns > 0:
                 fgain += 5
+            fgain = int(fgain * 1.5)
 
         self.favour = min(self.favour + fgain, self.maxFavour)
         console.print(f"[gold1]+{fgain} Favour. Current Favour: {self.favour} / {self.maxFavour}")
@@ -423,20 +425,24 @@ class Paladin(Player): #higher health, lower damage, holy damage
                 self._stats['Temporary']['crit_chance'] -= 0.1
                 self._stats['Temporary']['speed'] -= 0.2
 
-        console.print("[gold1]Paladin: Enable spending Favour this turn? (y/n):")
-        choice = console.input("[cyan]> [/cyan]").strip().lower()
-        self.favourSpendingEnabled = (choice == 'y')
+        if (self.favour >= 5 and self._ascendancy != 'Inquisitor') or (self._ascendancy == 'Inquisitor' and self.favour >= 20):
+            console.print(f"[class_paladin]Paladin: Spend Favour this turn? (y/n):[/class_paladin]")
+            choice = console.input("[cyan]> [/cyan]").strip().lower()
+        if choice == 'y':
+            self.favourOffenseBuffs = self._spendFavourOffensive()
+            if (self.favour >= 5 and self._ascendancy != 'Inquisitor') or (self._ascendancy == 'Inquisitor' and self.favour >= 20):
+                self._spendFavourDefensive()
         super().onTurnStart(combatManager)
 
-    def onBattleEnd(self):
+    def onCombatEnd(self):
         heal = self.favour // 5
         if heal > 0:
             self.heal(heal)
-            console.print(f"[gold1]Paladin: Healed {heal} HP from remaining Favour[/gold1]")
+            console.print(f"[class_paladin]Paladin: Healed {heal} HP from remaining Favour[/class_paladin]")
 
         if self._ascendancy == 'Zealot':
             self.heal(self.zealotry)
-            console.print(f"  [gold1]Zealot: Healed {self.zealotry} HP from Zealotry stacks.[/gold1]")
+            console.print(f"  [asc_zealot]Zealot: Healed {self.zealotry} HP from Zealotry stacks.[/asc_zealot]")
 
         elif self._ascendancy == 'Crusader' and self.valour >= 6:
             genGain = self.valour // 6
@@ -457,7 +463,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.templarCrit = 0
         self.templarDR = 0
 
-        super().onBattleEnd()
+        super().onCombatEnd()
 
     def _removeOldAscendancy(self) -> bool:
         if self._ascendancy == 'Zealot':
@@ -494,7 +500,6 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._baseDamage -= 2
             self._baseSpeed += 0.2
             self._stats['Permanent']['holy'] -= 15
-            self._stats['Permanent']['hp_regen'] -= 5
             self._stats['Permanent']['added_armour'] -= 100
             self.maxFavour -= 50
         return True
@@ -537,7 +542,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._baseDamage += 2
             self._baseSpeed -= 0.2
             self._stats['Permanent']['holy'] += 15
-            self._stats['Permanent']['hp_regen'] += 5
             self._stats['Permanent']['added_armour'] += 100
             self.maxFavour += 50
         self._recalculateStats()
+
+...

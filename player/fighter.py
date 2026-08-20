@@ -113,8 +113,8 @@ class Fighter(Player): # higher speed, lower damage, physical damage
                 console.print('[gold1]Marshal: Critical Hit! Gained 2 turns of Momentum and all ability cooldowns reduced by 1.[/gold1]')
         return crit, critMulti
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
         comboGained = False
         bonus = 0
         damageDealt = int(damageDealt * (self._combo / 100) * self.comboEffect)
@@ -188,15 +188,16 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
     def onKill(self, entity, attackData):
+        super().onKill()
         if self._ascendancy == 'Marshal':
             self.marshalStaminaReduction = True
             console.print('[fire]Marshal: Killed an enemy! Your next ability will have 50% reduced stamina cost[/fire]')
         return None
 
-    def damage(self, damage, damageType, combatUnit=None):
+    def damage(self, damage, damageType, combatUnit=None, **kwargs):
         if self._ascendancy == 'Barbarian':
             damage = round(damage * 1.1)
-        return super().damage(damage, damageType, combatUnit)
+        return super().damage(damage, damageType, combatUnit, **kwargs)
 
     def onTurnStart(self):
         if self._ascendancy == 'Bladedancer' and self.flurryTurns > 0:
@@ -211,7 +212,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
 
         super().onTurnStart()
 
-    def onBattleEnd(self):
+    def onCombatEnd(self):
         if self._ascendancy == 'Champion':
             healing = int((5 * self._combo) + (self._maxHealth * 0.05 * self.aegis))
             self.heal(healing)
@@ -225,7 +226,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.marshalAttackCount = 0
         self.marshalDamageStacks = 0
         self.versatilityTypes = []
-        super().onBattleEnd()
+        super().onCombatEnd()
 
     def updateAscendancy(self, ascendancy):
         if ascendancy == 'Bladedancer':

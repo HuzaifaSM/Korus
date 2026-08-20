@@ -1,19 +1,8 @@
-NOTES:
-  - resolveEffects() in abilities.py is where an ability's effects dict (target/self) gets turned into StatusEffect objects; performAttack() in combat.py is what actually applies them
-  - make sure all 'crit damage' or similar is variable named to critMulti
-
 BUGS:
-- druid verdance buff display for beast is incorrect. case: current verdance 2/30, buffs: +" damage, +200.0% elemental res (WRONG), +0.00 speed, same for human form (percentages seem to be 100x larger than they should be)
-  > ignore for now (druid needs a rework anyway)
-- burn debuff labelled as 'fire'
-- defense randomiser runes from armour/evasion -> energy shield keep higher base than ES would have, vice versa most likely also true
-- unsure if exposure debuffs are working correctly
 - Dreadnought (marauder ascendancy) currently does not grant +5% max cold resistance. must be implemented after max resistances are added/implemented properly
+- enemy ability have no tags
 
 NEW AFFIXES:
-  - health/stamina on hit/kill suffixes on weapons and rings
-  > +max stamina
-    - suffix, scale same on all pieces of equipment, armour only
   - +x to max y resistance suffix (rings, amulet, armour)
     > move off of armour and onto sigils and shields once they exist
     > needs a new section in Entity._stats['Resistances']
@@ -26,10 +15,6 @@ NEW AFFIXES:
         > 1 res roll 10-15
         > multi-res roll 9-12
         > all res roll 7-10
-  - thorns damage: head, feet, legs, boots - prefix
-    > deals flat physical damage back to the attacker
-    > tier 1 rolls 1-3, 7 max tiers, tier 7 could roll 60-80 or something
-    > semi-rare affix
   > mythic and soulbound affixes could include learning new abilities
 
 - debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
@@ -39,12 +24,13 @@ NEW AFFIXES:
   > Classes in progress:
     - paladin
     - wretch
+    - warrior
 
 OTHER STUFF:
   - all ascendancy descriptions should have a 'lore line' using mythic styling to give a 'lore reason' for the conversion from base class
-    > finished: cultist, warrior, wretch
+    > finished: cultist, warrior, wretch, marauder, tempest, paladin, spectre, wanderer
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
-  - add parallel and foresight runes
+  - add foresight rune
     > foresight rune might need a complex system:
       - chatgpt recommended: give each item an id, and whenever a foresight is used and any craft results are previewed, save that result as the only result rollable from that specific item
       - for example: all equipment get a 'foresightResults' dict, whenver a rune is 'applied' to them, the result is stored as:
@@ -56,9 +42,9 @@ OTHER STUFF:
   - playtime per save file
 
 CURRENTLY WORKING ON: (main order of implementation)
-  - implement marauder and tempest classes
-  - look over paladin ascendancies and base class, see if anything small needs to be added/tweaked
-  - add 1 more mechanic for wanderer, potentially spectre as well
+  - implement spectre vengeance mechanic and make sure all ascendancy mechanics are also implemented (changes/additions to all)
+    > wraith should have a display (probably in styles.py) which shows how much ghostly healing remains until the next health cut
+  - implement wanderer hope, hopelessness, radiance and devastation mechanic
   - rework fighter class
     > new mechanic uses stances: offensive and defensive
       - offensive deals more damage but takes more damage, defensive is reverse
@@ -76,8 +62,6 @@ CURRENTLY WORKING ON: (main order of implementation)
       - same logic as equipment inventory
     > add a new option that uses fuel + blueprints to combine x amount of items of the same rarity into 1 item of a higher rarity
       - limited by forge level: 1 = uncommon, 2 = rare, 3 = epic, 4 = legendary, 5 = 5x legendary for mythic
-
-  - for mythic items, if they don't have a mythic affix (e.g. removed by an erasing rune), for all runes that add affixes, add implementation to allow a new mythic affix to be rolled with a higher priority than standard affixes (e.g. add for growth, chaos, affix randomiser)
 
   - ascendancy abilities:
     > ascendancies add 2 abilities each, with 2 evolutions, and edit up to 2 existing base class abilities
@@ -98,10 +82,17 @@ CURRENTLY WORKING ON: (main order of implementation)
 
   - consumable rework
 
-  - item rework
-
   - completely rewrite help.py and all sections of Help to better explain everything
     > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.
+    > all keywords in styles.py should also be explained
+      - separated into 'general keywords' and 'class specific'
+       > class specific should probably only show keywords related to the player's current class + all ascendancies
+       > should also be an 'all class mechanics' section that lets players discover/read everything else
+    > tutorial groundwork
+      - accessible from start menu screen
+        > scripted playthrough which explains everything + mechanics
+
+  - item rework
 
   - dungeons
     > better modifiers + more modifiers
@@ -113,6 +104,24 @@ CURRENTLY WORKING ON: (main order of implementation)
     > dungeons should be able to drop from level 10+
       - at low levels, should feel like 'a quick challenge' - still difficult but doable, without needing bosses at the end
     > dungeons would be easier to design once enemy rework is done
+
+  - ascendancy levels
+
+MYTHIC AFFIX REWORK:
+  - mythic affixes are currently just reskinned numeric affixes (MythicAffix subclasses Affix, same minVal/maxVal/isPercent model, aggregated the same generic way as any other affix)
+  - goal: mythic affixes should be rule-breaking/build-defining like PoE uniques, not stat sticks. soulbound affixes stay as 'same stats but bigger numbers', mythic becomes the 'mechanic-altering' tier
+  - plan:
+    > new effect registry (scripts/mythicEffects.py): one class/function per unique mythic mechanic, implementing whichever combat hook it needs (onBeforeDamage, onPrepareHit, onAfterMitigation, getEffectiveArmour, etc. - same hook system used by class ascendancies)
+      - JSON keeps bookkeeping (id, name, description, slot, level req, weight), new "effect" field names which registered implementation to use
+      - mirrors existing abilities.py pattern of separating data-driven effect params from the code that applies them
+    > item-level hook composition: give equipped items a way to register into the same hook points ascendancies use (e.g. self._mythicEffects list on Entity, consulted by base hook implementations alongside the class override) so item effects and class mechanics compose without fighting each other
+    > ability-granting mythic/soulbound affixes: inject the granted Ability into self._abilities on equip, remove on unequip - reuses the existing ability system entirely
+    > guardrail against 'equip for the buff, then discard' abuse: any 'permanent gain' effect must track accumulated state on the ITEM, not the player, so unequipping loses it. everything else should be live-recalculated (e.g. '+x% damage per 1% missing hp'), never a stacking buff that outlives the item
+    > content: hand-design a small flagship set first (~5-10 across a few slots, including at least one ability-granting example) before mass-producing - existing 43 mythic affixes aren't salvageable, full rewrite
+    > fold in the rollMythicAffix None-crash fix (equipType not in MYTHIC_AFFIX_POOL returns None, caller doesn't guard against it) as part of the content pass, since slot coverage changes anyway
+  - add 'mythic' crafting runes:
+    > deal specifically with mythic affixes. e.g. 'mythic growth rune' to add a mythic affix to a mythic item that doesn't have one
+    > basically standard crafting runes but only useable on mythic items
 
 FUN BONUS LIBRARIES:
   - markovify library

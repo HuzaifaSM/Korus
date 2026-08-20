@@ -738,7 +738,7 @@ class Game:
 
     def postBattle(self, result: str, enemies: List[Enemy]):
         if result == "victory":
-            self.player.onBattleEnd()
+            self.player.onCombatEnd()
             self.battlesWon += 1
             currentAreaLevel = self.areaLevel
             if self.areaLevel > 100:
@@ -932,7 +932,7 @@ class Game:
             elif action.lower() == 'f':
                 console.print("[red]Fled from battle.[/red]")
                 self.combatManager.battleActive = False
-                self.player.onBattleEnd()
+                self.player.onCombatEnd()
                 return
             elif action.lower() == 'p':
                 console.print("[dim red1]You skipped your turn...[/dim red1]")

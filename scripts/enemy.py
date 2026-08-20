@@ -104,10 +104,10 @@ class Enemy(Entity):
             self._stats['Temporary']['crit_chance'] -= self.ruin * 0.01
             self._stats['Temporary']['all'] -= self.ruin
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
 
-        damageDealt = int(damageDealt * (1 - (self.tortureStacks * 0.01)))
+        damageDealt = int(damageDealt * (1 - (self.tortureStacks * 0.02)))
 
         if self.shameTurns > 0:
             damageDealt = int(damageDealt * 0.9)
@@ -117,10 +117,10 @@ class Enemy(Entity):
 
         return damageDealt, damageType
 
-    def onHit(self, damageTaken, damageType, crit = False, attacker = None, combatManager=None):
+    def onHit(self, damageTaken, damageType, crit, attacker , combatManager):
         damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
-        damageTaken = int(damageTaken * (1 + (self.tortureStacks * 0.01)))
+        damageTaken = int(damageTaken * (1 + (self.tortureStacks * 0.02)))
 
         if damageType == 'chaos':
             damageTaken = int(damageTaken * (1 + (self.corruption * 0.02)))
@@ -140,8 +140,10 @@ class Enemy(Entity):
 
     def onCrit(self, targets, combatManager, critDamage):
         if self.tortureStacks > 0:
-            self.tortureStacks = 0
-            console.print(f"[asc_mindbreaker]{self._name} has removed all their Torture stacks![/asc_mindbreaker]")
+            t = targets[0]
+            if not t.radiance:
+                self.tortureStacks = 0
+                console.print(f"[asc_mindbreaker]{self._name} has removed all their Torture stacks![/asc_mindbreaker]")
 
         return critDamage
 

@@ -120,7 +120,7 @@
                 "sign": false
             },
             "hp_regen": {
-                "stat": "hpRegen",
+                "stat": "hp_regen",
                 "isPercent": false,
                 "categories": ["health", "defensive", "mythic"],
                 "tiers": {
@@ -173,7 +173,7 @@
                 "sign": false
             },
             "max_hp_regen": {
-                "stat": "hpRegen",
+                "stat": "hp_regen",
                 "isPercent": true,
                 "categories": ["health", "defensive", "mythic", "percent"],
                 "tiers": {

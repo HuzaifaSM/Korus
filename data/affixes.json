@@ -270,6 +270,57 @@
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
                     "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
                 }
+            },
+            "health_on_hit": {
+                "stat": "health_on_hit",
+                "isPercent": false,
+                "categories": ["healing", "health", "defensive", "utility", "regeneration"],
+                "tiers": {
+                    "1": { "levelReq": 3, "min": 1, "max": 4, "weight": 875, "name": "of Aid" },
+                    "2": { "levelReq": 15, "min": 5, "max": 12, "weight": 700, "name": "of Health" },
+                    "3": { "levelReq": 30, "min": 13, "max": 26, "weight": 500, "name": "of Recovery" },
+                    "4": { "levelReq": 50, "min": 27, "max": 40, "weight": 325, "name": "of Leeching" },
+                    "5": { "levelReq": 65, "min": 41, "max": 57, "weight": 175, "name": "of Blood" },
+                    "6": { "levelReq": 85, "min": 58, "max": 70, "weight": 75, "name": "of Leeching" }
+                }
+            },
+            "health_on_kill": {
+                "stat": "health_on_kill",
+                "isPercent": false,
+                "categories": ["healing", "health", "defensive", "utility", "regeneration"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 15, "max": 25, "weight": 800, "name": "of Help" },
+                    "2": { "levelReq": 22, "min": 26, "max": 38, "weight": 650, "name": "of Siphoning" },
+                    "3": { "levelReq": 35, "min": 39, "max": 53, "weight": 450, "name": "of Restoration" },
+                    "4": { "levelReq": 55, "min": 54, "max": 76, "weight": 250, "name": "of Thirst" },
+                    "5": { "levelReq": 70, "min": 77, "max": 95, "weight": 100, "name": "of the Blood Drinker" },
+                    "6": { "levelReq": 88, "min": 96, "max": 125, "weight": 30, "name": "of Eternal Youth" }
+                }
+            },
+            "stamina_on_hit": {
+                "stat": "stamina_on_hit",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 1, "max": 3, "weight": 900, "name": "of Rest" },
+                    "2": { "levelReq": 12, "min": 4, "max": 9,"weight": 775, "name": "of Recoup" },
+                    "3": { "levelReq": 25, "min": 10, "max": 18, "weight": 625, "name": "of Composure" },
+                    "4": { "levelReq": 45, "min": 19, "max": 30, "weight": 475, "name": "of Rhythm" },
+                    "5": { "levelReq": 60, "min": 31, "max": 50, "weight": 280, "name": "of Free Flow" },
+                    "6": { "levelReq": 80, "min": 51, "max": 70, "weight": 100, "name": "of Restlessness" }
+                }
+            },
+            "stamina_on_kill": {
+                "stat": "stamina_on_kill",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 8, "max": 15, "weight": 875, "name": "of Flow" },
+                    "2": { "levelReq": 20, "min": 16, "max": 25, "weight": 725, "name": "of Refreshment" },
+                    "3": { "levelReq": 35, "min": 26, "max": 39, "weight": 575, "name": "of Essence Drain" },
+                    "4": { "levelReq": 50, "min": 40, "max": 59, "weight": 350, "name": "of Seeping Energy" },
+                    "5": { "levelReq": 75, "min": 60, "max": 85, "weight": 150, "name": "of Unending Speed" }
+                }
             }
         }
     },
@@ -401,6 +452,21 @@
                     "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
                     "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
                     "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            },
+            "thorns": {
+                "stat": "thorns",
+                "isPercent": false,
+                "categories": ["thorns", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 875, "name": "Spiky" },
+                    "2": { "levelReq": 10, "min": 4, "max": 10, "weight": 750, "name": "Pricking" },
+                    "3": { "levelReq": 25, "min": 11, "max": 20, "weight": 600, "name": "Barbed" },
+                    "4": { "levelReq": 45, "min": 21, "max": 35, "weight": 425, "name": "Quilled" },
+                    "5": { "levelReq": 62, "min": 36, "max": 55, "weight": 275, "name": "Hedgehog's" },
+                    "6": { "levelReq": 75, "min": 56, "max": 70, "weight": 125, "name": "Acerbic" },
+                    "7": { "levelReq": 83, "min": 71, "max": 88, "weight": 65, "name": "Retaliatory" },
+                    "8": { "levelReq": 90, "min": 89, "max": 110, "weight": 25, "name": "Malicious" }
                 }
             }
         },
@@ -746,6 +812,20 @@
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
                 }
+            },
+            "added_stamina": {
+                "stat": "added_stamina",
+                "isPercent": false,
+                "categories": ["stamina", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 3, "min": 5, "max": 10, "weight": 875, "name": "of Fitness" },
+                    "2": { "levelReq": 10, "min": 11, "max": 25, "weight": 750, "name": "of Exercise" },
+                    "3": { "levelReq": 25, "min": 26, "max": 40, "weight": 625, "name": "of Athleticism" },
+                    "4": { "levelReq": 45, "min": 41, "max": 65, "weight": 450, "name": "of Stamina" },
+                    "5": { "levelReq": 68, "min": 66, "max": 85, "weight": 300, "name": "of Resilience" },
+                    "6": { "levelReq": 80, "min": 86, "max": 100, "weight": 175, "name": "of Indefatigability" },
+                    "7": { "levelReq": 90, "min": 101, "max": 125, "weight": 90, "name": "of Boundless Energy" }
+                }
             }
         }
     },
@@ -924,6 +1004,21 @@
                     "4": { "levelReq": 72, "min": 36, "max": 52, "weight": 200, "name": "Dissipating" },
                     "5": { "levelReq": 85, "min": 53, "max": 68, "weight": 100, "name": "Voiding" },
                     "6": { "levelReq": 95, "min": 69, "max": 82, "weight": 40, "name": "Untouchable" }
+                }
+            },
+            "thorns": {
+                "stat": "thorns",
+                "isPercent": false,
+                "categories": ["thorns", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 875, "name": "Spiky" },
+                    "2": { "levelReq": 10, "min": 4, "max": 10, "weight": 750, "name": "Pricking" },
+                    "3": { "levelReq": 25, "min": 11, "max": 20, "weight": 600, "name": "Barbed" },
+                    "4": { "levelReq": 45, "min": 21, "max": 35, "weight": 425, "name": "Quilled" },
+                    "5": { "levelReq": 62, "min": 36, "max": 55, "weight": 275, "name": "Hedgehog's" },
+                    "6": { "levelReq": 75, "min": 56, "max": 70, "weight": 125, "name": "Acerbic" },
+                    "7": { "levelReq": 83, "min": 71, "max": 88, "weight": 65, "name": "Retaliatory" },
+                    "8": { "levelReq": 90, "min": 89, "max": 110, "weight": 25, "name": "Malicious" }
                 }
             }
         },
@@ -1244,6 +1339,20 @@
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
                 }
+            },
+            "added_stamina": {
+                "stat": "added_stamina",
+                "isPercent": false,
+                "categories": ["stamina", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 3, "min": 5, "max": 10, "weight": 875, "name": "of Fitness" },
+                    "2": { "levelReq": 10, "min": 11, "max": 25, "weight": 750, "name": "of Exercise" },
+                    "3": { "levelReq": 25, "min": 26, "max": 40, "weight": 625, "name": "of Athleticism" },
+                    "4": { "levelReq": 45, "min": 41, "max": 65, "weight": 450, "name": "of Stamina" },
+                    "5": { "levelReq": 68, "min": 66, "max": 85, "weight": 300, "name": "of Resilience" },
+                    "6": { "levelReq": 80, "min": 86, "max": 100, "weight": 175, "name": "of Indefatigability" },
+                    "7": { "levelReq": 90, "min": 101, "max": 125, "weight": 90, "name": "of Boundless Energy" }
+                }
             }
         }
     },
@@ -1406,6 +1515,21 @@
                     "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
                     "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
                     "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            },
+            "thorns": {
+                "stat": "thorns",
+                "isPercent": false,
+                "categories": ["thorns", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 875, "name": "Spiky" },
+                    "2": { "levelReq": 10, "min": 4, "max": 10, "weight": 750, "name": "Pricking" },
+                    "3": { "levelReq": 25, "min": 11, "max": 20, "weight": 600, "name": "Barbed" },
+                    "4": { "levelReq": 45, "min": 21, "max": 35, "weight": 425, "name": "Quilled" },
+                    "5": { "levelReq": 62, "min": 36, "max": 55, "weight": 275, "name": "Hedgehog's" },
+                    "6": { "levelReq": 75, "min": 56, "max": 70, "weight": 125, "name": "Acerbic" },
+                    "7": { "levelReq": 83, "min": 71, "max": 88, "weight": 65, "name": "Retaliatory" },
+                    "8": { "levelReq": 90, "min": 89, "max": 110, "weight": 25, "name": "Malicious" }
                 }
             }
         },
@@ -1727,6 +1851,20 @@
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
                 }
+            },
+            "added_stamina": {
+                "stat": "added_stamina",
+                "isPercent": false,
+                "categories": ["stamina", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 3, "min": 5, "max": 10, "weight": 875, "name": "of Fitness" },
+                    "2": { "levelReq": 10, "min": 11, "max": 25, "weight": 750, "name": "of Exercise" },
+                    "3": { "levelReq": 25, "min": 26, "max": 40, "weight": 625, "name": "of Athleticism" },
+                    "4": { "levelReq": 45, "min": 41, "max": 65, "weight": 450, "name": "of Stamina" },
+                    "5": { "levelReq": 68, "min": 66, "max": 85, "weight": 300, "name": "of Resilience" },
+                    "6": { "levelReq": 80, "min": 86, "max": 100, "weight": 175, "name": "of Indefatigability" },
+                    "7": { "levelReq": 90, "min": 101, "max": 125, "weight": 90, "name": "of Boundless Energy" }
+                }
             }
         }
     },
@@ -1858,6 +1996,21 @@
                     "4": { "levelReq": 45, "min": 0.31,  "max": 0.45,  "weight": 460, "name": "Volatile" },
                     "5": { "levelReq": 65, "min": 0.46,  "max": 0.65,  "weight": 260, "name": "Reality-Warping" },
                     "6": { "levelReq": 85, "min": 0.66,  "max": 0.90,  "weight": 120, "name": "Paracausal" }
+                }
+            },
+            "thorns": {
+                "stat": "thorns",
+                "isPercent": false,
+                "categories": ["thorns", "defensive"],
+                "tiers": {
+                    "1": { "levelReq": 1, "min": 1, "max": 3, "weight": 875, "name": "Spiky" },
+                    "2": { "levelReq": 10, "min": 4, "max": 10, "weight": 750, "name": "Pricking" },
+                    "3": { "levelReq": 25, "min": 11, "max": 20, "weight": 600, "name": "Barbed" },
+                    "4": { "levelReq": 45, "min": 21, "max": 35, "weight": 425, "name": "Quilled" },
+                    "5": { "levelReq": 62, "min": 36, "max": 55, "weight": 275, "name": "Hedgehog's" },
+                    "6": { "levelReq": 75, "min": 56, "max": 70, "weight": 125, "name": "Acerbic" },
+                    "7": { "levelReq": 83, "min": 71, "max": 88, "weight": 65, "name": "Retaliatory" },
+                    "8": { "levelReq": 90, "min": 89, "max": 110, "weight": 25, "name": "Malicious" }
                 }
             }
         },
@@ -2179,6 +2332,20 @@
                     "5": { "levelReq": 56, "min": 23, "max": 35, "weight": 410, "name": "of Energy" },
                     "6": { "levelReq": 72, "min": 36, "max": 52, "weight": 260, "name": "of Serene Flow" },
                     "7": { "levelReq": 84, "min": 53, "max": 72, "weight": 150, "name": "of Infinite Stamina" }
+                }
+            },
+            "added_stamina": {
+                "stat": "added_stamina",
+                "isPercent": false,
+                "categories": ["stamina", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 3, "min": 5, "max": 10, "weight": 875, "name": "of Fitness" },
+                    "2": { "levelReq": 10, "min": 11, "max": 25, "weight": 750, "name": "of Exercise" },
+                    "3": { "levelReq": 25, "min": 26, "max": 40, "weight": 625, "name": "of Athleticism" },
+                    "4": { "levelReq": 45, "min": 41, "max": 65, "weight": 450, "name": "of Stamina" },
+                    "5": { "levelReq": 68, "min": 66, "max": 85, "weight": 300, "name": "of Resilience" },
+                    "6": { "levelReq": 80, "min": 86, "max": 100, "weight": 175, "name": "of Indefatigability" },
+                    "7": { "levelReq": 90, "min": 101, "max": 125, "weight": 90, "name": "of Boundless Energy" }
                 }
             }
         }
@@ -2597,6 +2764,57 @@
                     "5": { "levelReq": 56, "min": 19, "max": 30, "weight": 410, "name": "of Energy" },
                     "6": { "levelReq": 72, "min": 31, "max": 48, "weight": 260, "name": "of Serene Flow" },
                     "7": { "levelReq": 84, "min": 49, "max": 68, "weight": 150, "name": "of Infinite Stamina" }
+                }
+            },
+            "health_on_hit": {
+                "stat": "health_on_hit",
+                "isPercent": false,
+                "categories": ["healing", "health", "defensive", "utility", "regeneration"],
+                "tiers": {
+                    "1": { "levelReq": 3, "min": 1, "max": 2, "weight": 875, "name": "of Aid" },
+                    "2": { "levelReq": 15, "min": 3, "max": 7, "weight": 700, "name": "of Health" },
+                    "3": { "levelReq": 30, "min": 8, "max": 15, "weight": 500, "name": "of Recovery" },
+                    "4": { "levelReq": 50, "min": 16, "max": 23, "weight": 325, "name": "of Leeching" },
+                    "5": { "levelReq": 65, "min": 24, "max": 33, "weight": 175, "name": "of Blood" },
+                    "6": { "levelReq": 85, "min": 34, "max": 45, "weight": 75, "name": "of Leeching" }
+                }
+            },
+            "health_on_kill": {
+                "stat": "health_on_kill",
+                "isPercent": false,
+                "categories": ["healing", "health", "defensive", "utility", "regeneration"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 7, "max": 12, "weight": 800, "name": "of Help" },
+                    "2": { "levelReq": 22, "min": 13, "max": 20, "weight": 650, "name": "of Siphoning" },
+                    "3": { "levelReq": 35, "min": 21, "max": 31, "weight": 450, "name": "of Restoration" },
+                    "4": { "levelReq": 55, "min": 32, "max": 46, "weight": 250, "name": "of Thirst" },
+                    "5": { "levelReq": 70, "min": 47, "max": 59, "weight": 100, "name": "of the Blood Drinker" },
+                    "6": { "levelReq": 88, "min": 60, "max": 85, "weight": 30, "name": "of Eternal Youth" }
+                }
+            },
+            "stamina_on_hit": {
+                "stat": "stamina_on_hit",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 5, "min": 1, "max": 2, "weight": 900, "name": "of Rest" },
+                    "2": { "levelReq": 12, "min": 3, "max": 6,"weight": 775, "name": "of Recoup" },
+                    "3": { "levelReq": 25, "min": 7, "max": 12, "weight": 625, "name": "of Composure" },
+                    "4": { "levelReq": 45, "min": 13, "max": 20, "weight": 475, "name": "of Rhythm" },
+                    "5": { "levelReq": 60, "min": 21, "max": 33, "weight": 280, "name": "of Free Flow" },
+                    "6": { "levelReq": 80, "min": 34, "max": 47, "weight": 100, "name": "of Restlessness" }
+                }
+            },
+            "stamina_on_kill": {
+                "stat": "stamina_on_kill",
+                "isPercent": false,
+                "categories": ["stamina", "regeneration", "utility"],
+                "tiers": {
+                    "1": { "levelReq": 10, "min": 5, "max": 8, "weight": 875, "name": "of Flow" },
+                    "2": { "levelReq": 20, "min": 9, "max": 14, "weight": 725, "name": "of Refreshment" },
+                    "3": { "levelReq": 35, "min": 15, "max": 25, "weight": 575, "name": "of Essence Drain" },
+                    "4": { "levelReq": 50, "min": 26, "max": 39, "weight": 350, "name": "of Seeping Energy" },
+                    "5": { "levelReq": 75, "min": 40, "max": 55, "weight": 150, "name": "of Unending Speed" }
                 }
             }
         }

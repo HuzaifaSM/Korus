@@ -3,6 +3,7 @@ from scripts.affixes import rollAffix, Affix
 import random
 import json
 from typing import Dict
+from copy import deepcopy
 
 class ImmutableRune(CraftingItem):
     name = '[steel_blue bold underline]Immutable Rune[/steel_blue bold underline]'
@@ -12,7 +13,7 @@ class ImmutableRune(CraftingItem):
     dropWeight = 15
 
     def apply(self, item):
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'
@@ -59,7 +60,7 @@ class PreservationRune(CraftingItem):
     dropWeight = 65
 
     def apply(self, item):
-        if item.destabilised or item.entropyLocked:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'
@@ -116,7 +117,7 @@ class EchoingRune(CraftingItem):
         return random.choice(values)
 
     def apply(self, item):
-        if item.entropyLocked or item.destabilised:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'
@@ -203,7 +204,7 @@ class SoulboundRune(CraftingItem):
         return random.choice(allEmpty)
     
     def apply(self, item):
-        if item.entropyLocked or item.destabilised or item.soulbound:
+        if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item cannot be modified'
@@ -301,11 +302,35 @@ class SoulboundRune(CraftingItem):
                 entropyAdded=self.successEntropy
             )
 
+class ParallelRune(CraftingItem):
+    name = '[misty_rose3 bold italic underline]Parallel Rune[/misty_rose3 bold italic underline]'
+    description = 'Creates a copy of an item. Both items become unmodifiable.'
+    minItemLevel = 0
+    successEntropy = 0
+    dropWeight = 1
+
+    def apply(self, item, player):
+        if not item.craftable:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item cannot be modified"
+            )
+
+        item.parallel = True
+        copy = deepcopy(item)
+        player._equipmentStorage.append(copy)
+
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message=f"{item.name} was successfully duplicated. The duplicate can be found in your inventory."
+        )
+
 UNIQUE_RUNES: Dict[str, CraftingItem] = {
     'immutable': ImmutableRune(),
     'preservation': PreservationRune(),
     'echoing': EchoingRune(),
-    'soulbound': SoulboundRune()
+    'soulbound': SoulboundRune(),
+    'parallel': ParallelRune(),
 }
 
 """

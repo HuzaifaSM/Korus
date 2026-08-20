@@ -2737,6 +2737,519 @@
         "Calamity": {},
         "Archon": {}
     },
+    "Marauder": {
+        "base": {
+            "Frostbite Strike": {
+                "name": "Frostbite Strike",
+                "category": "damage",
+                "tags": [
+                    "damage",
+                    "cold",
+                    "elemental",
+                    "strike"
+                ],
+                "damage_base": 4,
+                "damage_scaling": 35,
+                "damage_type": "cold",
+                "stamina_cost": 15,
+                "level": 1,
+                "cooldown": 2,
+                "effects": {},
+                "description": "Lash out with a claw of biting frost.\n  - Cooldown: 2 Turns\n  - Deal 4 Damage + 35% of your base damage as Cold.",
+                "evolutions": {
+                    "25": {
+                        "damage_base": 32,
+                        "damage_scaling": 60,
+                        "level": 25,
+                        "stamina_cost": 40,
+                        "tags+": [
+                            "chill"
+                        ],
+                        "effects": {
+                            "target": {
+                                "chill": {
+                                    "stacks": 1,
+                                    "turns": 2,
+                                    "amount": 0.15
+                                }
+                            }
+                        },
+                        "description": "Lash out with a claw of biting frost.\n  - Cooldown: 2 Turns\n  - Deal 32 Damage + 60% of your base damage as Cold.\n  - Apply 1 stack of Chill: 15% Reduced Speed for 2 turns."
+                    },
+                    "50": {
+                        "damage_base": 78,
+                        "damage_scaling": 85,
+                        "level": 50,
+                        "stamina_cost": 70,
+                        "effects": {
+                            "target": {
+                                "chill": {
+                                    "stacks": 2,
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Lash out with a claw of biting frost.\n  - Cooldown: 2 Turns\n  - Deal 78 Damage + 85% of your base damage as Cold.\n  - Apply 2 stacks of Chill: 20% Reduced Speed for 2 turns."
+                    },
+                    "75": {
+                        "damage_base": 175,
+                        "damage_scaling": 125,
+                        "level": 75,
+                        "stamina_cost": 115,
+                        "effects": {
+                            "target": {
+                                "chill": {
+                                    "stacks": 3,
+                                    "turns": 3,
+                                    "amount": 0.25
+                                }
+                            }
+                        },
+                        "description": "Lash out with a claw of biting frost.\n  - Cooldown: 2 Turns\n  - Deal 175 Damage + 125% of your base damage as Cold.\n  - Apply 3 stacks of Chill: 25% Reduced Speed for 3 turns."
+                    }
+                }
+            },
+            "Predator's Resolve": {
+                "name": "Predator's Resolve",
+                "category": "buff",
+                "tags": [
+                    "buff",
+                    "heal",
+                    "haste",
+                    "stoneskin",
+                    "cold"
+                ],
+                "heal_base": 6,
+                "heal_percent": 1,
+                "damage_type": "heal",
+                "stamina_cost": 30,
+                "level": 5,
+                "cooldown": 3,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.1,
+                            "damage": 1.1
+                        },
+                        "stoneskin": {
+                            "turns": 2,
+                            "amount": 0.06
+                        }
+                    }
+                },
+                "description": "Steady your breath and savour the hunt to come.\n  - Cooldown: 3 Turns\n  - Heal 6 HP + 1% Max HP.\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage.\n  - Gain 6% Damage Reduction for 2 turns.",
+                "evolutions": {
+                    "30": {
+                        "heal_base": 22,
+                        "heal_percent": 2,
+                        "level": 30,
+                        "stamina_cost": 65,
+                        "tags+": [
+                            "regeneration"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.15,
+                                    "damage": 1.15
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.09
+                                },
+                                "regeneration": {
+                                    "turns": 2,
+                                    "amount_flat": 12,
+                                    "amount_percent": 1
+                                }
+                            }
+                        },
+                        "description": "Steady your breath and savour the hunt to come.\n  - Cooldown: 3 Turns\n  - Heal 22 HP + 2% Max HP.\n  - Haste: +0.15 Speed, +15% Damage. 9% Damage Reduction for 2 turns.\n  - 12 HP + 1% Max HP Regen for 2 turns."
+                    },
+                    "55": {
+                        "heal_base": 55,
+                        "heal_percent": 4,
+                        "level": 55,
+                        "stamina_cost": 115,
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.2,
+                                    "damage": 1.2
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.12
+                                },
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 28,
+                                    "amount_percent": 2
+                                }
+                            }
+                        },
+                        "description": "Steady your breath and savour the hunt to come.\n  - Cooldown: 3 Turns\n  - Heal 55 HP + 4% Max HP.\n  - Haste: +0.2 Speed, +20% Damage for 3 turns. 12% Damage Reduction for 3 turns.\n  - 28 HP + 2% Max HP Regen for 3 turns."
+                    },
+                    "80": {
+                        "heal_base": 105,
+                        "heal_percent": 7,
+                        "level": 80,
+                        "stamina_cost": 180,
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.25,
+                                    "damage": 1.3
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.16
+                                },
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 45,
+                                    "amount_percent": 3
+                                }
+                            }
+                        },
+                        "description": "Steady your breath and savour the hunt to come.\n  - Cooldown: 3 Turns\n  - Heal 105 HP + 7% Max HP.\n  - Haste: +0.25 Speed, +30% Damage for 3 turns. 16% Damage Reduction for 3 turns.\n  - 45 HP + 3% Max HP Regen for 3 turns."
+                    }
+                }
+            },
+            "Baying of the Hunt": {
+                "name": "Baying of the Hunt",
+                "category": "debuff",
+                "tags": [
+                    "debuff",
+                    "buff",
+                    "aoe",
+                    "cold",
+                    "haste",
+                    "chill"
+                ],
+                "stamina_cost": 40,
+                "level": 10,
+                "cooldown": 4,
+                "targets": "all",
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.1,
+                            "damage": 1.1
+                        }
+                    },
+                    "target": {
+                        "chill": {
+                            "stacks": 1,
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Sound the hunting call, urging your prey toward exhaustion.\n  - Cooldown: 4 Turns\n  - Gain Haste for 2 turns: +0.1 Speed, +10% Damage.\n  - All enemies gain 1 stack of Chill: 15% Reduced Speed for 2 turns.",
+                "evolutions": {
+                    "35": {
+                        "level": 35,
+                        "stamina_cost": 80,
+                        "tags+": [
+                            "vulnerable"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.15,
+                                    "damage": 1.15
+                                }
+                            },
+                            "target": {
+                                "chill": {
+                                    "stacks": 1,
+                                    "turns": 2,
+                                    "amount": 0.2
+                                },
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.15
+                                }
+                            }
+                        },
+                        "description": "Sound the hunting call, urging your prey toward exhaustion.\n  - Cooldown: 4 Turns\n  - Haste: +0.15 Speed, +15% Damage for 2 turns.\n  - All enemies gain 1 stack of Chill (20% Reduced Speed) and 15% Vulnerable for 2 turns."
+                    },
+                    "60": {
+                        "level": 60,
+                        "stamina_cost": 140,
+                        "tags+": [
+                            "stoneskin"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.2,
+                                    "damage": 1.25
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.08
+                                }
+                            },
+                            "target": {
+                                "chill": {
+                                    "stacks": 2,
+                                    "turns": 2,
+                                    "amount": 0.3
+                                },
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.25
+                                }
+                            }
+                        },
+                        "description": "Sound the hunting call, urging your prey toward exhaustion.\n  - Cooldown: 4 Turns\n  - Haste: +0.2 Speed, +25% Damage. 8% Damage Reduction for 2 turns.\n  - All enemies gain 2 stacks of Chill (30% Reduced Speed) and 25% Vulnerable for 2 turns."
+                    },
+                    "85": {
+                        "level": 85,
+                        "stamina_cost": 220,
+                        "tags+": [
+                            "weaken"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.3,
+                                    "damage": 1.4
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.1
+                                }
+                            },
+                            "target": {
+                                "chill": {
+                                    "stacks": 2,
+                                    "turns": 3,
+                                    "amount": 0.4
+                                },
+                                "vulnerable": {
+                                    "turns": 3,
+                                    "amount": 0.35
+                                },
+                                "weaken": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Sound the hunting call, urging your prey toward exhaustion.\n  - Cooldown: 4 Turns\n  - Haste: +0.3 Speed, +40% Damage. 10% Damage Reduction for 3 turns.\n  - All enemies gain 2 stacks of Chill (40% Reduced Speed), 35% Vulnerable and 20% Weaken for 2-3 turns."
+                    }
+                }
+            },
+            "Frozen Onslaught": {
+                "name": "Frozen Onslaught",
+                "category": "damage",
+                "tags": [
+                    "damage",
+                    "aoe",
+                    "cold",
+                    "elemental",
+                    "chill"
+                ],
+                "damage_base": 22,
+                "damage_scaling": 20,
+                "damage_type": "cold",
+                "stamina_cost": 48,
+                "level": 15,
+                "cooldown": 4,
+                "targets": "all",
+                "effects": {
+                    "target": {
+                        "chill": {
+                            "stacks": 1,
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Send a wave of killing frost through every enemy.\n  - Cooldown: 4 Turns\n  - Deal 22 Damage + 20% of your base damage as Cold to all enemies.\n  - Apply 1 stack of Chill: 15% Reduced Speed for 2 turns.",
+                "evolutions": {
+                    "40": {
+                        "damage_base": 52,
+                        "damage_scaling": 45,
+                        "level": 40,
+                        "stamina_cost": 85,
+                        "effects": {
+                            "target": {
+                                "chill": {
+                                    "stacks": 2,
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Send a wave of killing frost through every enemy.\n  - Cooldown: 4 Turns\n  - Deal 52 Damage + 45% of your base damage as Cold to all enemies.\n  - Apply 2 stacks of Chill: 20% Reduced Speed for 2 turns."
+                    },
+                    "65": {
+                        "damage_base": 98,
+                        "damage_scaling": 70,
+                        "level": 65,
+                        "stamina_cost": 150,
+                        "tags+": [
+                            "vulnerable"
+                        ],
+                        "effects": {
+                            "target": {
+                                "chill": {
+                                    "stacks": 3,
+                                    "turns": 2,
+                                    "amount": 0.3
+                                },
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Send a wave of killing frost through every enemy.\n  - Cooldown: 4 Turns\n  - Deal 98 Damage + 70% of your base damage as Cold to all enemies.\n  - 3 stacks of Chill (30% Reduced Speed) and 20% Vulnerable for 2 turns."
+                    },
+                    "90": {
+                        "damage_base": 185,
+                        "damage_scaling": 95,
+                        "level": 90,
+                        "stamina_cost": 250,
+                        "effects": {
+                            "target": {
+                                "chill": {
+                                    "stacks": 4,
+                                    "turns": 3,
+                                    "amount": 0.4
+                                },
+                                "vulnerable": {
+                                    "turns": 3,
+                                    "amount": 0.3
+                                }
+                            }
+                        },
+                        "description": "Send a wave of killing frost through every enemy.\n  - Cooldown: 4 Turns\n  - Deal 185 Damage + 95% of your base damage as Cold to all enemies.\n  - 4 stacks of Chill (40% Reduced Speed) and 30% Vulnerable for 3 turns."
+                    }
+                }
+            },
+            "Reaper's Due": {
+                "name": "Reaper's Due",
+                "category": "damage",
+                "tags": [
+                    "damage",
+                    "cold",
+                    "strike",
+                    "debuff",
+                    "execute_bonus",
+                    "vulnerable"
+                ],
+                "damage_base": 42,
+                "damage_scaling": 55,
+                "damage_type": "cold",
+                "stamina_cost": 52,
+                "level": 20,
+                "cooldown": 3,
+                "effects": {
+                    "target": {
+                        "vulnerable": {
+                            "turns": 2,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "description": "Collect what you're owed with a killing blow.\n  - Cooldown: 3 Turns\n  - Deal 42 Damage + 55% of your base damage as Cold.\n  - Deals 50% Increased Damage against targets below 50% Health.\n  - Apply 20% Vulnerable to your target for 2 turns.",
+                "evolutions": {
+                    "45": {
+                        "damage_base": 90,
+                        "damage_scaling": 80,
+                        "level": 45,
+                        "stamina_cost": 85,
+                        "tags+": [
+                            "exposed"
+                        ],
+                        "effects": {
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.3
+                                },
+                                "exposed": {
+                                    "turns": 2,
+                                    "amount": 15
+                                }
+                            }
+                        },
+                        "description": "Collect what you're owed with a killing blow.\n  - Cooldown: 3 Turns\n  - Deal 90 Damage + 80% of your base damage as Cold.\n  - Deals 50% Increased Damage against targets below 50% Health.\n  - Apply 30% Vulnerable and 15% Exposed to your target for 2 turns."
+                    },
+                    "70": {
+                        "damage_base": 155,
+                        "damage_scaling": 110,
+                        "level": 70,
+                        "stamina_cost": 155,
+                        "tags+": [
+                            "chill"
+                        ],
+                        "effects": {
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.4
+                                },
+                                "exposed": {
+                                    "turns": 2,
+                                    "amount": 20
+                                },
+                                "chill": {
+                                    "stacks": 2,
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Collect what you're owed with a killing blow.\n  - Cooldown: 3 Turns\n  - Deal 155 Damage + 110% of your base damage as Cold.\n  - Deals 50% Increased Damage against targets below 50% Health.\n  - Apply 40% Vulnerable, 20% Exposed and 2 stacks of Chill to your target for 2 turns."
+                    },
+                    "95": {
+                        "damage_base": 225,
+                        "damage_scaling": 145,
+                        "level": 95,
+                        "stamina_cost": 270,
+                        "effects": {
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 3,
+                                    "amount": 0.5
+                                },
+                                "exposed": {
+                                    "turns": 3,
+                                    "amount": 25
+                                },
+                                "chill": {
+                                    "stacks": 3,
+                                    "turns": 3,
+                                    "amount": 0.3
+                                }
+                            }
+                        },
+                        "description": "Collect what you're owed with a killing blow.\n  - Cooldown: 3 Turns\n  - Deal 225 Damage + 145% of your base damage as Cold.\n  - Deals 50% Increased Damage against targets below 50% Health.\n  - Apply 50% Vulnerable, 25% Exposed and 3 stacks of Chill to your target for 3 turns."
+                    }
+                }
+            }
+        },
+        "Colossus": {},
+        "Dreadnought": {},
+        "Sovereign": {},
+        "Harrower": {},
+        "Butcher": {}
+    },
     "Paladin": {
         "base": {
             "Holy Smite": {
@@ -4101,6 +4614,503 @@
         "Phantasm": {},
         "Revenant": {},
         "Lich": {}
+    },
+    "Tempest": {
+        "base": {
+            "Storm Lash": {
+                "name": "Storm Lash",
+                "category": "damage",
+                "tags": [
+                    "damage",
+                    "lightning",
+                    "elemental",
+                    "strike",
+                    "gain_flow_if_faster",
+                    "gain_static_if_slower"
+                ],
+                "damage_base": 5,
+                "damage_scaling": 32,
+                "damage_type": "lightning",
+                "stamina_cost": 15,
+                "level": 1,
+                "cooldown": 2,
+                "effects": {},
+                "description": "Snap a whip of crackling lightning at your foe.\n  - Cooldown: 2 Turns\n  - Deal 5 Damage + 32% of your base damage as Lightning.\n  - Gain 1 Flow if you are faster than your target, or 1 Static if you are slower.",
+                "evolutions": {
+                    "25": {
+                        "damage_base": 34,
+                        "damage_scaling": 58,
+                        "level": 25,
+                        "stamina_cost": 40,
+                        "tags+": [
+                            "shock"
+                        ],
+                        "effects": {
+                            "target": {
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.15
+                                }
+                            }
+                        },
+                        "description": "Snap a whip of crackling lightning at your foe.\n  - Cooldown: 2 Turns\n  - Deal 34 Damage + 58% of your base damage as Lightning.\n  - Apply 15% Shock for 2 turns."
+                    },
+                    "50": {
+                        "damage_base": 82,
+                        "damage_scaling": 85,
+                        "level": 50,
+                        "stamina_cost": 70,
+                        "effects": {
+                            "target": {
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Snap a whip of crackling lightning at your foe.\n  - Cooldown: 2 Turns\n  - Deal 82 Damage + 85% of your base damage as Lightning.\n  - Apply 20% Shock for 2 turns."
+                    },
+                    "75": {
+                        "damage_base": 180,
+                        "damage_scaling": 128,
+                        "level": 75,
+                        "stamina_cost": 115,
+                        "effects": {
+                            "target": {
+                                "shock": {
+                                    "turns": 3,
+                                    "amount": 0.25
+                                }
+                            }
+                        },
+                        "description": "Snap a whip of crackling lightning at your foe.\n  - Cooldown: 2 Turns\n  - Deal 180 Damage + 128% of your base damage as Lightning.\n  - Apply 25% Shock for 3 turns."
+                    }
+                }
+            },
+            "Storm Surge": {
+                "name": "Storm Surge",
+                "category": "buff",
+                "tags": [
+                    "buff",
+                    "heal",
+                    "haste",
+                    "stoneskin",
+                    "lightning"
+                ],
+                "heal_base": 6,
+                "heal_percent": 1,
+                "damage_type": "heal",
+                "stamina_cost": 30,
+                "level": 5,
+                "cooldown": 3,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.15,
+                            "damage": 1.1
+                        },
+                        "stoneskin": {
+                            "turns": 2,
+                            "amount": 0.05
+                        }
+                    }
+                },
+                "description": "Draw the charge in the air into yourself, quickening your strikes.\n  - Cooldown: 3 Turns\n  - Heal 6 HP + 1% Max HP.\n  - Gain Haste for 2 turns: +0.15 Speed, +10% Damage.\n  - Gain 5% Damage Reduction for 2 turns.",
+                "evolutions": {
+                    "30": {
+                        "heal_base": 22,
+                        "heal_percent": 2,
+                        "level": 30,
+                        "stamina_cost": 65,
+                        "tags+": [
+                            "regeneration"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.2,
+                                    "damage": 1.15
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.08
+                                },
+                                "regeneration": {
+                                    "turns": 2,
+                                    "amount_flat": 12,
+                                    "amount_percent": 1
+                                }
+                            }
+                        },
+                        "description": "Draw the charge in the air into yourself, quickening your strikes.\n  - Cooldown: 3 Turns\n  - Heal 22 HP + 2% Max HP.\n  - Haste: +0.2 Speed, +15% Damage. 8% Damage Reduction for 2 turns.\n  - 12 HP + 1% Max HP Regen for 2 turns."
+                    },
+                    "55": {
+                        "heal_base": 55,
+                        "heal_percent": 4,
+                        "level": 55,
+                        "stamina_cost": 115,
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.25,
+                                    "damage": 1.2
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.11
+                                },
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 28,
+                                    "amount_percent": 2
+                                }
+                            }
+                        },
+                        "description": "Draw the charge in the air into yourself, quickening your strikes.\n  - Cooldown: 3 Turns\n  - Heal 55 HP + 4% Max HP.\n  - Haste: +0.25 Speed, +20% Damage for 3 turns. 11% Damage Reduction for 3 turns.\n  - 28 HP + 2% Max HP Regen for 3 turns."
+                    },
+                    "80": {
+                        "heal_base": 105,
+                        "heal_percent": 7,
+                        "level": 80,
+                        "stamina_cost": 180,
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.3,
+                                    "damage": 1.3
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.15
+                                },
+                                "regeneration": {
+                                    "turns": 3,
+                                    "amount_flat": 45,
+                                    "amount_percent": 3
+                                }
+                            }
+                        },
+                        "description": "Draw the charge in the air into yourself, quickening your strikes.\n  - Cooldown: 3 Turns\n  - Heal 105 HP + 7% Max HP.\n  - Haste: +0.3 Speed, +30% Damage for 3 turns. 15% Damage Reduction for 3 turns.\n  - 45 HP + 3% Max HP Regen for 3 turns."
+                    }
+                }
+            },
+            "Thunderclap": {
+                "name": "Thunderclap",
+                "category": "debuff",
+                "tags": [
+                    "debuff",
+                    "buff",
+                    "aoe",
+                    "lightning",
+                    "haste",
+                    "shock"
+                ],
+                "stamina_cost": 40,
+                "level": 10,
+                "cooldown": 4,
+                "targets": "all",
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.15,
+                            "damage": 1.1
+                        }
+                    },
+                    "target": {
+                        "shock": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Clap your hands and unleash a deafening peal of thunder.\n  - Cooldown: 4 Turns\n  - Gain Haste for 2 turns: +0.15 Speed, +10% Damage.\n  - All enemies gain 15% Shock for 2 turns.",
+                "evolutions": {
+                    "35": {
+                        "level": 35,
+                        "stamina_cost": 80,
+                        "tags+": [
+                            "daze"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.2,
+                                    "damage": 1.15
+                                }
+                            },
+                            "target": {
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                },
+                                "daze": {
+                                    "turns": 2,
+                                    "speed": -0.1,
+                                    "damage": 0.9
+                                }
+                            }
+                        },
+                        "description": "Clap your hands and unleash a deafening peal of thunder.\n  - Cooldown: 4 Turns\n  - Haste: +0.2 Speed, +15% Damage for 2 turns.\n  - All enemies gain 20% Shock and Daze for 2 turns."
+                    },
+                    "60": {
+                        "level": 60,
+                        "stamina_cost": 140,
+                        "tags+": [
+                            "stoneskin"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.25,
+                                    "damage": 1.25
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.08
+                                }
+                            },
+                            "target": {
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.3
+                                },
+                                "daze": {
+                                    "turns": 2,
+                                    "speed": -0.12,
+                                    "damage": 0.88
+                                }
+                            }
+                        },
+                        "description": "Clap your hands and unleash a deafening peal of thunder.\n  - Cooldown: 4 Turns\n  - Haste: +0.25 Speed, +25% Damage. 8% Damage Reduction for 2 turns.\n  - All enemies gain 30% Shock and a stronger Daze for 2 turns."
+                    },
+                    "85": {
+                        "level": 85,
+                        "stamina_cost": 220,
+                        "tags+": [
+                            "weaken"
+                        ],
+                        "effects": {
+                            "self": {
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.35,
+                                    "damage": 1.4
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.1
+                                }
+                            },
+                            "target": {
+                                "shock": {
+                                    "turns": 3,
+                                    "amount": 0.4
+                                },
+                                "daze": {
+                                    "turns": 2,
+                                    "speed": -0.15,
+                                    "damage": 0.85
+                                },
+                                "weaken": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Clap your hands and unleash a deafening peal of thunder.\n  - Cooldown: 4 Turns\n  - Haste: +0.35 Speed, +40% Damage. 10% Damage Reduction for 3 turns.\n  - All enemies gain 40% Shock, 20% Weaken and a stronger Daze for 2-3 turns."
+                    }
+                }
+            },
+            "Chain Lightning": {
+                "name": "Chain Lightning",
+                "category": "damage",
+                "tags": [
+                    "damage",
+                    "aoe",
+                    "lightning",
+                    "elemental",
+                    "shock"
+                ],
+                "damage_base": 20,
+                "damage_scaling": 20,
+                "damage_type": "lightning",
+                "stamina_cost": 48,
+                "level": 15,
+                "cooldown": 4,
+                "targets": "all",
+                "effects": {
+                    "target": {
+                        "shock": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Arc a bolt of lightning between every enemy before you.\n  - Cooldown: 4 Turns\n  - Deal 20 Damage + 20% of your base damage as Lightning to all enemies.\n  - Apply 15% Shock for 2 turns.",
+                "evolutions": {
+                    "40": {
+                        "damage_base": 50,
+                        "damage_scaling": 42,
+                        "level": 40,
+                        "stamina_cost": 85,
+                        "effects": {
+                            "target": {
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Arc a bolt of lightning between every enemy before you.\n  - Cooldown: 4 Turns\n  - Deal 50 Damage + 42% of your base damage as Lightning to all enemies.\n  - Apply 20% Shock for 2 turns."
+                    },
+                    "65": {
+                        "damage_base": 95,
+                        "damage_scaling": 68,
+                        "level": 65,
+                        "stamina_cost": 150,
+                        "tags+": [
+                            "daze"
+                        ],
+                        "effects": {
+                            "target": {
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.3
+                                },
+                                "daze": {
+                                    "turns": 1,
+                                    "speed": -0.1,
+                                    "damage": 0.9
+                                }
+                            }
+                        },
+                        "description": "Arc a bolt of lightning between every enemy before you.\n  - Cooldown: 4 Turns\n  - Deal 95 Damage + 68% of your base damage as Lightning to all enemies.\n  - 30% Shock and Daze for 1-2 turns."
+                    },
+                    "90": {
+                        "damage_base": 180,
+                        "damage_scaling": 92,
+                        "level": 90,
+                        "stamina_cost": 250,
+                        "effects": {
+                            "target": {
+                                "shock": {
+                                    "turns": 3,
+                                    "amount": 0.4
+                                },
+                                "daze": {
+                                    "turns": 2,
+                                    "speed": -0.15,
+                                    "damage": 0.85
+                                }
+                            }
+                        },
+                        "description": "Arc a bolt of lightning between every enemy before you.\n  - Cooldown: 4 Turns\n  - Deal 180 Damage + 92% of your base damage as Lightning to all enemies.\n  - 40% Shock for 3 turns and Daze for 2 turns."
+                    }
+                }
+            },
+            "Eye of the Storm": {
+                "name": "Eye of the Storm",
+                "category": "damage",
+                "tags": [
+                    "damage",
+                    "lightning",
+                    "strike",
+                    "debuff",
+                    "vulnerable",
+                    "gain_flow_if_faster",
+                    "gain_static_if_slower"
+                ],
+                "damage_base": 44,
+                "damage_scaling": 53,
+                "damage_type": "lightning",
+                "stamina_cost": 55,
+                "level": 20,
+                "cooldown": 3,
+                "effects": {
+                    "target": {
+                        "vulnerable": {
+                            "turns": 2,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "description": "Find the calm centre of the storm and strike with perfect precision.\n  - Cooldown: 3 Turns\n  - Deal 44 Damage + 55% of your base damage as Lightning.\n  - Apply 20% Vulnerable to your target for 2 turns.\n  - Gain 1 Flow if you are faster than your target, or 1 Static if you are slower.",
+                "evolutions": {
+                    "45": {
+                        "damage_base": 92,
+                        "damage_scaling": 80,
+                        "level": 45,
+                        "stamina_cost": 85,
+                        "tags+": [
+                            "shock"
+                        ],
+                        "effects": {
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.3
+                                },
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.2
+                                }
+                            }
+                        },
+                        "description": "Find the calm centre of the storm and strike with perfect precision.\n  - Cooldown: 3 Turns\n  - Deal 92 Damage + 80% of your base damage as Lightning.\n  - Apply 30% Vulnerable and 20% Shock to your target for 2 turns."
+                    },
+                    "70": {
+                        "damage_base": 158,
+                        "damage_scaling": 110,
+                        "level": 70,
+                        "stamina_cost": 155,
+                        "effects": {
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 2,
+                                    "amount": 0.4
+                                },
+                                "shock": {
+                                    "turns": 2,
+                                    "amount": 0.3
+                                }
+                            }
+                        },
+                        "description": "Find the calm centre of the storm and strike with perfect precision.\n  - Cooldown: 3 Turns\n  - Deal 158 Damage + 110% of your base damage as Lightning.\n  - Apply 40% Vulnerable and 30% Shock to your target for 2 turns."
+                    },
+                    "95": {
+                        "damage_base": 230,
+                        "damage_scaling": 145,
+                        "level": 95,
+                        "stamina_cost": 270,
+                        "effects": {
+                            "target": {
+                                "vulnerable": {
+                                    "turns": 3,
+                                    "amount": 0.5
+                                },
+                                "shock": {
+                                    "turns": 3,
+                                    "amount": 0.4
+                                }
+                            }
+                        },
+                        "description": "Find the calm centre of the storm and strike with perfect precision.\n  - Cooldown: 3 Turns\n  - Deal 230 Damage + 145% of your base damage as Lightning.\n  - Apply 50% Vulnerable and 40% Shock to your target for 3 turns."
+                    }
+                }
+            }
+        },
+        "Alternator": {},
+        "Dervish": {},
+        "Ravager": {},
+        "Archon": {},
+        "Mirage": {}
     },
     "Wanderer": {
         "base": {
@@ -5543,7 +6553,17 @@
                                 "health": 14
                             }
                         },
-                        "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 14 Health.\n  - Deal 30 Damage + 65% of your base damage."
+                        "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 14 Health.\n  - Deal 30 Damage + 65% of your base damage.\n  - Applies 2 stacks of Blood Spike instead of the usual 1.",
+                        "tags+": [
+                            "blood_spike"
+                        ],
+                        "effects": {
+                            "target": {
+                                "blood_spike": {
+                                    "stacks": 1
+                                }
+                            }
+                        }
                     },
                     "50": {
                         "damage_base": 75,
@@ -5554,7 +6574,17 @@
                                 "health": 20
                             }
                         },
-                        "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 20 Health.\n  - Deal 75 Damage + 90% of your base damage."
+                        "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 20 Health.\n  - Deal 75 Damage + 90% of your base damage.\n  - Applies 3 stacks of Blood Spike instead of the usual 1.",
+                        "tags+": [
+                            "blood_spike"
+                        ],
+                        "effects": {
+                            "target": {
+                                "blood_spike": {
+                                    "stacks": 2
+                                }
+                            }
+                        }
                     },
                     "75": {
                         "damage_base": 170,
@@ -5565,7 +6595,17 @@
                                 "health": 28
                             }
                         },
-                        "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 28 Health.\n  - Deal 170 Damage + 130% of your base damage."
+                        "description": "Tear into your target with clawed hands, paying in blood.\n  - Cooldown: 1 Turn\n  - Costs 28 Health.\n  - Deal 170 Damage + 130% of your base damage.\n  - Applies 4 stacks of Blood Spike instead of the usual 1.",
+                        "tags+": [
+                            "blood_spike"
+                        ],
+                        "effects": {
+                            "target": {
+                                "blood_spike": {
+                                    "stacks": 3
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -5574,21 +6614,23 @@
                 "category": "damage",
                 "tags": [
                     "damage",
+                    "aoe",
                     "dark",
                     "health_cost",
                     "bleed",
                     "dot"
                 ],
-                "damage_base": 15,
-                "damage_scaling": 30,
+                "damage_base": 9,
+                "damage_scaling": 20,
                 "damage_type": "dark",
                 "stamina_cost": 0,
                 "level": 5,
-                "cooldown": 2,
+                "cooldown": 3,
+                "targets": "all",
                 "resources": {
                     "required": {
                         "health": {
-                            "amount": 0.06,
+                            "amount": 0.08,
                             "damage_type": "dark"
                         }
                     }
@@ -5600,33 +6642,12 @@
                         }
                     }
                 },
-                "description": "Carve a deep wound into your target, leaving it bleeding freely.\n  - Cooldown: 2 Turns\n  - Costs 6% of your Max HP.\n  - Deal 15 Damage + 30% of your base damage.\n  - Apply 1 stack of Bleed to your target.",
+                "description": "Tear open a spray of wounds, leaving every enemy bleeding freely.\n  - Cooldown: 3 Turns\n  - Costs 8% of your Max HP.\n  - Deal 9 Damage + 20% of your base damage to all enemies.\n  - Apply 1 stack of Bleed to all enemies.",
                 "evolutions": {
                     "30": {
-                        "damage_base": 60,
-                        "damage_scaling": 55,
+                        "damage_base": 35,
+                        "damage_scaling": 30,
                         "level": 30,
-                        "resources": {
-                            "required": {
-                                "health": {
-                                    "amount": 0.08,
-                                    "damage_type": "dark"
-                                }
-                            }
-                        },
-                        "effects": {
-                            "target": {
-                                "bleed": {
-                                    "stacks": 2
-                                }
-                            }
-                        },
-                        "description": "Carve a deep wound into your target, leaving it bleeding freely.\n  - Cooldown: 2 Turns\n  - Costs 8% of your Max HP.\n  - Deal 60 Damage + 55% of your base damage.\n  - Apply 2 stacks of Bleed to your target."
-                    },
-                    "55": {
-                        "damage_base": 150,
-                        "damage_scaling": 80,
-                        "level": 55,
                         "resources": {
                             "required": {
                                 "health": {
@@ -5638,16 +6659,22 @@
                         "effects": {
                             "target": {
                                 "bleed": {
-                                    "stacks": 3
+                                    "stacks": 2
+                                },
+                                "blood_spike": {
+                                    "stacks": 1
                                 }
                             }
                         },
-                        "description": "Carve a deep wound into your target, leaving it bleeding freely.\n  - Cooldown: 2 Turns\n  - Costs 10% of your Max HP.\n  - Deal 150 Damage + 80% of your base damage.\n  - Apply 3 stacks of Bleed to your target."
+                        "description": "Tear open a spray of wounds, leaving every enemy bleeding freely.\n  - Cooldown: 3 Turns\n  - Costs 10% of your Max HP.\n  - Deal 35 Damage + 30% of your base damage to all enemies.\n  - Apply 2 stacks of Bleed to all enemies.\n  - Applies 2 stacks of Blood Spike to all enemies instead of the usual 1.",
+                        "tags+": [
+                            "blood_spike"
+                        ]
                     },
-                    "80": {
-                        "damage_base": 320,
-                        "damage_scaling": 120,
-                        "level": 80,
+                    "55": {
+                        "damage_base": 85,
+                        "damage_scaling": 50,
+                        "level": 55,
                         "resources": {
                             "required": {
                                 "health": {
@@ -5659,30 +6686,64 @@
                         "effects": {
                             "target": {
                                 "bleed": {
-                                    "stacks": 4
+                                    "stacks": 3
+                                },
+                                "blood_spike": {
+                                    "stacks": 2
                                 }
                             }
                         },
-                        "description": "Carve a deep wound into your target, leaving it bleeding freely.\n  - Cooldown: 2 Turns\n  - Costs 13% of your Max HP.\n  - Deal 320 Damage + 120% of your base damage.\n  - Apply 4 stacks of Bleed to your target."
+                        "description": "Tear open a spray of wounds, leaving every enemy bleeding freely.\n  - Cooldown: 3 Turns\n  - Costs 13% of your Max HP.\n  - Deal 85 Damage + 50% of your base damage to all enemies.\n  - Apply 3 stacks of Bleed to all enemies.\n  - Applies 3 stacks of Blood Spike to all enemies instead of the usual 1.",
+                        "tags+": [
+                            "blood_spike"
+                        ]
+                    },
+                    "80": {
+                        "damage_base": 175,
+                        "damage_scaling": 70,
+                        "level": 80,
+                        "resources": {
+                            "required": {
+                                "health": {
+                                    "amount": 0.17,
+                                    "damage_type": "dark"
+                                }
+                            }
+                        },
+                        "effects": {
+                            "target": {
+                                "bleed": {
+                                    "stacks": 4
+                                },
+                                "blood_spike": {
+                                    "stacks": 3
+                                }
+                            }
+                        },
+                        "description": "Tear open a spray of wounds, leaving every enemy bleeding freely.\n  - Cooldown: 3 Turns\n  - Costs 17% of your Max HP.\n  - Deal 175 Damage + 70% of your base damage to all enemies.\n  - Apply 4 stacks of Bleed to all enemies.\n  - Applies 4 stacks of Blood Spike to all enemies instead of the usual 1.",
+                        "tags+": [
+                            "blood_spike"
+                        ]
                     }
                 }
             },
             "Bloodletting": {
                 "name": "Bloodletting",
-                "category": "damage",
+                "category": "buff",
                 "tags": [
-                    "damage",
+                    "buff",
                     "dark",
                     "health_cost",
                     "regeneration",
+                    "haste",
                     "sustain"
                 ],
-                "damage_base": 20,
-                "damage_scaling": 35,
-                "damage_type": "dark",
+                "heal_base": 0,
+                "heal_percent": 0,
+                "damage_type": "heal",
                 "stamina_cost": 0,
                 "level": 10,
-                "cooldown": 2,
+                "cooldown": 3,
                 "resources": {
                     "required": {
                         "health": {
@@ -5695,16 +6756,19 @@
                     "self": {
                         "regeneration": {
                             "turns": 2,
-                            "amount_flat": 10,
-                            "amount_percent": 1
+                            "amount_flat": 14,
+                            "amount_percent": 1.2
+                        },
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.08,
+                            "damage": 1.12
                         }
                     }
                 },
-                "description": "Drink deep from a fresh wound, sustaining yourself with the spoils.\n  - Cooldown: 2 Turns\n  - Costs 7% of your Max HP.\n  - Deal 20 Damage + 35% of your base damage.\n  - Gain 10 HP + 1% Max HP Regeneration for 2 turns.",
+                "description": "Open your own veins, letting the frenzy of blood loss sharpen you.\n  - Cooldown: 3 Turns\n  - Costs 7% of your Max HP.\n  - Gain 14 HP + 1.2% Max HP Regeneration for 2 turns.\n  - Gain Haste for 2 turns: +0.08 Speed, +12% Damage.",
                 "evolutions": {
                     "35": {
-                        "damage_base": 80,
-                        "damage_scaling": 60,
                         "level": 35,
                         "resources": {
                             "required": {
@@ -5714,20 +6778,30 @@
                                 }
                             }
                         },
+                        "tags+": [
+                            "stoneskin"
+                        ],
                         "effects": {
                             "self": {
                                 "regeneration": {
                                     "turns": 2,
-                                    "amount_flat": 20,
-                                    "amount_percent": 1.5
+                                    "amount_flat": 28,
+                                    "amount_percent": 2
+                                },
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.1,
+                                    "damage": 1.18
+                                },
+                                "stoneskin": {
+                                    "turns": 2,
+                                    "amount": 0.08
                                 }
                             }
                         },
-                        "description": "Drink deep from a fresh wound, sustaining yourself with the spoils.\n  - Cooldown: 2 Turns\n  - Costs 9% of your Max HP.\n  - Deal 80 Damage + 60% of your base damage.\n  - Gain 20 HP + 1.5% Max HP Regeneration for 2 turns."
+                        "description": "Open your own veins, letting the frenzy of blood loss sharpen you.\n  - Cooldown: 3 Turns\n  - Costs 9% of your Max HP.\n  - Gain 28 HP + 2% Max HP Regeneration for 2 turns.\n  - Haste: +0.1 Speed, +18% Damage. 8% Damage Reduction for 2 turns."
                     },
                     "60": {
-                        "damage_base": 190,
-                        "damage_scaling": 85,
                         "level": 60,
                         "resources": {
                             "required": {
@@ -5741,16 +6815,23 @@
                             "self": {
                                 "regeneration": {
                                     "turns": 3,
-                                    "amount_flat": 40,
-                                    "amount_percent": 2.5
+                                    "amount_flat": 55,
+                                    "amount_percent": 3
+                                },
+                                "haste": {
+                                    "turns": 2,
+                                    "speed": 0.12,
+                                    "damage": 1.22
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.11
                                 }
                             }
                         },
-                        "description": "Drink deep from a fresh wound, sustaining yourself with the spoils.\n  - Cooldown: 2 Turns\n  - Costs 11% of your Max HP.\n  - Deal 190 Damage + 85% of your base damage.\n  - Gain 40 HP + 2.5% Max HP Regeneration for 3 turns."
+                        "description": "Open your own veins, letting the frenzy of blood loss sharpen you.\n  - Cooldown: 3 Turns\n  - Costs 11% of your Max HP.\n  - Gain 55 HP + 3% Max HP Regeneration for 3 turns.\n  - Haste: +0.12 Speed, +22% Damage for 2 turns. 11% Damage Reduction for 3 turns."
                     },
                     "85": {
-                        "damage_base": 380,
-                        "damage_scaling": 125,
                         "level": 85,
                         "resources": {
                             "required": {
@@ -5764,12 +6845,21 @@
                             "self": {
                                 "regeneration": {
                                     "turns": 3,
-                                    "amount_flat": 70,
-                                    "amount_percent": 4
+                                    "amount_flat": 90,
+                                    "amount_percent": 4.5
+                                },
+                                "haste": {
+                                    "turns": 3,
+                                    "speed": 0.15,
+                                    "damage": 1.3
+                                },
+                                "stoneskin": {
+                                    "turns": 3,
+                                    "amount": 0.14
                                 }
                             }
                         },
-                        "description": "Drink deep from a fresh wound, sustaining yourself with the spoils.\n  - Cooldown: 2 Turns\n  - Costs 14% of your Max HP.\n  - Deal 380 Damage + 125% of your base damage.\n  - Gain 70 HP + 4% Max HP Regeneration for 3 turns."
+                        "description": "Open your own veins, letting the frenzy of blood loss sharpen you.\n  - Cooldown: 3 Turns\n  - Costs 14% of your Max HP.\n  - Gain 90 HP + 4.5% Max HP Regeneration for 3 turns.\n  - Haste: +0.15 Speed, +30% Damage. 14% Damage Reduction for 3 turns."
                     }
                 }
             },

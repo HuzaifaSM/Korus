@@ -1,5 +1,6 @@
 from .base import Player, ELEMENTAL_RES, DIVINE_RES
 from scripts.styles import console, formatDamageType, pause
+from scripts.abilities import Effects
 import random
 
 WARRIOR_DESCRIPTIONS = {
@@ -8,33 +9,33 @@ WARRIOR_DESCRIPTIONS = {
         "- Dealing Fire damage grants +1 Rage. Taking Fire damage increases Rage gain by 10%.\n"
         "[bold]Starting Stats:[/bold] 50 Health | 4 Damage | 5% Crit Chance | 200% Crit Damage | Fire Damage | 0.85 Speed | Max 50 Rage | +1 Rage on Level Up.",
     #ascendancies
-    "Warlord": "[mythic]Feel your Rage flow through your veins, empowering you to even greater heights. Embrace your inner Fury, and slaughter those who dare face you.[/mythic]\n"
+    "Warlord": "[lore]Feel your Rage flow through your veins, empowering you to even greater heights. Embrace your inner Fury, and slaughter those who dare face you.[/lore]\n"
         "- 20% Increased Rage gained from dealing damage. Gain 1 Fury on attack if you have more than 50 Rage.\n"
         "- Fury: 5% Increased Damage, +2% Lifesteal. Max 10 stacks of Fury. At max Fury, your next attack deals 100% Increased Damage to all enemies and consumes all Fury.\n"
         "- While above 40 Rage, gain 15% Damage Reduction. Upon dealing a Critical Hit, gain +20% Crit Multi per stack of Fury.\n"
         "- Gain 1% Damage Reduction per 20 Rage. All damage prevented from Damage Reduction is gained as Shield. Whenever an enemy attacks you, deal 50 Fire Damage to them.\n"
         "- -1% Crit Chance per 50 Shield. Deal 1% Increased Damage per 25 Shield. Whenever your shield is broken, heal for 3% of your Max HP and deal Fire damage to all enemies equal to 5% of current HP.\n"
         "[bold]Stat Changes:[/bold]-10 HP. +5 Damage. +0.05 Speed. +15% Fire Resistance. +10% Physical Resistance.",
-    "Juggernaut": "[mythic]An unstoppable force, trampling those in your way. Your Rage fuels your march, turning you into an immovable bastion of domination.[/mythic]\n"
+    "Juggernaut": "[lore]An unstoppable force, trampling those in your way. Your Rage fuels your march, turning you into an immovable bastion of domination.[/lore]\n"
         "- You have 1 Fortify per 10 Rage, up to 15 stacks. +1% Damage Reduction, +2% Crit Chance, +5% Crit Damage per Fortify.\n"
         "- 25% Increased Rage gained from taking damage. At max Fortify your next attack hits all enemies, applies [cc]Stun[/cc] and consumes 100 Rage.\n"
         "- Whenever you are critically hit, gain Bastion until the start of your next turn. Take 25% Less Damage from critical hits.\n"
         "- Bastion: +25% Ailment Avoidance, +30% Crit Avoidance, 10% Less Damage taken.\n"
         "[bold]Stat Changes:[bold] +20 HP. -4 Damage. -0.1 Speed. +50% Stun Avoidance. +10% Fire Resistance.",
-    "Annihilist": "[mythic]Kill them all. Rain hell upon your foes. Destroy all in your way. Let your wounds become another reason to demolish them.[/mythic]\n"
+    "Annihilist": "[lore]Kill them all. Rain hell upon your foes. Destroy all in your way. Let your wounds become another reason to demolish them.[/lore]\n"
         "- Gain 1 Annihilation per 50 Rage generated in combat. Annihilation lasts for the rest of combat and has no maximum stack limit.\n"
         "- Annihilation: +10% Fire Damage, +10% Crit Damage, +3% Crit Chance. Upon killing an enemy, lose 1 Annihilation and heal for 5% of your Max HP.\n"
         "- Rage no longer heals you at the end of combat. Whenever you critically hit an enemy, gain 2% of the enemy's damage as your own for the rest of combat per stack of Annihilation you have.\n"
         "- Whenever an enemy critically hits you, they take 5% of their Max HP as Fire damage per Annihilation stack you have. Killing an enemy this way is treated as if you killed them with a critical hit.\n"
         "[bold]Stat Changes[/bold] -20 HP. +6 Damage. -0.05 Speed. +25% Crit Damage.",
-    "Tyrant": "[mythic]Struggle no more. Endure no longer. Dominate. Cleave asunder all who misjudge your might, for the battlefield is your kingdom.[/mythic]\n"
+    "Tyrant": "[lore]Struggle no more. Endure no longer. Dominate. Cleave asunder all who misjudge your might, for the battlefield is your kingdom.[/lore]\n"
         "- Whenever you are attacked, if the damage taken is less than your base damage, take 20% Less Damage from that attack.\n"
         "- Taking damage does not grant Rage. When you are attacked, gain Rage equal to 25% of the Damage prevented by Armour and Damage Prevention.\n"
         "- Non-critical attacks gain 2% of your Armour value as Bonus Damage. Convert 25% of your Evasion and Energy Shield into Armour.\n"
         " -Whilst above 50 Rage: 10% Less Armour, 25% Increased Damage. Whenever you attack an enemy, gain Rage equal to 10% of the Damage prevented by their Armour.\n"
         "- If your attack is fully absorbed by Energy Shield or dodged due to Evasion, lose 40% of your current Rage and Heal 1 HP per Rage lost.\n"
         "[bold]Stat Changes:[/bold] -25 HP. +8 Damage. +0.05 Speed. -50% Crit Multi. +100 Armour.",
-    "Conqueror": "[mythic]Outnumbered? Never. Let them come. Their pitiful attacks mean nothing; dodge or endure, they only strengthen your conquest.[/mythic]\n"
+    "Conqueror": "[lore]Outnumbered? Never. Let them come. Their pitiful attacks mean nothing; dodge or endure, they only strengthen your conquest.[/lore]\n"
         "- Gain 20% Less Rage from dealing and taking damage. At the start of your turn, deal Fire damage to a random enemy equal to your current rage.\n"
         "- At the start of combat, if you are fighting more than 1 enemy, for every enemy you are fighting, gain 10% Increased Damage, +0.05 Speed and 5% Less Damage Taken.\n"
         "- Gain 10% of Armour as Evasion. Gain 10% of Evasion as Armour. Whenever you reduce damage from an incoming hit due to Armour, gain 50% of the prevented damage as damage on your next attack.\n"
@@ -64,6 +65,7 @@ class Warrior(Player):
         self.conquerorEnemies = 0
         self.conquerorDamageGain = 0
         self.conquerorRegenBuffs = {3: 0, 2: 0, 1: 0} # keys = number of turns left
+        self._warlordShieldWasUp = False
 
     def __str__(self):
         baseStr = super().__str__()
@@ -154,8 +156,52 @@ class Warrior(Player):
             self._stats['Temporary']['crit_avoidance'] += 30
             self.bastion = True
 
-    def onAttack(self, damageDealt, damageType, target=None, combatManager=None):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager)
+    def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
+        if self._ascendancy == 'Warlord':
+            if self._fury == self._maxFury:
+                damage *= 2
+                targets = combatManager.allAlive
+                self._stats['Temporary']['lifesteal'] -= 2 * self._fury
+                self._fury = 0
+                console.print('[gold1]Warlord: Max Fury! 200% More Damage to all enemies! Fury reset to 0.[/gold1]')
+        elif self._ascendancy == 'Juggernaut' and self._fortify >= self._maxFortify and self._rage >= 100:
+            targets = combatManager.allAlive
+            self._queueEffect(Effects.createStun())
+            console.print('[gold1]Juggernaut: Max Fortify - Stunning all enemies! -100 Rage.[/gold1]')
+            self._rage -= 100
+
+        return damage, damageType, targets
+
+    def onPrepareHit(self, target, targetUnit, finalDamage, damageType, combatManager):
+        finalDamage = super().onPrepareHit(target, targetUnit, finalDamage, damageType, combatManager)
+        if self._ascendancy == 'Tyrant':
+            finalDamage += int(0.02 * self.armour)
+        return finalDamage
+
+    def onBeforeHit(self, finalDamage, damageType, attacker, combatManager):
+        finalDamage = super().onBeforeHit(finalDamage, damageType, attacker, combatManager)
+        if self._ascendancy == 'Warlord':
+            self._warlordShieldWasUp = self._shield > 0
+            console.print(f"[asc_warlord]Warlord: {attacker._name} takes 50 Fire Damage from attacking you![/asc_warlord]")
+            attacker.damage(50, 'fire')
+        return finalDamage
+
+    def onDamaged(self, attacker, damageReductionValue, armourDamagePrevented, combatManager):
+        if self._ascendancy == 'Tyrant':
+            rageGain = int((armourDamagePrevented + damageReductionValue) * 0.25)
+            self._rage = min(self._maxRage, self._rage + rageGain)
+
+        if self._ascendancy == 'Warlord':
+            if self._warlordShieldWasUp and self._shield <= 0: # shield was broken on hit
+                heal = int(0.03 * self._maxHealth)
+                self.heal(heal, False)
+                aoeDamage = int(0.05 * self._health)
+                for e in combatManager.allAlive:
+                    e.damage(aoeDamage, 'fire')
+                console.print(f"[asc_warlord]Warlord: Shield broken! Healed for 3% Max HP ({heal}) and dealt 5% of your Current Health ({aoeDamage}) as damage to all enemies")
+
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
         rageGain = damageDealt // 6
 
         if self._ascendancy == 'Warlord':
@@ -234,7 +280,14 @@ class Warrior(Player):
 
         return damageTaken, damageType
 
+    def onCombatStart(self, combatManager, combatUnit):
+        super().onCombatStart(combatManager, combatUnit)
+        if self._ascendancy == 'Conqueror':
+            self.conquerorEnemies = len(combatManager.allAlive) - 1
+            self._stats['Temporary']['speed'] += 0.05 * self.conquerorEnemies
+
     def onKill(self, entity, data, combatManager):
+        super().onKill()
         if self._ascendancy == 'Annihilist':
             if self.annihilation > 0:
                 self.annihilation -= 1
@@ -246,7 +299,7 @@ class Warrior(Player):
             self.conquerorRegenBuffs[3] += regen
         return None
 
-    def onBattleEnd(self):
+    def onCombatEnd(self):
         healAmount = self._rage // 2
         if self._ascendancy != 'Annihilist':
             self.heal(healAmount)
@@ -261,9 +314,9 @@ class Warrior(Player):
         self.conquerorEnemies = 0
         self.conquerorDamageGain = 0
         self.conquerorRegenBuffs = {3: 0, 2: 0, 1: 0}
-        super().onBattleEnd()
+        super().onCombatEnd()
 
-    def onTurnStart(self, combatManager=None):
+    def onTurnStart(self, combatManager):
         if self.rageGeneration > 0:
             self._rage = min(self._maxRage, self._rage + self.rageGeneration)
             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
@@ -297,7 +350,7 @@ class Warrior(Player):
             self.conquerorRegenBuffs[3] = 0
             self.heal(totalHeal)
 
-        super().onTurnStart()
+        super().onTurnStart(combatManager)
 
     def _levelUp(self):
         self._maxRage += 1

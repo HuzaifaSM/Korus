@@ -72,6 +72,10 @@ KORUS_THEME = Theme({
     "resistance": "steel_blue1",
     "lifesteal": "red3 bold",
     "regen": "spring_green3",
+    "multihit": "turquoise4",
+    "durability": "wheat4",
+    "loot": "light_goldenrod2",
+    "entropy": "red3 bold",
 
     "lore": "medium_violet_red dim bold",
 
@@ -126,6 +130,10 @@ KORUS_THEME = Theme({
 
     # Tempest ascendancy family
     "asc_alternator": "light_yellow3 bold",
+    "asc_dervish": "sky_blue2 bold",
+    "asc_ravager": "dark_orange bold",
+    "asc_archon": "yellow1 bold",
+    "asc_mirage": "medium_purple1 bold",
 
     # Warrior ascendancy family
     "asc_warlord": "orange_red1 bold",
@@ -143,8 +151,6 @@ KORUS_THEME = Theme({
 })
 
 # -- keyword highlighting: maps literal keyword text to a theme style key.
-# Longest phrases are matched first so multi-word keywords aren't shadowed by
-# shorter ones they contain (e.g. "Crit Chance" vs a hypothetical "Chance").
 KEYWORDS: Dict[str, str] = {
     # class resources / mechanics
     "Insanity": "resource", "Rage": "resource", "Fury": "resource",
@@ -152,7 +158,8 @@ KEYWORDS: Dict[str, str] = {
     "Favour": "resource", "Prowess": "resource", "Momentum": "resource",
     "Insight": "resource", "Mana": "resource", "Blood Spike": "resource",
     "Lost": "resource", "Ghostly": "resource", "Manic": "resource", "Stable": "resource",
-    "Static": "resource", "Flow": "resource",
+    "Static": "resource", "Flow": "resource", "Vengeance": "resource",
+    "Hope": "resource", "Hopeless": "resource",
 
     # generic stat / affix terms
     "Crit Chance": "critical", "Critical Chance": "critical",
@@ -160,8 +167,18 @@ KEYWORDS: Dict[str, str] = {
     "Crit Damage": "critical", "Critical Damage": "critical",
     "Damage Reduction": "resistance", "Resistance": "resistance",
     "Lifesteal": "lifesteal", "Life Leech": "lifesteal",
-    "HP Regen": "regen", "Regen": "regen", "Regeneration": "regen",
+    "HP Regen": "regen", "Hp Regen": "regen", "Regen": "regen", "Regeneration": "regen",
     "Shield": "buff",
+    "Damage": "damage", "Speed": "speed",
+    "Gold": "gold", "XP": "xp", "Xp": "xp", "Experience": "xp",
+    "Healing Magnitude": "heal", "Healing": "heal", "Heal": "heal",
+
+    "Chance To Multihit": "multihit", "Added Multihits": "multihit", "Multihit": "multihit",
+    "Ailment Avoidance": "resistance", "Stun Avoidance": "cc", "Defenses": "resistance",
+    "Durability": "durability",
+    "Item Quantity": "loot", "Item Rarity": "loot", "Enemy Quantity": "loot",
+    "Entropy": "entropy",
+    "Cleave": "damage", "Thorns": "damage",
 
     # core stats
     "Health": "health", "HP": "health", "Stamina": "stamina",
@@ -202,23 +219,32 @@ KEYWORDS: Dict[str, str] = {
     "Valour": "asc_crusader",
     "Blessing": "asc_inquisitor",
 
+    # Wanderer core mechanics
+    "Radiance": "class_wanderer", "Devastation": "class_wanderer",
+
     # Wanderer ascendancy mechanics
     "Fracture": "asc_fractured",
     "Warped": "asc_warper",
     "Torture": "asc_mindbreaker",
+    "Harmony": "asc_weaver",
+    "Hunted": "asc_abyssal",
 
     # Spectre ascendancy mechanics
     "Execute": "asc_reaper", "Executing": "asc_reaper",
     "Phased": "asc_phantasm", "Shifting": "asc_phantasm",
-    "Intangible": "asc_revenant",
+    "Intangible": "asc_revenant", "Intangibility": "asc_revenant",
+    "Fading": "asc_wraith",
 
     # Wretch ascendancy mechanics
     "Blood Scent": "asc_plaguebearer",
     "Necrosis": "asc_necrose", "Rot": "asc_necrose",
+    "Skeleton": "asc_necromancer",
 
     # Tempest ascendancy mechanics
     "Unleash": "class_tempest",
     "Positive": "asc_alternator", "Negative": "asc_alternator",
+    "Fleeting": "asc_dervish",
+    "Spark": "asc_archon",
 
     # Marauder ascendancy mechanics
     "Echo": "class_marauder", "Siphon": "class_marauder", "Siphoned": "class_marauder",
@@ -231,6 +257,17 @@ KEYWORDS: Dict[str, str] = {
     # Warrior ascendancy mechanics
     "Fortify": "asc_juggernaut", "Bastion": "asc_juggernaut",
     "Annihilation": "asc_annihilist",
+
+    # Fighter ascendancy mechanics
+    "Flurry": "buff", "Aegis": "buff", "Brawler's Fury": "buff",
+
+    # Mage ascendancy mechanics
+    "Symphony": "buff", "Combat Focus": "buff", "Flux": "buff",
+    "Mana Sickness": "debuff",
+
+    # Druid ascendancy mechanics
+    "Residual": "buff", "Adaptation": "buff", "Earthbound": "debuff",
+    "Lunar Fury": "buff", "Lunar Empowerment": "buff",
 }
 
 # matches an opening or closing rich markup tag, e.g. "[gold1 bold]" or "[/health]"
@@ -238,9 +275,6 @@ _TAG_RE = re.compile(r"\[/?[^\[\]]*\]")
 
 def _buildKeywordPattern() -> "re.Pattern":
     escaped = [re.escape(k) for k in sorted(KEYWORDS, key=len, reverse=True)]
-    # boundaries are "not a letter/digit" rather than \b, so keywords match against
-    # whitespace or punctuation on either side but not when glued inside another word
-    # (e.g. "Shield" in "Shielded" is rejected, "Shield," and "Shield-Breaker" are matched)
     return re.compile(r"(?<![A-Za-z0-9])(" + "|".join(escaped) + r")(?![A-Za-z0-9])")
 
 _KEYWORD_RE = _buildKeywordPattern()
@@ -253,9 +287,6 @@ def _highlightPlainSegment(segment: str) -> str:
     return _KEYWORD_RE.sub(_wrap, segment)
 
 def highlightKeywords(text: str) -> str:
-    """Wraps known keyword text in its theme style. Text already inside an
-    existing rich markup tag (manual colouring) is left untouched, so this is
-    safe to run over text that's already partially styled."""
     pieces = []
     depth = 0
     lastEnd = 0
@@ -271,8 +302,6 @@ def highlightKeywords(text: str) -> str:
     return ''.join(pieces)
 
 class HighlightingConsole(Console):
-    """Console that automatically runs any printed text through highlightKeywords,
-    so keyword colouring no longer has to be typed out by hand at every call site."""
     def print(self, *args, **kwargs):
         args = tuple(highlightKeywords(a) if isinstance(a, str) else a for a in args)
         super().print(*args, **kwargs)
@@ -361,8 +390,6 @@ def formatDamageValue(damage: int) -> str:
         return 'red3 bold underline'
 
 def formatEffectsSummary(effects: Dict) -> str:
-    """Short human-readable summary of an ability's effects dict,
-    e.g. 'curse, otherworld exposure (target); haste (self)'"""
     parts = []
     for side in ('target', 'self'):
         names = [name for name in effects.get(side, {}).keys() if name != 'spawn_consumable']
@@ -371,8 +398,6 @@ def formatEffectsSummary(effects: Dict) -> str:
     return '; '.join(parts)
 
 def _formatEffectMagnitude(params: Dict) -> str:
-    """Pulls the meaningful numeric detail(s) out of a single effect's param dict,
-    e.g. {'stacks': 2} -> '2 stacks', {'amount': 0.2, 'turns': 2} -> '20% for 2 turns'"""
     bits = []
     if 'stacks' in params:
         n = params['stacks']
@@ -403,8 +428,6 @@ def _formatEffectMagnitude(params: Dict) -> str:
     return detail
 
 def formatEffectsDetailed(effects: Dict) -> List[str]:
-    """One line per effect with its actual numbers, e.g.
-    ['Bleed: 2 stacks (target)', 'Haste: +10% Damage for 2 turns (self)']"""
     if effects:
         lines = []
         for side in ('target', 'self'):
@@ -427,7 +450,6 @@ def formatResourceGainDetailed(gains: Dict) -> List[str]:
     return []
 
 def formatAbilityCost(resources: Dict, staminaCost: int) -> str:
-    """Human-readable resource cost, e.g. '8 Health' or '6% Max Health' or '20 Mana'"""
     if resources or staminaCost:
         if not resources and staminaCost == 0:
             return "-"
