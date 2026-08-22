@@ -43,7 +43,7 @@ SLOTS = {
 }
 
 RARITIES = {
-    1: ItemRarity.COMMON, 2: ItemRarity.UNCOMMON, 3: ItemRarity.RARE, 4: ItemRarity.EPIC, 5: ItemRarity.LEGENDARY
+    1: ItemRarity.COMMON, 2: ItemRarity.UNCOMMON, 3: ItemRarity.RARE, 4: ItemRarity.EPIC, 5: ItemRarity.LEGENDARY, 6: ItemRarity.MYTHIC
 }
 
 class Debugger:

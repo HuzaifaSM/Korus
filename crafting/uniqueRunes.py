@@ -12,7 +12,7 @@ class ImmutableRune(CraftingItem):
     successEntropy = 0.4
     dropWeight = 15
 
-    def apply(self, item):
+    def apply(self, item, player=None):
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -59,7 +59,7 @@ class PreservationRune(CraftingItem):
     successEntropy = 0.15
     dropWeight = 65
 
-    def apply(self, item):
+    def apply(self, item, player=None):
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -116,7 +116,7 @@ class EchoingRune(CraftingItem):
             values.append(a.value)
         return random.choice(values)
 
-    def apply(self, item):
+    def apply(self, item, player=None):
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -203,7 +203,7 @@ class SoulboundRune(CraftingItem):
             return None
         return random.choice(allEmpty)
     
-    def apply(self, item):
+    def apply(self, item, player=None):
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

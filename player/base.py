@@ -60,19 +60,19 @@ class Player(Entity):
             self._xp -= self._xpToNextLevel
             self._level += 1
             self.calcXpRequirement()
-            self.gainClassAbilities(True)
 
             self._baseHealth += 5
             self._baseDamage += 1
             self._baseSpeed += 0.01
-            self._baseStamina += 4
-
+            self._baseMaxStamina += 2
 
             if self._level == self._maxLevel:
                 console.print("[gold1]Congratulations! You have reached the maximum level![/gold1]")
             self._recalculateStats()
             displayLevelUp(self)
+            self.gainClassAbilities(True)
             self._health = self._maxHealth
+            self._stamina = self._maxStamina
             pause()
 
     def gainClassAbilities(self, levelUp: bool = False):

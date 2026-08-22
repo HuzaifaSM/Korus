@@ -45,7 +45,6 @@ class Enemy(Entity):
         self.ai = EnemyAI(self)
 
         self.tortureStacks = 0
-        self.hauntedStacks = 0
         self.phasedTurns = 0
         self.cursedTurns = 0
         self.cursedLastTurn = False
@@ -97,15 +96,19 @@ class Enemy(Entity):
             self._stats['Temporary']['increased_defenses'] -= 5
             console.print(f"[asc_butcher]{self._name} has gained 1 Carved![/asc_butcher]")
 
+    def applyPhased(self):
+        if self.phasedTurns == 0:
+            self._stats['Temporary']['speed'] -= 0.2
+        self.phasedTurns = 3
+
     def _recalculateStats(self, doPrint = True, inCombat = False):
         super()._recalculateStats(doPrint, inCombat)
-        self._stats['armour'] += 50 * self.hauntedStacks
         if self.ruin > 0:
             self._stats['Temporary']['crit_chance'] -= self.ruin * 0.01
             self._stats['Temporary']['all'] -= self.ruin
 
-    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
 
         damageDealt = int(damageDealt * (1 - (self.tortureStacks * 0.02)))
 
@@ -114,6 +117,9 @@ class Enemy(Entity):
 
         if self.marked:
             damageDealt = int(damageDealt * 1.1)
+
+        if self.phasedTurns > 0:
+            damageDealt = int(damageDealt * 0.9)
 
         return damageDealt, damageType
 
@@ -142,8 +148,13 @@ class Enemy(Entity):
         if self.tortureStacks > 0:
             t = targets[0]
             if not t.radiance:
+                devasStr = ""
+                if t.devastation:
+                    hpLoss = int(self._maxHealth * 0.01 * self.tortureStacks)
+                    self.damage(hpLoss, 'true')
+                    devasStr = f" Your Devastation caused them to lose {hpLoss} Health!"
                 self.tortureStacks = 0
-                console.print(f"[asc_mindbreaker]{self._name} has removed all their Torture stacks![/asc_mindbreaker]")
+                console.print(f"[asc_mindbreaker]{self._name} has removed all their Torture stacks!{devasStr}[/asc_mindbreaker]")
 
         return critDamage
 

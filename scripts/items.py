@@ -40,7 +40,7 @@ class AffixSlot:
     def __rich__(self):
         return self.__str__()
 
-    def ___str__(self):
+    def __str__(self):
         if self.locked:
             console.print(f"[steel_blue bold underline]LOCKED[/steel_blue bold underline] {self.affix}")
         else:
@@ -955,13 +955,14 @@ class Equipment(Item):
             newDtype = self.damageType
             oldDtype = other.damageType
             change, symbol, colour = diff(self.damage, other.damage)
-            comparison += f"\n[{colour}] {symbol} {change} Damage[/{colour}]"
-            if newDtype is not None and oldDtype is not None:
-                comparison += f"\n[success] [+] Damage Type: {newDtype}[/success] | [error] [-] Damage Type: {oldDtype}[/error]"
-            elif newDtype is None and oldDtype is not None:
-                comparison += f"\n[error] [-] Damage Type: {oldDtype}[/error]"
-            elif newDtype is not None and oldDtype is None:
-                comparison += f"\n[success] [+] Damage Type: {newDtype}[/success]"
+            if newDtype != oldDtype:
+                comparison += f"\n[{colour}] {symbol} {change} Damage[/{colour}]"
+                if newDtype is not None and oldDtype is not None:
+                    comparison += f"\n[success] [+] Damage Type: {newDtype}[/success] | [error] [-] Damage Type: {oldDtype}[/error]"
+                elif newDtype is None and oldDtype is not None:
+                    comparison += f"\n[error] [-] Damage Type: {oldDtype}[/error]"
+                elif newDtype is not None and oldDtype is None:
+                    comparison += f"\n[success] [+] Damage Type: {newDtype}[/success]"
 
         newStats = [a for a in newStats if a.stat not in ['damage', 'armour', 'energy_shield', 'evasion']]
         oldStats = [a for a in oldStats if a.stat not in ['damage', 'armour', 'energy_shield', 'evasion']]

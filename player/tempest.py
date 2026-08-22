@@ -19,27 +19,27 @@ TEMPEST_DESCRIPTIONS = {
         "- Positive: +2% Crit Chance, +20% Crit Damage, 4% Less Defenses. Negative: +15% Increased Damage, +1% Lifesteal, 2% Increased Defenses.\n"
         "- Whenever you lose Positive, you next attack gains 40% Increased Lightning Damage. Whenever you lose Negative, your next attack gains +20 Damage and heals for 10% of the damage dealt.\n"
         "[bold]Stat Changes:[/bold] +20 HP. +6 Damage. +50% Crit Multi. +20% Lightning Resistance. -10% Earth Resistance.",
-    "Dervish": "[lore]You cannot strike what never stays still. You cannot corner the wind. Flow through them. Lure them into the dance of death.[/lore]\n"
+    "Dervish": "[lore]You cannot strike what never stays still. You cannot corner the wind. Flow through them. Lure them into the dance of death.[/lore]"
         "- Convert 100% of your Armour into Evasion. Whenever you Evade an attack, gain 1 stack of Fleeting, to a maximum of 10.\n"
         "- Fleeting: +0.1 Speed, 10% Increased Lightning Damage. Whenever you deal a critical hit, consume all Fleeting to: Heal 3% Max HP and gain +10% Crit Damage per Fleeting consumed.\n"
         "- Static no longer grants Damage Reduction, and instead grants +2% Evasion per stack. Flow no longer grants Speed, and instead grants +1% Crit Chance per stack.\n"
         "- Unleash only deals 50% Increased Lightning Damage, but only needs 5 combined Static and Flow stacks to activate. Whenever you Unleash, gain 30% Increased Evasion until the start of your next turn.\n"
         "[bold]Stat Changes:[/bold] -20 HP. +5 Damage. +0.1 Speed. +100 Evasion. +15% Psychic Resistance.",
-    "Ravager": "[lore]Faster. Again. Again. Never strike twice, they die too fast for that. Tear it all down, then continue on.[/lore]\n"
+    "Ravager": "[lore]Faster. Again. Again. Never strike twice, they die too fast for that. Tear it all down, then continue on.[/lore]"
         "- Bonuses for having more Speed than your target are doubled. Whenever you critically hit an opponent, gain 1 Flurry, to a maximum of 5.\n"
         "- Flurry: +3% Multihit Chance, +3% Crit Chance. Whenever you trigger a Multihit, gain 1 Relentless, to a maximum of 3.\n"
         "- Relentless: 25% Increased Lightning Damage, +0.1 Speed, 10% Reduced Defenses.\n"
         "- Static can no longer be used to Unleash. Unleash when you have 3 stacks of Flow. Unleash now grants: +75% Crit Damage, +10% Lifesteal, +10% Resistance Penetration.\n"
         "- Static also grants 2% Increased Defenses per stack. Static no longer reduces Speed per stack.\n"
         "[bold]Stat Chnages:[/bold] -30 HP. -4 Damage. +0.2 Speed. +10% Crit Chance. +50% Crit Damage.",
-    "Archon": "[lore]The storm gathers. Evolves. Currents become sparks. Sparks become thunder. Thunder becomes the end.[/lore]\n"
+    "Archon": "[lore]The storm gathers. Evolves. Currents become sparks. Sparks become thunder. Thunder becomes the end.[/lore]"
         "- Upon gaining Static or Flow, gain 1 Current, to a maximum of 10. Current: 5% Increased Lightning Damage, -2% Earth Resistance, +1% Crit Chance.\n"
         "- Bonuses for having less Speed than your target are doubled. Whenever you critically hit an enemy that has more speed than you, gain 1 Spark, to a maximum of 5.\n"
         "- Spark: +5% Crit Chance, +10% Crit Damage, -0.05 Speed. Gain 1 more Flow whenever you gain Flow.\n"
         "- When you are attacked by an enemy with more Speed than you, lose 1 Static.\n"
         "- Whenever you Unleash, deal 10% of the damage dealt to all enemies as Lightning Damage and consume up to 5 Current Stacks to heal 2% Max HP per stack consumed.\n"
         "[bold]Stat Changes:[/bold] +25 HP. +4 Damage. -0.2 Speed. +20% Lightning Resistance. +30% Crit Damage.",
-    "Mirage": "[lore]Shapeless. Senseless. Ruthless. They strike, only to find nothing but air. The flickering hastens, then all goes still.[/lore]\n"
+    "Mirage": "[lore]Shapeless. Senseless. Ruthless. They strike, only to find nothing but air. The flickering hastens, then all goes still.[/lore]"
         "- 75% of your Armour is converted to Evasion. 5% of your Armour is converted to Energy Shield.\n"
         "- Whenever you Evade an attack, gain 10% of your Maximum Energy Shield as bonus damage on your next attack.\n"
         "- If your Maximum Energy Shield is equal to more than half your Evasion, lose 0.3 Speed. If your Evasion is equal to more than 2.5x your Maximum Energy Shield, gain 0.3 Speed.\n"
@@ -314,8 +314,8 @@ class Tempest(Player):
 
         return finalDamage
 
-    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
 
         if self._ascendancy != 'Ravager': # unleash handled in crit for ravager
             if self._checkUnleash():
@@ -458,8 +458,9 @@ class Tempest(Player):
         return True
 
     def updateAscendancy(self, ascendancy):
-        super().updateAscendancy(ascendancy)
-        self._ascendancy == ascendancy
+        if not super().updateAscendancy(ascendancy):
+            return
+        self._ascendancy = ascendancy
         self.ascendancyDescription = TEMPEST_DESCRIPTIONS[ascendancy]
         if ascendancy == 'Alternator':
             self._baseHealth += 20

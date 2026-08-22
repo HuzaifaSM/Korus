@@ -30,7 +30,7 @@ class BaseChaosRune(CraftingItem):
     def getEmptySlots(self, item):
         return [s for s in item.prefixSlots + item.suffixSlots if s.isEmpty]
     
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

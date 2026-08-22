@@ -28,7 +28,7 @@ NEW AFFIXES:
 
 OTHER STUFF:
   - all ascendancy descriptions should have a 'lore line' using mythic styling to give a 'lore reason' for the conversion from base class
-    > finished: cultist, warrior, wretch, marauder, tempest, paladin, spectre, wanderer
+    > finished: cultist, warrior, wretch, marauder, tempest, paladin, spectre, wanderer, mage
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
   - add foresight rune
     > foresight rune might need a complex system:
@@ -40,26 +40,18 @@ OTHER STUFF:
   - a tutorial option on the start menu
   - should display armour and evasion amount using values from combatManager
   - playtime per save file
+  - when an ability upgrades, it should display the upgrade same as a normal ability 
+  - equipment equipping should be split between item categories
 
 CURRENTLY WORKING ON: (main order of implementation)
-  - implement spectre vengeance mechanic and make sure all ascendancy mechanics are also implemented (changes/additions to all)
-    > wraith should have a display (probably in styles.py) which shows how much ghostly healing remains until the next health cut
-  - implement wanderer hope, hopelessness, radiance and devastation mechanic
   - rework fighter class
     > new mechanic uses stances: offensive and defensive
       - offensive deals more damage but takes more damage, defensive is reverse
       - ascendancies alter stances or add new opens
-  - rework mage ascendancies
   - rework druid
 
   - in the forge:
     > move next/previous rune page options into the actual crafting menu
-    > remove the 'crafting interface' entirely and replace it with going straight into actual rune crafting
-      - rewrite _applyRune to become the new 'rune crafting menu'
-    > when applying runes, rather than printing 10 at a time in a flat list, use a rich table to display a 2 column grid with 8 rows
-      - additionally, if the player has more than 2 pages of runes (len(player._craftingInventory) > 36), instead show the categories of runes the player has available with a description per category, then display the tables again within the category menus
-      - also add an option to 'search' by typing keywords or full rune names, then matching input.replace('_','').strip().lower() to all rune.name.strip().lower() and showing a page with only valid search results to the player
-      - same logic as equipment inventory
     > add a new option that uses fuel + blueprints to combine x amount of items of the same rarity into 1 item of a higher rarity
       - limited by forge level: 1 = uncommon, 2 = rare, 3 = epic, 4 = legendary, 5 = 5x legendary for mythic
 
@@ -82,6 +74,10 @@ CURRENTLY WORKING ON: (main order of implementation)
 
   - consumable rework
 
+  - item rework
+
+  - market rework
+
   - completely rewrite help.py and all sections of Help to better explain everything
     > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.
     > all keywords in styles.py should also be explained
@@ -91,8 +87,6 @@ CURRENTLY WORKING ON: (main order of implementation)
     > tutorial groundwork
       - accessible from start menu screen
         > scripted playthrough which explains everything + mechanics
-
-  - item rework
 
   - dungeons
     > better modifiers + more modifiers

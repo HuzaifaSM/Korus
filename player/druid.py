@@ -3,6 +3,17 @@ from scripts.styles import console, pause, printHeader, clearScreen
 from typing import Dict
 import random
 
+"""
+NEEDS A FULL OVERHAUL:
+- verdance and forms need to interact at every stage: verdance could increase magnitude of form buffs
+- no more free form switching.
+- in abilites.py + abilities.json, make a system that switches each druid ability based on current form, so all abilities are always useful
+    > e.g. maul is beast version, human version could be 'stone bullet' or more earth-mage-esque
+        - do for all druid abilities
+- all forms interact with main two forms, never prevent switching. can still add their own forms, but could be more of a secondary 'evolution' form of the base two forms
+    > e.g. moonkin turns human into (e.g.) 'lunar priest' and beast into (e.g.) 'werewolf'
+"""
+
 DRUID_DESCRIPTIONS = {
     "Druid": "A nature mystic who channels the primal forces.\n"
         "Shapeshifting: Deal Earth damage to swap forms. Your forms grow in power with each level.\n"
@@ -275,8 +286,8 @@ class Druid(Player): # balanced damage and speed, earth damage
 
         super().onTurnStart(combatManager)
 
-    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
 
         verdanceGained = damageDealt // 10
         if self._ascendancy == 'Arbiter':
@@ -422,7 +433,8 @@ class Druid(Player): # balanced damage and speed, earth damage
         return True
 
     def updateAscendancy(self, ascendancy):
-        super().updateAscendancy(ascendancy)
+        if not super().updateAscendancy(ascendancy):
+            return
         if ascendancy == 'Primalist':
             self._baseHealth += 10
             self._baseDamage += 1

@@ -82,7 +82,7 @@ class BaseRevealingRune(CraftingItem):
             except ValueError:
                 console.print('[red]Invalid Input[/red]')
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

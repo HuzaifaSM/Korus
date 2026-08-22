@@ -79,9 +79,11 @@ class Shrine(Station):
                     case _:
                         if choice in validChoices:
                             chosen = ascendancies[choice]
-                            self.player.updateAscendancy(chosen)
-                            grammar = "an" if chosen[0].lower() in ['a', 'e', 'i', 'o', 'u'] else "a"
-                            printSuccess(f"You have successfully ascended into {grammar} [asc_{chosen.lower()}]{chosen}[/asc_{chosen.lower()}]")
+                            if self.player.updateAscendancy(chosen):
+                                grammar = "an" if chosen[0].lower() in ['a', 'e', 'i', 'o', 'u'] else "a"
+                                printSuccess(f"You have successfully ascended into {grammar} [asc_{chosen.lower()}]{chosen}[/asc_{chosen.lower()}]")
+                            else:
+                                printError(f"You were unable to ascend at this time.")
                             pause()
                             return
                         else:

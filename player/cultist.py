@@ -15,13 +15,13 @@ CULTIST_DESCRIPTIONS = {
         "- At the start of every turn, Insanity is randomly: Halved, Doubled, Inverted, or shifted by ±10.\n"
         "[bold]Starting Stats:[/bold] 35 Health | 7 Damage | 5% Crit Chance | 160% Crit Damage | Chaos Damage | 0.9 Speed.",
     #ascendancies
-    "Umbralist": "[lore]Embrace the darkness. Let it swallow you whole. Once the shadows fall, consume them. Only you will remain.[/lore]\n"
+    "Umbralist": "[lore]Embrace the darkness. Let it swallow you whole. Once the shadows fall, consume them. Only you will remain.[/lore]"
         "- Minimum Insanity is lowered by 20. Maximum Insanity lowered by 15. At the start of your turn, if you have negative Insanity, gain 1 Shadow per 10 negative Insanity.\n"
         "- Max 10 Shadow Stacks. Shadow: +1% Damage Reduction, +3% Increased Chaos Damage.\n"
         "- At 10 stacks of Shadow, your next attack ignores all resistances and defenses, has +10% Lifesteal and consumes all Shadow.\n"
         "- Negative Insanity grants +2% Max HP gained as Shield at turn start per 10 Insanity rather than +1%. At minimum Insanity, 50% of the damage taken from the next hit is gained as damage.\n"
         "[bold]Stat Changes:[/bold] +20 HP. -4 Damage. -0.1 Speed. +10% Chaos Resistance.",
-    "Harbinger": "[lore]Become the herald of ruin. Show them the depths of your mind, until all becomes one. You are the beginning, and the end.[/lore]\n"
+    "Harbinger": "[lore]Become the herald of ruin. Show them the depths of your mind, until all becomes one. You are the beginning, and the end.[/lore]"
         "- Minimum Insanity is increased by 10. Maximum Insanity is increased by 10. Chaos damage has a 20% chance to apply Corruption, to a maximum of 10.\n"
         "- Corruption: +2% Chaos Damage Taken, -1% Damage dealt. When an enemy with 5+ Corruption dies, it deals 10% of its Max HP as Chaos damage to all enemies.\n"
         "- Enemies have a 10% chance per Corruption to apply 1 Corruption to another enemy at the start of their turn.\n"
@@ -29,21 +29,21 @@ CULTIST_DESCRIPTIONS = {
         "- At maximum Insanity, your next attack applies 2 stacks of Curse to all enemies.\n"
         "- At minimum Insanity, the absorbed damage is regained as health as well as being applied as damage.\n"
         "[bold]Stat Changes:[/bold] -10 HP. +6 Damage. +0.05 Speed. +10% Dark Resistance. +15% Ailment Avoidance.",
-    "Doomsayer": "[lore]The end is here. You know, for it is you. The madness was tamed, curated into a beast of punishment, but not just for your enemies...[/lore]\n"
+    "Doomsayer": "[lore]The end is here. You know, for it is you. The madness was tamed, curated into a beast of punishment, but not just for your enemies...[/lore]"
         "- At the start of your turn, you may choose to skew how your Insanity is affected, You may choose to skew towards positive or negative Insanity.\n"
         "- Upon skewing your Insanity, gain 1 stack of Omen per 10 Insanity gained or lost, to a maximum of 5. If you do not skew your Insanity, gain 1 stack of Heresy, to a maximum of 10.\n"
         "- Omen: +2% Damage Taken, +2% Increased Chaos Damage. Heresy: +2% Crit Chance, +10% Crit Damage, +1% Damage Taken.\n"
         "- Upon dealing a critical hit, consume all Omen to gain +20% Crit Damage per Omen consumed, and consume all Heresy to gain +2% Lifesteal and +10% Crit Damage per Heresy consumed.\n"
         "- At maximum Insanity, only take 5% of damage dealt as Chaos Damage.\n"
         "[bold]Stat Changes:[/bold] +15 HP. -4 Damage. -0.1 Speed. +25% Crit Damage.",
-    "Ritualist": "[lore][dim]'Offer your flesh.'... 'To a god?'... 'No. To yourself.'[/dim] ...Divinity is dead. In suffering, find hate. In death, find faith.[/lore]\n"
+    "Ritualist": "[lore][dim]'Offer your flesh.'... 'To a god?'... 'No. To yourself.'[/dim] ...Divinity is dead. In suffering, find hate. In death, find faith.[/lore]"
         "- Minimum Insanity is decreased by 15. Maximum Insanity is increased by 15. At the start of your turn, 20% chance to gain 1 stack of Bleed.\n"
         "- At the start of your turn, you may sacrifice 5% of your Max HP to gain or lose 20 Insanity. Gain Elevated until the start of your next turn if you sacrifice health.\n"
         "- Elevated: +20% Increased Chaos Damage, +5% Damage Reduction, +40% Ailment Avoidance.\n"
         "- Gain 1 Devotion when attacking if you have at least 50 Insanity, to a maximum of 5. Gain 1 Faithless when taking damage if Insanity is at or below -50, to a maximum of 10.\n"
         "- Devotion: +5% Lifesteal, +8% Increased Chaos Damage. At maximum Devotion: +10% Crit Chance. Faithless: +2% Damage Reduction, +10 HP Regen. At maximum Faithless: +80% Crit Damage.\n"
         "[bold]Stat Changes:[/bold] -10 HP. +6 Damage. +0.1 Speed. +5% Lifesteal. -10% Physical Resistance. +10% Dark Resistance.",
-    "Anarchist": "[lore]Break everything. Your sanity. Your limits. Reality. Let nothing remain, for you are Death Incarnate.[/lore]\n"
+    "Anarchist": "[lore]Break everything. Your sanity. Your limits. Reality. Let nothing remain, for you are Death Incarnate.[/lore]"
         "- Minimum Insanity is increased by 10. Maximum Insanity is increased by 20. Gain 1 Volatility per 10 damage dealt, or 15 damage taken.\n"
         "- Maximum Volatility is 100. Gain 15 Volatility on kill and 10 Volatility on Critical Hit. At maximum Volatility, your next attack triggers Discharge. Discharge is based on your Insanity state.\n"
         "- Positive Discharge: Deal 1% of your Max HP as Chaos Damage to all enemies per 5 Insanity. Insanity is set between -10 and 30 afterwards.\n"
@@ -51,7 +51,7 @@ CULTIST_DESCRIPTIONS = {
         "- Neutral Discharge: Insanity is set to either your maximum or your minimum. Lose 5% Max Health. Your attack deals 75% Increased Chaos Damage.\n"
         "- After Discharging, Volatility is set to 0. Per 25 Volatility: 10% Increased Damage, +5% Damage Taken.\n"
         "[bold]Stat Changes:[/bold] -15 HP. -6 Damage. +0.2 Speed. +15% Chaos Resistance. +5% Crit Chance. +25% Crit Damage.",
-    "Desecrator": "[lore]There is no peace. No safety. No salvation. Defile everything, living and dead. Leave this world a field of corpses.[/lore]\n"
+    "Desecrator": "[lore]There is no peace. No safety. No salvation. Defile everything, living and dead. Leave this world a field of corpses.[/lore]"
         "- Minimum Insanity is increased by 10. Maximum Insanity is increased by 20. Apply Ruin to enemies per 40 damage dealt. Ruin has no maximum stack limit.\n"
         "- Ruin: -1% All Resistance, -1% Crit Chance. At 5+ Ruin, the affected enemy becomes Tainted. At 10+ Ruin, the affected enemy becomes Desecrated instead.\n"
         "- Tainted: +10% Damage Taken, apply 1 Ruin to one random enemy on turn start. Desecrated: +20% Damage Taken, apply 3 Ruin to all other enemies on death.\n"
@@ -269,8 +269,8 @@ class Cultist(Player):
                 console.print(f"  [chaos]You were attacked while your Insanity is negative! {attacker._name} is cleansed of 1 Corruption.[/chaos]")
         return finalDamage
 
-    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
 
         if self.absorbedToAdd > 0:
             damageDealt += self.absorbedToAdd
@@ -522,7 +522,8 @@ class Cultist(Player):
         return True
 
     def updateAscendancy(self, ascendancy):
-        super().updateAscendancy(ascendancy)
+        if not super().updateAscendancy(ascendancy):
+            return
         self._ascendancy = ascendancy
         self.ascendancyDescription = CULTIST_DESCRIPTIONS[ascendancy]
         if ascendancy == 'Umbralist':

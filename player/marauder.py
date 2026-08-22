@@ -11,7 +11,7 @@ MARAUDER_DESCRIPTIONS = {
         "- If an enemy attacks you after you have acted, they deal 10% Less Damage to you. At the end of combat, heal 1% Max HP per Siphoned Damage, to a maximum heal of 30%.\n"
         "[bold]Starting Stats:[/bold] 60 HP | 4 Damage | 4% Crit Chance | 130% Crit Damage | Cold Damage | 0.8 Speed.",
     # ascendancies
-    "Colossus": "[lore]Dodge? Their hits do nothing. Stand your ground, and trample over theirs. Every strike is a statement of dominance.[/lore]\n"
+    "Colossus": "[lore]Dodge? Their hits do nothing. Stand your ground, and trample over theirs. Every strike is a statement of dominance.[/lore]"
         "- Convert 50% of your Evasion into Armour, and 10% of your Evasion as Energy Shield. You have no Evasion.\n"
         "- The first time your Energy Shield is broken in combat, gain 1% Increased Damage per 5 Maximum Energy Shield you have for the rest of combat. Elemental damage against you treats your armour as 130% of its value.\n"
         "- If an enemy attacks you before you have acted, your next attack gains damage equal to damage prevented by Armour and Energy Shield by that hit.\n"
@@ -19,7 +19,7 @@ MARAUDER_DESCRIPTIONS = {
         "- Damage dealt from Echo is reduced to 15% of the damage dealt, but is applied as True damage instead of Cold.\n"
         "- Upon killing an enemy, for the rest of combat: Gain 20% of their Armour as Added Armour, Regenerate Energy Shield equal to 10% of their Armour or Max Energy Shield, whichever is higher.\n"
         "[bold]Stat Changes:[/bold] -15 HP. +4 Damage. -0.2 Speed. +100 Armour. +20 Energy Shield.",
-    "Dreadnought": "[lore]Might. That's all that matters on the battlefield. Each wound heals before it opens. Each scar amplifies your strength. Each hit, another reason to decimate them.[/lore]\n"
+    "Dreadnought": "[lore]Might. That's all that matters on the battlefield. Each wound heals before it opens. Each scar amplifies your strength. Each hit, another reason to decimate them.[/lore]"
         "- 20% Increased Maximum Life. Convert 10% of your Armour and Evasion, and 20% of your Maximum Energy Shield into Max Health.\n"
         "- When an attack reduces your health, 50% of the damage is Deferred. Deferred damage is dealt to you 1 turn later as Cold Damage.\n"
         "- Gain 20% of Deferred damage as bonus damage for the rest of combat, to a maximum equal to 30% of your Max HP.\n"
@@ -28,13 +28,13 @@ MARAUDER_DESCRIPTIONS = {
         "- Healing has a 30% chance to Echo, applying its heal again at the start of your next turn at 50% value.\n"
         "- If you attack an enemy after before have acted, heal for 10% of the damage dealt, and Siphon up to twice as much damage if possible.\n"
         "[bold]Stat Changes:[/bold] +30 Health. -5 Damage. -0.1 Speed. +50% Healing Magnitude. +15% Cold Resistance. +5% Maximum Cold Resistance.",
-    "Sovereign": "[lore]You sit atop the throne of war. Each move flawless and unforgiving. Their pride will be their end.[/lore]\n"
+    "Sovereign": "[lore]You sit atop the throne of war. Each move flawless and unforgiving. Their pride will be their end.[/lore]"
         "- If you attack an enemy after they have acted, deal 25% Increased Cold Damage, heal for 10% of the damage dealt to them, and reduce their base speed by 1% of your speed.\n"
         "- If you attack an enemy before they have acted, gain +25% Crit Chance and +75% Crit Damage against them.\n"
         "- If an enemy attacks you before you have acted, apply Shame to them for 2 turns. Shame: Deal 10% Less Damage, -0.1 Speed.\n"
         "- If an enemy attacks you after you have acted, they deal 20% Less Damage to you, increased to 30% Less Damage if the damage is Divine.\n"
         "[bold]Stat Changes:[/bold] +15 HP. +4 Damage. -0.1 Speed. +5 Stamina Regen. +10% Holy Resistance.",
-    "Harrower": "[lore]Their strength is useless. Cripple them instead. Rain blows upon them. Steal even their ability to flee.[/lore]\n"
+    "Harrower": "[lore]Their strength is useless. Cripple them instead. Rain blows upon them. Steal even their ability to flee.[/lore]"
         "- Siphon Speed instead of Damage. You can Siphon up to 0.5 Speed total. Siphon 0.02 Speed per 1 Damage that would have been Siphoned. Enemies cannot steal Siphoned Speed.\n"
         "- If you have Siphoned more than 0.25 Speed, gain 40% Increased Damage, 10% Elemental Resistance and 20% Physical Resistance.\n"
         "- If you attack an enemy before they have acted, they are executed if they have less than 8% Max HP remaining. Executing an enemy grants you Empowerment for the rest of combat.\n"
@@ -42,7 +42,7 @@ MARAUDER_DESCRIPTIONS = {
         "- If an enemy attacks you after you have acted, their Speed is reduced by 5%, and they take Cold Damage equal to their base damage.\n"
         "- If an enemy attacks you before you have acted, their hit treats your Evasion as 150% of its actual value.\n"
         "[bold]Stat Changes:[/bold] -15 HP. +6 Damage. +0.1 Speed. +5% Crit Chance. +25% Crit Damage.",
-    "Butcher": "[lore]Their fear tastes so sweet. Revel in delight as you carve them up, one by one. Watch as they cower in fear.[/lore]\n"
+    "Butcher": "[lore]Their fear tastes so sweet. Revel in delight as you carve them up, one by one. Watch as they cower in fear.[/lore]"
         "- At the start of combat, apply Marked to a random enemy. Marked: 25% Increased Damage Taken, 10% Increased Damage Dealt.\n"
         "- When you kill a Marked enemy, Siphon all of its base damage, ignoring your cap, and deal Cold Damage to all enemies equal to 500% of the killed enemy's base damage.\n"
         "- Mark a new random enemy when the current Marked enemy dies.\n"
@@ -260,8 +260,8 @@ class Marauder(Player):
             combatManager.checkDead(target)
             self.onKill(target, {'executed': True}, combatManager)
 
-    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
 
         damageDealt += self.siphonedDamage
 
@@ -393,7 +393,8 @@ class Marauder(Player):
         return True
 
     def updateAscendancy(self, ascendancy):
-        super().updateAscendancy(ascendancy)
+        if not super().updateAscendancy(ascendancy):
+            return
         self._ascendancy = ascendancy
         self.ascendancyDescription = MARAUDER_DESCRIPTIONS[ascendancy]
         if ascendancy == 'Colossus':

@@ -205,7 +205,7 @@ class Market(Station):
                 if choice == '0':
                     return
                 index = int(choice) - 1
-                if 0 < index < len(stockList):
+                if 0 <= index < len(stockList):
                     itemName, itemData = stockList[index]
                     
                     if len(itemData) == 3:

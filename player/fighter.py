@@ -25,6 +25,11 @@ Aggression Threshold Changes:
   - All-In: You are unable to critically hit. Gain Thorns equal to 5x your base damage, upon killing an enemy: gain their base damage as damage for the rest of combat, heal equal to 10% of their Max HP. Take 30% Less Damage from all hits. Damage prevented is gained as damage on your next attack.
 
 Starting Stats: 40 HP | 6 Damage | 5% Crit Chance | 175% Crit Damage | Physical Damage | 1.05 Speed.
+
+Ascendancy Ideas:
+- All-in specialist: complacent sides get their own buffs, mirroring the all-in buffs of the alternate side
+- trained/middle-ground specialist: every turn both stat is trained, gain a stacking buff. whenever one side becomes disciplined (i.e. trained stack broken), consume buff for stance-related bonuses
+- cap-based specialist: every turn, raise total cap of shared stances by 10, capping at 150 (meaning both can be minimal discipline, or one neutral + all-in). significant debuffs in complacent. dedicated gains the largest buffs. cap also raised from dealing/taking damage + crits
 """
 
 FIGHTER_DESCRIPTIONS = {
@@ -113,8 +118,8 @@ class Fighter(Player): # higher speed, lower damage, physical damage
                 console.print('[gold1]Marshal: Critical Hit! Gained 2 turns of Momentum and all ability cooldowns reduced by 1.[/gold1]')
         return crit, critMulti
 
-    def onAttack(self, damageDealt, damageType, target, combatManager, ability):
-        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability)
+    def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
+        damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
         comboGained = False
         bonus = 0
         damageDealt = int(damageDealt * (self._combo / 100) * self.comboEffect)
@@ -229,6 +234,8 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         super().onCombatEnd()
 
     def updateAscendancy(self, ascendancy):
+        if not super().updateAscendancy(ascendancy):
+            return
         if ascendancy == 'Bladedancer':
             self._baseHealth -= 5
             self._baseDamage += 1

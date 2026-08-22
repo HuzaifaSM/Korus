@@ -54,7 +54,7 @@ class BaseDestabilisationRune(CraftingItem):
         with open('crafting/data/destabilisation.json', 'r') as f:
             self.data = json.load(f)
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

@@ -21,7 +21,7 @@ class BaseRandomiserRune(CraftingItem):
             valid.append(slot.affix)
         return valid
     
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -44,8 +44,8 @@ class ValueRandomiserRune(BaseRandomiserRune):
     minItemLevel = 15
     dropWeight = 150
 
-    def apply(self, item) -> CraftResult:
-        output = super().apply(item)
+    def apply(self, item, player=None) -> CraftResult:
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         affixes = self.getValidAffixes(item)
@@ -75,8 +75,8 @@ class GreaterValueRandomiserRune(BaseRandomiserRune):
     minItemLevel = 30
     dropWeight = 65
 
-    def apply(self, item):
-        output = super().apply(item)
+    def apply(self, item, player=None):
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         affixes = self.getValidAffixes(item)
@@ -101,8 +101,8 @@ class PerfectValueRandomiserRune(BaseRandomiserRune):
     minItemLevel = 50
     dropWeight = 15
 
-    def apply(self, item):
-        output = super().apply(item)
+    def apply(self, item, player=None):
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         affixes = self.getValidAffixes(item)
@@ -124,8 +124,8 @@ class PerfectValueRandomiserRune(BaseRandomiserRune):
 class BaseTierRandomiserRune(BaseRandomiserRune):
     numRolls: int
 
-    def apply(self, item) -> CraftResult:
-        output = super().apply(item)
+    def apply(self, item, player=None) -> CraftResult:
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         validSlots = [
@@ -222,8 +222,8 @@ class PerfectTierRandomiserRune(BaseTierRandomiserRune):
 
 class BaseAffixRandomiserRune(BaseRandomiserRune):
 
-    def apply(self, item) -> CraftResult:
-        output = super().apply(item)
+    def apply(self, item, player=None) -> CraftResult:
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         validSlots = [
@@ -304,9 +304,9 @@ class DefenseRandomiserRune(BaseRandomiserRune):
     successEntropy = 0.05
     dropWeight = 150
 
-    def apply(self, item):
+    def apply(self, item, player=None):
         from scripts.items import Equipment
-        output = super().apply(item)
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         
@@ -369,8 +369,8 @@ class DamageRandomsierRune(BaseRandomiserRune):
         1
     ]
 
-    def apply(self, item):
-        output = super().apply(item)
+    def apply(self, item, player=None):
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         

@@ -9,7 +9,9 @@ from scripts.styles import (
 )
 from scripts.runeDrops import getRuneObject
 from crafting.base import CraftOutcome, CraftResult
-from rich.layout import Layout
+from rich.columns import Columns
+from rich.table import Table
+from rich import box
 from copy import deepcopy
 
 class Forge(Station):
@@ -24,6 +26,7 @@ class Forge(Station):
         self.previousItem = None
         self.currentItem = None
         self.currentCraftingPage = 1
+        self.runeFilter = ""
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
@@ -52,11 +55,15 @@ class Forge(Station):
         runesAdded = 0
         playerRunes = self.player._craftingInventory
         for rune, quant in playerRunes.items():
-            page = runesAdded // 10 + 1
-            if self.currentItem:
-                cat, rType = rune.split('_', 1)
-                runeLevel = getRuneObject(cat,rType).minItemLevel or 1
-                if self.currentItem.level >= runeLevel:
+            page = runesAdded // 12 + 1
+            cat, rType = rune.split('_', 1)
+            runeLevel = getRuneObject(cat,rType).minItemLevel or 1
+            if self.currentItem.level >= runeLevel:
+                if self.runeFilter != "":
+                    if self.runeFilter in rune.lower():
+                        temp[page].append({rune: quant})
+                        runesAdded += 1
+                else:
                     temp[page].append({rune: quant})
                     runesAdded += 1
         for k, v in temp.copy().items():
@@ -66,7 +73,14 @@ class Forge(Station):
 
     @property
     def runeList(self) -> List[Dict[str, int]]:
-        return self.runePages[self.currentCraftingPage]
+        pages = self.runePages
+        if not pages:
+            return []
+        if self.currentCraftingPage not in pages:
+            # filtering/re-rolling can shrink the page count out from under
+            # whatever page we were sat on - fall back to the first real page
+            self.currentCraftingPage = min(pages.keys())
+        return pages[self.currentCraftingPage]
 
     def _serialise(self):
         temp = super()._serialise()
@@ -230,7 +244,7 @@ class Forge(Station):
         item = self._selectEquipment()
         if not item:
             return
-        
+
         self.currentItem = item
         self.previousItem = None
 
@@ -240,92 +254,56 @@ class Forge(Station):
             layout = self._createSplitLayout()
 
             console.print(layout)
+            console.print(self._createRunePanel())
             printSeparator()
 
             if item.entropyLocked:
                 console.print("[red bold]⚠ ITEM IS ENTROPY LOCKED - NO MORE CRAFTING POSSIBLE[/red bold]")
                 pause()
                 break
-            
+
             if item.destabilised:
                 console.print("[dark_red bold]⚠ ITEM IS CORRUPTED - NO MORE CRAFTING POSSIBLE[/dark_red bold]")
                 pause()
                 break
 
+            if self.runeFilter != "":
+                console.print(f"Current Filter: [bold]{self.runeFilter}[bold]")
             console.print("[cyan]Options:[/cyan]")
             console.print("  [dim]0.[/dim] Finish Crafting")
-            console.print("  [dim]1.[/dim] Apply Rune")
-            console.print("  [dim]2.[/dim] View Crafting Inventory")
+            console.print("  [dim]#.[/dim] Apply Rune (enter a rune number from the table above)")
+            console.print("  [dim]I.[/dim] View Crafting Inventory")
+            if self.runeFilter != "":
+                console.print("  [dim]C.[/dim] Clear Current Filter")
+            else:
+                console.print("  [dim]?.[/dim] Type a word/keyword to filter for Runes of that type")
             if len(self.runePages) > 1:
-                console.print("  [dim]3.[/dim] Next Rune Page")
-                console.print("  [dim]4.[/dim] Previous Rune Page")
+                console.print("  [dim]N.[/dim] Next Rune Page")
+                console.print("  [dim]P.[/dim] Previous Rune Page")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
             checkGlobalCommand(choice)
 
-            try:
-                choice = int(choice)
-                if choice == 0:
-                    return
-                elif choice == 1:
-                    self._applyRune()
-                elif choice == 2:
-                    self._viewCraftingInventory()
-                elif choice == 3 and len(self.runePages) > 1:
-                    self.currentCraftingPage = min(len(self.runePages), self.currentCraftingPage + 1)
-                    console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
-                    pause()
-                elif choice == 4 and len(self.runePages) > 1:
-                    self.currentCraftingPage = max(1, self.currentCraftingPage - 1)
-                    console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
-                    pause()
-                else:
+            if choice.lstrip('-').isdigit():
+                index = int(choice) - 1
+                if index == -1:
+                    break
+
+                runeList = self.runeList
+                if not (0 <= index < len(runeList)):
                     printWarning("Invalid choice")
                     pause()
-            except ValueError:
-                printWarning("Invalid input")
-                pause()
+                    continue
 
-        clearScreen()
-        console.print("[gold1 bold]=== CRAFTING COMPLETE ===[/gold1 bold]\n")
-        console.print(self.currentItem)
-        pause()
-
-    def _applyRune(self):
-        clearScreen()
-        printSeparator()
-        printHeader('Apply Rune')
-        printSeparator()
-
-        if not self.player._craftingInventory:
-            printWarning('You have no runes!')
-            pause()
-            return
-
-        console.print(f'[cyan]Available Runes:[/cyan] | Page: {self.currentCraftingPage} / {len(self.runePages)}\n')
-        runeList = self.runeList
-        for i, data in enumerate(runeList):
-            for key, quantity in data.items():
+                key = next(iter(runeList[index]))
                 category, runeType = key.split('_', 1)
                 rune = getRuneObject(category, runeType)
-                console.print(f'  [cyan]{i+1}.[/cyan] {rune}')
-                console.print(f'[dim]Quantity: {quantity}[/dim]\n')
-
-        choice = console.input("[cyan]Choose rune to apply (0 to cancel):\n>[/cyan] ").strip()
-
-        try:
-            index = int(choice) - 1
-            if 0 <= index <= len(runeList):
-                for info, _ in runeList[index].items():
-                    info = info.split('_', 1)
-                    category, runeType = info[0], info[1]
-                    rune = getRuneObject(category, runeType)
 
                 if not rune:
                     printError(f"Failed to load rune: {runeType}")
                     pause()
-                    return
-                
+                    continue
+
                 self.previousItem = deepcopy(self.currentItem)
 
                 console.print(f"\n[yellow]Applying:[/yellow] {rune.name}")
@@ -339,18 +317,44 @@ class Forge(Station):
                     self.player._recalculateStats(False)
 
                     self._showCraftingResult(result, rune.name)
-                    pause()
                     clearScreen()
 
                     if outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
                         self.player.removeRune(category, runeType, 1)
-                    
+
                     pause()
                 else:
                     self.previousItem = None
-        except ValueError:
-            printWarning('Invalid input')
-            pause()
+
+            elif choice.lower() == 'i':
+                self._viewCraftingInventory()
+            elif choice.lower() == 'n':
+                if len(self.runePages) > 1:
+                    self.currentCraftingPage = min(len(self.runePages), self.currentCraftingPage + 1)
+                    console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
+                    pause()
+                else:
+                    printWarning("Invalid choice")
+                    pause()
+            elif choice.lower() == 'p':
+                if len(self.runePages) > 1:
+                    self.currentCraftingPage = max(1, self.currentCraftingPage - 1)
+                    console.print(f'[dim]Now on crafting page {self.currentCraftingPage}[/dim]')
+                    pause()
+                else:
+                    printWarning("Invalid choice")
+                    pause()
+            elif choice.lower() == 'c':
+                self.runeFilter = ""
+                self.currentCraftingPage = 1
+            elif choice.strip().lower() != "":
+                self.runeFilter = choice.lower().strip()
+                self.currentCraftingPage = 1
+
+        clearScreen()
+        console.print("[gold1 bold]=== CRAFTING COMPLETE ===[/gold1 bold]\n")
+        console.print(self.currentItem)
+        pause()
 
     def _showCraftingResult(self, result: CraftResult, runeName: str):
         if result.outcome == CraftOutcome.SUCCESS:
@@ -372,37 +376,85 @@ class Forge(Station):
         self.player.showCraftingInventory()
         pause()
 
-    def _createSplitLayout(self) -> Panel:
-        layout = Layout()
-
-        if self.previousItem:
-            prevPanel = Panel(
-                self.previousItem.__str__(),
-                title='[dim]Previous State[/dim]',
-                border_style='dim',
-                height=20
-            )
-
+    def _createSplitLayout(self) -> Columns | Panel:
         currentPanel = Panel(
             self.currentItem.__str__(),
             title='[gold]Current State[/gold]',
             border_style='gold1',
-            height=20
+            height=18
         )
 
-        if self.previousItem:
-            layout.split_row(
-                Layout(prevPanel),
-                Layout(currentPanel)
-            )
-        else:
-            layout.update(currentPanel)
+        if not self.previousItem:
+            return currentPanel
+
+        prevPanel = Panel(
+            self.previousItem.__str__(),
+            title='[dim]Previous State[/dim]',
+            border_style='dim',
+            height=18
+        )
+
+        return Columns([prevPanel, currentPanel], equal=True, expand=True)
+
+    def _createRunePanel(self) -> Panel:
+        title = f'[cyan]Available Runes[/cyan] | Page: {self.currentCraftingPage} / {max(len(self.runePages), 1)}'
+
+        if not self.runeList:
+            if self.runeFilter:
+                content = f"[dim]No runes match filter '{self.runeFilter}'. Press C to clear it.[/dim]"
+            elif not self.player._craftingInventory:
+                content = "[dim]You have no runes.[/dim]"
+            else:
+                content = "[dim]No runes are usable on this item.[/dim]"
+            return Panel(content, title=title, border_style='cyan')
 
         return Panel(
-            layout,
-            height=22,
-            border_style='dim'
+            self._createRuneTable(),
+            title=title,
+            border_style='cyan'
         )
+
+    def _createRuneTable(self) -> Table:
+        table = Table(box=box.HORIZONTALS, show_header=True, header_style='bold cyan', expand=True, show_lines=True)
+        table.add_column("#", justify="right", width=3, overflow="fold")
+        table.add_column("Rune")
+        table.add_column("#", justify="right", width=3, overflow="fold")
+        table.add_column("Rune")
+        table.add_column("#", justify="right", width=3, overflow="fold")
+        table.add_column("Rune")
+
+        runeList = self.runeList
+        rows = 4
+
+        for row in range(rows):
+            leftIndex = row
+            centreIndex = (row + rows) // 2
+            rightIndex = row + rows
+
+            leftNum, leftName = "", ""
+            if leftIndex < len(runeList):
+                leftNum = str(leftIndex + 1)
+                leftName = self._formatRuneEntry(runeList[leftIndex])
+
+            centNum, centName = "", ""
+            if centreIndex < len(runeList):
+                centNum = str(centreIndex + 1)
+                centName = self._formatRuneEntry(runeList[centreIndex])
+
+            rightNum, rightName = "", ""
+            if rightIndex < len(runeList):
+                rightNum = str(rightIndex + 1)
+                rightName = self._formatRuneEntry(runeList[rightIndex])
+
+            table.add_row(leftNum, leftName, centNum, centName, rightNum, rightName)
+
+        return table
+
+    def _formatRuneEntry(self, data: Dict[str, int]) -> str:
+        key, quantity = next(iter(data.items()))
+        category, runeType = key.split('_', 1)
+        rune = getRuneObject(category, runeType)
+        return f"{rune} [dim](x{quantity})[/dim]"
 
     def _selectEquipment(self) -> Optional[Equipment]:
         clearScreen()

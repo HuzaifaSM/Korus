@@ -141,6 +141,7 @@ class Entity:
                 'speed': 0,
                 'crit_chance': 0,
                 'crit_multi': 0,
+                'crit_resistance': 0,
                 'resistance_peneration': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
@@ -184,6 +185,7 @@ class Entity:
         self._baseSpeed = speed
         self._baseStamina = 100
         self._stamina = 100
+        self._baseMaxStamina = 100
         self._maxStamina = 100
         self._gold = 0
         self._level = 1
@@ -336,6 +338,8 @@ class Entity:
 
     def damage(self, damage: int, damageType: str='physical', combatUnit = None, *, lethal: bool = True, attacker: Entity = None) -> int:
         """'true' damageType means no resistances apply"""
+        if damage < 1:
+            return 0
         if combatUnit:
             resistMod = combatUnit.getResistanceModifier(damageType, attacker)
             stoneskinMod = combatUnit.getStoneskinModifier()
@@ -561,15 +565,15 @@ class Entity:
             printSuccess(f"Equipped {equipName} in {slot} slot.")
         return True
 
-    def unequip(self, slot: str) -> Optional[Equipment]:
+    def unequip(self, slot: str, doPrint: bool = True) -> Optional[Equipment]:
         if slot in self._equipment and self._equipment[slot]:
             item = self._equipment[slot]
             self._equipment[slot] = None
-            self._recalculateStats()
+            self._recalculateStats(doPrint)
             printInfo(f"Unequipped {item.name}")
             return item
         return None
-    
+
     def _getExtraBonuses(self, stat: str) -> int: # gets temporary + permanent buffs for a stat
         perm = self._stats['Permanent'].get(stat, 0)
         temp = self._stats['Temporary'].get(stat, 0)
@@ -681,7 +685,7 @@ class Entity:
 
         self._damage = int((self._baseDamage + dmgFlat) * (1 + dmgInc))
         self._maxHealth = int((self._maxHealth + healthFlat) * (1 + healthInc))
-        self._maxStamina = self._maxStamina + staminaFlat
+        self._maxStamina = self._baseMaxStamina + staminaFlat
         self._speed = (self._speed + spdFlat) * (1 + spdInc)
         self._speed += self._getExtraBonuses('speed')
         self._speed = round(self._speed, 2)
@@ -690,6 +694,8 @@ class Entity:
         self._stats['Bonuses']['enemy_quantity'] = min(self._stats['Bonuses']['enemy_quantity'], 100)
         self._stats['Bonuses']['stun_avoidance'] = min(self._stats['Bonuses']['stun_avoidance'], 100)
         self._stats['Bonuses']['dot_resistance'] = min(self._stats['Bonuses']['dot_resistance'], 100)
+        self._stats['Bonuses']['crit_resistance'] = min(self._stats['Bonuses']['crit_resistance'], 100)
+        self._stats['Bonuses']['resistance_penetration'] = min(self._stats['Bonuses']['resistance_penetration'], 200)
 
         globalIncDef = self._getExtraBonuses('increased_defenses')
         finalArmour = int(armour * (1 + globalArmourInc + globalIncDef))
@@ -799,6 +805,7 @@ class Entity:
     #        onEvade (target)            - called if the hit was evaded, rendering further functions irrelevant
     #        damage is applied to target
     #        onDamaged (target)          - target reacts to the damage that just landed
+    #        onAfterAttack (attacker)    - attacker reacts to the damage they just dealt
     #   5. once per target, after all multihits: mechanics/status effects applied, death checked
     #   6. onKill (attacker) if the target died, else onExecuteCheck (attacker)
     # Any hook may queue a StatusEffect via self._queueEffect() instead of returning one -
@@ -871,6 +878,14 @@ class Entity:
         """Rewrite per class"""
         pass
 
+    def onCC(self, attacker: Entity, combatManager):
+        """Rewrite per class"""
+        pass
+
+    def onStatusApplied(self, status, attacker: Entity):
+        """Rewrite per class, return status or None"""
+        return status
+
     def onEvade(self, combatManager):
         """Rewrite per class"""
         return
@@ -879,23 +894,23 @@ class Entity:
         """Rewrite per class"""
         return
 
-    def onAttack(self, damageDealt: int, damageType: str, target, combatManager, ability: Ability):
+    def onAttack(self, damageDealt: int, damageType: str, target, combatManager, ability: Ability, crit: bool = False):
         """Target should be combatUnit. Fires once per target before mitigation (once per multihit)."""
         durabilityLoss = max(1, damageDealt // 25)
         if self._equipment.get('weapon'):
             weapon = self._equipment.get('weapon')
-            weapon.durability = max(0, weapon.durability - durabilityLoss)
+            weapon.durability = max(0, weapon.durability - (durabilityLoss // max(1, weapon.level // 10)))
             if weapon.durability == 0:
                 printWarning(f"{weapon.name} has broken!")
-                self.unequip('weapon')
+                self.unequip('weapon', False)
         accessoryLoss = durabilityLoss // 2
         for slot in ['ring', 'amulet']:
             if self._equipment.get(slot):
                 accessory = self._equipment.get(slot)
-                accessory.durability = max(0, accessory.durability - accessoryLoss)
+                accessory.durability = max(0, accessory.durability - (accessoryLoss // max(1, accessory.level // 10)))
                 if accessory.durability == 0:
                     printWarning(f"{accessory.name} has broken!")
-                    self.unequip(slot)
+                    self.unequip(slot, False)
 
         ability.cooldown = ability.maxCooldown
 
@@ -906,12 +921,12 @@ class Entity:
         for slot in ['head', 'chest', 'legs', 'feet']:
             if self._equipment.get(slot):
                 armour = self._equipment.get(slot)
-                armour.durability = max(0, armour.durability - durabilityLoss)
+                armour.durability = max(0, armour.durability - (durabilityLoss // max(1, armour.level // 10)))
                 if armour.durability == 0:
                     printWarning(f"{armour.name} has broken!")
-                    self.unequip(slot)
+                    self.unequip(slot, False)
 
-        self.heal(self._stats['Bonuses']['health_on_hit'])
+        self.heal(self._stats['Bonuses']['health_on_hit'], False)
         self._stamina = min(self._maxStamina, self._stamina + self._stats['Bonuses']['stamina_on_hit'])
 
         return damageTaken, damageType
@@ -919,7 +934,7 @@ class Entity:
     def onKill(self, entity: Entity=None, attackData: Dict=None, combatManager=None) -> Optional[Dict]:
         """Rewrite per class. Call super() first (applies health/stamina on kill), always return None/dict\n
         attackData should include: final attack damage, damage type, mechanics of ability used"""
-        self.heal(self._stats['Bonuses']['health_on_kill'])
+        self.heal(self._stats['Bonuses']['health_on_kill'], False)
         self._stamina = min(self._maxStamina, self._stamina + self._stats['Bonuses']['stamina_on_kill'])
         return {}
 
@@ -932,7 +947,8 @@ class Entity:
         return critDamage
 
     def onCriticallyHit(self, attacker: Entity, combatManager, critDamage: int, damageType: str) -> int:
-        """Rewrite per class, called when being critically hit. Returns critDamage"""
+        """Use super before overwriting, called when being critically hit. Reduces damage dealt by crit resistance. Returns critDamage"""
+        critDamage = int(critDamage * (1 - (self._stats['Bonuses']['crit_resistance'] / 100)))
         return critDamage
 
     def onTurnStart(self, combatManager):
@@ -945,14 +961,6 @@ class Entity:
             self._speed = 0.2
 
     def onTurnEnd(self):
-        """Rewrite per class"""
-        pass
-
-    def onTurnEnd(self):
-        """Rewrite per class"""
-        pass
-
-    def onEvade(self):
         """Rewrite per class"""
         pass
 
@@ -969,5 +977,9 @@ class Entity:
         for stat in self._stats['Temporary'].keys():
             self._stats['Temporary'][stat] = 0
         self.combatUnit = None
+
+    def onAfterAttack(self, target: Entity, targetUnit, finalDamage: int, combatManager):
+        """Rewrite per class. No return"""
+        pass
 
 ...

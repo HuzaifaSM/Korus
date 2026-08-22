@@ -742,13 +742,9 @@ class Game:
             self.battlesWon += 1
             currentAreaLevel = self.areaLevel
             if self.areaLevel > 100:
-                self.areaLevel += 1 if self.battlesWon % 15 == 0 else 0
-            elif self.areaLevel > 60:
-                self.areaLevel += 1 if self.battlesWon % 8 == 0 else 0
-            elif self.areaLevel > 30:
-                self.areaLevel += 1 if self.battlesWon % 6 == 0 else 0
+                self.areaLevel += 1 if self.battlesWon % 20 == 0 else 0
             else:
-                self.areaLevel += 1 if self.battlesWon % 5 == 0 else 0
+                self.areaLevel += 1 if self.battlesWon % 10 == 0 else 0
             if currentAreaLevel != self.areaLevel: #if area level increased
                 clearScreen()
                 printHeader("Area Level Increased!")
@@ -892,8 +888,8 @@ class Game:
             aliveEnemies = [e for e in enemies if not e._isDead]
 
             console.print("\n[bold cyan]=== Actions ===[/bold cyan]\n")
-            if self.player.hasConsumables:
-                console.print("[dim]C.[/dim] Use Consumable [dim](Free Action)[/dim]")
+            # if self.player.hasConsumables:
+            #     console.print("[dim]C.[/dim] Use Consumable [dim](Free Action)[/dim]")
             console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
             console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
             console.print("[dim]P. Pass Turn[/dim]")
@@ -919,9 +915,9 @@ class Game:
                         if eq is not None:
                             console.print(f"{slot}:\n{eq}")
                 pause()
-            elif action.lower() == 'c':
-                self.useCombatConsumable()
-                continue
+            # elif action.lower() == 'c':
+            #     self.useCombatConsumable()
+            #     continue
             elif action.lower() == 's' and self.player.className == 'Druid':
                 self.player._shapeShift()
                 abilities = self.player._abilities
@@ -1152,8 +1148,9 @@ def main():
             printInfo(f"  - {logPath}")
             printInfo(f"  - {jsonPath}")
             
-            if game and hasattr(game, 'player') and game.player:
-                printInfo("\nYour game state has been saved and can be recovered/loaded at any time.")
+        if game and hasattr(game, 'player') and game.player:
+            printInfo("\nYour game state has been saved and can be recovered/loaded at any time. The crash save is save file 999")
+            save(game, 999)
         pause()
         raise
 

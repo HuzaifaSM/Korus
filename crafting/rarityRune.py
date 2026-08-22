@@ -20,7 +20,7 @@ class BaseRarityRune(CraftingItem):
         rune.toRarity = data.get('toRarity', None)
         return rune
 
-    def apply(self, item) -> CraftOutcome:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -153,7 +153,7 @@ class ChaosRarityRune(BaseRarityRune):
     successEntropy = 0.25
     dropWeight = 80
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

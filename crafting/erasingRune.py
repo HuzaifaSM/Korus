@@ -36,7 +36,7 @@ class BaseErasingRune(CraftingItem):
 
         return slots
     
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

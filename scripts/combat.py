@@ -354,7 +354,7 @@ class CombatManager:
                 didEvade = combatUnit.checkEvade(effectiveEvasion)
 
                 if didEvade:
-                    target.onEvade()
+                    target.onEvade(self)
                     return 0, armourDamageReduction, esDamagePrevented, True
 
             if damageType != 'ethereal': # ethereal ignores armour
@@ -459,7 +459,7 @@ class CombatManager:
 
             if isCrit:
                 damage = int(damage * critMult)
-                console.print(f"[bold gold1]✨ CRITICAL {'HIT' if damageType != 'heal' else 'HEAL'}! ✨[/bold gold1] [damage]{critMult*100:.0f}%[/damage] {'damage' if damageType == 'heal' else 'healing'}!")
+                console.print(f"[bold gold1]✨ CRITICAL {'HIT' if damageType != 'heal' else 'HEAL'}! ✨[/bold gold1] [damage]{critMult*100:.0f}%[/damage] {'damage' if damageType != 'heal' else 'healing'}!")
 
                 damage = attacker.onCrit(targets, self, damage)
                 damage = target.onCriticallyHit(attacker, self, damage, damageType)
@@ -510,7 +510,7 @@ class CombatManager:
 
                         finalDamage = t.onBeforeHit(finalDamage, damageType, attacker, self)
 
-                        finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self, ability)
+                        finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self, ability, isCrit)
                         mechanics.extend(attacker._pendingEffects)
                         attacker._pendingEffects = []
 
@@ -538,19 +538,29 @@ class CombatManager:
                             t.onDamaged(attacker, damageReductionValue, armourDamagePrevented, self)
 
                             thorns = t._stats['Bonuses']['thorns']
-                            console.print(f"- {attacker._name} takes {thorns} Thorns Damage!")
+                            if thorns > 0:
+                                console.print(f"- {attacker._name} takes {thorns} Thorns Damage!")
                             attacker.damage(thorns, 'physical')
+
+                            attacker.onAfterAttack(t, targetUnit, finalDamage, self)
 
                     if not evaded:
                         if mechanics and not t._isDead:
                             for mechanic in mechanics:
-                                self.addStatusEffect(t, mechanic, attacker)
+                                mechanic = t.onStatusApplied(mechanic, attacker)
+                                if mechanic:
+                                    self.addStatusEffect(t, mechanic, attacker)
+                                    if mechanic.effectType == 'cc':
+                                        t.onCC(attacker, self)
                         death = self.checkDead(t)
                         if death:
                             killData = {'damage': finalDamage, 'damageType': damageType, 'mechanics': mechanics}
                             attacker.onKill(t, killData, self)
                         else:
                             attacker.onExecuteCheck(t, self) # check for any executes (e.g. blood spike or ascendancy-specific)
+
+                        if t._isDead:
+                            break # prevent multihit bugs
 
             return True
 

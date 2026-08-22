@@ -27,7 +27,7 @@ class BaseGrowthRune(CraftingItem):
         
         return random.choice(allEmpty)
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -245,7 +245,7 @@ class DuplicatingGrowthRune(BaseGrowthRune):
     successEntropy = 0.2
     dropWeight = 80
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -271,7 +271,7 @@ class DuplicatingGrowthRune(BaseGrowthRune):
                     categoryWeights[cat] = categoryWeights.get(cat, 0) + 1
 
         if not categoryWeights:
-            super().apply(item)
+            super().apply(item, player=None)
 
         equipType = item.slot
         affixType = 'prefixes' if slot.kind == 'prefix' else 'suffixes'
@@ -343,7 +343,7 @@ class ImitatingGrowthRune(BaseGrowthRune):
     successEntropy = 0.2
     dropWeight = 80
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

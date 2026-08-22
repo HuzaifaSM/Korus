@@ -20,7 +20,7 @@ class BaseMasteryRune(CraftingItem):
         rune.masteryToAdd = data.get('masteryToAdd', 1.0)
         return rune
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -41,42 +41,33 @@ class BaseMasteryRune(CraftingItem):
                 message=f'Item gained {self.masteryToAdd}% mastery.',
                 entropyAdded=self.successEntropy
             )
-    
+
 class MasteryRune(BaseMasteryRune):
-    name = '[bright_white]Mastery Rune[/bright_white]'
-    description = 'Increases the mastery of an item by 1%, enhancing its affix values. Maximum 20% mastery.'
-    masteryToAdd = 1
-    successEntropy = 0.02
-    minItemLevel = 5
-    dropWeight = 200
-
-class GreaterMasteryRune(BaseMasteryRune):
     name = '[gold1 bold]Greater Mastery Rune[/gold1 bold]'
-    description = 'Increases the mastery of an item by 2%, enhancing its affix values. Maximum 20% mastery.'
-    masteryToAdd = 2
-    successEntropy = 0.035
-    minItemLevel = 20
-    dropWeight = 150
-
-class PerfectMassteryRune(BaseMasteryRune):
-    name = '[yellow1 bold underline]Perfect Mastery Rune[/yellow1 bold underline]'
     description = 'Increases the mastery of an item by 5%, enhancing its affix values. Maximum 20% mastery.'
     masteryToAdd = 5
-    successEntropy = 0.09
-    minItemLevel = 35
-    dropWeight = 90
+    successEntropy = 0.06
+    minItemLevel = 10
+    dropWeight = 150
 
-class DivineMasteryRune(BaseMasteryRune):
-    name = '[light_goldenrod1 bold underline]Divine Mastery Rune[/light_goldenrod1 bold underline]'
+class GreaterMasteryRune(BaseMasteryRune):
+    name = '[yellow1 bold underline]Perfect Mastery Rune[/yellow1 bold underline]'
     description = 'Increases the mastery of an item by 10%, enhancing its affix values. Maximum 20% mastery.'
     masteryToAdd = 10
-    minItemLevel = 60
-    successEntropy = 0.18
+    successEntropy = 0.11
+    minItemLevel = 30
+    dropWeight = 90
+
+class PerfectMasteryRune(BaseMasteryRune):
+    name = '[light_goldenrod1 bold underline]Divine Mastery Rune[/light_goldenrod1 bold underline]'
+    description = 'Increases the mastery of an item by 15%, enhancing its affix values. Maximum 20% mastery.'
+    masteryToAdd = 15
+    minItemLevel = 50
+    successEntropy = 0.16
     dropWeight = 35
 
 MASTERY_RUNES: Dict[str, BaseMasteryRune] = {
     'mastery': MasteryRune(),
     'greater': GreaterMasteryRune(),
-    'perfect': PerfectMassteryRune(),
-    'divine': DivineMasteryRune()
+    'perfect': PerfectMasteryRune(),
 }

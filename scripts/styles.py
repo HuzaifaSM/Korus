@@ -113,6 +113,11 @@ KORUS_THEME = Theme({
     "asc_revenant": "grey58 bold",
     "asc_lich": "grey93 bold",
 
+    "wanderer_radiance": "light_goldenrod1 bold underline",
+    "wanderer_devastation": "dark_magenta bold underline",
+    "wanderer_transcendence": "bright_white bold underline",
+    "wanderer_harmony": "light_salmon1 bold underline",
+
     # Wanderer ascendancy family
     "asc_fractured": "orchid bold",
     "asc_manifestation": "plum2 bold",
@@ -147,7 +152,14 @@ KORUS_THEME = Theme({
     "asc_dreadnought": "royal_blue1 bold",
     "asc_sovereign": "light_slate_blue bold",
     "asc_harrower": "dark_cyan bold",
-    "asc_butcher": "light_steel_blue1 bold"
+    "asc_butcher": "light_steel_blue1 bold",
+
+    # Mage ascendancy family
+    "asc_calamity": "dark_red bold",
+    "asc_arcanist": "purple3 bold",
+    "asc_hierophant": "light_goldenrod1 bold",
+    "asc_empyrean": "deep_sky_blue1 bold",
+    "asc_unmaker": "grey30 bold"
 })
 
 # -- keyword highlighting: maps literal keyword text to a theme style key.
@@ -169,7 +181,7 @@ KEYWORDS: Dict[str, str] = {
     "Lifesteal": "lifesteal", "Life Leech": "lifesteal",
     "HP Regen": "regen", "Hp Regen": "regen", "Regen": "regen", "Regeneration": "regen",
     "Shield": "buff",
-    "Damage": "damage", "Speed": "speed",
+    "Damage": "damage", "Overkill": "damage", "Speed": "speed",
     "Gold": "gold", "XP": "xp", "Xp": "xp", "Experience": "xp",
     "Healing Magnitude": "heal", "Healing": "heal", "Heal": "heal",
 
@@ -219,14 +231,12 @@ KEYWORDS: Dict[str, str] = {
     "Valour": "asc_crusader",
     "Blessing": "asc_inquisitor",
 
-    # Wanderer core mechanics
-    "Radiance": "class_wanderer", "Devastation": "class_wanderer",
-
     # Wanderer ascendancy mechanics
+    "Radiance": "wanderer_radiance", "Devastation": "wanderer_devastation",
+    "Transcendence": "wanderer_transcendence", "Harmony": "wanderer_harmony",
     "Fracture": "asc_fractured",
     "Warped": "asc_warper",
     "Torture": "asc_mindbreaker",
-    "Harmony": "asc_weaver",
     "Hunted": "asc_abyssal",
 
     # Spectre ascendancy mechanics
@@ -245,6 +255,7 @@ KEYWORDS: Dict[str, str] = {
     "Positive": "asc_alternator", "Negative": "asc_alternator",
     "Fleeting": "asc_dervish",
     "Spark": "asc_archon",
+    "Relentless": "asc_ravager",
 
     # Marauder ascendancy mechanics
     "Echo": "class_marauder", "Siphon": "class_marauder", "Siphoned": "class_marauder",
@@ -262,11 +273,13 @@ KEYWORDS: Dict[str, str] = {
     "Flurry": "buff", "Aegis": "buff", "Brawler's Fury": "buff",
 
     # Mage ascendancy mechanics
-    "Symphony": "buff", "Combat Focus": "buff", "Flux": "buff",
-    "Mana Sickness": "debuff",
+    "Archmage": "class_mage", "Adaptation": "class_mage",
+    "Relinquish": "asc_calamity", "Relinquished": "asc_calamity", "Calamity": "asc_calamity",
+    "Prophetic": "asc_hierophant",
+    "Precision": "asc_unmaker",
 
     # Druid ascendancy mechanics
-    "Residual": "buff", "Adaptation": "buff", "Earthbound": "debuff",
+    "Residual": "buff", "Earthbound": "debuff",
     "Lunar Fury": "buff", "Lunar Empowerment": "buff",
 }
 
@@ -616,9 +629,10 @@ def displayLevelUp(player):
     [bold][gold1]★ LEVEL UP! ★[/bold][/gold1]
     
     [cyan]You are now level {player._level}[/cyan]
-    [green]HP: {player._maxHealth}[/green]
-    [orange1]DMG: {player._damage}[/orange1]
-    [bright_cyan]SPD: {player._speed:.2f}[/bright_cyan]
+    [health]HP: {player._maxHealth}[/health]
+    [stamina]Stamina: {player._maxStamina}[/stamina]
+    [damage]DMG: {player._damage}[/damage]
+    [speed]SPD: {player._speed:.2f}[/speed]
     """
 
     panel = Panel(
@@ -763,6 +777,163 @@ def createEnemyPreview(enemies: List) -> Table:
 
     return table
 
+def formatPlayerMechanics(player, col: list) -> list:
+    if player.className == 'Warrior':
+        col.append(f"[class_warrior]Rage:[/class_warrior] {player._rage}/{player._maxRage}")
+        if player._ascendancy == 'Warlord':
+            col.append(f"[asc_warlord]Fury:[/asc_warlord] {player._fury}/{player._maxFury}")
+        elif player._ascendancy == 'Juggernaut':
+            col.append(f"[asc_juggernaut]Fortify:[/asc_juggernaut] {player._fortify}/{player._maxFortify}")
+        elif player._ascendancy == 'Annihilist':
+            col.append(f"[asc_annihilist]Annihilation:[/asc_annihilist] {player.annihilation}")
+
+    elif player.className == 'Wanderer':
+        wandererStateStr = "Radiance" if player.radiance else "Devastation" if player.devastation else ""
+        if player._ascendancy == 'Manifestation' and player.transcendence:
+            wandererStateStr = "Transcendence"
+        elif player._ascendancy == 'Weaver' and player.harmony:
+            wandererStateStr = "Harmony"
+        col.append(f"[resource]Hope:[/resource] {player.hope}/{player.maxHope} | [resource]Hopeless:[/resource] {player.hopeless}/{player.maxHopeless}")
+        if wandererStateStr != "":
+            col.append(f"[class_wanderer]State:[/class_wanderer] {highlightKeywords(wandererStateStr)}")
+        col.append(f"[resource]Lost:[/resource] [bold]{'Yes' if player.lostTrigger else 'No'}[/bold]")
+        if player._ascendancy == 'Fractured':
+            col.append(f"[asc_fractured]Fracture:[/asc_fractured] {player.fracture}/5")
+        elif player._ascendancy == 'Abyssal':
+            col.append(f"[asc_abyssal]Hunted:[/asc_abyssal] {player.hunted}/3")
+        elif player._ascendancy == 'Warper':
+            col.append(f"[asc_warper]Warped:[/asc_warper] [bold]{'Yes' if player.warped else 'No'}[/bold]")
+
+    elif player.className == 'Paladin':
+        col.append(f"[class_paladin]Favour:[/class_paladin] {player.favour}/{player.maxFavour}")
+        if player._ascendancy == 'Zealot':
+            col.append(f"[asc_zealot]Zealotry:[/asc_zealot] {player.zealotry}")
+        elif player._ascendancy == 'Guardian':
+            col.append(f"[asc_guardian]Bulwark:[/asc_guardian] {player.bulwark}/5")
+        elif player._ascendancy == 'Justicar':
+            if player.justiceTurns > 0:
+                col.append(f"[asc_justicar]Justice Turns Remaining:[/asc_justicar] {player.justiceTurns}")
+        elif player._ascendancy == 'Crusader':
+            col.append(f"[asc_crusader]Valour:[/asc_crusader] {player.valour}/10")
+        elif player._ascendancy == 'Inquisitor':
+            if player.blessedTurns > 0:
+                col.append(f"[asc_inquisitor]Blessed Turns Remaining:[/asc_inquisitor] {player.blessedTurns}")
+
+    elif player.className == 'Cultist':
+        col.append(f"[class_cultist]Insanity:[/class_cultist] {player.insanity}")
+        if player._ascendancy == 'Umbralist':
+            col.append(f"[asc_umbralist]Shadow:[/asc_umbralist] {player.shadow}/10")
+        elif player._ascendancy == 'Doomsayer':
+            col.append(f"[asc_doomsayer]Omen:[/asc_doomsayer] {player.omen}/5 | [asc_doomsayer]Heresy:[/asc_doomsayer] {player.heresy}/10")
+        elif player._ascendancy == 'Ritualist':
+            col.append(f"[asc_ritualist]Devotion:[/asc_ritualist] {player.devotion}/5 | [asc_ritualist]Faithless:[/asc_ritualist] {player.faithless}/10")
+        elif player._ascendancy == 'Anarchist':
+            col.append(f"[asc_anarchist]Volatility:[/asc_anarchist] {player.volatility}/{player.maxVolatility}")
+
+    elif player.className == 'Spectre':
+        col.append(f"[class_spectre]Vengeance:[/class_spectre] {player.vengeance}/{player.maxVengeance}")
+        if player._ascendancy == 'Wraith':
+            col.append(f"[asc_wraith]Fading:[/asc_wraith] {player.wraithFading}/300")
+        elif player._ascendancy == 'Reaper':
+            if player.reaperDamage > 0:
+                col.append(f"[asc_reaper]Bonus Damage from Executes:[/asc_reaper] +{player.reaperDamage}")
+        elif player._ascendancy == 'Phantasm':
+            if player.shiftingTurns > 0:
+                col.append(f"[asc_phantasm]Shifting Turns Remaining:[/asc_phantasm] {player.shiftingTurns}")
+        elif player._ascendancy == 'Revenant':
+            col.append(f"[asc_revenant]Intangibility Used:[/asc_revenant] [bold]{'Yes' if player.intangibilityUsed else 'No'}[/bold]")
+            if player.intangibleTurns > 0:
+                col.append(f"[asc_revenant underline]Currently Intangible[/asc_revenant underline]")
+        elif player._ascendancy == 'Lich':
+            col.append(f"[asc_lich]Empowered (Energy Shield > 50%):[/asc_lich] [bold]{'Yes' if player.lichBuffsActive else 'No'}[/bold]")
+
+    elif player.className == 'Marauder':
+        if player._ascendancy != 'Harrower':
+            col.append(f"[class_marauder]Siphoned Damage:[/class_marauder] {player.siphonedDamage}")
+        else:
+            col.append(f"[class_marauder]Siphoned Speed:[/class_marauder] {player.harrowerSiphonedSpeed:.2f}")
+            if player.harrowerEmpowered:
+                col.append(f"[asc_harrower underline]Empowered[/asc_harrower underline]")
+        if player._ascendancy == 'Butcher':
+            col.append(f"[asc_butcher]Slaughter:[/asc_butcher] {player.butcherSlaughter}/5")
+
+    elif player.className == 'Tempest':
+        col.append(f"[class_tempest]Static:[/class_tempest] {player.static}/10 | [class_tempest]Flow:[/class_tempest] {player.flow}/10")
+        if player._ascendancy == 'Alternator':
+            col.append(f"[asc_alternator]Positive:[/asc_alternator] {player.alternatorPositive}/10 | [asc_alternator]Negative:[/asc_alternator] {player.alternatorNegative}/10")
+            col.append(f"[asc_alternator]Speed Bonuses Flipped:[/asc_alternator] [bold]{'Yes' if player.alternatorFlip else 'No'}")
+        elif player._ascendancy == 'Dervish':
+            col.append(f"[asc_dervish]Fleeting:[/asc_dervish] {player.dervishFleeting}/10")
+        elif player._ascendancy == 'Ravager':
+            col.append(f"[asc_ravager]Flurry:[/asc_ravager] {player.ravagerFlurry}/5 | [asc_ravager]Relentless:[/asc_ravager] {player.ravagerRelentless}/3")
+        elif player._ascendancy == 'Archon':
+            col.append(f"[asc_archon]Current:[/asc_archon] {player.archonCurrent}/10 | [asc_archon]Spark:[/asc_archon] {player.archonSpark}/5")
+
+    elif player.className == 'Mage':
+        masteryCap = '' if player._ascendancy == 'Empyrean' else f"/{player.maxMastery}"
+        col.append(f"[resource]Mastery:[/resource] {player.mastery}{masteryCap}")
+
+        adaptations = []
+        if player.fireAdaptation: adaptations.append('Fire')
+        if player.coldAdaptation: adaptations.append('Cold')
+        if player.earthAdaptation: adaptations.append('Earth')
+        if player.lightningAdaptation: adaptations.append('Lightning')
+        if player._ascendancy == 'Hierophant':
+            if player.holyAdaptation: adaptations.append('Holy')
+            if player.darkAdaptation: adaptations.append('Dark')
+            if player.arcaneAdaptation: adaptations.append('Arcane')
+        if adaptations:
+            col.append(f"[class_mage]Adaptations:[/class_mage] {', '.join(adaptations)}")
+        if player.archmage:
+            col.append(f"[class_mage underline]Archmage[/class_mage underline]")
+
+        if player._ascendancy == 'Calamity':
+            relinquished = []
+            if player.relinquishedFire: relinquished.append('Fire')
+            if player.relinquishedCold: relinquished.append('Cold')
+            if player.relinquishedEarth: relinquished.append('Earth')
+            if player.relinquishedLightning: relinquished.append('Lightning')
+            if relinquished:
+                col.append(f"[asc_calamity]Relinquished:[/asc_calamity] {', '.join(relinquished)}")
+            if player.calamity:
+                col.append(f"[asc_calamity underline]Calamity[/asc_calamity underline]")
+        elif player._ascendancy == 'Hierophant':
+            if player.prophetic:
+                col.append(f"[asc_hierophant underline]Prophetic[/asc_hierophant underline]")
+        elif player._ascendancy == 'Unmaker':
+            col.append(f"[asc_unmaker]Precision:[/asc_unmaker] {player.unmakerPrecision}/10")
+
+    return col
+
+def formatEntityMechanics(entity, col: list) -> list:
+    if entity.tortureStacks > 0:
+        col.append(f"[asc_mindbreaker]Torture:[/asc_mindbreaker] {entity.tortureStacks}")
+    if entity.phasedTurns > 0:
+        col.append("[asc_phantasm]Phased[/asc_phantasm]")
+    if entity.cursedTurns > 0:
+        col.append("[dot]Cursed[/dot]")
+    if entity.earthboundTurns > 0:
+        col.append("[debuff]Earthbound[/debuff]")
+    if entity.corruption > 0:
+        col.append(f"[asc_harbinger]Corruption:[/asc_harbinger] {entity.corruption}")
+    if entity.ruin > 0:
+        col.append(f"[asc_desecrator]Ruin:[/asc_desecrator] {entity.ruin}")
+    if entity.bloodSpike > 0:
+        executeHp = int(entity._maxHealth * 0.02 * entity.bloodSpike)
+        col.append(f"[resource]Blood Spikes:[/resource] {entity.bloodSpike} (Execute at {executeHp} HP)")
+    if entity.necrosis > 0:
+        col.append(f"[asc_necrose]Necrosis:[/asc_necrose] {entity.necrosis}")
+    if entity.crush > 0:
+        col.append(f"[asc_colossus]Crush:[/asc_colossus] {entity.crush}")
+    if entity.shameTurns > 0:
+        col.append(f"[asc_sovereign]Shamed[/asc_sovereign] for {entity.shameTurns} turn{'s' if entity.shameTurns > 1 else ''}")
+    if entity.marked:
+        col.append(f"[asc_butcher underline]Marked[/asc_butcher underline]")
+    if entity.carved > 0:
+        col.append(f"[asc_butcher]Carved:[/asc_butcher] {entity.carved}")
+
+    return col
+
 def createCombatStatusTable(player, enemies: List) -> Table:
     aliveEnemies = [e for e in enemies if not e._isDead]
     maxEntitiesPerRow = 5
@@ -793,42 +964,9 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         col.append(f"[speed]SPD:[/speed] {entity._speed if not isPlayer else f'{entity._speed:.2f}'}")
 
         if isPlayer:
-            if player.className == 'Warrior':
-                col.append(f"[class_warrior]Rage:[/class_warrior] {player._rage}/{player._maxRage}")
-            elif player.className == 'Wanderer':
-                col.append(f"[class_wanderer]Lost Active:[/class_wanderer] {player.lostTrigger}")
-            elif player.className == 'Paladin':
-                col.append(f"[class_paladin]Favour:[/class_paladin] {player.favour}/{player.maxFavour}")
-            elif player.className == 'Cultist':
-                col.append(f"[class_cultist]Insanity:[/class_cultist] {player.insanity}")
+            col = formatPlayerMechanics(entity, col)
         else:
-            if entity.tortureStacks > 0:
-                col.append(f"Torture Stacks: {entity.tortureStacks}")
-            if entity.hauntedStacks > 0:
-                col.append(f"Haunted Stacks: {entity.hauntedStacks}")
-            if entity.phasedTurns > 0:
-                col.append("Phased")
-            if entity.cursedTurns > 0:
-                col.append("Cursed")
-            if entity.earthboundTurns > 0:
-                col.append("Earthbound")
-            if entity.corruption > 0:
-                col.append(f"Corruption: {entity.corruption}")
-            if entity.ruin > 0:
-                col.append(f"Ruin: {entity.ruin}")
-            if entity.bloodSpike > 0:
-                executeHp = int(entity._maxHealth * 0.02 * entity.bloodSpike)
-                col.append(f"Blood Spikes: {entity.bloodSpike} (Execute at {executeHp} HP)")
-            if entity.necrosis > 0:
-                col.append(f"Necrosis Stacks: {entity.necrosis}")
-            if entity.crush > 0:
-                col.append(f"Crush Stacks: {entity.crush}")
-            if entity.shameTurns > 0:
-                col.append(f"Shamed for {entity.shameTurns} turn{'s' if entity.shameTurns > 1 else ''}")
-            if entity.marked:
-                col.append(f"Marked")
-            if entity.carved > 0:
-                col.append(f"Carved Stacks: {entity.carved}")
+            col= formatEntityMechanics(entity, col)
 
         col.append("")
 

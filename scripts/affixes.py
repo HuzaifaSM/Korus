@@ -1,7 +1,7 @@
 import json
 from typing import Optional, Dict, Set, Any, List
 import random
-from .styles import console, printError
+from .styles import console, printError, highlightKeywords
 from copy import deepcopy
 from os.path import exists
 
@@ -89,18 +89,11 @@ class Affix:
             soulStr = "[gold3 bold underline]SOULBOUND[/gold3 bold underline] "
         mythicStr = ""
         if self.isMythic:
-           mythicStr = "[indian_red bold underline]MYTHIC[/indian_red bold unerline]"
+           mythicStr = "[indian_red bold underline]MYTHIC[/indian_red bold underline] "
         maxTier = f"/{getMaxAffixTier(self.slot, self.kind, self.id)}"
         if maxTier == "/None":
             maxTier = ""
-        return f"{lockedStr}{soulStr}{mythicStr}{prefix}{value}{suffix} {statDisplay} | [dim]Tier {self.tier}{maxTier}[/dim]"
-
-    # def detailed(self): # not used anywhere
-    #     string = self.__rich__()
-    #     ranges = f"Range: {self.minVal} - {self.maxVal}"
-    #     bonusInfo = f"[dim][bold]Roll Range:[/bold] {ranges} | [bold]Tier:[/bold] {self.tier} | [bold]Level Requirement:[/bold] {self.levelReq} | [bold]Tags:[/bold] {self.categories}[/dim]"
-    #     string += f"\n{bonusInfo}"
-    #     return string
+        return highlightKeywords(f"{lockedStr}{soulStr}{mythicStr}{prefix}{value}{suffix} {statDisplay} | [dim]Tier {self.tier}{maxTier}[/dim]")
 
     def _serialise(self):
         return {
