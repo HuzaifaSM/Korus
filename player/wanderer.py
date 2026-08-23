@@ -543,7 +543,7 @@ class Wanderer(Player):
                 console.print(f"\n [warning]Warper: Not Warped or Lost! {damage} Damage taken.[/warning]")
                 self.damage(damage, 'psychic', lethal=False)
             if self.devastation:
-                heal = int(self._maxHealth + 0.02)
+                heal = int(self._maxHealth * 0.02)
                 self.heal(heal)
 
         super().onTurnStart(combatManager)
@@ -582,46 +582,62 @@ class Wanderer(Player):
         self.warped = False
         super().onCombatEnd()
 
+    ASCENDANCY_DELTAS = {
+        'Fractured': {
+            '_baseHealth': -10,
+            '_baseDamage': 4,
+            '_baseSpeed': 0.05,
+            '_stats.baseCritChance': 0.02,
+            '_stats.baseCritMulti': 0.2,
+        },
+        'Manifestation': {
+            '_baseHealth': 25,
+            '_baseDamage': -4,
+            '_baseSpeed': -0.05,
+            '_stats.baseCritMulti': 0.25,
+        },
+        'Weaver': {
+            '_baseHealth': 20,
+            '_baseDamage': -4,
+            '_baseSpeed': 0.05,
+            '_stats.baseCritMulti': 0.2,
+            '_stats.Permanent.psychic': 10,
+        },
+        'Abyssal': {
+            '_baseHealth': 30,
+            '_baseDamage': -4,
+            '_baseSpeed': 0.1,
+            '_stats.baseCritChance': -0.03,
+            '_stats.baseCritMulti': -0.1,
+            '_stats.Permanent.otherworld': 10,
+        },
+        'Warper': {
+            '_baseHealth': 15,
+            '_baseDamage': 4,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.physical': 10,
+            '_stats.baseCritMulti': 0.25,
+        },
+        'Mindbreaker': {
+            '_baseHealth': -20,
+            '_baseDamage': 5,
+            '_baseSpeed': -0.1,
+            '_stats.baseCritChance': 0.02,
+            '_stats.baseCritMulti': 0.2,
+            '_stats.Permanent.psychic': 10,
+        },
+    }
+
     def _removeOldAscendancy(self) -> bool:
         self.lostPercent = 0.1
-        if self._ascendancy == 'Fractured':
-            self._baseHealth += 10
-            self._baseDamage -= 4
-            self._baseSpeed -= 0.05
-            self._stats['baseCritChance'] -= 0.02
-            self._stats['baseCritMulti'] -= 0.2
-        elif self._ascendancy == 'Manifestation':
-            self._baseHealth -= 25
-            self._baseDamage += 4
-            self._baseSpeed += 0.05
-            self._stats['baseCritMulti'] -= 0.25
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
+        if self._ascendancy == 'Manifestation':
             self.lostHitChance = 1.0
-        elif self._ascendancy == 'Weaver':
-            self._baseHealth -= 20
-            self._baseDamage += 4
-            self._baseSpeed -= 0.05
-            self._stats['baseCritMulti'] -= 0.2
-            self._stats['Permanent']['psychic'] -= 10
-        elif self._ascendancy == 'Abyssal':
-            self._baseHealth -= 30
-            self._baseDamage += 4
-            self._baseSpeed -= 0.1
-            self._stats['baseCritChance'] += 0.03
-            self._stats['baseCritMulti'] += 0.1
-            self._stats['Permanent']['otherworld'] -= 10
-        elif self._ascendancy == 'Warper':
-            self._baseHealth -= 15
-            self._baseDamage -= 4
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['physical'] -= 10
-            self._stats['baseCritMulti'] -= 0.25
-        elif self._ascendancy == 'Mindbreaker':
-            self._baseHealth += 20
-            self._baseDamage -= 5
-            self._baseSpeed += 0.1
-            self._stats['baseCritChance'] -= 0.02
-            self._stats['baseCritMulti'] -= 0.2
-            self._stats['Permanent']['psychic'] -= 10
+        # TODO: verify this needs an inverse in removal too - maxHope/maxHopeless are set
+        # directly (not +=) in updateAscendancy for Manifestation/Abyssal/Warper and are never
+        # reset back to the base value of 5 here.
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -629,54 +645,22 @@ class Wanderer(Player):
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = WANDERER_DESCRIPTIONS[ascendancy]
-        if ascendancy == 'Fractured':
-            self._baseHealth -= 10
-            self._baseDamage += 4
-            self._baseSpeed += 0.05
-            self._stats['baseCritChance'] += 0.02
-            self._stats['baseCritMulti'] += 0.2
-        elif ascendancy == 'Manifestation':
-            self._baseHealth += 25
-            self._baseDamage -= 4
-            self._baseSpeed -= 0.05
-            self._stats['baseCritMulti'] += 0.25
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
+        if ascendancy == 'Manifestation':
             self.lostPercent = 0.05
             self.lostHitChance = 0.8
             self.maxHope = 8
             self.maxHopeless = 8
         elif ascendancy == 'Weaver':
-            self._baseHealth += 20
-            self._baseDamage -= 4
-            self._baseSpeed += 0.05
-            self._stats['baseCritMulti'] += 0.2
-            self._stats['Permanent']['psychic'] += 10
             self.lostPercent = 0.15
         elif ascendancy == 'Abyssal':
-            self._baseHealth += 30
-            self._baseDamage -= 4
-            self._baseSpeed += 0.1
             self.lostTrigger = True
             self.maxHope = 10
             self.maxHopeless = 10
-            self._stats['baseCritChance'] -= 0.03
-            self._stats['baseCritMulti'] -= 0.1
-            self._stats['Permanent']['otherworld'] += 10
         elif ascendancy == 'Warper':
-            self._baseHealth += 15
-            self._baseDamage += 4
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['physical'] += 10
-            self._stats['baseCritMulti'] += 0.25
-            self.lostTrigger = 0.2
+            self.lostPercent = 0.2
             self.maxHope = 10
             self.maxHopeless = 10
-        elif ascendancy == 'Mindbreaker':
-            self._baseHealth -= 20
-            self._baseDamage += 5
-            self._baseSpeed -= 0.1
-            self._stats['baseCritChance'] += 0.02
-            self._stats['baseCritDamage'] += 0.2
-            self._stats['Permanent']['psychic'] += 10
         self._recalculateStats()
 
 ...

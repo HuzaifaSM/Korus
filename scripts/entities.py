@@ -1,4 +1,4 @@
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, TypedDict, TypeVar
 import random
 from copy import deepcopy
 from .items import Equipment, Consumable
@@ -10,9 +10,132 @@ from .styles import (
     formatEffectsDetailed, formatAbilityCost, pause
 )
 
-ELEMENTAL_RES = ['fire', 'earth', 'cold', 'lightning']
-DIVINE_RES = ['holy', 'dark', 'arcane']
-OTHERWORLD_RES = ['chaos', 'ethereal', 'psychic']
+ELEMENTAL_RES: frozenset = ['fire', 'earth', 'cold', 'lightning']
+DIVINE_RES: frozenset = ['holy', 'dark', 'arcane']
+OTHERWORLD_RES: frozenset = ['chaos', 'ethereal', 'psychic']
+T = TypeVar("T")
+
+class ResistanceBlock(TypedDict):
+    physical: float
+    fire: float
+    cold: float
+    earth: float
+    lightning: float
+    dark: float
+    arcane: float
+    holy: float
+    psychic: float
+    ethereal: float
+    chaos: float
+    all: float
+    elemental: float
+    otherworld: float
+    divine: float
+
+class BonusBlock(TypedDict):
+    item_rarity: float
+    item_quantity: float
+    enemy_quantity: float
+    xp_gain: float
+    gold_gain: float
+    stun_avoidance: float
+    dot_resistance: float
+    ailment_avoidance: float
+    healing_magnitude: float
+    crit_chance: float
+    crit_multi: float
+    crit_resistance: float
+    resistance_penetration: float
+    chance_to_multihit: float
+    lifesteal: float
+    damage_reduction: float
+    added_multihits: float
+    hp_regen: float
+    stamina_regen: float
+    increased_defenses: float
+    increased_health: float
+    health_on_hit: float
+    health_on_kill: float
+    stamina_on_hit: float
+    stamina_on_kill: float
+    thorns: float
+
+class GeneralStatBlock(TypedDict):
+    physical: float
+    fire: float
+    earth: float
+    lightning: float
+    cold: float
+    holy: float
+    dark: float
+    psychic: float
+    chaos: float
+    ethereal: float
+    arcane: float
+    divine: float
+    elemental: float
+    otherworld: float
+    all: float
+    resistance_penetration: float
+    speed: float
+    stun_avoidance: float
+    dot_resistance: float
+    ailment_avoidance: float
+    healing_magnitude: float
+    crit_resistance: float
+    crit_chance: float
+    crit_multi: float
+    lifesteal: float
+    thorns: float
+    damage_reduction: float
+    increased_damage_reduction: float
+    hp_regen: float
+    stamina_regen: float
+    enemy_quantity: float
+    added_multihits: float
+    increased_defenses: float
+    added_armour: float
+    added_evasion: float
+    added_energy_shield: float
+    increased_armour: float
+    increased_evasion: float
+    increased_energy_shield: float
+    increased_health: float
+
+class Stats(TypedDict):
+    Max_Resistances: ResistanceBlock
+    Resistances: ResistanceBlock
+    Bonuses: BonusBlock
+    Permanent: GeneralStatBlock
+    Temporary: GeneralStatBlock
+    baseCritChance: float
+    baseCritMuli: float
+    armour: float
+    evasion: float
+    energy_shield: float
+    max_energy_shield: float
+
+class LockedDict(dict):
+    """
+    a dict that only allows overwriting keys that existed at construction time\n
+    prevents any typos or accidental assignments from being allowed to run\n
+    pylance will catch these and show error
+    """
+    def __setitem__(self, key, value):
+        if key not in self:
+            raise KeyError(
+                f"{key!r} is not an existing stat on this dict -"
+                f"check for a typo"
+            )
+        super().__setitem__(key, value)
+
+def _freeze(obj: T) -> T:
+    """recursively replace every dict with a LockedDict.\n
+    Typed as T -> T (identity) since result is shaped identically to input\n
+    runtime-only and deliberately doesn't participate in TypedDict check"""
+    if isinstance(obj, dict):
+        return LockedDict({k: _freeze(v) for k, v in obj.items()}) # type: ignore[return-value]
+    return obj
 
 class Entity:
     def __init__(self, health: int, damage: int, baseCritChance: float, baseCritMulti: float,
@@ -24,7 +147,7 @@ class Entity:
         self._damage = damage
         self._damageType = damageType or "physical"
         self._speed = speed
-        self._stats = {
+        _rawStats: Stats = {
             'Max_Resistances': {
                 'physical': 75,
                 'fire': 75,
@@ -107,12 +230,16 @@ class Entity:
                 'stun_avoidance': 0,
                 'dot_resistance': 0,
                 'ailment_avoidance': 0,
+                'speed': 0,
                 'healing_magnitude': 0,
                 'crit_resistance': 0,
+                'crit_chance': 0,
+                'crit_multi': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
                 'increased_damage_reduction': 0,
                 'hp_regen': 0,
+                'thorns': 0,
                 'stamina_regen': 0,
                 'enemy_quantity': 0,
                 'added_multihits': 0,
@@ -124,31 +251,39 @@ class Entity:
                 'increased_evasion': 0,
                 'increased_energy_shield': 0,
                 'increased_health': 0,
-                # for everything that needs to be permanent and doesn't get affected by recalculated stats
-                # e.g. all resistances, all base types that could be modified by classes/ascendancies
             },
             'Temporary': {
-                'elemental': 0,
-                'divine': 0,
-                'otherworld': 0,
                 'physical': 0,
+                'fire': 0,
+                'earth': 0,
+                'lightning': 0,
+                'cold': 0,
+                'holy': 0,
+                'dark': 0,
+                'psychic': 0,
+                'chaos': 0,
+                'ethereal': 0,
+                'arcane': 0,
+                'divine': 0,
+                'elemental': 0,
+                'otherworld': 0,
                 'all': 0,
-                'healing_magnitude': 0,
+                'resistance_penetration': 0,
                 'stun_avoidance': 0,
                 'dot_resistance': 0,
                 'ailment_avoidance': 0,
-                'crit_avoidance': 0,
                 'speed': 0,
+                'healing_magnitude': 0,
+                'crit_resistance': 0,
                 'crit_chance': 0,
                 'crit_multi': 0,
-                'crit_resistance': 0,
-                'resistance_peneration': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
                 'increased_damage_reduction': 0,
                 'hp_regen': 0,
+                'thorns': 0,
                 'stamina_regen': 0,
-                'chance_to_multihit': 0,
+                'enemy_quantity': 0,
                 'added_multihits': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
@@ -166,6 +301,7 @@ class Entity:
             'energy_shield': 0,
             'max_energy_shield': 0
         }
+        self._stats: Stats = _freeze(_rawStats)
         self._abilities: Dict[str, Ability] = {"Basic Attack": BasicAttack()}
         self._inventory: Dict[str, int] = {}  # {item_name: quantity}
         self._craftingInventory: Dict[str, int] = {} # {f'{category}_{runeType}': quantity}
@@ -337,7 +473,7 @@ class Entity:
         self._xpToNextLevel = max(int((self._level * 25) ** 0.717), (3 * self._level) ** 2)
 
     def damage(self, damage: int, damageType: str='physical', combatUnit = None, *, lethal: bool = True, attacker: Entity = None) -> int:
-        """'true' damageType means no resistances apply"""
+        """'true' damageType means no resistances apply. returns damageReductionValue"""
         if damage < 1:
             return 0
         if combatUnit:
@@ -358,8 +494,9 @@ class Entity:
             resistMod = 0
             stoneskinMod = 0
 
-        damageReductionValue = min(damage, max(0, self._stats['Bonuses']['damage_reduction'] - damage))
+        preMitigation = damage
         damage = max(0, damage - self._stats['Bonuses']['damage_reduction'])
+        damageReductionValue = preMitigation - damage
 
         damage = int(round(damage * (1 - resistMod) * (1 - stoneskinMod)))
         trueDamage = max(0, damage - self._shield)
@@ -797,7 +934,7 @@ class Entity:
     #        onBeforeHit (target)        - target reacts before mitigation is applied
     #        getArmourIgnorePercent (attacker)
     #        onAttack (attacker)
-    #        getEffectiveEvasion / getEffectiveArmour (target) / onEnergyShieldBroken (target)
+    #        getEffectiveEvasion / getEvasionRollCount / getEffectiveArmour (target) / onEnergyShieldBroken (target)
     #          - used inside applyDamageWithDefenses while rolling evasion/armour/energy shield
     #        onHit (target)              - target reacts to the mitigated damage number
     #        onDealDamage (attacker)     - attacker reacts, before damage is actually applied
@@ -842,6 +979,10 @@ class Entity:
     def getEffectiveEvasion(self, damageType: str, combatUnit) -> float:
         """Rewrite per class. Returns the evasion value to roll against for this hit."""
         return self.evasion
+
+    def getEvasionRollCount(self, damageType: str) -> int:
+        """Rewrite per class. Number of independent evasion rolls for this hit (evades if any succeed)."""
+        return 1
 
     def getEffectiveArmour(self, damageType: str, combatUnit) -> float:
         """Rewrite per class. Returns the armour value to mitigate this hit with."""

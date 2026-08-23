@@ -79,7 +79,7 @@ class Tempest(Player):
     def gainStatic(self):
         if self.static < 10:
             self.static += 1
-            for k, v in self.staticBuffs:
+            for k, v in self.staticBuffs.items():
                 if k in self._stats['Temporary']:
                     self._stats['Temporary'][k] += v
             if self._ascendancy == 'Archon':
@@ -88,14 +88,14 @@ class Tempest(Player):
     def loseStatic(self):
         if self.static > 0:
             self.static -= 1
-            for k, v in self.staticBuffs:
+            for k, v in self.staticBuffs.items():
                 if k in self._stats['Temporary']:
                     self._stats['Temporary'][k] -= v
 
     def gainFlow(self):
         if self.flow < 10:
             self.flow += 1
-            for k, v in self.flowBuffs:
+            for k, v in self.flowBuffs.items():
                 if k in self._stats['Temporary']:
                     self._stats['Temporary'][k] += v
             if self._ascendancy == 'Archon':
@@ -104,7 +104,7 @@ class Tempest(Player):
     def loseFlow(self):
         if self.flow > 0:
             self.flow -= 1
-            for k, v in self.flowBuffs:
+            for k, v in self.flowBuffs.items():
                 if k in self._stats['Temporary']:
                     self._stats['Temporary'][k] -= v
 
@@ -421,40 +421,51 @@ class Tempest(Player):
 
         super().onCombatEnd()
 
+    ASCENDANCY_DELTAS = {
+        'Alternator': {
+            '_baseHealth': 20,
+            '_baseDamage': 6,
+            '_stats.baseCritMulti': 0.5,
+            '_stats.Permanent.lightning': 20,
+            '_stats.Permanent.earth': -10,
+        },
+        'Dervish': {
+            '_baseHealth': -20,
+            '_baseDamage': 5,
+            '_baseSpeed': 0.1,
+            '_stats.Permanent.added_evasion': 100,
+            '_stats.Permanent.psychic': 15,
+        },
+        'Ravager': {
+            '_baseHealth': -30,
+            '_baseDamage': -4,
+            '_baseSpeed': 0.2,
+            '_stats.baseCritChance': 0.1,
+            '_stats.baseCritMulti': 0.5,
+        },
+        'Archon': {
+            '_baseHealth': 25,
+            '_baseDamage': 4,
+            '_baseSpeed': -0.2,
+            '_stats.Permanent.lightning': 20,
+            '_stats.baseCritMulti': 0.3,
+        },
+        'Mirage': {
+            '_baseHealth': -20,
+            '_baseDamage': 5,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.added_evasion': 75,
+            '_stats.Permanent.added_energy_shield': 20,
+            '_stats.Permanent.otherworld': 5,
+        },
+    }
+
     def _removeOldAscendancy(self):
         self.staticBuffs = {'damage_reduction': 2, 'speed': -0.02}
         self.flowBuffs = {'increased_damage': 0.05, 'speed': 0.02}
-        if self._ascendancy == 'Alternator':
-            self._baseHealth -= 20
-            self._baseDamage -= 6
-            self._stats['baseCritMulti'] -= 0.5
-            self._stats['Permanent']['lightning'] -= 20
-            self._stats['Permanent']['earth'] += 10
-        elif self._ascendancy == 'Dervish':
-            self._baseHealth += 20
-            self._baseDamage -= 6
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['added_evasion'] -= 100
-            self._stats['baseCritChance'] -= 0.05
-        elif self._ascendancy == 'Ravager':
-            self._baseHealth += 30
-            self._baseDamage += 4
-            self._baseSpeed -= 0.2
-            self._stats['baseCritChance'] -= 0.1
-            self._stats['baseCritMulti'] -= 0.5
-        elif self._ascendancy == 'Archon':
-            self._baseHealth -= 25
-            self._baseDamage -= 4
-            self._baseSpeed += 0.2
-            self._stats['Permanent']['lightning'] -= 20
-            self._stats['baseCritMulti'] -= 0.3
-        elif self._ascendancy == 'Mirage':
-            self._baseHealth += 20
-            self._baseDamage -= 5
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['added_evasion'] -= 75
-            self._stats['Permanent']['added_energy_shield'] -= 20
-            self._stats['Permanent']['otherworld'] -= 5
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -462,42 +473,16 @@ class Tempest(Player):
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = TEMPEST_DESCRIPTIONS[ascendancy]
-        if ascendancy == 'Alternator':
-            self._baseHealth += 20
-            self._baseDamage += 6
-            self._stats['baseCritMulti'] += 0.5
-            self._stats['Permanent']['lightning'] += 20
-            self._stats['Permanent']['earth'] -= 10
-        elif ascendancy == 'Dervish':
-            self._baseHealth -= 20
-            self._baseDamage += 5
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['added_evasion'] += 100
-            self._stats['Permanent']['psychic'] += 15
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
+        if ascendancy == 'Dervish':
             self.staticBuffs.pop('damage_reduction')
             self.staticBuffs['increased_evasion'] = 2
             self.flowBuffs.pop('speed')
         elif ascendancy == 'Ravager':
-            self._baseHealth -= 30
-            self._baseDamage -= 4
-            self._baseSpeed += 0.2
-            self._stats['baseCritChance'] += 0.1
-            self._stats['baseCritMulti'] += 0.5
             self.staticBuffs.pop('speed')
             self.staticBuffs['increased_defenses'] = 2
-        elif ascendancy == 'Archon':
-            self._baseHealth += 25
-            self._baseDamage += 4
-            self._baseSpeed -= 0.2
-            self._stats['Permanent']['lightning'] += 20
-            self._stats['baseCritMulti'] += 0.3
         elif ascendancy == 'Mirage':
-            self._baseHealth -= 20
-            self._baseDamage += 5
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['added_evasion'] += 75
-            self._stats['Permanent']['added_energy_shield'] += 20
-            self._stats['Permanent']['otherworld'] += 5
             self.staticBuffs['increased_evasion'] = 3
+        self._recalculateStats()
 
 ...

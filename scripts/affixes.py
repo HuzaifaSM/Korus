@@ -244,7 +244,7 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
         ItemRarity.COMMON: 0.4,
         ItemRarity.UNCOMMON: 0.25,
         ItemRarity.RARE: 0.1,
-        ItemRarity. EPIC: 0.05,
+        ItemRarity.EPIC: 0.05,
         ItemRarity.LEGENDARY: 0.02
     }.get(rarity, 0.1)
 

@@ -1,9 +1,8 @@
-from os import remove, path, listdir
+from os import remove, path
 import time
 from typing import List, Optional, Dict
 from sys import exit
 import random
-import json
 import subprocess
 
 from scripts.player import Player, selectClass, deserialisePlayer
@@ -11,10 +10,9 @@ from scripts.enemy import Enemy, createEnemy
 from scripts.combat import CombatManager
 from scripts.items import RESOURCES, CONSUMABLES
 from scripts.camp import Camp
-from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, PATH, _decodeKorus, displayExistingSaves
+from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, displayExistingSaves
 from scripts.debug import Debugger
 from scripts.difficulty import Difficulty
-from scripts.runeDrops import getRuneObject
 from scripts.help import Help
 
 from scripts.styles import (
@@ -22,7 +20,8 @@ from scripts.styles import (
     printWarning, printError, printInfo, printSuccess,
     displayDeath, displayVictory, formatRarity, formatDamageType,
     createAbilityTables, createCombatStatusTable, createEnemyPreview,
-    createEquipmentStoragePages, ReturnToMainMenu, GoToSaveMenu, checkGlobalCommand
+    createEquipmentStoragePages, ReturnToMainMenu, GoToSaveMenu, checkGlobalCommand,
+    stepPage, selectFromNumberedList
 )
 
 class Game:
@@ -572,11 +571,9 @@ class Game:
             prompt += "):[/cyan]\n> "
             choice = console.input(prompt).strip().lower()
 
-            if totalPages > 1 and choice == 'n':
-                currentPage = currentPage % totalPages + 1
-                continue
-            if totalPages > 1 and choice == 'p':
-                currentPage = (currentPage - 2) % totalPages + 1
+            newPage = stepPage(currentPage, totalPages, choice)
+            if newPage is not None:
+                currentPage = newPage
                 continue
 
             try:
@@ -612,36 +609,35 @@ class Game:
 
     def unequipToStorage(self):
         equippedSlots = [(slot, equip) for slot, equip in self.player._equipment.items() if equip]
-    
+
         if not equippedSlots:
             printWarning("Nothing equipped!")
             pause()
             return
-        
+
         clearScreen()
         printHeader("Unequip to Storage")
-        
+
         console.print("\n[bold cyan]=== Equipped Items ===[/bold cyan]")
-        for i, (slot, equip) in enumerate(equippedSlots, 1):
+
+        def renderEquipped(i, slotEquip):
+            slot, equip = slotEquip
             equipName = formatRarity(equip.name, equip.rarity.value)
             console.print(f"[cyan]{i}.[/cyan] [{slot.upper()}] {equipName}")
             console.print(f"{equip}")
-        
-        choice = console.input("\n[cyan]Choose item to unequip (0 to cancel):[/cyan]\n> ").strip()
-        try:
-            index = int(choice) - 1
-            if 0 <= index < len(equippedSlots):
-                slot, equipment = equippedSlots[index]
-                confirm = console.input(f"\n[warning]Unequip {equipment.name}? (y/n):[/warning] ").strip().lower()
-                if confirm == 'y':
-                    unequipped = self.player.unequip(slot)
-                    if unequipped:
-                        self.player._equipmentStorage.append(unequipped)
-                        printSuccess(f"Unequipped {equipment.name} to storage!")
-                        pause()
-        except ValueError:
-            printWarning("Invalid input!")
-            pause()
+
+        index = selectFromNumberedList(equippedSlots, "Choose item to unequip (0 to cancel):", render=renderEquipped)
+        if index is None:
+            return
+
+        slot, equipment = equippedSlots[index]
+        confirm = console.input(f"\n[warning]Unequip {equipment.name}? (y/n):[/warning] ").strip().lower()
+        if confirm == 'y':
+            unequipped = self.player.unequip(slot)
+            if unequipped:
+                self.player._equipmentStorage.append(unequipped)
+                printSuccess(f"Unequipped {equipment.name} to storage!")
+                pause()
 
     def viewAllEquipment(self):
         inventoryPages = createEquipmentStoragePages(self.player._equipmentStorage) if self.player._equipmentStorage else {}
@@ -670,14 +666,11 @@ class Game:
 
             if totalPages > 1:
                 choice = console.input("\n[cyan](N)ext page, (P)revious page, or Enter to return:[/cyan]\n> ").strip().lower()
-                if choice == 'n':
-                    currentPage = currentPage % totalPages + 1
+                newPage = stepPage(currentPage, totalPages, choice)
+                if newPage is not None:
+                    currentPage = newPage
                     continue
-                elif choice == 'p':
-                    currentPage = (currentPage - 2) % totalPages + 1
-                    continue
-                else:
-                    return
+                return
             else:
                 pause()
                 break
@@ -697,43 +690,27 @@ class Game:
             printWarning("Need at least 2 equipment pieces to compare!")
             return
         
-        console.print("\n[bold cyan]=== Select First Item ===[/bold cyan]")
-        for i, (location, equip) in enumerate(allEquipment, 1):
+        def renderChoice(i, locationEquip):
+            location, equip = locationEquip
             equipName = formatRarity(equip.name, equip.rarity.value)
             console.print(f"  [cyan]{i}.[/cyan] [dim]{location}[/dim] {equipName}")
-        
-        choice1 = console.input("\n[cyan]Choose first item:[/cyan]\n> ").strip()
-        try:
-            index1 = int(choice1) - 1
-            if not (0 <= index1 < len(allEquipment)):
-                printWarning("Invalid choice!")
-                return
-            
-            console.print("\n[bold cyan]=== Select Second Item ===[/bold cyan]")
-            for i, (location, equip) in enumerate(allEquipment, 1):
-                if i - 1 == index1:
-                    continue
-                equipName = formatRarity(equip.name, equip.rarity.value)
-                console.print(f"  [cyan]{i}.[/cyan] [dim]{location}[/dim] {equipName}")
-            
-            choice2 = console.input("\n[cyan]Choose second item:[/cyan]\n> ").strip()
-            index2 = int(choice2) - 1
-            
-            if not (0 <= index2 < len(allEquipment)) or index1 == index2:
-                printWarning("Invalid choice!")
-                pause()
-                return
-            
-            # Show comparison
-            _, equip1 = allEquipment[index1]
-            _, equip2 = allEquipment[index2]
-            
-            console.print("\n" + "="*50)
-            console.print(equip1.compareTo(equip2))
-            console.print("="*50)
-            
-        except ValueError:
-            printWarning("Invalid input!")
+
+        console.print("\n[bold cyan]=== Select First Item ===[/bold cyan]")
+        index1 = selectFromNumberedList(allEquipment, "Choose first item:", render=renderChoice)
+        if index1 is None:
+            return
+
+        console.print("\n[bold cyan]=== Select Second Item ===[/bold cyan]")
+        index2 = selectFromNumberedList(allEquipment, "Choose second item:", render=renderChoice, skip={index1})
+        if index2 is None:
+            return
+
+        _, equip1 = allEquipment[index1]
+        _, equip2 = allEquipment[index2]
+
+        console.print("\n" + "="*50)
+        console.print(equip1.compareTo(equip2))
+        console.print("="*50)
         pause()
 
     def postBattle(self, result: str, enemies: List[Enemy]):

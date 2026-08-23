@@ -1,11 +1,11 @@
 from typing import Dict, Optional, List
 from .station import Station
 import random
-from scripts.items import Equipment, ItemRarity, rollRarity
+from scripts.items import Equipment, ItemRarity, rollRarity, RARITY_SERIALS
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, formatRarity,
-    Panel, checkGlobalCommand
+    Panel, checkGlobalCommand, createEquipmentStoragePages
 )
 from scripts.runeDrops import getRuneObject
 from crafting.base import CraftOutcome, CraftResult
@@ -31,19 +31,19 @@ class Forge(Station):
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
             1: {"iron_ore": 5, "stone": 25, "wood": 10,
-                'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair equipment. [resource]Blueprints[/resource] are used to craft new peices of equipment.\nYou are able to craft Common and Uncommon equipment.'
+                'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair and fuse equipment. [resource]Blueprints[/resource] are used to craft and fuse new peices of equipment.\nYou are able to craft Common and Uncommon equipment.\nYou are able to fuse Common Equipment to Uncommon.'
                 },
             2: {"iron_ore": 50, "crystal": 15, "bone": 10,
-                'description': "Repairing items grants 20% more durability recovered. You can now craft Rare equipment"
+                'description': "Repairing items grants 20% more durability recovered. You can now craft Rare equipment. You can fuse Uncommon Equipment to Rare."
                 },
             3: {"crystal": 40, "mana_essence": 20, "ancient_wood": 10,
-                'description': "Repairing items grants 20% more durability recovered. You can now craft Epic equipment"
+                'description': "Repairing items grants 20% more durability recovered. You can now craft Epic equipment. You can fuse Rare Equipment to Epic."
                 },
             4: {"mana_essence": 50, "diamond": 30, "dragon_scale": 10,
-                'description': "Repairing items grants 20% more durability recovered. You can now craft Legendary equipment. Crafted equipment cannot be Common"
+                'description': "Repairing items grants 20% more durability recovered. You can now craft Legendary equipment. Crafted equipment cannot be Common. You can fuse Epic Equipment to Legendary."
                 },
             5: {"dragon_scale": 30, "ascended_essence": 20, "diamond": 100,
-                'description': "Repairing items grants 20% more durability recovered. Crafted equipment cannot be Uncommon"
+                'description': "Repairing items grants 20% more durability recovered. Crafted equipment cannot be Uncommon. Fusing requires 1 less item per tier."
                 }
         }
 
@@ -77,8 +77,6 @@ class Forge(Station):
         if not pages:
             return []
         if self.currentCraftingPage not in pages:
-            # filtering/re-rolling can shrink the page count out from under
-            # whatever page we were sat on - fall back to the first real page
             self.currentCraftingPage = min(pages.keys())
         return pages[self.currentCraftingPage]
 
@@ -99,6 +97,7 @@ class Forge(Station):
             console.print("[dim]1.[/dim] Craft Equipment")
             console.print("[dim]2.[/dim] Repair Equipment")
             console.print("[dim]3.[/dim] Craft With Runes")
+            console.print("[dim]4.[/dim] Fuse Equipment")
             console.print("[dim]9.[/dim] Upgrade Forge")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
@@ -115,6 +114,8 @@ class Forge(Station):
                         self.repairEquipment()
                     case 3:
                         self.craftingInterface()
+                    case 4:
+                        self.fuseEquipmentMenu()
                     case 9:
                         self.upgrade()
                     case _:
@@ -144,11 +145,13 @@ class Forge(Station):
             pause()
         else:
             printWarning(f"Forge Level 1 required for crafting. Current Level: {self.level}")
+            pause()
             return
 
     def craftEquipment(self, slot: str):
         if self.level < 1:
             printWarning(f"Forge Level 1 required for crafting. Current Level: {self.level}")
+            pause()
             return
         
         blueprintCost = 5 + (self.level * 5)
@@ -168,7 +171,6 @@ class Forge(Station):
 
         roll = random.random()
         cumulative = 0
-        rarity = ItemRarity.COMMON
         for r, chance in rarityChances[self.level].items():
             cumulative += chance
             if roll <= cumulative:
@@ -213,9 +215,9 @@ class Forge(Station):
                 fuelCost = max(1, durabilityNeeded // 10)
 
                 resourceCost = {
-                    ItemRarity.COMMON: ("stone", 3),
-                    ItemRarity.UNCOMMON: ("iron_ore", 5),
-                    ItemRarity.RARE: ("crystal", 5),
+                    ItemRarity.COMMON: ("stone", 2),
+                    ItemRarity.UNCOMMON: ("iron_ore", 3),
+                    ItemRarity.RARE: ("crystal", 3),
                     ItemRarity.EPIC: ("mana_essence", 3),
                     ItemRarity.LEGENDARY: ("dragon_scale", 2)
                 }
@@ -354,6 +356,149 @@ class Forge(Station):
         clearScreen()
         console.print("[gold1 bold]=== CRAFTING COMPLETE ===[/gold1 bold]\n")
         console.print(self.currentItem)
+        pause()
+
+    def getFusionPieces(self) -> List[List[Equipment], str, str]:
+        availableRarities: List[str] = []
+        if self.level > 0:
+            availableRarities.append('uncommon')
+        if self.level > 1:
+            availableRarities.append('rare')
+        if self.level > 2:
+            availableRarities.append('epic')
+        if self.level > 3:
+            availableRarities.append('legendary')
+
+        while True:
+            clearScreen()
+            printHeader("Pick a Rarity to Fuse into:")
+            console.print("[dim]0.[/dim] Cancel")
+            for i, r in enumerate(availableRarities, start=1):
+                console.print(f"[cyan]{i}.[/cyan] {r.title()}") # 1 unc, 2 rare, 3 epic, 4 legendary
+            try:
+                rar = int(console.input("[cyan]>[/cyan] ").strip())
+                if rar == 0:
+                    return None, None
+
+                chosenRarity = RARITY_SERIALS[availableRarities[rar - 1]]
+
+                rarList = list(ItemRarity)
+                fusionRarity = rarList[rarList.index(chosenRarity) - 1]
+
+                availablePieces = [
+                    e for e in self.player._equipmentStorage if e.rarity == fusionRarity
+                ]
+
+                return availablePieces, fusionRarity, chosenRarity
+
+            except ValueError as e:
+                printWarning("Invalid Input")
+            except IndexError as e:
+                printWarning("Invalid Choice")
+            except KeyError as e:
+                printWarning("Invalid Choice")
+
+    def getFusionSlot(self) -> str:
+        slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
+        chosenSlot = None
+        while True:
+            clearScreen()
+            printHeader("Choose a slot to guarantee Fusion will make (0 to cancel)")
+            for i, s in enumerate(slots, start = 1):
+                console.print(f"[dim]{i}.[/dim] {s.title()}")
+            choice = console.input("[cyan]>[/cyan] ")
+            try:
+                choice = int(choice)
+                if choice == 0:
+                    return None
+
+                if 0 < choice < len(slots):
+                    chosenSlot = slots[choice - 1]
+
+                    return chosenSlot
+
+            except ValueError:
+                printWarning("Invalid choice")
+                pause()
+                continue
+
+    def fuseEquipmentMenu(self):
+        if self.level == 0:
+            printWarning("Forge Level 1 required for Fusion. Current Level: 0")
+            pause()
+            return
+
+        RARITY_TO_FUSE = {
+            ItemRarity.COMMON: 3,
+            ItemRarity.UNCOMMON: 3,
+            ItemRarity.RARE: 4,
+            ItemRarity.EPIC: 4
+        }
+
+        fusionPieces, fusedRarity, newRarity = self.getFusionPieces()
+        if fusionPieces is None or fusedRarity is None:
+            return
+        slot = self.getFusionSlot()
+        if slot is None:
+            return
+
+        neededToFuse = RARITY_TO_FUSE[fusedRarity]
+        if self.level == 5:
+            neededToFuse -= 1
+        chosenToFuse: list[Equipment] = []
+
+        if len(fusionPieces) < neededToFuse:
+            printWarning(f"You do not have enough {fusedRarity.value} Equipment to Fuse! Needed pieces of equipment: {neededToFuse}")
+            pause()
+            return
+
+        while len(chosenToFuse) != neededToFuse:
+            pages = createEquipmentStoragePages(fusionPieces, 4)
+            totalPages = len(pages)
+            currentPage = 1
+            if pages:
+                console.print(pages[currentPage])
+                console.print(f"Page {currentPage}/{totalPages}")
+
+                prompt = "\n[red]Choose Item to add to Fusion (0 to cancel"
+                if totalPages > 1:
+                    prompt += ", N for next page, P for previous page"
+                prompt += "):[/red]"
+
+                console.print(prompt)
+                console.print(f"[dim]{len(chosenToFuse)}/{neededToFuse} chosen[/dim]")
+
+                choice = console.input("[cyan]> [/cyan] ").strip().lower()
+
+                try:
+                    index = int(choice) - 1
+                except ValueError:
+                    printWarning("Invalid input")
+                    pause()
+                    continue
+
+                if index == -1:
+                    break
+
+                if 0 <= index < len(fusionPieces):
+                    eq = fusionPieces[index]
+                    chosenToFuse.append(eq)
+                    fusionPieces.pop(index)
+                    printSuccess(f"{eq.name} has been added for fusion")
+                else:
+                    printWarning("Invalid Choice")
+                    pause()
+
+        totalLevel = 0
+        for e in chosenToFuse:
+            totalLevel += e.level
+            self.player._equipmentStorage.remove(e)
+
+        level = totalLevel // len(chosenToFuse)
+
+        newEquipment = Equipment._generateEquipmentPiece(level, slot, newRarity)
+        self.player.addEquipmentToStorage(newEquipment)
+        printSuccess(f"Successfully fused {neededToFuse} {fusedRarity.value.title()} pieces of Equipment to create {newEquipment.name}")
         pause()
 
     def _showCraftingResult(self, result: CraftResult, runeName: str):

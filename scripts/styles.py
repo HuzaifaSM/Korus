@@ -8,7 +8,7 @@ from rich.progress import BarColumn, Progress, TextColumn
 from rich.text import Text
 from rich.align import Align
 from rich import box
-from typing import List, Dict
+from typing import List, Dict, Optional, Callable, Iterable
 
 # custom theme for game
 KORUS_THEME = Theme({
@@ -33,7 +33,7 @@ KORUS_THEME = Theme({
     "heal": "green",
     "chaos": "dark_magenta",
     "psychic": "bright_magenta",
-    "ethereal": "grey85",
+    "ethereal": "grey70",
 
     "divine": "light_goldenrod1",
     "otherworld": "blue_violet",
@@ -159,7 +159,14 @@ KORUS_THEME = Theme({
     "asc_arcanist": "purple3 bold",
     "asc_hierophant": "light_goldenrod1 bold",
     "asc_empyrean": "deep_sky_blue1 bold",
-    "asc_unmaker": "grey30 bold"
+    "asc_unmaker": "grey30 bold",
+
+    # Fighter ascendancy family
+    "asc_dissenter": "red1 bold",
+    "asc_arbiter": "sky_blue3 bold",
+    "asc_transgressor": "orchid2 bold",
+    "asc_triarch": "grey54 bold",
+    "asc_autarch": "gold3 bold"
 })
 
 # -- keyword highlighting: maps literal keyword text to a theme style key.
@@ -255,7 +262,7 @@ KEYWORDS: Dict[str, str] = {
     "Positive": "asc_alternator", "Negative": "asc_alternator",
     "Fleeting": "asc_dervish",
     "Spark": "asc_archon",
-    "Relentless": "asc_ravager",
+    "Flurry": "asc_ravager", "Relentless": "asc_ravager",
 
     # Marauder ascendancy mechanics
     "Echo": "class_marauder", "Siphon": "class_marauder", "Siphoned": "class_marauder",
@@ -270,7 +277,9 @@ KEYWORDS: Dict[str, str] = {
     "Annihilation": "asc_annihilist",
 
     # Fighter ascendancy mechanics
-    "Flurry": "buff", "Aegis": "buff", "Brawler's Fury": "buff",
+    "Impatience": "asc_dissenter",
+    "Balance": "asc_arbiter",
+    "Pact": "asc_autarch",
 
     # Mage ascendancy mechanics
     "Archmage": "class_mage", "Adaptation": "class_mage",
@@ -381,6 +390,47 @@ def checkGlobalCommand(choice: str):
         raise ReturnToMainMenu()
     elif normalised == GLOBAL_SAVE_COMMAND:
         raise GoToSaveMenu()
+
+def stepPage(currentPage: int, totalPages: int, choice: str) -> Optional[int]:
+    """If choice is a page-navigation command ('n'/'p'), returns the new page number
+    (wrapping around). Returns None if choice wasn't a navigation command."""
+    if totalPages <= 1:
+        return None
+    normalised = choice.strip().lower()
+    if normalised == 'n':
+        return currentPage % totalPages + 1
+    if normalised == 'p':
+        return (currentPage - 2) % totalPages + 1
+    return None
+
+def selectFromNumberedList(items: List, promptText: str, render: Optional[Callable] = None,
+                            skip: Iterable[int] = frozenset()) -> Optional[int]:
+    """Prints a 1-indexed list (skipping any 0-based indices in `skip`), reads a choice,
+    and returns a valid 0-based index. Returns None if the player cancelled with '0' or
+    entered something invalid (a warning is already shown in that case)."""
+    skip = set(skip)
+    for i, item in enumerate(items, 1):
+        if i - 1 in skip:
+            continue
+        if render:
+            render(i, item)
+        else:
+            console.print(f"[cyan]{i}.[/cyan] {item}")
+
+    choice = console.input(f"\n[cyan]{promptText}[/cyan]\n> ").strip()
+    if choice == '0':
+        return None
+    try:
+        index = int(choice) - 1
+    except ValueError:
+        printWarning("Invalid input!")
+        pause()
+        return None
+    if not (0 <= index < len(items)) or index in skip:
+        printWarning("Invalid choice!")
+        pause()
+        return None
+    return index
 
 def formatRarity(text: str, rarity: str) -> str:
     colour = RARITY_COLOURS.get(rarity.lower(), 'white')
@@ -902,6 +952,22 @@ def formatPlayerMechanics(player, col: list) -> list:
                 col.append(f"[asc_hierophant underline]Prophetic[/asc_hierophant underline]")
         elif player._ascendancy == 'Unmaker':
             col.append(f"[asc_unmaker]Precision:[/asc_unmaker] {player.unmakerPrecision}/10")
+
+    elif player.className == 'Fighter':
+        col.append(f"[class_fighter]Aggression:[/class_fighter] {player.aggression} ({player.currentAggressionTreshold.value.title()}) | [class_fighter]Discipline:[/class_fighter] {player.discipline} ({player.currentDisciplineThreshold.value.title()})")
+        if player.stanceCap != 100:
+            col.append(f"[class_fighter]Stance Cap:[/class_fighter] {player.stanceCap}")
+
+        if player._ascendancy == 'Dissenter':
+            col.append(f"[asc_dissenter]Impatience:[/asc_dissenter] {player.impatience}")
+        elif player._ascendancy == 'Arbiter':
+            col.append(f"[asc_arbiter]Balance:[/asc_arbiter] {player.balance}")
+        elif player._ascendancy == 'Transgressor':
+            if player.transgressorSyncTier:
+                col.append(f"[asc_transgressor underline]Dual-Stance Synergy Active[/asc_transgressor underline]")
+        elif player._ascendancy == 'Autarch':
+            if player.autarchPact:
+                col.append(f"[asc_autarch]Pact:[/asc_autarch] {player.autarchPact.title()}")
 
     return col
 

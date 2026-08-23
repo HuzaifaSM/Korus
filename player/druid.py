@@ -100,8 +100,8 @@ class Druid(Player): # balanced damage and speed, earth damage
         formDisplay = "[green]Human[/green]" if self.form == 'human' else "[yellow]Beast[/yellow]"
         return f"{super().__str__()}\n[earth]Verdance:[/earth] {self.verdance}/{self.maxVerdance} | Form: {formDisplay}"
 
-    def _serialise(self):
-        temp = super()._serialise()
+    def serialise(self):
+        temp = super().serialise()
         temp['verdance'] = self.verdance
         temp['maxVerdance'] = self.maxVerdance
         temp['form'] = self.form
@@ -394,90 +394,71 @@ class Druid(Player): # balanced damage and speed, earth damage
         self._applyFormBonuses()
         self._recalculateStats(False)
 
+    ASCENDANCY_DELTAS = {
+        'Primalist': {
+            '_baseHealth': 10,
+            '_baseDamage': 1,
+            '_baseSpeed': -0.05,
+            '_stats.Permanent.earth': 10,
+        },
+        'Arbiter': {
+            '_baseHealth': 15,
+            '_baseDamage': 1,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.physical': 10,
+        },
+        'Moonkin': {
+            '_baseHealth': 10,
+            '_baseDamage': -2,
+            '_baseSpeed': -0.1,
+            'maxVerdance': -10,
+            '_stats.Permanent.arcane': 15,
+            '_stats.Permanent.stun_avoidance': 10,
+        },
+        'Chimera': {
+            '_baseHealth': -10,
+            '_baseDamage': 1,
+            '_baseSpeed': -0.05,
+            'maxVerdance': 10,
+            '_stats.Permanent.elemental': 10,
+        },
+        'Earthshaper': {
+            '_baseHealth': -10,
+            '_baseDamage': 2,
+            '_baseSpeed': -0.15,
+            'maxVerdance': 20,
+            '_stats.Permanent.earth': 25,
+            '_stats.Permanent.stun_avoidance': 10,
+            '_stats.Permanent.added_armour': 50,
+            '_stats.Permanent.added_energy_shield': 25,
+        },
+    }
+
     def _removeOldAscendancy(self) -> bool:
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
+        # non-numeric resets: no plain add/subtract counterpart, mirrors the
+        # assignment made in updateAscendancy for the same ascendancy
         if self._ascendancy == 'Primalist':
-            self._baseHealth -= 10
-            self._baseDamage -= 1
-            self._baseSpeed += 0.05
             self.formEffect = 1
-            self._stats['Permanent']['earth'] -= 10
-        elif self._ascendancy == 'Arbiter':
-            self._baseHealth -= 15
-            self._baseDamage -= 1
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['physical'] -= 10
         elif self._ascendancy == 'Moonkin':
-            self._baseHealth -= 10
-            self._baseDamage += 2
-            self._baseSpeed += 0.1
-            self.maxVerdance += 10
             self.form = 'human'
-            self._stats['Permanent']['arcane'] -= 15
-            self._stats['Permanent']['stun_avoidance'] -= 10
-        elif self._ascendancy == 'Chimera':
-            self._baseHealth += 10
-            self._baseDamage -= 1
-            self._baseSpeed += 0.05
-            self.maxVerdance -= 10
-            self._stats['Permanent']['elemental'] -= 10
         elif self._ascendancy == 'Earthshaper':
-            self._baseHealth += 10
-            self._baseDamage -= 2
-            self._baseSpeed += 0.15
-            self.maxVerdance -= 20
             self.formEffect = 1
-            self._stats['Permanent']['earth'] -= 25
-            self._stats['Permanent']['stun_avoidance'] -= 10
-            self._stats['Permanent']['added_armour'] -= 50
-            self._stats['Permanent']['added_energy_shield'] -= 25
         return True
 
     def updateAscendancy(self, ascendancy):
         if not super().updateAscendancy(ascendancy):
             return
+        self._ascendancy = ascendancy
+        self.ascendancyDescription = DRUID_DESCRIPTIONS[ascendancy]
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
+        # non-numeric assignments: no plain add/subtract counterpart
         if ascendancy == 'Primalist':
-            self._baseHealth += 10
-            self._baseDamage += 1
-            self._baseSpeed -= 0.05
             self.formEffect = 1.5
-            self._stats['Permanent']['earth'] += 10
-            self._ascendancy = 'Primalist'
-            self.ascendancyDescription = DRUID_DESCRIPTIONS["Primalist"]
-        elif ascendancy == 'Arbiter':
-            self._baseHealth += 15
-            self._baseDamage += 1
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['physical'] += 10
-            self._ascendancy = 'Arbiter'
-            self.ascendancyDescription = DRUID_DESCRIPTIONS["Arbiter"]
         elif ascendancy == 'Moonkin':
-            self._baseHealth += 10
-            self._baseDamage -= 2
-            self._baseSpeed -= 0.1
-            self.maxVerdance -= 10
             self.form = 'moonkin'
-            self._stats['Permanent']['arcane'] += 15
-            self._stats['Permanent']['stun_avoidance'] += 10
-            self._ascendancy = 'Moonkin'
-            self.ascendancyDescription = DRUID_DESCRIPTIONS["Moonkin"]
-        elif ascendancy == 'Chimera':
-            self._baseHealth -= 10
-            self._baseDamage += 1
-            self._baseSpeed -= 0.05
-            self.maxVerdance += 10
-            self._stats['Permanent']['elemental'] += 10
-            self._ascendancy = 'Chimera'
-            self.ascendancyDescription = DRUID_DESCRIPTIONS["Chimera"]
         elif ascendancy == 'Earthshaper':
-            self._baseHealth -= 10
-            self._baseDamage += 2
-            self._baseSpeed -= 0.15
-            self.maxVerdance += 20
             self.formEffect = 0.5
-            self._stats['Permanent']['earth'] += 25
-            self._stats['Permanent']['stun_avoidance'] += 10
-            self._stats['Permanent']['added_armour'] += 50
-            self._stats['Permanent']['added_energy_shield'] += 25
-            self._ascendancy = 'Earthshaper'
-            self.ascendancyDescription = DRUID_DESCRIPTIONS["Earthshaper"]
         self._recalculateStats()

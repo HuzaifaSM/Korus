@@ -130,8 +130,8 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._stats['Temporary']['hp_regen'] += 10
         self.blessingTurns = 2
 
-    def _serialise(self):
-        temp = super()._serialise()
+    def serialise(self):
+        temp = super().serialise()
         temp['maxFavour'] = self.maxFavour
         temp['favourMinGain'] = self.favourMinGain
         temp['favourMaxGain'] = self.favourMaxGain
@@ -458,50 +458,57 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.valour = 0
         self.crusaderActiveLastTurn = False
         self.blessingTurns = 0
-        self.fanaticism = 0
-        self.clericFirstTurn = True
-        self.templarCrit = 0
-        self.templarDR = 0
 
         super().onCombatEnd()
 
+    ASCENDANCY_DELTAS = {
+        'Zealot': {
+            '_baseHealth': 10,
+            '_baseDamage': 2,
+            '_baseSpeed': -0.15,
+            '_stats.Permanent.holy': 15,
+            '_stats.Permanent.psychic': -10,
+            'maxFavour': -25,
+        },
+        'Guardian': {
+            '_baseHealth': 20,
+            '_baseDamage': -2,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.stun_avoidance': 20,
+            '_stats.Permanent.added_armour': 100,
+            '_stats.Permanent.added_energy_shield': 30,
+            'favourMinGain': 3,
+            'favourMaxGain': 3,
+        },
+        'Justicar': {
+            '_baseHealth': -20,
+            '_baseDamage': 1,
+            '_baseSpeed': 0.1,
+            '_stats.baseCritMulti': 0.5,
+            '_stats.Permanent.dark': 5,
+            '_stats.Permanent.holy': 5,
+        },
+        'Crusader': {
+            '_baseHealth': -15,
+            '_baseDamage': 2,
+            '_baseSpeed': 0.05,
+            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.divine': 5,
+        },
+        'Inquisitor': {
+            '_baseHealth': 10,
+            '_baseDamage': 2,
+            '_baseSpeed': -0.2,
+            '_stats.Permanent.holy': 15,
+            '_stats.Permanent.added_armour': 100,
+            'maxFavour': 50,
+        },
+    }
+
     def _removeOldAscendancy(self) -> bool:
-        if self._ascendancy == 'Zealot':
-            self._baseHealth -= 10
-            self._baseDamage -= 2
-            self._baseSpeed += 0.15
-            self._stats['Permanent']['holy'] -= 15
-            self._stats['Permanent']['psychic'] += 10
-            self.maxFavour += 25
-        elif self._ascendancy == 'Guardian':
-            self._baseHealth -= 20
-            self._baseDamage += 2
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['stun_avoidance'] -= 20
-            self._stats['Permanent']['added_armour'] -= 100
-            self._stats['Permanent']['added_energy_shield'] -= 30
-            self.favourMinGain -= 3
-            self.favourMaxGain -= 3
-        elif self._ascendancy == 'Justicar':
-            self._baseHealth += 20
-            self._baseDamage -= 1
-            self._baseSpeed -= 0.1
-            self._stats['baseCritMulti'] -= 0.5
-            self._stats['Permanent']['dark'] -= 5
-            self._stats['Permanent']['holy'] -= 5
-        elif self._ascendancy == 'Crusader':
-            self._baseHealth += 15
-            self._baseDamage -= 2
-            self._baseSpeed -= 0.05
-            self._stats['baseCritMulti'] -= 0.25
-            self._stats['Permanent']['divine'] -= 5
-        elif self._ascendancy == 'Inquisitor':
-            self._baseHealth -= 10
-            self._baseDamage -= 2
-            self._baseSpeed += 0.2
-            self._stats['Permanent']['holy'] -= 15
-            self._stats['Permanent']['added_armour'] -= 100
-            self.maxFavour -= 50
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -509,42 +516,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = PALADIN_DESCRIPTIONS[ascendancy]
-        if ascendancy == 'Zealot':
-            self._baseHealth += 10
-            self._baseDamage += 2
-            self._baseSpeed -= 0.15
-            self._stats['Permanent']['holy'] += 15
-            self._stats['Permanent']['psychic'] -= 10
-            self.maxFavour -= 25
-        elif ascendancy == 'Guardian':
-            self._baseHealth += 20
-            self._baseDamage -= 2
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['stun_avoidance'] += 20
-            self._stats['Permanent']['added_armour'] += 100
-            self._stats['Permanent']['added_energy_shield'] += 30
-            self.favourMinGain += 3
-            self.favourMaxGain += 3
-        elif ascendancy == 'Justicar':
-            self._baseHealth -= 20
-            self._baseDamage += 1
-            self._baseSpeed += 0.1
-            self._stats['baseCritMulti'] += 0.5
-            self._stats['Permanent']['dark'] += 5
-            self._stats['Permanent']['holy'] += 5
-        elif ascendancy == 'Crusader':
-            self._baseHealth -= 15
-            self._baseDamage += 2
-            self._baseSpeed += 0.05
-            self._stats['baseCritMulti'] += 0.25
-            self._stats['Permanent']['divine'] += 5
-        elif ascendancy == 'Inquisitor':
-            self._baseHealth += 10
-            self._baseDamage += 2
-            self._baseSpeed -= 0.2
-            self._stats['Permanent']['holy'] += 15
-            self._stats['Permanent']['added_armour'] += 100
-            self.maxFavour += 50
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
 
 ...

@@ -233,7 +233,7 @@ class Wretch(Player):
                         self.bloodSpikeApplied += gained
                     console.print(f"[class_wretch]Wretch: {ability.name} applies {gained} extra stack(s) of Blood Spike to {entity._name}![/class_wretch]")
 
-        if self._health < (0.4 * self._maxHealth) and damageDealt == 'dark':
+        if self._health < (0.4 * self._maxHealth) and damageType == 'dark':
             damageDealt = int(damageDealt * 1.2)
 
         if self._ascendancy == 'Plaguebearer' and self.bloodScent > 0:
@@ -370,39 +370,50 @@ class Wretch(Player):
 
         return crit, damage
 
+    ASCENDANCY_DELTAS = {
+        'Exsanguinator': {
+            '_baseHealth': 10,
+            '_baseDamage': 1,
+            '_stats.baseCritChance': 0.05,
+            '_stats.baseCritMulti': -0.25,
+            '_stats.Permanent.added_energy_shield': 50,
+            'maxBloodSpikeStacks': 5,
+        },
+        'Bloodletter': {
+            '_baseHealth': 25,
+            '_baseDamage': 2,
+            '_baseSpeed': 0.1,
+            '_stats.Permanent.dark': 15,
+            '_stats.Permanent.otherworld': 5,
+        },
+        'Plaguebearer': {
+            '_baseHealth': 5,
+            '_baseDamage': 4,
+            '_baseSpeed': 0.1,
+            '_stats.baseCritMulti': 0.25,
+            'maxBloodSpikeStacks': -3,
+        },
+        'Necrose': {
+            '_baseHealth': -15,
+            '_baseDamage': 3,
+            '_baseSpeed': 0.1,
+            '_stats.Permanent.dark': 15,
+            '_stats.Permanent.resistance_penetration': 10,
+            'maxBloodSpikeStacks': -5,
+        },
+        'Necromancer': {
+            '_baseHealth': 20,
+            '_baseDamage': -2,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.hp_regen': 5,
+            '_stats.Permanent.otherworld': 10,
+        },
+    }
+
     def _removeOldAscendancy(self) -> bool:
-        if self._ascendancy == "Exsanguinator":
-            self._baseHealth -= 10
-            self._baseDamage -= 1
-            self._stats['baseCritChance'] -= 0.05
-            self._stats['baseCritMulti'] += 0.25
-            self._stats['Permanent']['added_energy_shield'] -= 50
-            self.maxBloodSpikeStacks -= 5
-        elif self._ascendancy == "Bloodletter":
-            self._baseHealth -= 25
-            self._baseDamage -= 2
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['dark'] -= 15
-            self._stats['Permanent']['otherworld'] -= 5
-        elif self._ascendancy == "Plaguebearer":
-            self._baseHealth -= 5
-            self._baseDamage -= 4
-            self._baseSpeed -= 0.1
-            self._stats['baseCritMulti'] -= 0.25
-            self.maxBloodSpikeStacks += 3
-        elif self._ascendancy == 'Necrose':
-            self._baseHealth += 15
-            self._baseDamage -= 3
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['dark'] -= 15
-            self._stats['Permanent']['resistance_penetration'] -= 10
-            self.maxBloodSpikeStacks += 5
-        elif self._ascendancy == 'Necromancer':
-            self._baseHealth -= 20
-            self._baseDamage += 2
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['hp_regen'] -= 5
-            self._stats['Permanent']['otherworld'] -= 10
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -410,36 +421,5 @@ class Wretch(Player):
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = WRETCH_DESCRIPTIONS[ascendancy]
-        if ascendancy == "Exsanguinator":
-            self._baseHealth += 10
-            self._baseDamage += 1
-            self._stats['baseCritChance'] += 0.05
-            self._stats['baseCritMulti'] -= 0.25
-            self._stats['Permanent']['added_energy_shield'] += 50
-            self.maxBloodSpikeStacks += 5
-        elif ascendancy == "Bloodletter":
-            self._baseHealth += 25
-            self._baseDamage += 2
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['dark'] += 15
-            self._stats['Permanent']['otherworld'] += 5
-        elif ascendancy == "Plaguebearer":
-            self._baseHealth += 5
-            self._baseDamage += 4
-            self._baseSpeed += 0.1
-            self._stats['baseCritMulti'] += 0.25
-            self.maxBloodSpikeStacks -= 3
-        elif ascendancy == "Necrose":
-            self._baseHealth -= 15
-            self._baseDamage += 3
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['dark'] += 15
-            self._stats['Permanent']['resistance_penetration'] += 10
-            self.maxBloodSpikeStacks -= 5
-        elif ascendancy == "Necromancer":
-            self._baseHealth += 20
-            self._baseDamage -= 2
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['hp_regen'] += 5
-            self._stats['Permanent']['otherworld'] += 10
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()

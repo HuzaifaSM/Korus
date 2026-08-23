@@ -356,40 +356,50 @@ class Marauder(Player):
 
         super().onCombatEnd()
 
+    ASCENDANCY_DELTAS = {
+        'Colossus': {
+            '_baseHealth': -15,
+            '_baseDamage': 4,
+            '_baseSpeed': -0.2,
+            '_stats.Permanent.added_armour': 100,
+            '_stats.Permanent.added_energy_shield': 20,
+        },
+        'Dreadnought': {
+            '_baseHealth': 30,
+            '_baseDamage': -5,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.increased_health': 20,
+            '_stats.Permanent.healing_magnitude': 50,
+            '_stats.Permanent.cold': 15,
+        },
+        'Sovereign': {
+            '_baseHealth': 15,
+            '_baseDamage': 4,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.stamina_regen': 5,
+            '_stats.Permanent.holy': 10,
+        },
+        'Harrower': {
+            '_baseHealth': -15,
+            '_baseDamage': 6,
+            '_baseSpeed': 0.1,
+            '_stats.baseCritChance': 0.05,
+            '_stats.baseCritMulti': 0.25,
+        },
+        'Butcher': {
+            '_baseHealth': 10,
+            '_baseDamage': 6,
+            '_baseSpeed': 0.15,
+            '_stats.baseCritChance': 0.05,
+            '_stats.baseCritMulti': -0.25,
+            '_stats.Permanent.fire': -10,
+        },
+    }
+
     def _removeOldAscendancy(self):
-        if self._ascendancy == 'Colossus':
-            self._baseHealth += 15
-            self._baseDamage -= 4
-            self._baseSpeed += 0.2
-            self._stats['Permanent']['added_armour'] -= 100
-            self._stats['Permanent']['added_energy_shield'] -= 20
-        elif self._ascendancy == 'Dreadnought':
-            self._baseHealth -= 30
-            self._baseDamage -= 5
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['increased_health'] -= 20
-            self._stats['Permanent']['healing_magnitude'] -= 50
-            self._stats['Permanent']['cold'] -= 15
-            # self._stats['Max_Resistances']['cold'] -= 5
-        elif self._ascendancy == 'Sovereign':
-            self._baseHealth -= 15
-            self._baseDamage -= 4
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['stamina_regen'] -= 5
-            self._stats['Permanent']['holy'] -= 10
-        elif self._ascendancy == 'Harrower':
-            self._baseHealth += 15
-            self._baseDamage -= 6
-            self._baseSpeed -= 0.1
-            self._stats['baseCritChance'] -= 0.05
-            self._stats['baseCritMulti'] -= 0.25
-        elif self._ascendancy == 'Butcher':
-            self._baseHealth -= 10
-            self._damage -= 6
-            self._baseSpeed -= 0.15
-            self._stats['baseCritChance'] -= 0.05
-            self._stats['baseCritMulti'] += 0.25
-            self._stats['Permanent']['fire'] += 10
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -397,38 +407,7 @@ class Marauder(Player):
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = MARAUDER_DESCRIPTIONS[ascendancy]
-        if ascendancy == 'Colossus':
-            self._baseHealth -= 15
-            self._baseDamage += 4
-            self._baseSpeed -= 0.2
-            self._stats['Permanent']['added_armour'] += 100
-            self._stats['Permanent']['added_energy_shield'] += 20
-        elif ascendancy == 'Dreadnought':
-            self._baseHealth += 30
-            self._baseDamage -= 5
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['increased_health'] += 20
-            self._stats['Permanent']['healing_magnitude'] += 50
-            self._stats['Permanent']['cold'] += 15
-            # self._stats['Max_Resistances']['cold'] += 5
-        elif ascendancy == 'Sovereign':
-            self._baseHealth += 15
-            self._baseDamage += 4
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['stamina_regen'] += 5
-            self._stats['Permanent']['holy'] += 10
-        elif ascendancy == 'Harrower':
-            self._baseHealth -= 15
-            self._baseDamage += 6
-            self._baseSpeed += 0.1
-            self._stats['baseCritChance'] += 0.05
-            self._stats['baseCritMulti'] += 0.25
-        elif ascendancy == 'Butcher':
-            self._baseHealth += 10
-            self._damage += 6
-            self._baseSpeed += 0.15
-            self._stats['baseCritChance'] += 0.05
-            self._stats['baseCritMulti'] -= 0.25
-            self._stats['Permanent']['fire'] -= 10
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
+        self._recalculateStats()
 
 ...

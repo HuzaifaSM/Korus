@@ -109,7 +109,7 @@ class CombatUnit:
                 multiplier *= (1 - amount)
 
         multiplier = round(multiplier, 2)
-        self.initiative = round(self._baseInitiative)
+        self.initiative = round(self._baseInitiative * multiplier)
 
     def getDamageModifier(self) -> float:
         modifier = 1.0
@@ -351,7 +351,8 @@ class CombatManager:
         if damageType != 'true': # true damage ignores all defenses
             if damageType != 'psychic': # psychic ignores evasion
                 effectiveEvasion = target.getEffectiveEvasion(damageType, combatUnit)
-                didEvade = combatUnit.checkEvade(effectiveEvasion)
+                rollCount = max(1, target.getEvasionRollCount(damageType))
+                didEvade = any(combatUnit.checkEvade(effectiveEvasion) for _ in range(rollCount))
 
                 if didEvade:
                     target.onEvade(self)
@@ -481,10 +482,12 @@ class CombatManager:
                     attacker.onMultihitActivated()
                     console.print(f"[multihit]Multihit activated! Attacking {attacks} times.[/multihit]")
 
-                finalDamage = damage * (0.75 if attacks > 1 else 1)
+                starterDamage = damage * (0.75 if attacks > 1 else 1)
 
                 for _ in range(attacks):
                     for t in targets:
+                        finalDamage = starterDamage
+
                         mechanics: List[StatusEffect] = [deepcopy(m) for m in effectsBeforeTargeting]
                         mechanics.extend(resolveEffects(targetEffectsDict))
 
@@ -497,7 +500,7 @@ class CombatManager:
                         if targetUnit:
                             vulnMult = targetUnit.getVulnerabilityModifier()
                             if vulnMult > 1.0:
-                                finalDamage = int(damage * vulnMult)
+                                finalDamage = int(finalDamage * vulnMult)
                                 console.print(f"  [debuff]- {t._name} is vulnerable (+{vulnMult*100:.0f}% Damage Taken). Damage increased to {finalDamage}[/debuff]")
 
                         if len(targets) > 1:
@@ -544,23 +547,23 @@ class CombatManager:
 
                             attacker.onAfterAttack(t, targetUnit, finalDamage, self)
 
-                    if not evaded:
-                        if mechanics and not t._isDead:
-                            for mechanic in mechanics:
-                                mechanic = t.onStatusApplied(mechanic, attacker)
-                                if mechanic:
-                                    self.addStatusEffect(t, mechanic, attacker)
-                                    if mechanic.effectType == 'cc':
-                                        t.onCC(attacker, self)
-                        death = self.checkDead(t)
-                        if death:
-                            killData = {'damage': finalDamage, 'damageType': damageType, 'mechanics': mechanics}
-                            attacker.onKill(t, killData, self)
-                        else:
-                            attacker.onExecuteCheck(t, self) # check for any executes (e.g. blood spike or ascendancy-specific)
+                        if not evaded:
+                            if mechanics and not t._isDead:
+                                for mechanic in mechanics:
+                                    mechanic = t.onStatusApplied(mechanic, attacker)
+                                    if mechanic:
+                                        self.addStatusEffect(t, mechanic, attacker)
+                                        if mechanic.effectType == 'cc':
+                                            t.onCC(attacker, self)
+                            death = self.checkDead(t)
+                            if death:
+                                killData = {'damage': finalDamage, 'damageType': damageType, 'mechanics': mechanics}
+                                attacker.onKill(t, killData, self)
+                            else:
+                                attacker.onExecuteCheck(t, self) # check for any executes (e.g. blood spike or ascendancy-specific)
 
-                        if t._isDead:
-                            break # prevent multihit bugs
+                            if t._isDead:
+                                break # prevent multihit bugs
 
             return True
 

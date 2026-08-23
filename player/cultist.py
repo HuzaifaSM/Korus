@@ -86,7 +86,7 @@ class Cultist(Player):
         self.volatility = 0
         self.maxVolatility = 100
 
-    def _serialise(self):
+    def serialise(self):
         temp = super().serialise()
         temp['insanity'] = self.insanity
         temp['minInsanity'] = self.minInsanity
@@ -473,52 +473,64 @@ class Cultist(Player):
 
         super().onCombatEnd()
 
+    ASCENDANCY_DELTAS = {
+        'Umbralist': {
+            '_baseHealth': 20,
+            '_baseDamage': -4,
+            '_baseSpeed': -0.1,
+            'minInsanity': -20,
+            'maxInsanity': -15,
+            '_stats.Permanent.chaos': 10,
+        },
+        'Harbinger': {
+            '_baseHealth': -10,
+            '_baseDamage': 6,
+            '_baseSpeed': 0.05,
+            'minInsanity': 10,
+            'maxInsanity': 10,
+            '_stats.Permanent.dark': 10,
+            '_stats.Permanent.ailment_avoidance': 15,
+        },
+        'Doomsayer': {
+            '_baseHealth': 15,
+            '_baseDamage': -4,
+            '_baseSpeed': -0.1,
+            '_stats.baseCritMulti': 0.25,
+        },
+        'Ritualist': {
+            '_baseHealth': -10,
+            '_baseDamage': 6,
+            '_baseSpeed': 0.1,
+            'minInsanity': -15,
+            'maxInsanity': 15,
+            '_stats.Permanent.lifesteal': 5,
+            '_stats.Permanent.physical': -10,
+            '_stats.Permanent.dark': 10,
+        },
+        'Anarchist': {
+            '_baseHealth': -15,
+            '_baseDamage': -6,
+            '_baseSpeed': 0.1,
+            'minInsanity': 10,
+            'maxInsanity': 20,
+            '_stats.Permanent.chaos': 15,
+            '_stats.baseCritChance': 0.05,
+            '_stats.baseCritMulti': 0.25,
+        },
+        'Desecrator': {
+            '_baseHealth': -10,
+            '_baseDamage': 6,
+            '_baseSpeed': -0.05,
+            '_stats.Permanent.otherworld': -5,
+            '_stats.Permanent.dark': 15,
+            '_stats.Permanent.chaos': 10,
+        },
+    }
+
     def _removeOldAscendancy(self) -> bool:
-        if self._ascendancy == 'Umbralist':
-            self._baseHealth -= 20
-            self._baseDamage += 4
-            self._baseSpeed += 0.1
-            self.minInsanity += 20
-            self.maxInsanity += 15
-            self._stats['Permanent']['chaos'] -= 10
-        elif self._ascendancy == 'Harbinger':
-            self._baseHealth += 10
-            self._baseDamage -= 6
-            self._baseSpeed -= 0.05
-            self.minInsanity -= 10
-            self.maxInsanity -= 10
-            self._stats['Permanent']['dark'] -= 10
-            self._stats['Permanent']['ailment_avoidance'] -= 15
-        elif self._ascendancy == 'Doomsayer':
-            self._baseHealth -= 15
-            self._baseDamage += 4
-            self._baseSpeed += 0.1
-            self._stats['baseCritMulti'] -= 0.25
-        elif self._ascendancy == 'Ritualist':
-            self._baseHealth += 10
-            self._baseDamage -= 6
-            self._baseSpeed -= 0.1
-            self.minInsanity += 15
-            self.maxInsanity -= 15
-            self._stats['Permanent']['lifesteal'] -= 5
-            self._stats['Permanent']['physical'] += 10
-            self._stats['Permanent']['dark'] -= 10
-        elif self._ascendancy == 'Anarchist':
-            self._baseHealth += 15
-            self._baseDamage += 6
-            self._baseSpeed -= 0.1
-            self.minInsanity -= 10
-            self.maxInsanity -= 20
-            self._stats['Permanent']['chaos'] -= 15
-            self._stats['baseCritChance'] -= 0.05
-            self._stats['baseCritMulti'] -= 0.25
-        elif self._ascendancy == 'Desecrator':
-            self._baseHealth += 10
-            self._baseDamage -= 6
-            self._baseSpeed += 0.05
-            self._stats['Permanent']['otherworld'] += 5
-            self._stats['Permanent']['dark'] -= 15
-            self._stats['Permanent']['chaos'] -= 10
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -526,50 +538,6 @@ class Cultist(Player):
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = CULTIST_DESCRIPTIONS[ascendancy]
-        if ascendancy == 'Umbralist':
-            self._baseHealth += 20
-            self._baseDamage -= 4
-            self._baseSpeed -= 0.1
-            self.minInsanity -= 20
-            self.maxInsanity -= 15
-            self._stats['Permanent']['chaos'] += 10
-        elif ascendancy == 'Harbinger':
-            self._baseHealth -= 10
-            self._baseDamage += 6
-            self._baseSpeed += 0.05
-            self.minInsanity += 10
-            self.maxInsanity += 10
-            self._stats['Permanent']['dark'] += 10
-            self._stats['Permanent']['ailment_avoidance'] += 15
-        elif ascendancy == 'Doomsayer':
-            self._baseHealth += 15
-            self._baseDamage -= 4
-            self._baseSpeed -= 0.1
-            self._stats['baseCritMulti'] += 0.25
-        elif ascendancy == 'Ritualist':
-            self._baseHealth -= 10
-            self._baseDamage += 6
-            self._baseSpeed += 0.1
-            self.minInsanity -= 15
-            self.maxInsanity += 15
-            self._stats['Permanent']['lifesteal'] += 5
-            self._stats['Permanent']['physical'] -= 10
-            self._stats['Permanent']['dark'] += 10
-        elif ascendancy == 'Anarchist':
-            self._baseHealth -= 15
-            self._baseDamage -= 6
-            self._baseSpeed += 0.1
-            self.minInsanity += 10
-            self.maxInsanity += 20
-            self._stats['Permanent']['chaos'] += 15
-            self._stats['baseCritChance'] += 0.05
-            self._stats['baseCritMulti'] += 0.25
-        elif ascendancy == 'Desecrator':
-            self._baseHealth -= 10
-            self._baseDamage += 6
-            self._baseSpeed -= 0.05
-            self._stats['Permanent']['otherworld'] -= 5
-            self._stats['Permanent']['dark'] += 15
-            self._stats['Permanent']['chaos'] += 10
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
 

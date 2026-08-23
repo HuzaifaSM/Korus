@@ -22,9 +22,6 @@ _HERE = dirname(abspath(__file__))
 _KORUS_ROOT = dirname(_HERE)
 KORUS_SAVE_EXE = join(_KORUS_ROOT, "tools", "korus_save.exe")
 
-print(f"[DEBUG] EXE path: {KORUS_SAVE_EXE}")
-print(f"[DEBUG] EXE exists: {exists(KORUS_SAVE_EXE)}")
-
 def ensure_directories():
     makedirs(PATH, exist_ok=True)
     makedirs(LOGS, exist_ok=True)
@@ -211,7 +208,7 @@ def undoLastOperation() -> bool:
 # save
 
 def displayExistingSaves() -> list:
-    from main import Difficulty
+    from .difficulty import Difficulty
     clearScreen()
     printHeader("Existing Saves")
     saves = []

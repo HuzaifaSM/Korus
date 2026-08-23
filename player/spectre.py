@@ -81,7 +81,7 @@ class Spectre(Player):
             mult = 2 if len(combatManager.allAlive) > 1 else 1
         else:
             mult = 1
-        for _ in mult:
+        for _ in range(mult):
             if self.vengeance < self.maxVengeance:
                 self.vengeance += 1
                 self._stats['Temporary']['crit_chance'] += 0.01
@@ -153,7 +153,7 @@ class Spectre(Player):
     def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
         if self._ascendancy == 'Phantasm' and damageType == 'ethereal':
             if random.random() < (0.25 + (0.05 * self.vengeance)):
-                phased = Effects.createCustom(name='phased', effectType='special', duration=3, speedBonus=-0.2, damageMultiplier=0.9)
+                phased = Effects.createCustom(name='phased', effectType='special', turns=3, speedBonus=-0.2, damageMultiplier=0.9)
                 for enemy in targets:
                     combatManager.addStatusEffect(enemy, phased, self)
                     console.print(f"  [ethereal]Phantasm: Applied Phased to {enemy._name}![/ethereal]")
@@ -402,41 +402,53 @@ class Spectre(Player):
 
         super().onCombatEnd()
 
+    ASCENDANCY_DELTAS = {
+        'Wraith': {
+            '_baseHealth': 10,
+            '_baseDamage': 4,
+            '_baseSpeed': -0.05,
+            '_stats.Permanent.ethereal': 10,
+        },
+        'Reaper': {
+            '_baseHealth': -15,
+            '_baseDamage': -4,
+            '_baseSpeed': 0.05,
+            '_stats.baseCritChance': 0.02,
+            '_stats.Permanent.added_armour': 100,
+        },
+        'Phantasm': {
+            '_baseHealth': 20,
+            '_baseDamage': 6,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.stun_avoidance': -10,
+            '_stats.baseCritMulti': 0.25,
+        },
+        'Revenant': {
+            '_baseHealth': -10,
+            '_baseDamage': 5,
+            '_baseSpeed': 0.1,
+            '_stats.Permanent.healing_magnitude': 30,
+            '_stats.Permanent.physical': -10,
+        },
+        'Lich': {
+            '_baseHealth': -25,
+            '_baseDamage': -4,
+            '_baseSpeed': 0.1,
+            '_stats.baseCritChance': 0.05,
+            '_stats.Permanent.added_energy_shield': 50,
+            '_stats.Permanent.increased_energy_shield': 10,
+        },
+    }
+
     def _removeOldAscendancy(self) -> bool:
         self.maxVengeance = 15
         if self._ascendancy == 'Wraith':
-            self._baseHealth -= 10
-            self._baseDamage -= 4
-            self._baseSpeed += 0.05
             self.ghostlyAmount = 0.1
-            self._stats['Permanent']['ethereal'] -= 10
-        elif self._ascendancy == 'Reaper':
-            self._baseHealth += 15
-            self._baseDamage += 4
-            self._baseSpeed -= 0.05
-            self._stats['baseCritChance'] -= 0.02
-            self._stats['Permanent']['added_armour'] -= 100
         elif self._ascendancy == 'Phantasm':
-            self._baseHealth -= 20
-            self._baseDamage -= 6
-            self._baseSpeed += 0.1
             self.ghostlyAmount = 0.1
-            self.maxVengeance = 20
-            self._stats['Permanent']['stun_avoidance'] += 10
-            self._stats['baseCritMulti'] -= 0.25
-        elif self._ascendancy == 'Revenant':
-            self._baseHealth += 10
-            self._baseDamage -= 5
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['healing_magnitude'] -= 30
-            self._stats['Permanent']['physical'] += 10
-        elif self._ascendancy == 'Lich':
-            self._baseHealth += 25
-            self._baseDamage += 4
-            self._baseSpeed -= 0.1
-            self._stats['baseCritChance'] -= 0.05
-            self._stats['Permanent']['added_energy_shield'] -= 50
-            self._stats['Permanent']['increased_energy_shield'] -= 10
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -444,37 +456,10 @@ class Spectre(Player):
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = SPECTRE_DESCRIPTIONS[ascendancy]
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         if ascendancy == 'Wraith':
-            self._baseHealth += 10
-            self._baseDamage += 4
-            self._baseSpeed -= 0.05
             self.ghostlyAmount = 0.2
             self.maxVengeance = 5
-            self._stats['Permanent']['ethereal'] += 10
-        elif ascendancy == 'Reaper':
-            self._baseHealth -= 15
-            self._baseDamage -= 4
-            self._baseSpeed += 0.05
-            self._stats['baseCritChance'] += 0.02
-            self._stats['Permanent']['added_armour'] += 100
         elif ascendancy == 'Phantasm':
-            self._baseHealth += 20
-            self._baseDamage += 6
-            self._baseSpeed -= 0.1
             self.ghostlyAmount = 0.05
-            self._stats['Permanent']['stun_avoidance'] -= 10
-            self._stats['baseCritMulti'] += 0.25
-        elif ascendancy == 'Revenant':
-            self._baseHealth -= 10
-            self._baseDamage += 5
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['healing_magnitude'] += 30
-            self._stats['Permanent']['physical'] -= 10
-        elif ascendancy == 'Lich':
-            self._baseHealth -= 25
-            self._baseDamage -= 4
-            self._baseSpeed += 0.1
-            self._stats['baseCritChance'] += 0.05
-            self._stats['Permanent']['added_energy_shield'] += 50
-            self._stats['Permanent']['increased_energy_shield'] += 10
         self._recalculateStats()

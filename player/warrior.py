@@ -5,7 +5,7 @@ import random
 
 WARRIOR_DESCRIPTIONS = {
     "Warrior": "[class_warrior]A proud and tenacious combatant, emboldened by the thrill of battle.[/class_warrior]\n"
-        "- +3 Damage dealt per Rage. +1 Rage per 6 damage dealt. +1 Rage per 10 damage taken. +2 HP per leftover Rage at the end of combat.\n"
+        "- +3 Damage dealt per Rage. Gain Rage based on Damage Dealt when attacking. Gain Rage based on Damage Taken when being hit. +2 HP per leftover Rage at the end of combat.\n"
         "- Dealing Fire damage grants +1 Rage. Taking Fire damage increases Rage gain by 10%.\n"
         "[bold]Starting Stats:[/bold] 50 Health | 4 Damage | 5% Crit Chance | 200% Crit Damage | Fire Damage | 0.85 Speed | Max 50 Rage | +1 Rage on Level Up.",
     #ascendancies
@@ -77,7 +77,7 @@ class Warrior(Player):
 
         return baseStr
 
-    def _serialise(self):
+    def serialise(self):
         temp = super().serialise()
         temp['maxRage'] = self._maxRage
         temp['rageGeneration'] = self.rageGeneration
@@ -203,7 +203,7 @@ class Warrior(Player):
 
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
-        rageGain = damageDealt // 6
+        rageGain = damageDealt // (6 * (1 + self._level // 10))
 
         if self._ascendancy == 'Warlord':
             rageGain = int(rageGain * 1.2)
@@ -252,7 +252,7 @@ class Warrior(Player):
 
     def onHit(self, damageTaken, damageType, isCrit, attacker, combatManager):
         damageTaken, damageType = super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
-        rageGain = max(0, damageTaken // 10)
+        rageGain = max(0, damageTaken // (10 * (1 + self._level // 12)))
         if damageType == 'fire':
             rageGain = int(rageGain * 1.1)
 
@@ -357,67 +357,54 @@ class Warrior(Player):
         super()._levelUp()
         self._maxRage += 1
 
+    ASCENDANCY_DELTAS = {
+        'Warlord': {
+            '_baseHealth': 10,
+            '_baseDamage': 5,
+            '_baseSpeed': -0.05,
+        },
+        'Juggernaut': {
+            '_baseHealth': 15,
+            '_baseDamage': -4,
+            '_baseSpeed': -0.05,
+            '_stats.Permanent.stun_avoidance': 50,
+        },
+        'Annihilist': {
+            '_baseHealth': -20,
+            '_baseDamage': 6,
+            '_baseSpeed': -0.05,
+            '_stats.baseCritMulti': 0.25,
+        },
+        'Tyrant': {
+            '_baseHealth': -25,
+            '_baseDamage': 8,
+            '_baseSpeed': 0.05,
+            '_stats.baseCritMulti': -0.5,
+            '_stats.Permanent.added_armour': 100,
+        },
+        'Conqueror': {
+            '_baseHealth': 25,
+            '_baseDamage': 4,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.healing_magnitude': 20,
+            '_stats.Permanent.enemy_quantity': 10,
+            '_stats.Permanent.added_armour': 25,
+            '_stats.Permanent.added_evasion': 25,
+        },
+    }
+
     def _removeOldAscendancy(self):
-        if self._ascendancy == 'Warlord':
-            self._baseHealth -= 10
-            self._baseDamage -= 5
-            self._baseSpeed += 0.05
-        elif self._ascendancy == 'Juggernaut':
-            self._baseHealth -= 15
-            self._damage += 4
-            self._baseSpeed += 0.05
-            self._stats['Permanent']['stun_avoidance'] -= 50
-        elif self._ascendancy == 'Annihilist':
-            self._baseHealth += 20
-            self._baseDamage -= 6
-            self._baseSpeed += 0.05
-            self._stats['baseCritMulti'] -= 0.25
-        elif self._ascendancy == 'Tyrant':
-            self._baseHealth += 25
-            self._baseDamage -= 8
-            self._baseSpeed -= 0.05
-            self._stats['baseCritMulti'] += 0.5
-            self._stats['Permanent']['added_armour'] -= 100
-        elif self._ascendancy == 'Conqueror':
-            self._baseHealth -= 25
-            self._baseDamage -= 4
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['healing_magnitude'] -= 20
-            self._stats['Permanent']['enemy_quantity'] -= 10
-            self._stats['Permanent']['added_armour'] -= 25
-            self._stats['Permanent']['added_evasion'] -= 25
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
+        return True
 
     def updateAscendancy(self, ascendancy):
         if not super().updateAscendancy(ascendancy):
             return
         self._ascendancy = ascendancy
         self.ascendancyDescription = WARRIOR_DESCRIPTIONS[ascendancy]
-        if ascendancy == 'Warlord':
-            self._baseHealth += 10
-            self._baseDamage += 5
-            self._baseSpeed -= 0.05
-        elif ascendancy == 'Juggernaut':
-            self._baseHealth += 15
-            self._damage -= 4
-            self._baseSpeed -= 0.05
-            self._stats['Permanent']['stun_avoidance'] += 50
-        elif ascendancy == 'Annihilist':
-            self._baseHealth -= 20
-            self._baseDamage += 6
-            self._baseSpeed -= 0.05
-            self._stats['baseCritMulti'] += 0.25
-        elif ascendancy == 'Tyrant':
-            self._baseHealth -= 25
-            self._baseDamage += 8
-            self._baseSpeed += 0.05
-            self._stats['baseCritMulti'] -= 0.5
-            self._stats['Permanent']['added_armour'] += 100
-        elif ascendancy == 'Conqueror':
-            self._baseHealth += 25
-            self._baseDamage += 4
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['healing_magnitude'] += 20
-            self._stats['Permanent']['enemy_quantity'] += 10
-            self._stats['Permanent']['added_armour'] += 25
-            self._stats['Permanent']['added_evasion'] += 25
-        self._recalculateStats(False)
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
+        self._recalculateStats()
+
+...

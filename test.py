@@ -1,3 +1,6 @@
-from scripts.runeDrops import getRuneObject
+from scripts.items import ItemRarity
 
-print(getRuneObject('growth', 'growth').minItemLevel or 0)
+x = ItemRarity.UNCOMMON
+y = list(ItemRarity)
+a = y[y.index(x)+1]
+print(a)

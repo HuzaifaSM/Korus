@@ -117,7 +117,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
             if doPrint:
                 console.print(f"[asc_empyrean]Gained 20% of Maximum Energy Shield as Mana, +{esAsMana} Mana.")
 
-    def _serialise(self):
+    def serialise(self):
         temp = super().serialise()
         temp['maxMana'] = self._maxMana
         return temp
@@ -366,7 +366,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 if arc60ManaUsed:
                     damageDealt = int(damageDealt * 1.4)
 
-        elif self._ascendancy == 'hierophant':
+        elif self._ascendancy == 'Hierophant':
             if damageType == 'arcane':
                 dGain = (0.15 * self.elementalAdaptations) + (0.1 * self.divineAdaptations)
                 damageDealt = int(damageDealt * (1 + dGain))
@@ -562,35 +562,46 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self.unmakerCritChanceDoubled = False
         super().onCombatEnd()
 
+    ASCENDANCY_DELTAS = {
+        'Calamity': {
+            '_baseHealth': -20,
+            '_baseDamage': 6,
+            '_baseSpeed': 0.15,
+            'manaRegen': 10,
+        },
+        'Arcanist': {
+            '_baseHealth': 20,
+            '_baseDamage': -4,
+            '_baseSpeed': -0.1,
+            'manaCostMultiplier': 0.1,
+        },
+        'Hierophant': {
+            '_baseHealth': 20,
+            '_baseDamage': 4,
+            '_baseSpeed': -0.1,
+            '_stats.Permanent.elemental': 5,
+            '_stats.Permanent.divine': 5,
+        },
+        'Empyrean': {
+            '_baseHealth': 25,
+            '_baseDamage': -4,
+            '_baseSpeed': -0.1,
+            'manaRegen': 5,
+            '_stats.baseCritChance': 0.05,
+            '_stats.Permanent.added_energy_shield': 50,
+        },
+        'Unmaker': {
+            '_baseHealth': -20,
+            '_baseDamage': 5,
+            '_baseSpeed': 0.1,
+            '_stats.baseCritMulti': 0.25,
+        },
+    }
+
     def _removeOldAscendancy(self):
-        if self._ascendancy == 'Calamity':
-            self._baseHealth += 20
-            self._baseDamage -= 6
-            self._baseSpeed -= 0.15
-            self.manaRegen -= 10
-        elif self._ascendancy == 'Arcanist':
-            self._baseHealth -= 20
-            self._baseDamage += 4
-            self._baseSpeed += 0.1
-            self.manaCostMultiplier -= 0.1
-        elif self._ascendancy == 'Hierophant':
-            self._baseHealth -= 20
-            self._baseDamage -= 4
-            self._baseSpeed += 0.1
-            self._stats['Permanent']['elemental'] -= 5
-            self._stats['Permanent']['divine'] -= 5
-        elif self._ascendancy == 'Empyrean':
-            self._baseHealth -= 25
-            self._baseDamage += 4
-            self._baseSpeed += 0.1
-            self.manaRegen -= 5
-            self._stats['baseCritChance'] -= 0.05
-            self._stats['Permanent']['added_energy_shield'] -= 50
-        elif self._ascendancy == 'Unmaker':
-            self._baseHealth += 20
-            self._baseDamage -= 5
-            self._baseSpeed -= 0.1
-            self._stats['baseCritMulti'] -= 0.25
+        delta = self.ASCENDANCY_DELTAS.get(self._ascendancy)
+        if delta:
+            self._applyStatDelta(delta, sign=-1)
         return True
 
     def updateAscendancy(self, ascendancy):
@@ -599,33 +610,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self._recalculateStats(False)
         self._ascendancy = ascendancy
         self.ascendancyDescription = MAGE_DESCRIPTIONS[ascendancy]
-        if ascendancy == 'Calamity':
-            self._baseHealth -= 20
-            self._baseDamage + 6
-            self._baseSpeed += 0.15
-            self.manaRegen += 10
-        elif ascendancy == 'Arcanist':
-            self._baseHealth += 20
-            self._baseDamage -= 4
-            self._baseSpeed -= 0.1
-            self.manaCostMultiplier += 0.1
-        elif ascendancy == 'Hierophant':
-            self._baseHealth += 20
-            self._baseDamage += 4
-            self._baseSpeed -= 0.1
-            self._stats['Permanent']['elemental'] += 5
-            self._stats['Permanent']['divine'] += 5
-        elif ascendancy == 'Empyrean':
-            self._baseHealth += 25
-            self._baseDamage -= 4
-            self._baseSpeed -= 0.1
-            self.manaRegen += 5
-            self._stats['baseCritChance'] += 0.05
-            self._stats['Permanent']['added_energy_shield'] += 50
-        elif ascendancy == 'Unmaker':
-            self._baseHealth -= 20
-            self._baseDamage += 5
-            self._baseSpeed += 0.1
-            self._stats['baseCritMulti'] += 0.25
+        self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
+        self._recalculateStats()
 
 ...

@@ -27,8 +27,6 @@ NEW AFFIXES:
     - warrior
 
 OTHER STUFF:
-  - all ascendancy descriptions should have a 'lore line' using mythic styling to give a 'lore reason' for the conversion from base class
-    > finished: cultist, warrior, wretch, marauder, tempest, paladin, spectre, wanderer, mage
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
   - add foresight rune
     > foresight rune might need a complex system:
@@ -44,16 +42,7 @@ OTHER STUFF:
   - equipment equipping should be split between item categories
 
 CURRENTLY WORKING ON: (main order of implementation)
-  - rework fighter class
-    > new mechanic uses stances: offensive and defensive
-      - offensive deals more damage but takes more damage, defensive is reverse
-      - ascendancies alter stances or add new opens
   - rework druid
-
-  - in the forge:
-    > move next/previous rune page options into the actual crafting menu
-    > add a new option that uses fuel + blueprints to combine x amount of items of the same rarity into 1 item of a higher rarity
-      - limited by forge level: 1 = uncommon, 2 = rare, 3 = epic, 4 = legendary, 5 = 5x legendary for mythic
 
   - ascendancy abilities:
     > ascendancies add 2 abilities each, with 2 evolutions, and edit up to 2 existing base class abilities
@@ -84,9 +73,11 @@ CURRENTLY WORKING ON: (main order of implementation)
       - separated into 'general keywords' and 'class specific'
        > class specific should probably only show keywords related to the player's current class + all ascendancies
        > should also be an 'all class mechanics' section that lets players discover/read everything else
-    > tutorial groundwork
+    > tutorial
       - accessible from start menu screen
-        > scripted playthrough which explains everything + mechanics
+        > scripted playthrough which explains everything:
+          - fights, stamina, abilities, status effects, levelling benefits
+          - item drops, resources, crafting, runes
 
   - dungeons
     > better modifiers + more modifiers
@@ -221,15 +212,12 @@ ITEM REWORK/IMPROVEMENTS
     - add a quick sell option when getting an item at the end of combat (simple QoL)
 
 CONSUMABLES REWORK
- - currently, the only consumables are health potions which heal flat amonuts
- - should be re-done into health and stamina potions (mana for mage, just a rename)
- - potions should heal based on max% rather than a flat value
- IF REALLY WANTED:
-  > could add actual 'items'/'gear' as consumables, like things that apply debuffs
-    - e.g. smoke bomb to apply blind, molotov to apply burn, poison dart for poison, throwing knife for bleed, etc.
-    - shouldn't encompass every single debuff, should only be 1-per-combat per debuff
-    - problem becomes: since consumables are free actions, game just becomes: stock consumables, use every turn, then attack
-      > doesn't feel that great in theory
+ - keep them minimal, maybe even remove them as something you craft, just something you own permanently
+ - you have a limited number of uses of them in combat
+ - they heal %max hp rather than flat values
+ - they recharge at the end of combats
+ - OPEN QUESTION: does the recharge-at-end-of-combat also apply inside dungeons/waves, given dungeons are
+   meant to have no healing between fights (see dungeons section) - need to decide if dungeons suspend the recharge
 
 - ENEMY REWORK
   - enemy rarity system
@@ -316,6 +304,7 @@ CONSUMABLES REWORK
       - endgame can begin around level 60-70, makes sense as that would be a lot of character power
     > each infinite challenge should include a variety of:
       -> custom and unique crafting methods
+      -> new affixes only found inside these Challenges, unqiue to each
       -> charater power
       -> engaging mechanics + activities
       -> new items

@@ -123,6 +123,18 @@ class Player(Entity):
         if not weapon or not weapon.damageType:
             self._damageType = self.defaultDamageType
 
+    def _applyStatDelta(self, delta: dict, sign: int = 1):
+        for path, amount in delta.items():
+            parts = path.split('.')
+            target = self
+            for p in parts[:-1]:
+                target = target[p] if isinstance(target, dict) else getattr(target, p)
+            leaf = parts[-1]
+            if isinstance(target, dict):
+                target[leaf] = target.get(leaf, 0) + amount * sign
+            else:
+                setattr(target, leaf, getattr(target, leaf) + amount * sign)
+
     def _removeOldAscendancy(self) -> bool:
         """never run super(), always return true"""
         console.print(f"[warning]No 'removeOldAscendancy()' function for {self.className}")

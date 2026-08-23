@@ -82,7 +82,10 @@ class GreaterValueRandomiserRune(BaseRandomiserRune):
         affixes = self.getValidAffixes(item)
 
         if not affixes:
-            return CraftOutcome.NO_EFFECT
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="No affixes to randomise"
+            )
         
         for affix in affixes:
             v1 = affix.rollValue()
@@ -92,7 +95,10 @@ class GreaterValueRandomiserRune(BaseRandomiserRune):
         item.update()
         item.addEntropy(self.successEntropy)
 
-        return CraftOutcome.SUCCESS
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message="Successfully randomised all affix values"
+        )
         
 class PerfectValueRandomiserRune(BaseRandomiserRune):
     name = '[yellow bold underline]Perfect Value Randomiser Rune[/yellow bold underline]'
@@ -108,7 +114,10 @@ class PerfectValueRandomiserRune(BaseRandomiserRune):
         affixes = self.getValidAffixes(item)
 
         if not affixes:
-            return CraftOutcome.NO_EFFECT
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="No affixes to randomise"
+            )
         
         for affix in affixes:
             values = []
@@ -119,7 +128,10 @@ class PerfectValueRandomiserRune(BaseRandomiserRune):
         item.update()
         item.addEntropy(self.successEntropy)
 
-        return CraftOutcome.SUCCESS
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message="Successfully randomised affix values"
+        )
 
 class BaseTierRandomiserRune(BaseRandomiserRune):
     numRolls: int

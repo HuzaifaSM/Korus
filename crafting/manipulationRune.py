@@ -56,9 +56,10 @@ class FusionRune(CraftingItem):
         allFilled = prefixes + suffixes
         if not allFilled:
             return None
+        amount = min(len(allFilled, amount))
         return random.sample(allFilled, k=amount)
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -263,7 +264,7 @@ class BaseConversionRune(CraftingItem):
                     return slot, index
         return None, None
 
-    def apply(self, item):
+    def apply(self, item, player=None):
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -325,7 +326,7 @@ class EquilibriumRune(CraftingItem):
         rune.tierEfficiency = data.get('tierEfficiency', 1.0)
         return rune
 
-    def apply(self, item) -> CraftResult:
+    def apply(self, item, player=None) -> CraftResult:
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -439,8 +440,8 @@ class DeceivingEquilibriumRune(EquilibriumRune):
     tierEfficiency = 1.5
     dropWeight = 15
 
-    def apply(self, item):
-        output = super().apply(item)
+    def apply(self, item, player=None):
+        output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
         
@@ -490,7 +491,7 @@ class SacrificeRune(CraftingItem):
                   if not s.isEmpty and not s.locked]
         return filled
 
-    def apply(self, item):
+    def apply(self, item, player=None):
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,

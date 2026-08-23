@@ -39,6 +39,7 @@ def deserialisePlayer(data: Dict) -> Player:
     if not className or className not in CLASSES:
         printWarning(f"ERROR LOADING SAVE DATA: {className=}")
         pause()
+        return
     else:
         player: Player = CLASSES[className](playerName)
 

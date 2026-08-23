@@ -50,7 +50,8 @@ class BaseErasingRune(CraftingItem):
             )
         
         slots = self.getRemovableSlots(item)
-        if not slots:CraftResult(
+        if not slots:
+            return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item has no removable affixes'
             )
@@ -72,7 +73,7 @@ class BaseErasingRune(CraftingItem):
         message=f'Removed {len(removed)} affixes. Removed:\n{removedStr}'
 
         if len(removed) < self.affixesToRemove or toRemove < self.affixesToRemove:
-            outcome = CraftOutcome.PARTIAL_SUCCESS,
+            outcome = CraftOutcome.PARTIAL_SUCCESS
         else:
             outcome = CraftOutcome.SUCCESS
 

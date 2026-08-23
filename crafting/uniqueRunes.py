@@ -175,7 +175,7 @@ class EchoingRune(CraftingItem):
         item._generateName()
         item.addEntropy(self.successEntropy)
         return CraftResult(
-            outcome=CraftOutcome.NO_EFFECT,
+            outcome=CraftOutcome.SUCCESS,
             message='Echoing Rune successfully applied',
             entropyAdded=self.successEntropy
         )

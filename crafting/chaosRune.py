@@ -45,7 +45,8 @@ class BaseChaosRune(CraftingItem):
             )
             
         filledSlots = self.getFilledSlots(item)
-        if not filledSlots:CraftResult(
+        if not filledSlots:
+            return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item has no modifiers to remove'
             )
@@ -116,7 +117,11 @@ class BaseChaosRune(CraftingItem):
                 entropyAdded=partialEntropy
             )
 
-        return CraftOutcome.NO_EFFECT
+        return CraftResult(
+            outcome=CraftOutcome.PARTIAL_SUCCESS,
+            message=f'Removed {len(removedSlots)} affixes and added {added} affixes',
+            entropyAdded=partialEntropy
+        )
 
 class ChaosRune(BaseChaosRune):
     name = '[purple4]Chaos Rune[/purple4]'

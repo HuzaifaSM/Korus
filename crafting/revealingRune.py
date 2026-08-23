@@ -75,7 +75,7 @@ class BaseRevealingRune(CraftingItem):
             choice = console.input(f'[cyan]Choose Affix (1-{len(options)}):\n>[/cyan] ').strip()
             try:
                 index = int(choice) - 1
-                if 0 <= index <= len(options):
+                if 0 <= index < len(options):
                     return options[index]
                 else:
                     console.print('[red]Invalid Input[/red]')

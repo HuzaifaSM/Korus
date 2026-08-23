@@ -98,11 +98,10 @@ RARITY_SERIALS = {
 
 VALUE_MULTIPLIER = {
     ItemRarity.COMMON: 1,
-    ItemRarity.UNCOMMON: 2,
-    ItemRarity.RARE: 3,
-    ItemRarity.EPIC: 4,
-    ItemRarity.LEGENDARY: 5,
-    ItemRarity.MYTHIC: 10,
+    ItemRarity.UNCOMMON: 1.5,
+    ItemRarity.RARE: 2,
+    ItemRarity.EPIC: 3.5,
+    ItemRarity.LEGENDARY: 4.5,
 }
 
 ENTROPY_RESISTANCE = {
@@ -158,7 +157,7 @@ class Item:
         self.name = name
         self.itemType = itemType
         self.rarity = rarity
-        self.value = value * VALUE_MULTIPLIER[rarity]
+        self.value = value
         self.stackable = stackable
         self.maxStack = maxStack
 
@@ -166,8 +165,8 @@ class Item:
         return self.__str__()
 
     def __str__(self):
-        return f"{self.name} ({self.rarity.value})"
-    
+        return f"[rarity]{self.name}[/rarity] [dim]Max Stack:[/dim] {self.maxStack}"
+
     def serialise(self):
         return {
             "name": self.name,
@@ -203,12 +202,7 @@ class Equipment(Item):
 
         itemType = ItemType.EQUIPMENT
 
-        if not hasattr(self, 'value'):
-            value = 500 * RARITY_VALUES[rarity.value]
-        else:
-            value = self.value
-
-        super().__init__("", itemType, rarity, value)
+        super().__init__("", itemType, rarity)
         self.slot = slot  # weapon, head, chest, legs, feet, ring, amulet
         self.prefixSlots = [AffixSlot('prefix') for _ in range(numPrefixes)]
         for slot, affix in zip(self.prefixSlots, prefixes or []):
@@ -393,6 +387,15 @@ class Equipment(Item):
         e.durability = data.get('durability', e.maxDurability)
 
         return e
+
+    def calculateValue(self) -> int:
+        value = 100 + self.level
+        tiers = [a.tier for a in (self.prefixes + self.suffixes)]
+        value += sum(tiers) * 75
+        value += (len(self.prefixes) + len(self.suffixes)) * random.randint(30, 70)
+        value = int(value * RARITY_VALUES[self.rarity.value])
+
+        self.value = value
 
     def __rich__(self):
         return self.__str__()
@@ -619,6 +622,7 @@ class Equipment(Item):
         self.calculateMaxDurability()
         self.calculateEntropyResistance()
         self.calculateTotalEntropy()
+        self.calculateValue()
 
     def recalculateDefenses(self):
         flat = 0

@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+data/saves/*.korus
+data/saves/Death Log.json
+data/saves/.backup/
+data/logs/
+native/*/target/
+data/everything old/
+data/watch/
