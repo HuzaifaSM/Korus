@@ -30,6 +30,10 @@ class Player(Entity):
         self._maxLevel = data.get('maxLevel', 100)
         self.gainClassAbilities()
 
+    def bypassesFormRequirement(self) -> bool:
+        """Druid/Confluence: once fused, Form no longer gates which abilities can be used."""
+        return False
+
     def death(self):
         console.print("\n[bold red]" + "="*25 + "[/bold red]")
         console.print("[bold red]YOU HAVE DIED[/bold red]")
@@ -80,13 +84,13 @@ class Player(Entity):
             return
 
         treesByName = CLASS_ABILITIES[self.className].get('base', {})
-        ascendancyOverlays = CLASS_ABILITIES[self.className].get(self._ascendancy, {})
+        ascendancyData = CLASS_ABILITIES[self.className].get(self._ascendancy, {})
+        alterations = ascendancyData.get('alterations', {})
+        ascendancyTrees = ascendancyData.get('abilities', {})
 
-        for name, tree in treesByName.items():
-            overlay = ascendancyOverlays.get(name)
-            resolved = tree.getCurrentAbility(self._level, overlay)
+        def _learn(name, resolved):
             if not resolved:
-                continue
+                return
 
             isNew = name not in self._abilities
             self._abilities[name] = resolved
@@ -108,6 +112,19 @@ class Player(Entity):
                     console.print(f"[buff]- {line}[/buff]")
                 console.print(f"[bold]{'='*50}[/bold]\n")
                 pause()
+
+        for name, tree in treesByName.items():
+            _learn(name, tree.getCurrentAbility(self._level, alterations.get(name)))
+
+        for name, tree in ascendancyTrees.items():
+            _learn(name, tree.getCurrentAbility(self._level, None))
+
+    def _forgetAscendancyAbilities(self):
+        for ascendancyName, ascendancyData in CLASS_ABILITIES.get(self.className, {}).items():
+            if ascendancyName == 'base':
+                continue
+            for abilityName in ascendancyData.get('abilities', {}):
+                self.removeAbility(abilityName, doPrint=False)
 
     def onCombatEnd(self):
         for a in self._abilities.values():
@@ -144,6 +161,7 @@ class Player(Entity):
         """always run super() before updating"""
         if self._ascendancy is not None:
             if self._removeOldAscendancy():
+                self._forgetAscendancyAbilities()
                 return True
             console.print("[warning]Unable to change ascendancy at this time[/warning]")
             pause()

@@ -4,8 +4,8 @@ from scripts.styles import (
     console, pause, printWarning, clearScreen
 )
 
-from player.classes import CLASSES, DESCRIPTIONS
-from player.base import Player
+from .player_classes.classes import CLASSES, DESCRIPTIONS
+from .player_classes.base import Player
 
 def selectClass(name: str, quick: bool = False) -> Player:
     if quick:

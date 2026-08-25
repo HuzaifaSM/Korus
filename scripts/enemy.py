@@ -29,7 +29,7 @@ DAMAGE_TYPES = ['physical', 'fire', 'cold', 'lightning', 'dark', 'holy', 'arcane
 
 class Enemy(Entity):
     def __init__(self, name: str, level: int = 1, health: int = 20, damage: int = 3, critChance: float = 0.05, critMulti: float = 1.5, damageType: str = "physical",
-                 speed: float = 0.8, lootTable: LootTable = None):
+                 speed: float = 0.8, lootTable: LootTable = None, rarityModifier: float = 1.0, quantityModifier: float = 1.0):
         scaledHealth = health + (level - 1) * random.randint(2, 5)
         scaledDamage = round(damage + ((level - 1) / 2.5) * random.uniform(1, 2.2))
         scaledSpeed = round(speed + ((level + random.randint(-10, 10)) / 100), 2)
@@ -41,6 +41,9 @@ class Enemy(Entity):
         self._level = level
         self._experienceReward = max(level * 10, level * (level // 3 + random.randint(5, 15 + level // 5)))
         self._lootTable = lootTable or LootTable()
+
+        self.rarityModifer = rarityModifier
+        self.quantityModifier = quantityModifier
 
         self.ai = EnemyAI(self)
 
@@ -77,17 +80,36 @@ class Enemy(Entity):
             self._stats['Temporary']['speed'] -= 0.02
             console.print(f"[asc_necrose]{self._name} has gained 1 Necrosis![/asc_necrose]")
 
+    def removeNecrosis(self, stacks: int = None) -> int:
+        """Removes up to `stacks` Necrosis (all of it if omitted), reverting its speed debuff. Returns stacks removed."""
+        stacks = self.necrosis if stacks is None else min(stacks, self.necrosis)
+        if stacks > 0:
+            self.necrosis -= stacks
+            self._stats['Temporary']['speed'] += 0.02 * stacks
+        return stacks
+
     def applyCrush(self):
         if self.crush < 3:
             self.crush += 1
             self._stats['Temporary']['increased_armour'] -= 15
             console.print(f"[asc_colossus]{self._name} has gained 1 Crush![/asc_colossus]")
 
+    def removeCrush(self, stacks: int = None) -> int:
+        """Removes up to `stacks` Crush (all of it if omitted), reverting its armour debuff. Returns stacks removed."""
+        stacks = self.crush if stacks is None else min(stacks, self.crush)
+        if stacks > 0:
+            self.crush -= stacks
+            self._stats['Temporary']['increased_armour'] += 15 * stacks
+        return stacks
+
     def applyShame(self):
         if self.shameTurns == 0:
             self._stats['Temporary']['speed'] -= 0.1
         console.print(f"[asc_sovereign]{self._name} has been afflicted with 2 turns of Shame![/asc_sovereign]")
         self.shameTurns = 2
+
+    def unmark(self):
+        self.marked = False
 
     def applyCarved(self):
         if self.carved < 3:
@@ -201,6 +223,7 @@ class Enemy(Entity):
     def _generateEquipment(self):
         slots = ['head', 'chest', 'legs', 'feet', 'weapon', 'amulet', 'ring']
         maxEquipment = max(1, min(4, self._level // 15)) if self._level < 100 else 5
+        maxEquipment = min(len(slots), max(1, round(maxEquipment * self.quantityModifier)))
         numEquipped = 0
         dropChance = {
             ItemRarity.COMMON: 0.3 + round(self._level / 500, 4),
@@ -220,7 +243,7 @@ class Enemy(Entity):
                 equipChance = min(0.75, 0.15 + (self._level / 40))
 
                 if random.random() < equipChance:
-                    rarity = rollRarity(self._level) # rarity bonus based on level
+                    rarity = rollRarity(self._level, self.rarityModifer) # rarity bonus based on level
                     equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
                     self.equip(equipment, False)
 
@@ -230,29 +253,36 @@ class Enemy(Entity):
 
         elif self._level > 10: # rules for enemies level 11-20: guaranteed 1-2 equipment pieces, unable to roll legendary equipment
             numEq = random.choices([1, 2], weights=[2, 1], k=1)[0]
+            numEq = min(len(slots), max(1, round(numEq * self.quantityModifier)))
             for _ in range(numEq):
                 slot = random.choice(slots)
                 while self._equipment[slot] is not None:
                     slot = random.choice(slots)
                 rarity = None
                 while rarity in [None, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]:
-                    rarity = rollRarity(self._level)
+                    rarity = rollRarity(self._level, self.rarityModifer)
                 equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
                 self.equip(equipment, False)
 
                 finalDropChance = min(0.9, dropChance.get(rarity, 0.3) + 0.25)
                 self._lootTable.addEquipment(equipment, finalDropChance)
 
-        else: # rules for enemies level 1-10: guaranteed 1 equipment piece. unable to roll epic/legendary equipment, 50% chance to reroll rares
-            slot = random.choice(slots)
-            rarity = None
-            while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC] or (rarity == ItemRarity.RARE and random.random() < 0.5):
-                rarity = rollRarity(self._level)
-            equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
-            self.equip(equipment, False)
+        else: # rules for enemies level 1-10: guaranteed 1 equipment piece (quantity bonus rolls a chance at a 2nd). unable to roll epic/legendary equipment, 50% chance to reroll rares
+            numEq = 1
+            if self.quantityModifier > 1.0 and random.random() < min(0.9, self.quantityModifier - 1.0):
+                numEq = 2
+            for _ in range(numEq):
+                slot = random.choice(slots)
+                while self._equipment[slot] is not None:
+                    slot = random.choice(slots)
+                rarity = None
+                while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC] or (rarity == ItemRarity.RARE and random.random() < 0.5):
+                    rarity = rollRarity(self._level, self.rarityModifer)
+                equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity)
+                self.equip(equipment, False)
 
-            finalDropChance = min(0.8, dropChance.get(rarity, 0.3) + 0.3)
-            self._lootTable.addEquipment(equipment, finalDropChance)
+                finalDropChance = min(0.8, dropChance.get(rarity, 0.3) + 0.3)
+                self._lootTable.addEquipment(equipment, finalDropChance)
 
         self._recalculateStats(False)
 
@@ -301,7 +331,7 @@ class Enemy(Entity):
             dropChance = min(0.8, dropChance + (self._level / 500))
             self._lootTable.addResource(resourceName, baseAmount, maxAmount, dropChance)
 
-        runeDrops = rollRuneDrops(self._level)
+        runeDrops = rollRuneDrops(self._level, quantityModifier=self.quantityModifier)
         for category, runeType in runeDrops:
             dropChance = min(0.85, 0.5 + (self._level / 150))
             self._lootTable.addRune(category, runeType, dropChance)
@@ -325,11 +355,9 @@ class Enemy(Entity):
             return key
         return None
 
-def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1) -> Enemy:
-    if rarity != 1:
-        rarity += 1
-    if quantity != 1:
-        quantity += 1  
+def createEnemy(level: int = 1, difficulty: float = 1.0, rarity: float = 0, quantity: float = 0) -> Enemy:
+    rarity += 1
+    quantity += 1
 
     element = random.choice(DAMAGE_TYPES)
     baseHealth = random.randint(10, 20) + (level * (random.randint(1, 5))) // 2
@@ -342,7 +370,7 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1) -
     baseDamage = min(level + (level // 3), round(baseDamage * difficulty))
 
     loot = LootTable()
-    numDrops = random.randint(1, max(2, 2 + level // 6))
+    numDrops = int(random.randint(1, max(2, 2 + level // 6)) * quantity)
     chosenResources = []
     for _ in range(numDrops):
         chosenResources.append(random.choice(list(RESOURCES.keys())))
@@ -353,9 +381,9 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1) -
         loot.addResource(res, minAmt, maxAmt, dropChance)
 
     name = f"{ELEMENTAL_NAME[element]} {random.choice(NAMES)}"
-    enemy = Enemy(name, level, baseHealth, baseDamage, baseCritChance, baseCritMulti, element, baseSpeed, loot)
+    enemy = Enemy(name, level, baseHealth, baseDamage, baseCritChance, baseCritMulti, element, baseSpeed, loot, rarity, quantity)
     enemy._health = enemy._maxHealth
-    
+
     key = enemy.rollDungeonMap()
     if key:
         enemy._lootTable.addExtra(key.name, key.description)
@@ -373,7 +401,6 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity=1, quantity=1) -
         for abilityName in random.sample(possibleAbilities, k=min(len(possibleAbilities)-1, random.randint(level//10, 3+level//8))):
             enemy.gainAbility(abilityName, False)
 
-    #print(f"[DEBUG] Created enemy with stats:\n{enemy._serialise()}")
     return enemy
 
 ...

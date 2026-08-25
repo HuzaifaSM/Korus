@@ -6,7 +6,7 @@ from .entities import Entity
 from .enemy import Enemy
 from .abilities import StatusEffect, resolveEffects
 from .styles import (
-    console, printSuccess, printWarning, printError, printInfo, formatDamageType, pause
+    console, printWarning, formatDamageBreakdown, pause
 )
 from .enemyAi import EnemyAI
 
@@ -346,7 +346,7 @@ class CombatManager:
         energyShield = target.energyShield
 
         didEvade = False
-        armourDamageReduction = 0
+        armourDamagePrevented = 0
         esDamagePrevented = 0
         if damageType != 'true': # true damage ignores all defenses
             if damageType != 'psychic': # psychic ignores evasion
@@ -356,22 +356,18 @@ class CombatManager:
 
                 if didEvade:
                     target.onEvade(self)
-                    return 0, armourDamageReduction, esDamagePrevented, True
+                    return 0, armourDamagePrevented, esDamagePrevented, True
 
             if damageType != 'ethereal': # ethereal ignores armour
                 effectiveArmour = target.getEffectiveArmour(damageType, combatUnit)
                 reduction = combatUnit.calculateArmourReduction(finalDamage, armourIgnorePercent, effectiveArmour)
-                reducedAmount = int(finalDamage * reduction)
-                armourDamageReduction = finalDamage - reducedAmount
-                finalDamage -= reducedAmount
-
-                if reducedAmount > 0:
-                    console.print(f"    [cyan]{target._name}'s armour reduced damage by {reducedAmount}![/cyan]")
+                armourDamagePrevented = int(finalDamage * reduction)
+                finalDamage -= armourDamagePrevented
 
             if damageType != 'chaos': # chaos ignores energy shield
                 if energyShield > 0:
                     if finalDamage >= energyShield:
-                        esDamagePrevented = energyShield - finalDamage
+                        esDamagePrevented = energyShield
                         finalDamage -= energyShield
                         target._stats['energy_shield'] = 0
                         console.print(f"    [warning]{target._name}'s energy shield was broken![/warning]")
@@ -380,9 +376,9 @@ class CombatManager:
                         esDamagePrevented = finalDamage
                         target._stats['energy_shield'] -= finalDamage
                         console.print(f"    [cyan]{target._name}'s energy shield absorbed {finalDamage:.0f} damage![/cyan]")
-                        return 0, armourDamageReduction, esDamagePrevented, False
+                        return 0, armourDamagePrevented, esDamagePrevented, False
 
-        return finalDamage, armourDamageReduction, esDamagePrevented, didEvade
+        return finalDamage, armourDamagePrevented, esDamagePrevented, didEvade
 
     def performAttack(self, attacker: Entity, target: Entity, abilityName: str = None):
         attackerUnit = None
@@ -405,6 +401,7 @@ class CombatManager:
             if ability.cooldown > 0:
                 printWarning(f"  - {abilityName} is on cooldown for {ability.cooldown} more turn(s).")
                 return False
+            ability.cooldown = ability.maxCooldown  # set here (not just in onAttack) so heal/buff-category abilities go on cooldown too
 
             if attackerUnit.team == 'player':
                 ability.applyResourceCosts(attacker)
@@ -413,6 +410,8 @@ class CombatManager:
             if selfEffects:
                 for effect in resolveEffects(selfEffects):
                     self.addStatusEffect(attacker, effect, attacker)
+
+            attacker.onAbilityCast(ability, self)  # fires once per use regardless of category - the only hook heal/buff abilities reach
 
             targetEffectsDict = ability.effects.get('target', {})
             effectsBeforeTargeting: List[StatusEffect] = []
@@ -473,11 +472,11 @@ class CombatManager:
 
             if damageType == 'heal':
                 heal = int(ability.healBase + (attacker._maxHealth * ability.healPercent))
-                attacker.heal(heal)
+                attacker.heal(heal, reason=abilityName)
             else:
                 # DAMAGE
                 attacks = 1
-                if random.random() < attacker._stats['Bonuses']['chance_to_multihit']:
+                if random.random() < attacker.chanceToMultihit:
                     attacks = attacker.numMultihits
                     attacker.onMultihitActivated()
                     console.print(f"[multihit]Multihit activated! Attacking {attacks} times.[/multihit]")
@@ -486,7 +485,11 @@ class CombatManager:
 
                 for _ in range(attacks):
                     for t in targets:
+                        if t._isDead: # a prior multihit repetition already killed this target (and unregistered it)
+                            continue
                         finalDamage = starterDamage
+                        baseDamageForBreakdown = int(finalDamage)
+                        attacker._damageLog = []
 
                         mechanics: List[StatusEffect] = [deepcopy(m) for m in effectsBeforeTargeting]
                         mechanics.extend(resolveEffects(targetEffectsDict))
@@ -501,10 +504,11 @@ class CombatManager:
                             vulnMult = targetUnit.getVulnerabilityModifier()
                             if vulnMult > 1.0:
                                 finalDamage = int(finalDamage * vulnMult)
-                                console.print(f"  [debuff]- {t._name} is vulnerable (+{vulnMult*100:.0f}% Damage Taken). Damage increased to {finalDamage}[/debuff]")
+                                attacker._logDamage(f"{t._name} Vulnerable", percent=vulnMult - 1.0)
 
                         if len(targets) > 1:
                             finalDamage = int(finalDamage * 0.8)
+                            attacker._logDamage("Multiple Targets", percent=-0.2)
                             console.print(f"  [dim]|- Hitting {t._name}[/dim]")
 
                         finalDamage = attacker.onPrepareHit(t, targetUnit, finalDamage, damageType, self)
@@ -522,6 +526,10 @@ class CombatManager:
                         preMitigationDamage = finalDamage
 
                         finalDamage, armourDamagePrevented, esDamagePrevented, evaded = self.applyDamageWithDefenses(t, finalDamage, damageType, targetUnit, armourIgnorePercent)
+                        if armourDamagePrevented > 0:
+                            attacker._logDamage("Armour Mitigation", flat=-armourDamagePrevented)
+                        if esDamagePrevented > 0:
+                            attacker._logDamage(f"{t._name}'s Energy Shield", flat=-esDamagePrevented)
                         finalDamage, damageType = t.onHit(finalDamage, damageType, isCrit, attacker, self)
 
                         finalDamage = attacker.onDealDamage(t, targetUnit, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, self)
@@ -530,13 +538,16 @@ class CombatManager:
 
                         if attacker._stats['Bonuses']['lifesteal'] > 0:
                             heal = int(finalDamage * (attacker._stats['Bonuses']['lifesteal'] / 100))
-                            attacker.heal(heal)
+                            attacker.heal(heal, reason=f"{attacker._stats['Bonuses']['lifesteal']:.0f}% Lifesteal")
 
                         damageReductionValue = 0
                         if evaded:
                             console.print(f'[evasion bold]{t._name} evaded the attack![/evasion bold]')
                             t.onEvade(self)
                         else:
+                            if attacker._damageLog:
+                                for line in formatDamageBreakdown(baseDamageForBreakdown, attacker._damageLog, finalDamage, damageType):
+                                    console.print(line)
                             damageReductionValue = t.damage(finalDamage, damageType, targetUnit, attacker=attacker)
                             t.onDamaged(attacker, damageReductionValue, armourDamagePrevented, self)
 
@@ -557,7 +568,7 @@ class CombatManager:
                                             t.onCC(attacker, self)
                             death = self.checkDead(t)
                             if death:
-                                killData = {'damage': finalDamage, 'damageType': damageType, 'mechanics': mechanics}
+                                killData = {'damage': finalDamage, 'damageType': damageType, 'mechanics': mechanics, 'ability': ability}
                                 attacker.onKill(t, killData, self)
                             else:
                                 attacker.onExecuteCheck(t, self) # check for any executes (e.g. blood spike or ascendancy-specific)

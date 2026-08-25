@@ -1,6 +1,6 @@
 from typing import Dict
 from scripts.styles import console, printWarning, pause, displayResourceCost, printError, printSuccess
-from player.base import Player
+from scripts.player_classes.base import Player
 
 class Station:
     def __init__(self, player: Player, name: str):

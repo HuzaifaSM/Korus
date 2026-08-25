@@ -93,6 +93,7 @@ class GeneralStatBlock(TypedDict):
     stamina_regen: float
     enemy_quantity: float
     added_multihits: float
+    chance_to_multihit: float
     increased_defenses: float
     added_armour: float
     added_evasion: float
@@ -243,6 +244,7 @@ class Entity:
                 'stamina_regen': 0,
                 'enemy_quantity': 0,
                 'added_multihits': 0,
+                'chance_to_multihit': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
                 'added_evasion': 0,
@@ -285,6 +287,7 @@ class Entity:
                 'stamina_regen': 0,
                 'enemy_quantity': 0,
                 'added_multihits': 0,
+                'chance_to_multihit': 0,
                 'increased_defenses': 0,
                 'added_armour': 0,
                 'added_evasion': 0,
@@ -335,6 +338,7 @@ class Entity:
         self.isPlayer = isPlayer
         self.combatUnit = None
         self._pendingEffects = []
+        self._damageLog: List[tuple] = []  # (reason, flatAmount, percentAmount) contributions to the hit currently being resolved
 
     @property
     def _isDead(self) -> bool:
@@ -369,8 +373,8 @@ class Entity:
         return 2 + self._getExtraBonuses('added_multihits') + self._stats['Bonuses']['added_multihits']
 
     @property
-    def hasConsumables(self) -> bool:
-        return 'Potion' in [i for i in self._inventory.keys()]
+    def chanceToMultihit(self) -> float:
+        return round((self._stats['Bonuses']['chance_to_multihit'] + self._getExtraBonuses('chance_to_multihit')) / 100, 2)
 
     def __rich__(self):
         return self.__str__()
@@ -407,6 +411,9 @@ class Entity:
         return {'maxHealth': self._maxHealth,
                 'baseHealth': self._baseHealth,
                 'health': self._health,
+                'maxStamina': self._maxStamina,
+                'baseMaxStamina': self._baseMaxStamina,
+                'stamina': self._stamina,
                 'baseDamage': self._baseDamage,
                 'damageType': self._damageType,
                 'baseSpeed': self._baseSpeed,
@@ -430,9 +437,13 @@ class Entity:
         self._maxHealth = data.get('maxHealth', 50)
         self._baseHealth = data.get('baseHealth', 50)
         self._health = data.get('health', 50)
-        self._baseDamage = data.get('baseDamage', 3)
+        self._maxStamina = data.get('maxStamina', 100)
+        self._baseMaxStamina = data.get('baseMaxStamina', 100)
+        self._stamina = data.get('stamina', 100)
+        self._baseDamage = data.get('baseDamage', 5)
         self._damageType = data.get('damageType', 'physical')
         self._baseSpeed = data.get('baseSpeed', 1.0)
+        self._stats = data.get('stats')
         self._name = data.get('name', 'Entity')
         self._level = data.get('level', 0)
         self._xp = data.get('xp', 0)
@@ -498,11 +509,18 @@ class Entity:
         damage = max(0, damage - self._stats['Bonuses']['damage_reduction'])
         damageReductionValue = preMitigation - damage
 
+        if damageReductionValue > 0:
+            console.print(f"  [dim]- {self._name}'s Damage Reduction reduces the damage by {damageReductionValue}[/dim]")
+        if resistMod > 0:
+            console.print(f"  [dim]- {self._name}'s {damageType.title()} Resistance reduces the damage taken by {round(resistMod * 100):.1f}%[/dim]")
+        if stoneskinMod > 0:
+            console.print(f"  [dim]- {self._name}'s Stoneskin Buff reduces the damage taken by {round(stoneskinMod * 100):.1f}%[/dim]")
+
         damage = int(round(damage * (1 - resistMod) * (1 - stoneskinMod)))
         trueDamage = max(0, damage - self._shield)
         damagePrevented = damage - trueDamage
         self._shield -= damagePrevented
-        
+
         if trueDamage > 0:
             self._health -= trueDamage
             if not lethal and self._health <= 0:
@@ -510,31 +528,33 @@ class Entity:
                 console.print(f"  [warning]Non-lethal damage dealt![/warning]")
             damageTypeFormatted = formatDamageType(damageType, damageType)
             dmgColour = formatDamageValue(trueDamage)
-            console.print(f"  [damage]- {self._name} took[/damage] [{dmgColour}]{trueDamage}[/{dmgColour}] [damage]{damageTypeFormatted} damage.[/damage] [dim buff]({damagePrevented} damage prevented with shield)[/dim buff] [dim]HP remaining: {self._health} / {self._maxHealth}[/dim]")
+            console.print(f"[damage]- {self._name} took[/damage] [{dmgColour}]{trueDamage}[/{dmgColour}] [damage]{damageTypeFormatted} damage.[/damage] [dim]({damagePrevented} damage prevented with shield)[/dim] | [health]HP remaining: {self._health} / {self._maxHealth}[/health]")
             if self._isDead:
                 self.death()
 
         return damageReductionValue
 
-    def heal(self, amount: int, doPrint: bool = True) -> int:
-        """returns true healed amount"""
+    def heal(self, amount: int, doPrint: bool = True, reason: Optional[str] = None) -> int:
+        if amount <= 0:
+            return 0
         magnitude = self._stats['Bonuses']['healing_magnitude'] / 100
         modifiedAmount = int(amount * magnitude)
+        reasonStr = f" due to {reason}" if reason else ""
         if modifiedAmount > 0:
             self._health = min(self._health + modifiedAmount, self._maxHealth)
             self.onHeal(modifiedAmount)
             if doPrint:
-                console.print(f"[success]{self._name} healed for {modifiedAmount} HP.[/success] [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
+                console.print(f"[success]{self._name} healed for {modifiedAmount} HP{reasonStr}.[/success] [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
         elif modifiedAmount < 0:
             damageTaken = abs(modifiedAmount)
             self._health -= damageTaken
             if doPrint:
-                printError(f"{self._name}'s negative Healing Magnitude dealt {damageTaken} damage! [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
+                printError(f"{self._name}'s negative Healing Magnitude dealt {damageTaken} damage{reasonStr}! [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
             if  self._isDead:
                 self.death()
         else:
             if doPrint:
-                printWarning(f"[warning]{self._name}'s healing was nullified![/warning]")
+                printWarning(f"[warning]{self._name}'s healing was nullified{reasonStr}![/warning]")
         return modifiedAmount
 
     def death(self):
@@ -590,7 +610,6 @@ class Entity:
         return True
 
     def spendHealthForAbility(self, amount: int):
-        """Default: abilities that cost Health draw straight from Health. Rewrite per class for alternate payment sources."""
         self._health = max(0, self._health - amount)
         if self._isDead:
             self.death()
@@ -952,13 +971,20 @@ class Entity:
     # ===================================================================================== #
 
     def _queueEffect(self, effect):
-        """Queues a StatusEffect (or list of them) to be applied once the current hit resolves.
-        Use from any combat hook instead of calling combatManager.addStatusEffect directly when the
-        effect should only land if the attack isn't evaded."""
+        """Queues a StatusEffect (or list of them) to be applied once the current hit lands."""
         if isinstance(effect, list):
             self._pendingEffects.extend(effect)
         else:
             self._pendingEffects.append(effect)
+
+    def _logDamage(self, reason: str, *, flat: int = 0, percent: float = 0.0):
+        """Records why a hit's damage changed, for the breakdown CombatManager prints once the hit resolves.
+        flat is an absolute amount (+/-), percent is a fraction of current damage (e.g. 0.1 for +10%).
+        Call from any combat hook (attacker's or target's) that changes finalDamage/damageDealt - always
+        on the top-level attacker passed into that hook, so every modifier for a hit lands in one log
+        regardless of which side (attacker or target) applied it."""
+        if flat or percent:
+            self._damageLog.append((reason, flat, percent))
 
     def onBeforeDamage(self, ability: Ability, damage: int, damageType: str, targets: list[Entity], combatManager):
         """Rewrite per class. Returns: damage, damageType, targets"""
@@ -1035,6 +1061,9 @@ class Entity:
         """Rewrite per class"""
         return
 
+    def onAbilityCast(self, ability: Ability, combatManager):
+        return
+
     def onAttack(self, damageDealt: int, damageType: str, target, combatManager, ability: Ability, crit: bool = False):
         """Target should be combatUnit. Fires once per target before mitigation (once per multihit)."""
         durabilityLoss = max(1, damageDealt // 25)
@@ -1053,6 +1082,10 @@ class Entity:
                     printWarning(f"{accessory.name} has broken!")
                     self.unequip(slot, False)
 
+        healOnHit = self._stats['Bonuses']['health_on_hit']
+        if healOnHit != 0:
+            self.heal(healOnHit, reason="Health on Hit")
+
         ability.cooldown = ability.maxCooldown
 
         return damageDealt, damageType
@@ -1067,7 +1100,6 @@ class Entity:
                     printWarning(f"{armour.name} has broken!")
                     self.unequip(slot, False)
 
-        self.heal(self._stats['Bonuses']['health_on_hit'], False)
         self._stamina = min(self._maxStamina, self._stamina + self._stats['Bonuses']['stamina_on_hit'])
 
         return damageTaken, damageType
@@ -1075,7 +1107,9 @@ class Entity:
     def onKill(self, entity: Entity=None, attackData: Dict=None, combatManager=None) -> Optional[Dict]:
         """Rewrite per class. Call super() first (applies health/stamina on kill), always return None/dict\n
         attackData should include: final attack damage, damage type, mechanics of ability used"""
-        self.heal(self._stats['Bonuses']['health_on_kill'], False)
+        healOnKill = self._stats['Bonuses']['health_on_kill']
+        if healOnKill != 0:
+            self.heal(healOnKill, reason="Health on Kill")
         self._stamina = min(self._maxStamina, self._stamina + self._stats['Bonuses']['stamina_on_kill'])
         return {}
 
@@ -1096,7 +1130,8 @@ class Entity:
         """Recalculates stats for temp + permanent additions, use at end of onTurnStart methods"""
         self._recalculateStats(False, True)
         heal = self._stats['Bonuses']['hp_regen']
-        self.heal(heal, False)
+        if heal != 0:
+            self.heal(heal, reason="HP Regeneration")
         self._stamina = min(self._maxStamina, self._stamina + 3 + self._stats['Bonuses']['stamina_regen'])
         if self._speed < 0.2: # minimum speed is 0.2
             self._speed = 0.2

@@ -24,21 +24,21 @@ TEMPEST_DESCRIPTIONS = {
         "- Fleeting: +0.1 Speed, 10% Increased Lightning Damage. Whenever you deal a critical hit, consume all Fleeting to: Heal 3% Max HP and gain +10% Crit Damage per Fleeting consumed.\n"
         "- Static no longer grants Damage Reduction, and instead grants +2% Evasion per stack. Flow no longer grants Speed, and instead grants +1% Crit Chance per stack.\n"
         "- Unleash only deals 50% Increased Lightning Damage, but only needs 5 combined Static and Flow stacks to activate. Whenever you Unleash, gain 30% Increased Evasion until the start of your next turn.\n"
-        "[bold]Stat Changes:[/bold] -20 HP. +5 Damage. +0.1 Speed. +100 Evasion. +15% Psychic Resistance.",
+        "[bold]Stat Changes:[/bold] -20 HP. +5 Damage. +0.1 Speed. +75 Evasion. +15% Psychic Resistance.",
     "Ravager": "[lore]Faster. Again. Again. Never strike twice, they die too fast for that. Tear it all down, then continue on.[/lore]"
         "- Bonuses for having more Speed than your target are doubled. Whenever you critically hit an opponent, gain 1 Flurry, to a maximum of 5.\n"
         "- Flurry: +3% Multihit Chance, +3% Crit Chance. Whenever you trigger a Multihit, gain 1 Relentless, to a maximum of 3.\n"
         "- Relentless: 25% Increased Lightning Damage, +0.1 Speed, 10% Reduced Defenses.\n"
         "- Static can no longer be used to Unleash. Unleash when you have 3 stacks of Flow. Unleash now grants: +75% Crit Damage, +10% Lifesteal, +10% Resistance Penetration.\n"
         "- Static also grants 2% Increased Defenses per stack. Static no longer reduces Speed per stack.\n"
-        "[bold]Stat Chnages:[/bold] -30 HP. -4 Damage. +0.2 Speed. +10% Crit Chance. +50% Crit Damage.",
+        "[bold]Stat Changes:[/bold] -5 HP. +3 Damage. +0.2 Speed. +10% Crit Chance. +50% Crit Damage.",
     "Archon": "[lore]The storm gathers. Evolves. Currents become sparks. Sparks become thunder. Thunder becomes the end.[/lore]"
         "- Upon gaining Static or Flow, gain 1 Current, to a maximum of 10. Current: 5% Increased Lightning Damage, -2% Earth Resistance, +1% Crit Chance.\n"
         "- Bonuses for having less Speed than your target are doubled. Whenever you critically hit an enemy that has more speed than you, gain 1 Spark, to a maximum of 5.\n"
         "- Spark: +5% Crit Chance, +10% Crit Damage, -0.05 Speed. Gain 1 more Flow whenever you gain Flow.\n"
         "- When you are attacked by an enemy with more Speed than you, lose 1 Static.\n"
         "- Whenever you Unleash, deal 10% of the damage dealt to all enemies as Lightning Damage and consume up to 5 Current Stacks to heal 2% Max HP per stack consumed.\n"
-        "[bold]Stat Changes:[/bold] +25 HP. +4 Damage. -0.2 Speed. +20% Lightning Resistance. +30% Crit Damage.",
+        "[bold]Stat Changes:[/bold] +25 HP. +4 Damage. -0.05 Speed. +20% Lightning Resistance. +30% Crit Damage.",
     "Mirage": "[lore]Shapeless. Senseless. Ruthless. They strike, only to find nothing but air. The flickering hastens, then all goes still.[/lore]"
         "- 75% of your Armour is converted to Evasion. 5% of your Armour is converted to Energy Shield.\n"
         "- Whenever you Evade an attack, gain 10% of your Maximum Energy Shield as bonus damage on your next attack.\n"
@@ -47,7 +47,7 @@ TEMPEST_DESCRIPTIONS = {
         "- Whilst you have no Energy Shield: +10% Crit Chance, +0.2 Speed, 10% Increased Evasion for the rest of combat.\n"
         "- Static also grants 3% Increased Evasion per stack. Flow also grants 2% Maximum Energy Shield Regeneration.\n"
         "- Whenever you Evade an attack, gain 1 Flow. Whenever your Energy Shield fully blocks an attack, gain 1 Static.\n"
-        "[bold]Stat Changes:[/bold] -20 HP. +5 Damage. +0.1 Speed. +75 Evasion. +20 Energy Shield. +5% Otherworld Resistance."
+        "[bold]Stat Changes:[/bold] -20 HP. +7 Damage. +0.1 Speed. +75 Evasion. +20 Energy Shield. +5% Otherworld Resistance."
 }
 
 class Tempest(Player):
@@ -63,6 +63,8 @@ class Tempest(Player):
         self._tempestCritBuff = None
 
         self.alternatorFlip = False # false = standard, true = inverted
+        self.alternatorCrits = 0 # consecutive-hit streak counters, read by onCrit, updated by onAttack
+        self.alternatorNonCrits = 0
         self.alternatorPositive = 0
         self.alternatorLostPositive = False
         self.alternatorNegative = 0
@@ -169,7 +171,7 @@ class Tempest(Player):
             self._stats['Temporary']['earth'] += 2
             self._stats['Temporary']['crit_chance'] -= 0.01
         heal = int(self._maxHealth * 0.02 * consumed)
-        self.heal(heal)
+        self.heal(heal, reason=f"Archon (Consumed {consumed} Current)")
 
     def gainArchonSpark(self):
         if self.archonSpark < 5:
@@ -177,6 +179,21 @@ class Tempest(Player):
             self._stats['Temporary']['crit_chance'] += 0.05
             self._stats['Temporary']['crit_multi'] += 0.1
             self._stats['Temporary']['speed'] -= 0.05
+
+    def consumeArchonSpark(self) -> int:
+        consumed = self.archonSpark
+        if consumed > 0:
+            self._stats['Temporary']['crit_chance'] -= 0.05 * consumed
+            self._stats['Temporary']['crit_multi'] -= 0.1 * consumed
+            self._stats['Temporary']['speed'] += 0.05 * consumed
+            self.archonSpark = 0
+        return consumed
+
+    def gainRavagerFlurry(self):
+        if self.ravagerFlurry < 5:
+            self.ravagerFlurry += 1
+            self._stats['Temporary']['chance_to_multihit'] += 3
+            self._stats['Temporary']['crit_chance'] += 0.03
 
     def checkMirageEsBuff(self):
         if not self.mirageEsLastTurn and self.energyShield > 0:
@@ -219,7 +236,7 @@ class Tempest(Player):
             self._stats['Bonuses']['crit_chance'] += critChanceGain
             self._stats['Bonuses']['crit_multi'] += critMultiGain
 
-    def onEvade(self):
+    def onEvade(self, combatManager):
         if self._ascendancy == 'Dervish':
             if self.dervishFleeting < 10:
                 self.dervishFleeting += 1
@@ -271,27 +288,26 @@ class Tempest(Player):
         
         elif self._ascendancy == 'Dervish' and self.dervishFleeting > 0:
             heal = int(self._maxHealth * 0.03 * self.dervishFleeting)
-            self.heal(heal)
+            self.heal(heal, reason=f"Fleeting ({self.dervishFleeting} stacks, Dervish)")
+            console.print(f"[asc_dervish]Dervish: Consuming {self.dervishFleeting} Fleeting grants +{10 * self.dervishFleeting}% Critical Damage![/asc_dervish]")
             critDamage = int(critDamage * (1 + (0.1 * self.dervishFleeting)))
             self._stats['Temporary']['speed'] -= 0.1 * self.dervishFleeting
             self.dervishFleeting = 0
 
         elif self._ascendancy == 'Ravager':
-            if self.ravagerFlurry < 5:
-                self.ravagerFlurry += 1
-                self._stats['Temporary']['chance_to_multihit'] += 3
-                self._stats['Temporary']['crit_chance'] += 0.03
+            self.gainRavagerFlurry()
 
         elif self._ascendancy == 'Archon':
             t = targets[0]
             if self._speed < t._speed:
-                self.gainSpark()
+                self.gainArchonSpark()
 
         return critDamage
 
     def onMultihitActivated(self):
         if self._ascendancy == 'Ravager':
             if self.ravagerRelentless < 3:
+                self.ravagerRelentless += 1
                 self._stats['Temporary']['speed'] += 0.1
                 self._stats['Temporary']['increased_defenses'] -= 10
 
@@ -314,24 +330,158 @@ class Tempest(Player):
 
         return finalDamage
 
+    def onAbilityCast(self, ability, combatManager):
+        super().onAbilityCast(ability, combatManager)
+        if not ability:
+            return
+
+        if self._ascendancy == 'Alternator' and 'manual_flip' in ability.tags:
+            self.alternatorFlip = not self.alternatorFlip
+            console.print(f"[asc_alternator]Alternator: {ability.name} flips the storm's favour![/asc_alternator]")
+
+        if self._ascendancy == 'Dervish' and 'gain_fleeting_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_fleeting', {})
+            stacks = fx.get('stacks', 0)
+            gained = 0
+            for _ in range(stacks):
+                if self.dervishFleeting < 10:
+                    self.dervishFleeting += 1
+                    self._stats['Temporary']['speed'] += 0.1
+                    gained += 1
+            if gained > 0:
+                console.print(f"[asc_dervish]Dervish: {ability.name} grants {gained} stack(s) of Fleeting.[/asc_dervish]")
+
+        if self._ascendancy == 'Ravager' and 'gain_flurry_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_flurry', {})
+            stacks = fx.get('stacks', 0)
+            for _ in range(stacks):
+                self.gainRavagerFlurry()
+            if stacks > 0:
+                console.print(f"[asc_ravager]Ravager: {ability.name} grants {stacks} stack(s) of Flurry.[/asc_ravager]")
+
+        if self._ascendancy == 'Mirage' and 'gain_mirage_damage_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_mirage_damage', {})
+            pct = fx.get('percent_max_es', 0) / 100
+            gained = int(self.maxEnergyShield * pct)
+            if gained > 0:
+                self.mirageDamage += gained
+                console.print(f"[asc_mirage]Mirage: {ability.name} adds {gained} to your stored damage.[/asc_mirage]")
+
+    def onKill(self, entity, attackData, combatManager=None):
+        super().onKill()
+        ability = attackData.get('ability') if attackData else None
+        onKillFx = ability.effects.get('on_kill', {}) if ability else {}
+        if onKillFx:
+            healPct = onKillFx.get('heal_percent_max_hp', 0)
+            if healPct:
+                heal = int(self._maxHealth * healPct / 100)
+                self.heal(heal, False)
+                console.print(f"[class_tempest]{ability.name} claims its due! Healed {heal} HP.[/class_tempest]")
+        return {}
+
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
+
+        targetEntity = target.entity if target else None
+
+        if ability and targetEntity:
+            if self._ascendancy == 'Alternator' and 'consumes_alternator_stacks' in ability.tags and (self.alternatorPositive > 0 or self.alternatorNegative > 0):
+                fx = ability.effects.get('self', {}).get('consume_alternator', {})
+                dmgPerStack = fx.get('damage_per_stack', 0)
+                stacksConsumed = self.alternatorPositive + self.alternatorNegative
+                self.loseAllAlternatorPositive()
+                self.loseAllAlternatorNegative()
+                bonus = dmgPerStack * stacksConsumed
+                self._logDamage(f"Consumed {stacksConsumed} Alternator Stacks", flat=bonus)
+                damageDealt += bonus
+                console.print(f"[asc_alternator]Alternator: {ability.name} consumes {stacksConsumed} stack(s) for +{bonus} Damage.[/asc_alternator]")
+
+            if self._ascendancy == 'Dervish' and 'consumes_fleeting_bonus_damage' in ability.tags and self.dervishFleeting > 0:
+                fx = ability.effects.get('self', {}).get('consume_fleeting', {})
+                dmgPerStack = fx.get('damage_per_stack', 0)
+                stacksConsumed = self.dervishFleeting
+                self._stats['Temporary']['speed'] -= 0.1 * stacksConsumed
+                self.dervishFleeting = 0
+                bonus = dmgPerStack * stacksConsumed
+                self._logDamage(f"Consumed {stacksConsumed} Fleeting (Dervish)", flat=bonus)
+                damageDealt += bonus
+                console.print(f"[asc_dervish]Dervish: {ability.name} consumes {stacksConsumed} Fleeting for +{bonus} Damage.[/asc_dervish]")
+
+            if self._ascendancy == 'Ravager' and 'consumes_relentless' in ability.tags and self.ravagerRelentless > 0:
+                fx = ability.effects.get('self', {}).get('consume_relentless', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                stacksConsumed = self.ravagerRelentless
+                self._stats['Temporary']['speed'] -= 0.1 * stacksConsumed
+                self._stats['Temporary']['increased_defenses'] += 10 * stacksConsumed
+                self.ravagerRelentless = 0
+                self._logDamage(f"Consumed {stacksConsumed} Relentless (Ravager)", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[asc_ravager]Ravager: {ability.name} consumes {stacksConsumed} Relentless for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_ravager]")
+
+            if self._ascendancy == 'Archon' and 'consumes_current_for_damage' in ability.tags and self.archonCurrent > 0:
+                fx = ability.effects.get('self', {}).get('consume_current', {})
+                dmgPerStack = fx.get('damage_per_stack', 0)
+                maxStacks = fx.get('max_stacks', 0)
+                stacksConsumed = min(maxStacks, self.archonCurrent)
+                self.archonCurrent -= stacksConsumed
+                self._stats['Temporary']['earth'] += 2 * stacksConsumed
+                self._stats['Temporary']['crit_chance'] -= 0.01 * stacksConsumed
+                bonus = dmgPerStack * stacksConsumed
+                self._logDamage(f"Consumed {stacksConsumed} Current (Archon)", flat=bonus)
+                damageDealt += bonus
+                console.print(f"[asc_archon]Archon: {ability.name} consumes {stacksConsumed} Current for +{bonus} Damage.[/asc_archon]")
+
+            if self._ascendancy == 'Archon' and 'consumes_spark_for_damage' in ability.tags and self.archonSpark > 0:
+                fx = ability.effects.get('self', {}).get('consume_spark', {})
+                dmgPerStack = fx.get('damage_per_stack', 0)
+                stacksConsumed = self.consumeArchonSpark()
+                bonus = dmgPerStack * stacksConsumed
+                self._logDamage(f"Consumed {stacksConsumed} Spark (Archon)", flat=bonus)
+                damageDealt += bonus
+                console.print(f"[asc_archon]Archon: {ability.name} consumes {stacksConsumed} Spark for +{bonus} Damage.[/asc_archon]")
+
+            if self._ascendancy == 'Mirage' and self.mirageDamage > 0:
+                if 'consumes_mirage_damage_amplified' in ability.tags:
+                    fx = ability.effects.get('self', {}).get('consume_mirage_damage', {})
+                    mult = fx.get('multiplier_percent', 100) / 100
+                    bonus = int(self.mirageDamage * mult)
+                    self._logDamage("Stored Damage (Mirage, Amplified)", flat=bonus)
+                    damageDealt += bonus
+                    self.mirageDamage = 0
+                    console.print(f"[asc_mirage]Mirage: {ability.name} shatters your stored damage for +{bonus}![/asc_mirage]")
+                else:
+                    self._logDamage("Stored Damage (Mirage)", flat=self.mirageDamage)
+                    damageDealt += self.mirageDamage
+                    self.mirageDamage = 0
+
+        if self._ascendancy == 'Alternator':
+            # records this hit's outcome for onCrit (which fires earlier, before this per-target
+            # loop) to read on the *next* attack, so it can tell a consecutive streak from a fresh one
+            if crit:
+                self.alternatorCrits += 1
+                self.alternatorNonCrits = 0
+            else:
+                self.alternatorNonCrits += 1
+                self.alternatorCrits = 0
 
         if self._ascendancy != 'Ravager': # unleash handled in crit for ravager
             if self._checkUnleash():
                 if damageType == 'lightning':
                     if self._ascendancy == 'Dervish':
+                        self._logDamage("Unleash (Dervish)", percent=0.5)
                         damageDealt = int(damageDealt * 1.5)
                         self._stats['Temporary']['increased_evasion'] += 30
                     else:
+                        self._logDamage("Unleash", percent=1.0)
                         damageDealt *= 2
                 self._stats['Temporary']['lifesteal'] += 5
                 self.consumeUnleashStacks()
-                
+
                 if self._ascendancy == 'Archon':
+                    aoeDamage = int(damageDealt * 0.1)
+                    console.print(f"[asc_archon]Archon: Unleash discharges {aoeDamage} Lightning Damage to all enemies![/asc_archon]")
                     for e in combatManager.allAlive:
-                        d = int(damageDealt * 0.1)
-                        e.damage(d, 'lightning')
+                        e.damage(aoeDamage, 'lightning')
                     self.consumeArchonCurrent()
 
         targetEnemy = target.entity
@@ -339,7 +489,11 @@ class Tempest(Player):
             difference = targetEnemy._speed - self._speed
             if self._ascendancy == 'Archon':
                 difference *= 2
-            damageDealt = int((damageDealt + ((difference * 100) // 4)) * (1 + difference / 100))
+            flatBonus = (difference * 100) // 4
+            percentBonus = difference / 100
+            speedReason = "Speed Deficit (Alternator Flip)" if self.alternatorFlip and targetEnemy._speed <= self._speed else "Speed Deficit"
+            self._logDamage(speedReason, flat=int(flatBonus), percent=percentBonus)
+            damageDealt = int((damageDealt + flatBonus) * (1 + percentBonus))
 
         if ability:
             if self._speed > targetEnemy._speed and 'gain_flow_if_faster' in ability.tags:
@@ -350,25 +504,36 @@ class Tempest(Player):
                 console.print(f"[class_tempest]Tempest: {ability.name} is outpaced by {targetEnemy._name} - gained 1 Static![/class_tempest]")
 
         if self.flow > 0 and 'increased_damage' in self.flowBuffs:
+            self._logDamage("Flow", percent=0.05 * self.flow)
             damageDealt = int(damageDealt * (1 + (0.05 * self.flow)))
 
         if self._ascendancy == 'Alternator':
             if self.alternatorLostPositive and damageType == 'lightning':
+                self._logDamage("Lost Positive (Alternator)", percent=0.4)
                 damageDealt = int(damageDealt * 1.4)
                 self.alternatorLostPositive = False
             elif self.alternatorLostNegative:
+                self._logDamage("Lost Negative (Alternator)", flat=20)
                 damageDealt += 20
                 heal = int(damageDealt * 0.1)
-                self.heal(heal, True)
+                self.heal(heal, reason="Lost Negative (Alternator)")
+                self.alternatorLostNegative = False
             if self.alternatorNegative > 0:
+                self._logDamage(f"Negative ({self.alternatorNegative} stacks, Alternator)", percent=0.15 * self.alternatorNegative)
                 damageDealt = int(damageDealt * (1 + (0.15 * self.alternatorNegative)))
 
         elif self._ascendancy == 'Dervish':
             if self.dervishFleeting > 0:
+                self._logDamage(f"Fleeting ({self.dervishFleeting} stacks, Dervish)", percent=0.1 * self.dervishFleeting)
                 damageDealt = int(damageDealt * (1 + (0.1 * self.dervishFleeting)))
 
         elif self._ascendancy == 'Archon' and damageType == 'lightning':
+            self._logDamage(f"Current ({self.archonCurrent} stacks, Archon)", percent=0.05 * self.archonCurrent)
             damageDealt = int(damageDealt * (1 + (0.05 * self.archonCurrent)))
+
+        elif self._ascendancy == 'Ravager' and self.ravagerRelentless > 0 and damageType == 'lightning':
+            self._logDamage(f"Relentless ({self.ravagerRelentless} stacks, Ravager)", percent=0.25 * self.ravagerRelentless)
+            damageDealt = int(damageDealt * (1 + (0.25 * self.ravagerRelentless)))
 
         return damageDealt, damageType
 
@@ -406,6 +571,8 @@ class Tempest(Player):
         self._tempestCritBuff = None
 
         self.alternatorFlip = False
+        self.alternatorCrits = 0
+        self.alternatorNonCrits = 0
         self.alternatorPositive = 0
         self.alternatorLostPositive = False
         self.alternatorNegative = 0
@@ -433,12 +600,12 @@ class Tempest(Player):
             '_baseHealth': -20,
             '_baseDamage': 5,
             '_baseSpeed': 0.1,
-            '_stats.Permanent.added_evasion': 100,
+            '_stats.Permanent.added_evasion': 75,
             '_stats.Permanent.psychic': 15,
         },
         'Ravager': {
-            '_baseHealth': -30,
-            '_baseDamage': -4,
+            '_baseHealth': -5,
+            '_baseDamage': 3,
             '_baseSpeed': 0.2,
             '_stats.baseCritChance': 0.1,
             '_stats.baseCritMulti': 0.5,
@@ -446,13 +613,13 @@ class Tempest(Player):
         'Archon': {
             '_baseHealth': 25,
             '_baseDamage': 4,
-            '_baseSpeed': -0.2,
+            '_baseSpeed': -0.05,
             '_stats.Permanent.lightning': 20,
             '_stats.baseCritMulti': 0.3,
         },
         'Mirage': {
             '_baseHealth': -20,
-            '_baseDamage': 5,
+            '_baseDamage': 7,
             '_baseSpeed': -0.1,
             '_stats.Permanent.added_evasion': 75,
             '_stats.Permanent.added_energy_shield': 20,
@@ -484,5 +651,7 @@ class Tempest(Player):
         elif ascendancy == 'Mirage':
             self.staticBuffs['increased_evasion'] = 3
         self._recalculateStats()
+        self.gainClassAbilities()
+        return True
 
 ...

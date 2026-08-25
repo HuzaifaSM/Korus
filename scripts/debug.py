@@ -1,16 +1,16 @@
 from .items import Equipment, RESOURCES, CONSUMABLES, ItemRarity
 from .abilities import CLASS_ABILITIES
-from crafting.base import CraftingItem
-from crafting.chaosRune import CHAOS_RUNES
-from crafting.erasingRune import ERASING_RUNES
-from crafting.growthRune import GROWTH_RUNES
-from crafting.randomiserRunes import RANDOMISER_RUNES
-from crafting.uniqueRunes import UNIQUE_RUNES
-from crafting.masteryRune import MASTERY_RUNES
-from crafting.rarityRune import RARITY_RUNES
-from crafting.destabilisationRune import DESTABILISATION_RUNES
-from crafting.revealingRune import REVEALING_RUNES
-from crafting.manipulationRune import MANIPULATION_RUNES
+from scripts.crafting.base import CraftingItem
+from scripts.crafting.chaosRune import CHAOS_RUNES
+from scripts.crafting.erasingRune import ERASING_RUNES
+from scripts.crafting.growthRune import GROWTH_RUNES
+from scripts.crafting.randomiserRunes import RANDOMISER_RUNES
+from scripts.crafting.uniqueRunes import UNIQUE_RUNES
+from scripts.crafting.masteryRune import MASTERY_RUNES
+from scripts.crafting.rarityRune import RARITY_RUNES
+from scripts.crafting.destabilisationRune import DESTABILISATION_RUNES
+from scripts.crafting.revealingRune import REVEALING_RUNES
+from scripts.crafting.manipulationRune import MANIPULATION_RUNES
 from scripts.runeDrops import getRuneObject
 from .styles import (
     console, clearScreen, pause, printHeader, printSeparator,
@@ -35,7 +35,7 @@ def getAllRunes() -> Dict[str, str]: # make get runes/crafting debug: 100 of eac
 
 COMMANDS = {
     "give_item", "remove_item", "give_equipment", 'eq', "give_consumable", "consumable", "give_xp", "xp", "give_gold", "gold",
-    "restock", "area", "area_level", "heal", 'runes', 'give_runes', 'crafting', 'lvl', 'level', 'recalc', 'stats'
+    "restock", "area", "area_level", "heal", 'runes', 'give_runes', 'crafting', 'lvl', 'level', 'recalc', 'stats', 'simulate', 'sim'
 }
 
 SLOTS = {
@@ -321,6 +321,32 @@ class Debugger:
                 printError('Invalid input!')
                 pause()
 
+    def simulate(self):
+        player = self.game.player
+        while True:
+            clearScreen()
+            printHeader("Simulate Player Progression")
+
+            console.print("[gold1]Upon picking a level to advance to, the game will automatically run every simulated combat until you get to the desired level.[/gold1]")
+            console.print(f"[bold green]Current Player Level: {player._level}. You cannot select a choice under your current level.[/bold green]")
+
+            try:
+                level = int(console.input("\n[cyan bold]What level do you want to simulate progression until?[/cyan bold] [dim](0 to cancel)[dim]\n[cyan]>[/cyan] "))
+
+                if level == 0:
+                    break
+
+                if level <= player._level:
+                    printWarning("Invalid choice!")
+
+                else:
+                    while player._level < level:
+                        enemies = self.game.generateEnemies()
+                        self.game.postBattle('victory', enemies)
+
+            except ValueError:
+                printWarning("Invalid input")
+
     def mainMenu(self, autoCommand: str = None):
         if autoCommand:
             self.processChoice(autoCommand)
@@ -369,6 +395,8 @@ class Debugger:
                 self.setPlayerLevel()
             elif choice in ['recalc', 'stats']:
                 self.game.player._recalculateStats()
+            elif choice in ['sim', 'simulation']:
+                self.simulate()
             else:
                 printError(f"Invalid choice: {choice}")
                 pause()

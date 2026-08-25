@@ -25,14 +25,14 @@ MAGE_DESCRIPTIONS = {
         "- Relinquish Earth: 20% Increased Defenses, 25% Increased Elemental Damage Taken.\n"
         "- Relinquish Lightning: 50% Increased Effect of Mana, -25% Crit Damage.\n"
         "- If you have Relinquished all Adaptations, gain Calamity: 100% Increased Damage Dealt, 20% Less Damage Taken, +50% Crit Chance, +100% Crit Damage.\n"
-        "[bold]Stat Changes:[/bold] -20 HP. +6 Damage. +0.15 Speed. +10 Mana Regeneration.",
+        "[bold]Stat Changes:[/bold] -15 HP. +10 Damage. +0.15 Speed. +10 Mana Regeneration.",
     "Arcanist": "[lore]Each spell contains another secret. Each secret requires another spell. Learn. Accumulate. Improve. Let the Arcane flow through you, until all knowledge is yours.[/lore]"
         "- Mastery also grants +2 Mana Regeneration per stack. At the start of your turn, gain 2% Max Mana Regeneration for the rest of combat, to a maximum of +20%.\n"
         "- If an attack has a Mana Cost equal to or more than 40% of your Max Mana, it is used for free, and you gain 50% of the Mana that would have been used as Mana and Health.\n"
         "- Attacks deal 1% Increased Arcane Damage per 1% Mana you have, starting from 50%. (At 50% Max Mana, you have no Increased Damage. At 100% Max Mana, you have 50% Increased Damage.)\n"
         "- Convert 10% of your Max HP into Max Mana. Healing effects apply to Mana at 50% Effectiveness. Upon taking Elemental Damage, gain 10% of Damage Taken as Mana.\n"
         "- Archmage grants 50% Increased Mana Regeneration and an additional 20% Increased Mana Cost. If an attack uses more than 60% of your Current Mana, it deals 40% Increased Arcane Damage.\n"
-        "[bold]Stat Changes:[/bold] +20 HP. -4 Damage. -0.1 Speed. 10% Increased Max Mana. 10% Increased Mana Cost.",
+        "[bold]Stat Changes:[/bold] +40 HP. -0.05 Speed. 10% Increased Max Mana. 10% Increased Mana Cost.",
     "Hierophant": "[lore]Fire scorches. Cold chills. Earth protects. Lightning sunders. But now... The light blesses. The darkness consumes. The arcane transcends. They have always been there, but now, you are not of the ignorant.[/lore]"
         "- For each Elemental Adaptation you have, gain 15% Increased Arcane Damage. If you are attacked by an Elemental Damage Type you are already Adapted to, gain a random Elemental Adaptation.\n"
         "- Whenever you take Divine Damage, gain Adaptation for that damage type for the rest of combat.\n"
@@ -41,7 +41,7 @@ MAGE_DESCRIPTIONS = {
         "- Arcane Adaptation: Attacks deal extra damage equal to 10% of your Max Mana, 10% Increased Arcane Damage.\n"
         "- If you have all Divine Adaptations, gain Prophetic: 50% Increased Mana Cost, +25% Resistance Penetration.\n"
         "- If you have Archmage and Prophetic: +25% Crit Chance, +100% Crit Damage, +25% Resistance Penetration.\n"
-        "[bold]Stat Changes:[/bold] +20 HP. +4 Damage. -0.1 Speed. +5% Elemental Resistance. +5% Divine Resistance.",
+        "[bold]Stat Changes:[/bold] +25 HP. +8 Damage. -0.1 Speed. +5% Elemental Resistance. +5% Divine Resistance.",
     "Empyrean": "[lore]You cannot know everything. Some secrets have no truths. Yet still, the Above calls to you, and in turn, It answers to you. So grasp it, and embark upon the road of omnipotence.[/lore]"
         "- Mastery has no maximum stack size. Archmage grants 2% Increased Arcane Damage per Mastery you have.\n"
         "- Gain Mastery when attacked. Gain an additional Mastery if the Damage Type was Elemental. Gain 2 Mastery upon dealing a critical hit.\n"
@@ -49,7 +49,7 @@ MAGE_DESCRIPTIONS = {
         "- Whenever your Energy Shield is broken, your next attack gains +25% Crit Chance, +10% Lifesteal and +25% Resistance Penetration.\n"
         "- Regenerate Energy Shield equal to 10% of Mana Spent on attacks. Double this Regeneration if you have Archmage.\n"
         "- Each Adaptation grants +10 Mana Regeneration. Whenever Mana is regenerated above 80% due to Mana Regeneration, Regenerate Energy Shield equal to your Mana Regeneration.\n"
-        "[bold]Stat Changes:[/bold] +25 HP. -4 Damage. -0.1 Speed. +5% Crit Chance. +50 Energy Shield. +5 Mana Regeneration.",
+        "[bold]Stat Changes:[/bold] +25 HP. -0.1 Speed. +5% Crit Chance. +25 Energy Shield. +5 Mana Regeneration.",
     "Unmaker": "[lore]The rest seek power. Knowledge. Recognition. Their facades bore you. This world holds only evils, and you are the single truth. There is no place, after all, for these hideous miscreations.[/lore]"
         "- Whenever you deal a critical hit, or whenever you are critically hit, gain 1 Precision. Precision has a maximum of 10 stacks.\n"
         "- Precision: +1% Crit Chance, +15% Crit Damage, +1% Execution Threshold. At 10 Precision, double your Crit Chance.\n"
@@ -57,7 +57,7 @@ MAGE_DESCRIPTIONS = {
         "- For each Elemental Adaptation you have, gain +3% Crit Chance, +10% Crit Multi, 5% Reduced Defenses.\n"
         "- Archmage also grants +30% Crit Resistance, 10% Increased Defenses, and 5% Lifesteal.\n"
         "- Whenever you kill an enemy, if you do not have Max Mastery, gain 1 Mastery, otherwise heal for 5% of the Damage Dealt.\n"
-        "[bold]Stat Changes:[/bold] -20 HP. +5 Damage. +0.1 Speed. +25% Crit Damage."
+        "[bold]Stat Changes:[/bold] -10 HP. +10 Damage. +0.1 Speed. +25% Crit Damage."
 }
 
 class Mage(Player): # higher damage, lower health, arcane damage
@@ -244,7 +244,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 elif self._ascendancy == 'Unmaker':
                     self._stats['Temporary']['crit_resistance'] += 30
                     self._stats['Temporary']['increased_defenses'] += 10
-                    self._stats['Temporary']['lifestea'] += 5
+                    self._stats['Temporary']['lifesteal'] += 5
 
     def checkCalamity(self):
         if not self.calamity and self._ascendancy == 'Calamity':
@@ -308,10 +308,134 @@ class Mage(Player): # higher damage, lower health, arcane damage
         if self._ascendancy == 'Unmaker' and self.unmakerPrecision < 10:
             self.unmakerPrecision += 1
             self._stats['Temporary']['crit_chance'] += 0.01
-            self._stats['Temporary']['crit_chance'] += 0.15
+            self._stats['Temporary']['crit_multi'] += 0.15
+
+    def relinquishRandomAdaptation(self) -> bool:
+        held = []
+        if self.fireAdaptation:
+            held.append('fire')
+        if self.coldAdaptation:
+            held.append('cold')
+        if self.earthAdaptation:
+            held.append('earth')
+        if self.lightningAdaptation:
+            held.append('lightning')
+        if not held:
+            return False
+
+        rel = random.choice(held)
+        if rel == 'fire':
+            self.relinquishFire()
+        elif rel == 'cold':
+            self.relinquishCold()
+        elif rel == 'earth':
+            self.relinquishEarth()
+        elif rel == 'lightning':
+            self.relinquishLightning()
+        console.print(f"[asc_calamity]Calamity:[/asc_calamity] Relinquished {rel.title()} Adaptation.")
+        if not self.calamity:
+            self.checkCalamity()
+        return True
+
+    def onAbilityCast(self, ability, combatManager):
+        super().onAbilityCast(ability, combatManager)
+        if not ability:
+            return
+
+        if self._ascendancy == 'Calamity' and 'relinquish_random_on_cast' in ability.tags:
+            self.relinquishRandomAdaptation()
+
+        if self._ascendancy == 'Arcanist' and 'restore_mana_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('restore_mana', {})
+            pct = fx.get('percent_max', 0) / 100
+            gained = int(self._maxMana * pct)
+            if gained > 0:
+                self._mana = min(self._maxMana, self._mana + gained)
+                console.print(f"[asc_arcanist]Arcanist: {ability.name} restores {gained} Mana.[/asc_arcanist]")
+
+        if self._ascendancy == 'Hierophant' and 'grant_random_divine_adaptation_on_cast' in ability.tags:
+            available = []
+            if not self.holyAdaptation:
+                available.append('holy')
+            if not self.darkAdaptation:
+                available.append('dark')
+            if not self.arcaneAdaptation:
+                available.append('arcane')
+            if available:
+                dType = random.choice(available)
+                if dType == 'holy':
+                    self.gainHolyAdaptation()
+                elif dType == 'dark':
+                    self.gainDarkAdaptation()
+                else:
+                    self.gainArcaneAdaptation()
+                self.checkProphetic()
+                console.print(f"[asc_hierophant]Hierophant: {ability.name} grants {dType.title()} Adaptation.[/asc_hierophant]")
+
+        if self._ascendancy == 'Empyrean' and 'gain_mastery_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_mastery', {})
+            for _ in range(fx.get('stacks', 0)):
+                self.gainMastery()
+
+        if self._ascendancy == 'Unmaker' and 'gain_precision_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_precision', {})
+            for _ in range(fx.get('stacks', 0)):
+                self.gainPrecision()
 
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
+
+        if ability:
+            if self._ascendancy == 'Calamity' and 'bonus_damage_per_relinquished' in ability.tags:
+                fx = ability.effects.get('self', {}).get('relinquish_scaling', {})
+                dmgPerElement = fx.get('damage_per_element', 0) / 100
+                count = sum([self.relinquishedFire, self.relinquishedCold, self.relinquishedEarth, self.relinquishedLightning])
+                if count > 0:
+                    self._logDamage(f"{count} Relinquished Adaptation(s) (Calamity)", percent=dmgPerElement * count)
+                    damageDealt = int(damageDealt * (1 + (dmgPerElement * count)))
+                    console.print(f"[asc_calamity]Calamity: {ability.name} draws on {count} Relinquished Adaptation(s) for +{int(dmgPerElement * count * 100)}% Damage.[/asc_calamity]")
+
+            if self._ascendancy == 'Arcanist' and 'consumes_mana_for_damage' in ability.tags and self._mana > 0:
+                fx = ability.effects.get('self', {}).get('consume_mana_bonus', {})
+                pct = fx.get('percent_current', 0) / 100
+                mult = fx.get('bonus_multiplier', 100) / 100
+                spend = min(self._mana, int(self._mana * pct))
+                self._mana -= spend
+                bonus = int(spend * mult)
+                self._logDamage("Overchannelled Mana (Arcanist)", flat=bonus)
+                damageDealt += bonus
+                console.print(f"[asc_arcanist]Arcanist: {ability.name} overchannels {spend} Mana for +{bonus} Damage.[/asc_arcanist]")
+
+            if self._ascendancy == 'Hierophant' and 'bonus_damage_per_adaptation' in ability.tags:
+                fx = ability.effects.get('self', {}).get('adaptation_scaling', {})
+                dmgPerAdapt = fx.get('damage_per_adaptation', 0) / 100
+                total = self.elementalAdaptations + self.divineAdaptations
+                if total > 0:
+                    self._logDamage(f"{total} Adaptation(s) (Hierophant)", percent=dmgPerAdapt * total)
+                    damageDealt = int(damageDealt * (1 + (dmgPerAdapt * total)))
+                    console.print(f"[asc_hierophant]Hierophant: {ability.name} draws on {total} Adaptation(s) for +{int(dmgPerAdapt * total * 100)}% Damage.[/asc_hierophant]")
+
+            if self._ascendancy == 'Empyrean' and 'consumes_mastery_for_damage' in ability.tags and self.mastery > 0:
+                fx = ability.effects.get('self', {}).get('consume_mastery', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                stacksConsumed = self.mastery
+                self._stats['Temporary']['crit_chance'] -= 0.01 * stacksConsumed
+                self._stats['Temporary']['crit_multi'] -= 0.05 * stacksConsumed
+                self.mastery = 0
+                self._logDamage(f"Consumed {stacksConsumed} Mastery (Empyrean)", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[asc_empyrean]Empyrean: {ability.name} consumes {stacksConsumed} Mastery for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_empyrean]")
+
+            if self._ascendancy == 'Unmaker' and 'consumes_precision_for_damage' in ability.tags and self.unmakerPrecision > 0:
+                fx = ability.effects.get('self', {}).get('consume_precision', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                stacksConsumed = self.unmakerPrecision
+                self._stats['Temporary']['crit_chance'] -= 0.01 * stacksConsumed
+                self._stats['Temporary']['crit_multi'] -= 0.15 * stacksConsumed
+                self.unmakerPrecision = 0
+                self._logDamage(f"Consumed {stacksConsumed} Precision (Unmaker)", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[asc_unmaker]Unmaker: {ability.name} consumes {stacksConsumed} Precision for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_unmaker]")
 
         if damageType in ELEMENTAL_RES or damageType == 'arcane':
             baseCost = damageDealt // 5 + 5
@@ -332,10 +456,12 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 else:
                     manaCost = max(self._mana // 2, manaCost)
                     heal = int(manaCost * 0.75)
-                    self.heal(heal)
+                    self.heal(heal, reason="Unmaker (75% of Mana Spent)")
 
             self._mana = max(0, self._mana - manaCost)
 
+            if manaCost > 0:
+                self._logDamage("Mana Spent", flat=manaCost)
             damageDealt += manaCost
             if manaCost > 0:
                 console.print(f"[class_mage]Used {manaCost} mana to empower attack with +{manaCost} damage.[/class_mage]")
@@ -349,26 +475,37 @@ class Mage(Player): # higher damage, lower health, arcane damage
                     bonus = 0
                     if self._ascendancy == 'Empyrean':
                         bonus = 0.02 * self.mastery
+                    self._logDamage("Archmage", percent=0.5)
+                    if bonus:
+                        self._logDamage(f"{self.mastery} Mastery (Empyrean Archmage Bonus)", percent=bonus)
                     damageDealt = int(damageDealt * (1.5 + bonus))
 
         if self._ascendancy == 'Calamity':
             if damageType == 'arcane':
+                self._logDamage("Arcane Damage (Calamity)", percent=0.2)
                 damageDealt = int(damageDealt * 1.2)
                 if self.relinquishedFire:
+                    self._logDamage("Relinquished Fire (Calamity)", percent=0.3)
                     damageDealt = int(damageDealt * 1.3)
             if self.calamity:
+                self._logDamage("Calamity", percent=1.0)
                 damageDealt *= 2
 
         elif self._ascendancy == 'Arcanist':
             if damageType == 'arcane':
-                manaPercent = max(0, 50 - int(self._mana / self._maxMana)) / 100
+                manaPercent = max(0, int(100 * self._mana / self._maxMana) - 50) / 100
+                if manaPercent:
+                    self._logDamage("Mana above 50% (Arcanist)", percent=manaPercent)
                 damageDealt = int(damageDealt * (1 + manaPercent))
                 if arc60ManaUsed:
+                    self._logDamage("Overchannelled 60% Current Mana (Arcanist)", percent=0.4)
                     damageDealt = int(damageDealt * 1.4)
 
         elif self._ascendancy == 'Hierophant':
             if damageType == 'arcane':
                 dGain = (0.15 * self.elementalAdaptations) + (0.1 * self.divineAdaptations)
+                if dGain:
+                    self._logDamage(f"{self.elementalAdaptations} Elemental + {self.divineAdaptations} Divine Adaptations (Hierophant)", percent=dGain)
                 damageDealt = int(damageDealt * (1 + dGain))
 
         elif self._ascendancy == 'Empyrean':
@@ -397,28 +534,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
     def onCrit(self, targets, combatManager, critDamage):
         if self._ascendancy == 'Calamity':
-            relinquish = []
-            if self.fireAdaptation:
-                relinquish.append('fire')
-            if self.coldAdaptation:
-                relinquish.append('cold')
-            if self.earthAdaptation:
-                relinquish.append('earth')
-            if self.lightningAdaptation:
-                relinquish.append('lightning')
-            if relinquish != []:
-                rel = random.choice(relinquish)
-                if rel == 'fire':
-                    self.relinquishFire()
-                elif rel == 'cold':
-                    self.relinquishCold()
-                elif rel == 'earth':
-                    self.relinquishEarth()
-                elif rel == 'lightning':
-                    self.relinquishLightning()
-                console.print(f"[asc_calamity]Calamity:[/asc_calamity] Relinquished {rel.title()} Adaptation.")
-                if not self.calamity:
-                    self.checkCalamity()
+            self.relinquishRandomAdaptation()
 
         elif self._ascendancy == 'Empyrean':
             self.gainMastery()
@@ -429,8 +545,8 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
         return critDamage
 
-    def onBeforeCritRoll(self, targetUnit, targets, combatManager):
-        if self._ascendancy == 'Unmaker' and self.unmakerPrecision == 10 and self.unmakerCritChanceDoubled:
+    def onAfterCritRoll(self, targetUnit, targets, combatManager):
+        if self._ascendancy == 'Unmaker' and self.unmakerCritChanceDoubled:
             self._stats['baseCritChance'] /= 2
             self._stats['Bonuses']['crit_chance'] /= 2
             self._stats['Temporary']['crit_chance'] /= 2
@@ -469,10 +585,13 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
         if self._ascendancy == 'Calamity':
             if damageType in ELEMENTAL_RES or damageType == 'arcane':
+                attacker._logDamage(f"{self._name}'s Calamity (Elemental/Arcane Damage Taken)", percent=0.1)
                 damageTaken = int(damageTaken * 1.1)
             else:
+                attacker._logDamage(f"{self._name}'s Calamity (Non-Elemental/Arcane Damage Taken)", percent=-0.1)
                 damageTaken = int(damageTaken * 0.9)
             if self.calamity:
+                attacker._logDamage(f"{self._name}'s Calamity", percent=-0.2)
                 damageTaken = int(damageTaken * 0.8)
 
         elif self._ascendancy == 'Arcanist' and damageType in ELEMENTAL_RES:
@@ -489,16 +608,34 @@ class Mage(Player): # higher damage, lower health, arcane damage
     def onKill(self, entity, attackData, combatManager):
         super().onKill(entity, attackData, combatManager)
 
-        if self._ascendancy == 'Calamity' and attackData['damageType'] in DIVINE_RES:
+        if self._ascendancy == 'Calamity' and attackData.get('damageType') in DIVINE_RES:
+            burstDamage = self._damage // 2
+            console.print(f"[asc_calamity]Calamity: Killing {entity._name} with Divine Damage unleashes {burstDamage} Arcane Damage upon all enemies![/asc_calamity]")
             for e in combatManager.allAlive:
-                e.damage(self._damage // 2, 'arcane')
+                e.damage(burstDamage, 'arcane')
 
         elif self._ascendancy == 'Unmaker':
             if self.mastery < self.maxMastery:
                 self.gainMastery()
             else:
-                heal = int(attackData['damage'] * 0.05)
-                self.heal(heal)
+                heal = int(attackData.get('damage', 0) * 0.05)
+                self.heal(heal, reason="Unmaker (Max Mastery - 5% of Damage Dealt)")
+
+        # generic ability.effects.onKill processing - available to any Mage ability
+        ability = attackData.get('ability') if attackData else None
+        onKillFx = ability.effects.get('onKill', {}) if ability else {}
+        if onKillFx:
+            manaPct = onKillFx.get('mana_restore', {}).get('percent', 0)
+            if manaPct:
+                gained = int(self._maxMana * manaPct)
+                self._mana = min(self._maxMana, self._mana + gained)
+                console.print(f"[class_mage]{ability.name} claims its due! Restored {gained} Mana.[/class_mage]")
+
+            healPct = onKillFx.get('heal', {}).get('percent', 0)
+            if healPct:
+                heal = int(self._maxHealth * healPct)
+                self.heal(heal, doPrint=False)
+                console.print(f"[class_mage]{ability.name} claims its due! Healed {heal} HP.[/class_mage]")
 
         return {}
 
@@ -564,35 +701,35 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
     ASCENDANCY_DELTAS = {
         'Calamity': {
-            '_baseHealth': -20,
-            '_baseDamage': 6,
+            '_baseHealth': -15,
+            '_baseDamage': 10,
             '_baseSpeed': 0.15,
             'manaRegen': 10,
         },
         'Arcanist': {
-            '_baseHealth': 20,
-            '_baseDamage': -4,
-            '_baseSpeed': -0.1,
+            '_baseHealth': 40,
+            '_baseDamage': 0,
+            '_baseSpeed': -0.05,
             'manaCostMultiplier': 0.1,
         },
         'Hierophant': {
-            '_baseHealth': 20,
-            '_baseDamage': 4,
+            '_baseHealth': 25,
+            '_baseDamage': 8,
             '_baseSpeed': -0.1,
             '_stats.Permanent.elemental': 5,
             '_stats.Permanent.divine': 5,
         },
         'Empyrean': {
             '_baseHealth': 25,
-            '_baseDamage': -4,
+            '_baseDamage': 0,
             '_baseSpeed': -0.1,
             'manaRegen': 5,
             '_stats.baseCritChance': 0.05,
-            '_stats.Permanent.added_energy_shield': 50,
+            '_stats.Permanent.added_energy_shield': 25,
         },
         'Unmaker': {
-            '_baseHealth': -20,
-            '_baseDamage': 5,
+            '_baseHealth': -10,
+            '_baseDamage': 10,
             '_baseSpeed': 0.1,
             '_stats.baseCritMulti': 0.25,
         },
@@ -612,5 +749,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self.ascendancyDescription = MAGE_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
+        self.gainClassAbilities()
+        return True
 
 ...

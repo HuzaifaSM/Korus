@@ -8,7 +8,8 @@ import subprocess
 from scripts.player import Player, selectClass, deserialisePlayer
 from scripts.enemy import Enemy, createEnemy
 from scripts.combat import CombatManager
-from scripts.items import RESOURCES, CONSUMABLES
+from scripts.items import CONSUMABLES
+from scripts.runeDrops import rollGuaranteedRunes
 from scripts.camp import Camp
 from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, displayExistingSaves
 from scripts.debug import Debugger
@@ -268,7 +269,7 @@ class Game:
             defStr = " | ".join(defParts)
             console.print(f"{defStr}")
 
-            console.print(f"[xp]XP:[/xp] {self.player._xp}/{self.player._xpToNextLevel}")
+            console.print(f"[xp]XP:[/xp] {self.player._xp}/{self.player._xpToNextLevel} | [gold1]Gold:[/gold1] {self.player._gold}")
             console.print(f"\n[info]Area Level:[/info] {self.areaLevel} | [success]Battles Won:[/success] {self.battlesWon}")
 
             difficultyDisplay = self.difficulty.getDisplayName()
@@ -282,11 +283,10 @@ class Game:
             console.print("[dim]1)[/dim] [green]Explore[/green] [dim](Find Enemies)[dim]")
             console.print("[dim]2)[/dim] [cyan]Player Menu[/cyan]")
             console.print("[dim]3)[/dim] [bright_cyan]Go to Camp[/bright_cyan]")
-            console.print("[dim]4)[/dim] [blue]View Quests[/blue]")
-            console.print("[dim]5)[/dim] [grey58]Options Menu[/grey58]")
-            console.print("[dim]6.[/dim] [gold3]View Class Details[/gold3]")
+            console.print("[dim]4)[/dim] [grey58]Options Menu[/grey58]")
+            console.print("[dim]5.[/dim] [gold3]View Class Details[/gold3]")
             if self.areaLevel > 1:
-                console.print("[dim]7.[/dim] [dark_red]Reduce Area Level by 1[/dark_red] [dim](Costs 3 Souls)[/dim]")
+                console.print("[dim]6.[/dim] [dark_red]Reduce Area Level by 1[/dark_red] [dim](Costs 3 Souls)[/dim]")
 
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
 
@@ -299,11 +299,14 @@ class Game:
                 continue
 
             if choice.lower() == "debug" or choice.startswith("/"):
-                auto = None
-                if choice.startswith("/"):
-                    auto = choice.split("/")[1]
-                self.debugger.mainMenu(autoCommand=auto)
-                continue
+                if self.debugAllowed:
+                    auto = None
+                    if choice.startswith("/"):
+                        auto = choice.split("/")[1]
+                    self.debugger.mainMenu(autoCommand=auto)
+                    continue
+                else:
+                    printWarning("Debugging is currently disabled!")
             elif choice.lower() == "data":
                 console.print("\n[bold cyan]=== ALL GAME DATA ===[/bold cyan]")
                 console.print(f"[red]{self._serialise()}[/red]")
@@ -324,10 +327,8 @@ class Game:
                     case 3:
                         self.camp.mainMenu()
                     case 4:
-                        self.camp.questBoard.displayQuests()
-                    case 5:
                         self.optionsMenu()
-                    case 6:
+                    case 5:
                         clearScreen()
                         printHeader("Player Class Details")
                         playerAsc = self.player._ascendancy
@@ -337,7 +338,7 @@ class Game:
                         console.print(self.player.classDescription)
                         console.print(ascStr)
                         pause()
-                    case 7:
+                    case 6:
                         if self.areaLevel > 1:
                             playerSouls = self.player.getItem('soul')
                             if playerSouls >= 3:
@@ -713,7 +714,7 @@ class Game:
         console.print("="*50)
         pause()
 
-    def postBattle(self, result: str, enemies: List[Enemy]):
+    def postBattle(self, result: str, enemies: List[Enemy], *, waveEncounter: bool = False, lootBonus: int = 0):
         if result == "victory":
             self.player.onCombatEnd()
             self.battlesWon += 1
@@ -727,7 +728,7 @@ class Game:
                 printHeader("Area Level Increased!")
                 console.print(f"[gold1]=== New Area Level: {self.areaLevel} ===[/gold1]")
                 console.print("[warning]Enemies will be stronger, and rewards will be greater...[/warning]")
-            self.victory(enemies)
+            self.victory(enemies, waveEncounter, lootBonus)
         elif result == "defeat":
             clearScreen()
             displayDeath()
@@ -751,9 +752,7 @@ class Game:
             addToDeathLog(self)
             exit()
 
-    def explore(self):
-        clearScreen()
-        printHeader("Exploring...")
+    def _singleCombat(self):
         console.print("[dim]You look around for a fight...[/dim]")
         time.sleep(1)
         console.print("[warning]You've encountered something![/warning]")
@@ -763,19 +762,81 @@ class Game:
         result = self.startCombat(enemies)
         self.postBattle(result, enemies)
 
-    def generateEnemies(self) -> List[Enemy]:
+    def _waveCombat(self):
+        numWaves = random.randint(2, max(6, (3 + (self.player._level // 15))))
+        currentWave = 1
+        rewardPerWave = 100 // numWaves # final wave grants 100% increased item rarity/quantity
+        lootBonus = 0
+        fled = False
+
+        while currentWave < numWaves and not fled:
+            console.print(f"[dim]Wave:[/dim] {currentWave}/{numWaves}")
+
+            cont = console.input("[bold red]Continue to the next wave? (Y/N)[/bold red]\n[cyan]>[/cyan] ").lower().strip()
+
+            if cont == 'n':
+                fled = True
+                console.print("[dim]You fled from the rest of the waves![/dim]")
+
+            elif cont == 'y':
+
+                time.sleep(0.5)
+                console.print("[dim]Next Wave Begins![/dim]")
+                time.sleep(1)
+
+                lootBonus += rewardPerWave
+
+                enemies = self.generateEnemies(waveEncounter=True, lootBonus=lootBonus)
+
+                result = self.startCombat(enemies)
+                self.postBattle(result, enemies, waveEncounter=True, lootBonus=lootBonus)
+
+                currentWave += 1
+
+            else:
+                continue
+
+    def explore(self):
+        if self.player._level < 20:
+            self._singleCombat()
+        else:
+            while True:
+                clearScreen()
+                printHeader("Select Combat Style")
+                console.print("[dim]0.[/dim] Exit")
+                console.print("[dim]1.[/dim] Fight a random Enemy Encounter")
+                console.print("[dim]2.[/dim] Fight waves of Enemies")
+
+                try:
+                    choice = int(console.input("[cyan]>[/cyan] "))
+                    if choice == 0:
+                        return
+                    elif choice == 1:
+                        self._singleCombat()
+                    elif choice == 2:
+                        self._waveCombat()
+
+                except ValueError:
+                    printWarning("Invalid input")
+
+    def generateEnemies(self, waveEncounter: bool = False, lootBonus: int = 0) -> List[Enemy]:
         numEnemies = random.randint(min(3, 1 + (self.player._level + self.areaLevel) // 40), min(1 + self.areaLevel//8, 4))
         enemyBonus = self.player._stats['Bonuses']['enemy_quantity']
         multiplier = 1 + (enemyBonus / 100)
-        numEnemies = int(numEnemies * multiplier)
-        numEnemies = min(numEnemies, 8) # hard cap at 8 enemies
+        numEnemies = min(8, int(numEnemies * multiplier)) # hard cap at 8 enemies
 
         enemies = []
+        if waveEncounter:
+            enemyLevel = self.player._level + (self.areaLevel // 2) - 1
+        else:
+            enemyLevel = self.player._level + self.areaLevel - 1
+        difficulty = self.difficulty.getMultiplier()
+
+        rarity = (self.player._stats['Bonuses']["item_rarity"] + self.player._getExtraBonuses('item_rarity') + lootBonus) / 100
+        quantity = (self.player._stats['Bonuses']["item_quantity"] + self.player._getExtraBonuses('item_quantity') + lootBonus) / 100
+
         for _ in range(numEnemies):
-            enemyLevel = self.areaLevel + (self.player._level) - 1
-            enemyLevel = max(1, enemyLevel) # ensures minimum enemy level 1
-            difficulty = self.difficulty.getMultiplier()
-            enemies.append(createEnemy(enemyLevel, difficulty))
+            enemies.append(createEnemy(enemyLevel, difficulty, rarity, quantity))
 
         return enemies
 
@@ -871,7 +932,7 @@ class Game:
             console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
             console.print("[dim]P. Pass Turn[/dim]")
             if self.player.className == 'Druid':
-                console.print(f"[dim]S.[/dim] [green]Shapeshift [dim] (Free Action) | Current Form: {self.player.form.title()}[/dim][/green]")
+                console.print(f"[dim]Current Form:[/dim] {self.player.form.title()}")
             console.print()
 
             if self.player._abilities:
@@ -895,13 +956,6 @@ class Game:
             # elif action.lower() == 'c':
             #     self.useCombatConsumable()
             #     continue
-            elif action.lower() == 's' and self.player.className == 'Druid':
-                self.player._shapeShift()
-                abilities = self.player._abilities
-                abilityTables = createAbilityTables(abilities, self.player._damageType)
-                console.print(abilityTables)
-                console.print()
-                continue
             elif action.lower() == 'f':
                 console.print("[red]Fled from battle.[/red]")
                 self.combatManager.battleActive = False
@@ -968,13 +1022,12 @@ class Game:
         pause()
         self.combatManager.nextTurn()
 
-    def victory(self, enemies: List[Enemy]):
+    def victory(self, enemies: List[Enemy], waveEncounter: bool = False, lootBonus: int = 0):
         clearScreen()
         displayVictory()
 
         totalXp = 0
         totalGold = 0
-        totalResources = 0
         allLoot = {}
         allEquipment = []
         allRunes = []
@@ -999,10 +1052,11 @@ class Game:
             resources, equipmentPool, runes = enemy.dropLoot()
             
             for resource, (minAmt, maxAmt, dropChance) in resources.items():
+                minAmt = int(minAmt)
+                maxAmt = int(maxAmt)
                 if random.random() <= dropChance:
                     amount = random.randint(minAmt, maxAmt)
                     allLoot[resource] = allLoot.get(resource, 0) + amount
-                    totalResources += amount
 
             for equipment, dropChance in equipmentPool:
                 if random.random() <= dropChance:
@@ -1011,14 +1065,18 @@ class Game:
             for category, runeType in runes:
                 allRunes.append((category, runeType))
 
-        xpBonus = self.player._stats['Bonuses']['xp_gain']
+        if waveEncounter:
+            bonusRuneCap = (self.player._level // 20) + (self.areaLevel // 15)
+            bonusRuneCount = random.randint(3, max(4, min(10, bonusRuneCap)))
+            allRunes.extend(rollGuaranteedRunes(self.player._level, bonusRuneCount))
+
+        xpBonus = self.player._stats['Bonuses']['xp_gain'] + lootBonus
         if xpBonus > 0:
             effectiveBonus = xpBonus / (1 + (xpBonus / 100))
             xpModifier = effectiveBonus / 100
         else:
             xpModifier = xpBonus / 100
-        goldBonus = self.player._stats['Bonuses']['gold_gain']
-        itemBonus = self.player._stats['Bonuses']['item_quantity']
+        goldBonus = self.player._stats['Bonuses']['gold_gain'] + lootBonus
 
         if xpBonus > 0:
             bonusXp = round(totalXp * xpModifier)
@@ -1028,14 +1086,6 @@ class Game:
             bonusGold = round(totalGold * (goldBonus / 100))
             totalGold += bonusGold
             console.print(f"[buff]Gold Bonus: +{bonusGold} (+{goldBonus}%)[/buff]")
-        if itemBonus > 0:
-            bonusItems = int(totalResources * (itemBonus / 100))
-            if bonusItems > 0:
-                for item in allLoot:
-                    if item in RESOURCES:
-                        proportion = allLoot[item] / totalResources
-                        allLoot[item] += int(bonusItems * proportion)
-            console.print(f"[buff][Item Bonus: +{bonusItems} total items (+{itemBonus}%)][/buff]")
 
         console.print("\n[gold1 bold]=== Rewards ===[/gold1 bold]")
         self.player.gainExperience(totalXp)
@@ -1126,8 +1176,10 @@ def main():
             printInfo(f"  - {jsonPath}")
             
         if game and hasattr(game, 'player') and game.player:
-            printInfo("\nYour game state has been saved and can be recovered/loaded at any time. The crash save is save file 999")
-            save(game, 999)
+            saveCrash = console.input("[green]Would you like to save your file before the game exits? (Y/N)[/green]").lower().strip()
+            if saveCrash == 'y':
+                printInfo("\nYour game state has been saved and can be recovered/loaded at any time. The crash save is save file 999")
+                save(game, 999)
         pause()
         raise
 

@@ -166,7 +166,21 @@ KORUS_THEME = Theme({
     "asc_arbiter": "sky_blue3 bold",
     "asc_transgressor": "orchid2 bold",
     "asc_triarch": "grey54 bold",
-    "asc_autarch": "gold3 bold"
+    "asc_autarch": "gold3 bold",
+
+    # Fighter stance thresholds
+    "threshold_complacent": "grey50 bold",
+    "threshold_neutral": "grey70 bold",
+    "threshold_trained": "dodger_blue2 bold",
+    "threshold_dedicated": "dark_orange bold",
+    "threshold_allin": "red1 bold",
+
+    # Druid ascendancy family
+    "asc_heartwood": "dark_green bold",
+    "asc_skinwalker": "orange_red1 bold",
+    "asc_confluence": "sea_green2 bold",
+    "asc_wellspring": "gold1 bold",
+    "asc_numen": "grey58 bold"
 })
 
 # -- keyword highlighting: maps literal keyword text to a theme style key.
@@ -179,9 +193,10 @@ KEYWORDS: Dict[str, str] = {
     "Lost": "resource", "Ghostly": "resource", "Manic": "resource", "Stable": "resource",
     "Static": "resource", "Flow": "resource", "Vengeance": "resource",
     "Hope": "resource", "Hopeless": "resource",
+    "Aggression": "resource", "Discipline": "resource",
 
     # generic stat / affix terms
-    "Crit Chance": "critical", "Critical Chance": "critical",
+    "Crit Chance": "critical", "Critical Chance": "critical", "Critically Hit": "critical",
     "Crit Multi": "critical", "Critical Multiplier": "critical",
     "Crit Damage": "critical", "Critical Damage": "critical",
     "Damage Reduction": "resistance", "Resistance": "resistance",
@@ -276,7 +291,15 @@ KEYWORDS: Dict[str, str] = {
     "Fortify": "asc_juggernaut", "Bastion": "asc_juggernaut",
     "Annihilation": "asc_annihilist",
 
+    # Fighter stance thresholds
+    "Complacent": "threshold_complacent",
+    "Neutral": "threshold_neutral",
+    "Trained": "threshold_trained",
+    "Dedicated": "threshold_dedicated",
+    "All-In": "threshold_allin",
+
     # Fighter ascendancy mechanics
+    "Stance": "class_fighter",
     "Impatience": "asc_dissenter",
     "Balance": "asc_arbiter",
     "Pact": "asc_autarch",
@@ -288,8 +311,11 @@ KEYWORDS: Dict[str, str] = {
     "Precision": "asc_unmaker",
 
     # Druid ascendancy mechanics
-    "Residual": "buff", "Earthbound": "debuff",
-    "Lunar Fury": "buff", "Lunar Empowerment": "buff",
+    "Root": "asc_heartwood", "Rootbound": "asc_heartwood",
+    "Elderbark": "asc_heartwood", "Loam": "asc_heartwood",
+    "Ferocity": "asc_skinwalker", "Instinct": "asc_skinwalker",
+    "Flux": "asc_confluence",
+    "Blooming": "asc_wellspring",
 }
 
 # matches an opening or closing rich markup tag, e.g. "[gold1 bold]" or "[/health]"
@@ -452,6 +478,18 @@ def formatDamageValue(damage: int) -> str:
     else:
         return 'red3 bold underline'
 
+def formatDamageBreakdown(baseDamage: int, log: List, finalDamage: int, damageType: str) -> List[str]:
+    dmgTypeFormatted = formatDamageType(damageType.title(), damageType)
+    lines = [f"[damage]Dealt {baseDamage} {dmgTypeFormatted} Damage.[/damage]"]
+    for reason, flat, percent in log:
+        if percent:
+            verb = "Increased" if percent > 0 else "Reduced"
+            lines.append(f"  [dim]- {abs(percent) * 100:.0f}% {verb} Damage from {reason}[/dim]")
+        if flat:
+            sign = "+" if flat > 0 else "-"
+            lines.append(f"  [dim]- {sign}{abs(flat)} Damage from {reason}[/dim]")
+    return lines
+
 def formatEffectsSummary(effects: Dict) -> str:
     parts = []
     for side in ('target', 'self'):
@@ -597,7 +635,11 @@ def createInventoryTable(inventory: dict) -> Table:
 
     return table
 
-def createEquipmentStoragePages(equipmentList: list, itemsPerColumn: int = 5) -> Dict[int, Table]:
+def createEquipmentStoragePages(equipmentList: list, itemsPerColumn: int = 5, render: Optional[Callable] = None) -> Dict[int, Table]:
+    """Paginates `equipmentList` into a 2-column Rich Table per page, numbered globally
+    across pages. Each item is placed into its cell as-is unless `render` is given, in
+    which case the cell content is `render(item)` instead (e.g. to prefix a location
+    label onto an (label, Equipment) tuple)."""
     itemsPerPage = itemsPerColumn * 2
     pages: Dict[int, Table] = {}
     totalPages = max(1, (len(equipmentList) + itemsPerPage - 1) // itemsPerPage)
@@ -619,6 +661,9 @@ def createEquipmentStoragePages(equipmentList: list, itemsPerColumn: int = 5) ->
             leftItem = leftItems[row] if row < len(leftItems) else ""
             rightNum = str(startIdx + itemsPerColumn + row + 1) if row < len(rightItems) else ""
             rightItem = rightItems[row] if row < len(rightItems) else ""
+            if render:
+                leftItem = render(leftItem) if leftItem != "" else ""
+                rightItem = render(rightItem) if rightItem != "" else ""
             table.add_row(leftNum, leftItem, rightNum, rightItem)
 
         pages[pageNum] = table
@@ -954,7 +999,7 @@ def formatPlayerMechanics(player, col: list) -> list:
             col.append(f"[asc_unmaker]Precision:[/asc_unmaker] {player.unmakerPrecision}/10")
 
     elif player.className == 'Fighter':
-        col.append(f"[class_fighter]Aggression:[/class_fighter] {player.aggression} ({player.currentAggressionTreshold.value.title()}) | [class_fighter]Discipline:[/class_fighter] {player.discipline} ({player.currentDisciplineThreshold.value.title()})")
+        col.append(f"[class_fighter]Aggression:[/class_fighter] {player.aggression} ({player.currentAggressionTreshold.value.title()})\n[class_fighter]Discipline:[/class_fighter] {player.discipline} ({player.currentDisciplineThreshold.value.title()})")
         if player.stanceCap != 100:
             col.append(f"[class_fighter]Stance Cap:[/class_fighter] {player.stanceCap}")
 

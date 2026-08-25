@@ -2,17 +2,17 @@
 Crafting Sandbox - Test your crafting runes!
 """
 from scripts.items import Equipment, ItemRarity
-from crafting.chaosRune import CHAOS_RUNES
-from crafting.erasingRune import ERASING_RUNES
-from crafting.growthRune import GROWTH_RUNES
-from crafting.randomiserRunes import RANDOMISER_RUNES
-from crafting.uniqueRunes import UNIQUE_RUNES
-from crafting.masteryRune import MASTERY_RUNES
-from crafting.rarityRune import RARITY_RUNES
-from crafting.destabilisationRune import DESTABILISATION_RUNES
-from crafting.revealingRune import REVEALING_RUNES
-from crafting.manipulationRune import MANIPULATION_RUNES
-from crafting.base import CraftOutcome
+from scripts.crafting.chaosRune import CHAOS_RUNES
+from scripts.crafting.erasingRune import ERASING_RUNES
+from scripts.crafting.growthRune import GROWTH_RUNES
+from scripts.crafting.randomiserRunes import RANDOMISER_RUNES
+from scripts.crafting.uniqueRunes import UNIQUE_RUNES
+from scripts.crafting.masteryRune import MASTERY_RUNES
+from scripts.crafting.rarityRune import RARITY_RUNES
+from scripts.crafting.destabilisationRune import DESTABILISATION_RUNES
+from scripts.crafting.revealingRune import REVEALING_RUNES
+from scripts.crafting.manipulationRune import MANIPULATION_RUNES
+from scripts.crafting.base import CraftOutcome
 from scripts.styles import console, pause, printError
 from rich.prompt import Prompt, IntPrompt
 

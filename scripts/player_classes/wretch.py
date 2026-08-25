@@ -17,13 +17,13 @@ WRETCH_DESCRIPTIONS = {
         "- Upon critically striking an enemy with Blood Spike stacks, consume all stacks to deal 5% Increased damage per stack.\n"
         "- Whenever an enemy dies to a critical hit, a random enemy takes Dark damage equal to 20% of the killed enemy's Max HP. If there are no more enemies, instead heal for 10% Max HP.\n"
         "- Abilities will consume Energy Shield before Health if it is available. Abilities which use Energy Shield ignore 15% of the target's Armour.\n"
-        "[bold]Stat Changes:[/bold] +10 HP. +4 Damage. +5% Crit Chance. -25% Crit Damage. +50 Energy Shield.",
+        "[bold]Stat Changes:[/bold] +10 HP. +1 Damage. +5% Crit Chance. -25% Crit Damage. +25 Energy Shield.",
     "Bloodletter": "[lore]They called your suffering a weakness. Prove them wrong. Bleed. Grow. Your scars only make you stronger.[/lore]"
         "- Abilities have 50% Increased Health cost. While below 20% Health: Deal 30% Increased Dark Damage, gain +10% Lifesteal.\n"
         "- While above 60% Health: -20% Divine Resistance, +10% Otherworld Resistance. Store all Divine and Otherworld damage taken.\n"
         "- Whenever you are attacked by an enemy, deal Dark Damage to them equal to 5% of Health lost in combat. At the end of combat, heal for 33% of all Divine and Otherworld damage taken.\n"
         "- When an enemy is executed by Blood Spike, all remaining enemies take True damage equal to 1% of their Max HP per stack of Blood Spike on the executed enemy.\n"
-        "[bold]Stat Changes:[/bold] +25 HP. -3 Damage. -0.1 Speed. +15% Dark Resistance. +5% Otherworld Resistance.",
+        "[bold]Stat Changes:[/bold] +20 HP. +2 Damage. +0.1 Speed. +15% Dark Resistance. +5% Otherworld Resistance.",
     "Plaguebearer": "[lore]They made a mockery of your ways. Now make a mockery of their corpses. Let them fester and rot. Each battle is just another experiment.[/lore]"
         "- You can apply up to 7 stacks of Blood Spike on an enemy. Enemies with 7 stacks of Blood Spike deal 20% Less Damage.\n"
         "- Whenever an enemy is executed by Blood Spike, all remaining enemies gain Blood Spike stacks equal to 50% of the stacks on the executed enemy.\n"
@@ -36,14 +36,14 @@ WRETCH_DESCRIPTIONS = {
         "- Whenever an enemy critically hits you, consume all stacks of Necrosis on them and reflect 5% of the damage taken per Necrosis consumed.\n"
         "- Whenever an enemy is executed by Blood Spike, heal for 5% Max HP and gain Rot for 3 turns: +25% Increased Damage, +0.2 Speed, -50% Crit Damage.\n"
         "- While above 60% Health: +10% Crit Chance, +50% Crit Damage. While below 40% Health: +5% Damage Reduction, +5% Lifesteal, -5% [all]All[/all] Resistance.\n"
-        "[bold]Stat Changes:[/bold] -15 HP. +5 Damage. +0.1 Speed. +15% Dark Resistance. +10% Resistance Penetration",
+        "[bold]Stat Changes:[/bold] -10 HP. +10 Damage. +0.1 Speed. +15% Dark Resistance. +10% Resistance Penetration",
     "Necromancer": "[lore]Living or dead, neither matters. All will serve, for a time. Show them loyalty means nothing. Watch as they rip each other to shreds.[/lore]"
         "- Upon killing an enemy, you may choose to convert them into a skeleton for 3 turns.\n"
         "- Skeletons are allies created from the killed enemy, keeping a portion of their stats and items, scaling off of your level.\n"
         "- You can only convert one enemy per battle. If the converted enemy is the final enemy in combat, it will join you for the first 3 turns of your next combat.\n"
         "- Whenever an enemy is executed by Blood Spike, they will use a basic attack on another living enemy before dying.\n"
         "- If an enemy is executed by Blood Spike and converted, it will retain more of its stats and items.\n"
-        "[bold]Stat Changes:[/bold] +20 HP. -4 Damage. -0.1 Speed. +5 HP Regen. +10% Otherworld Resistance."
+        "[bold]Stat Changes:[/bold] +40 HP. +2 Damage. -0.1 Speed. +5 HP Regen. +10% Otherworld Resistance."
 }
 
 class Wretch(Player):
@@ -71,7 +71,7 @@ class Wretch(Player):
         self.abilityUsedEnergyShield = False
         if self._ascendancy == 'Exsanguinator' and self.energyShield > 0:
             fromShield = min(self.energyShield, amount)
-            self._stats['energyShield'] -= fromShield
+            self._stats['energy_shield'] -= fromShield
             amount -= fromShield
             if fromShield > 0:
                 self.abilityUsedEnergyShield = True
@@ -85,6 +85,14 @@ class Wretch(Player):
             self.bloodScent = min(5, self.bloodScent + 1)
             self._stats['Temporary']['lifesteal'] += 2
             self._stats['Temporary']['speed'] += 0.05
+
+    def consumeBloodScent(self) -> int:
+        stacks = self.bloodScent
+        if stacks > 0:
+            self._stats['Temporary']['lifesteal'] -= 2 * stacks
+            self._stats['Temporary']['speed'] -= 0.05 * stacks
+            self.bloodScent = 0
+        return stacks
 
     def gainRot(self):
         if self._ascendancy == 'Necrose':
@@ -146,12 +154,27 @@ class Wretch(Player):
             if combatManager and len(combatManager.allAlive) > 0:
                 dmg = int(entity._maxHealth * 0.2)
                 pick = random.choice(combatManager.allAlive)
+                console.print(f"[asc_exsanguinator]Exsanguinator: {pick._name} takes 20% of {entity._name}'s Max HP as Dark damage![/asc_exsanguinator]")
                 pick.damage(dmg, 'dark')
             else:
                 heal = int(self._maxHealth * 0.1)
-                self.heal(heal)
+                self.heal(heal, reason="Exsanguinator (No Enemies Remaining)")
         if self._ascendancy == 'Plaguebearer':
             self.gainBloodScent()
+
+        # generic ability.effects.on_kill processing - available to any Wretch ascendancy ability
+        ability = attackData.get('ability')
+        onKillFx = ability.effects.get('on_kill', {}) if ability else {}
+        if onKillFx:
+            healPct = onKillFx.get('heal_percent_max_hp', 0)
+            if healPct:
+                heal = int(self._maxHealth * healPct / 100)
+                self.heal(heal, False)
+                console.print(f"[class_wretch]{ability.name} claims its due! Healed {heal} HP.[/class_wretch]")
+
+            if onKillFx.get('grant_rot') and self._ascendancy == 'Necrose':
+                self.gainRot()
+                console.print(f"[asc_necrose]Necrose: {ability.name} grants Rot.[/asc_necrose]")
 
         return {}
 
@@ -170,7 +193,7 @@ class Wretch(Player):
             target.damage(target._health, 'true')
             combatManager.checkDead(target)
             heal = self._maxHealth * (0.01 * target.bloodSpike)
-            self.heal(heal)
+            self.heal(heal, reason=f"Blood Spike Execution ({target.bloodSpike} stacks)")
 
             if self._ascendancy == 'Bloodletter':
                 dmgMult = 0.01 * target.bloodSpike
@@ -189,7 +212,7 @@ class Wretch(Player):
 
             elif self._ascendancy == 'Necrose':
                 heal = int(self._maxHealth * 0.05)
-                self.heal(heal)
+                self.heal(heal, reason="Necrose (Blood Spike Execution)")
                 self.gainRot()
 
             self.onKill(target, {'executed': True}, combatManager)
@@ -211,16 +234,74 @@ class Wretch(Player):
         finalDamage = super().onAfterMitigation(attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager)
         if self._ascendancy == 'Bloodletter':
             reflect = int(self.healthLost * 0.05)
+            console.print(f"[asc_bloodletter]Bloodletter: {attacker._name} takes {reflect} Dark Damage from 5% of {self._name}'s Health lost this combat![/asc_bloodletter]")
             attacker.damage(reflect, 'dark', attacker.combatUnit)
         elif self._ascendancy == 'Plaguebearer' and attacker.bloodSpike == 7:
+            attacker._logDamage(f"{self._name}'s Blood Spike (Plaguebearer)", percent=-0.2)
             finalDamage = int(finalDamage * 0.8)
         elif self._ascendancy == 'Necrose':
             attacker.applyNecrosis()
             self.necrosisApplied += 1
         return finalDamage
 
+    def onAbilityCast(self, ability, combatManager):
+        super().onAbilityCast(ability, combatManager)
+        if not ability:
+            return
+
+        if self._ascendancy == 'Exsanguinator' and 'gain_es_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_energy_shield', {})
+            pct = fx.get('percent_max', 0) / 100
+            gained = int(self.maxEnergyShield * pct)
+            if gained > 0:
+                self._stats['energy_shield'] = min(self.maxEnergyShield, self.energyShield + gained)
+                console.print(f"[asc_exsanguinator]Exsanguinator: {ability.name} grants {gained} Energy Shield.[/asc_exsanguinator]")
+
+        if self._ascendancy == 'Bloodletter' and 'consume_stored_damage' in ability.tags and ability.category == 'buff':
+            fx = ability.effects.get('self', {}).get('consume_stored_damage', {})
+            stored = self.divineOtherworldDamageTaken
+            if stored > 0:
+                healPct = fx.get('heal_percent_of_stored', 0) / 100
+                healAmt = int(stored * healPct)
+                self.divineOtherworldDamageTaken = 0
+                if healAmt > 0:
+                    self.heal(healAmt, False)
+                    console.print(f"[asc_bloodletter]Bloodletter: {ability.name} converts {stored} stored damage into {healAmt} healing.[/asc_bloodletter]")
+
+        if self._ascendancy == 'Plaguebearer' and 'bonus_blood_scent_on_hit' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_blood_scent', {})
+            stacks = fx.get('stacks', 0)
+            if stacks > 0:
+                for _ in range(stacks):
+                    self.gainBloodScent()
+                console.print(f"[asc_plaguebearer]Plaguebearer: {ability.name} grants {stacks} stack(s) of Blood Scent.[/asc_plaguebearer]")
+
+        if self._ascendancy == 'Necrose' and 'necrosis_shield_bonus' in ability.tags:
+            fx = ability.effects.get('self', {}).get('necrosis_shield_bonus', {})
+            pctPerPoint = fx.get('percent_per_point', 0) / 100
+            gained = int(self._maxHealth * pctPerPoint * self.necrosisApplied)
+            if gained > 0:
+                self._shield += gained
+                console.print(f"[asc_necrose]Necrose: {ability.name} grants {gained} Shield from {self.necrosisApplied} Necrosis applied this combat.[/asc_necrose]")
+
+        if self._ascendancy == 'Necromancer':
+            if 'extend_skeleton' in ability.tags and self.currentSkeleton and self.skeletonTurns > 0:
+                fx = ability.effects.get('self', {}).get('extend_skeleton', {})
+                turns = fx.get('turns', 0)
+                if turns > 0:
+                    self.skeletonTurns += turns
+                    console.print(f"[asc_necromancer]Necromancer: {self.currentSkeleton._name} is bound for {turns} more turn(s).[/asc_necromancer]")
+
+            if 'command_skeleton' in ability.tags and combatManager and self.currentSkeleton and self.skeletonTurns > 0:
+                fx = ability.effects.get('self', {}).get('command_skeleton', {})
+                extraAttacks = fx.get('extra_attacks', 0)
+                for _ in range(extraAttacks):
+                    combatManager.resolveSkeletonAttack(self)
+
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
+
+        targetEntity = target.entity if target else None
 
         if ability and target:
             bonusSpike = ability.effects.get('target', {}).get('blood_spike', {}).get('stacks', 0)
@@ -233,16 +314,100 @@ class Wretch(Player):
                         self.bloodSpikeApplied += gained
                     console.print(f"[class_wretch]Wretch: {ability.name} applies {gained} extra stack(s) of Blood Spike to {entity._name}![/class_wretch]")
 
+        if ability and targetEntity:
+            if self._ascendancy == 'Exsanguinator' and 'consumes_target_spike' in ability.tags and targetEntity.bloodSpike > 0:
+                fx = ability.effects.get('self', {}).get('consume_target_spike', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                healPerStack = fx.get('heal_per_stack', 0)
+                stacksConsumed = targetEntity.bloodSpike
+                targetEntity.bloodSpike = 0
+                self._logDamage(f"Consumed {stacksConsumed} Blood Spike (Exsanguinator)", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                healAmt = healPerStack * stacksConsumed
+                if healAmt > 0:
+                    self.heal(healAmt, False)
+                console.print(f"[asc_exsanguinator]Exsanguinator: {ability.name} drains {stacksConsumed} Blood Spike! +{int(dmgPerStack * stacksConsumed * 100)}% Damage, healed {healAmt} HP.[/asc_exsanguinator]")
+
+            if self._ascendancy == 'Bloodletter' and 'bonus_from_health_lost' in ability.tags and self.healthLost > 0:
+                fx = ability.effects.get('self', {}).get('health_lost_scaling', {})
+                pct = fx.get('percent_per_health_lost', 0) / 100
+                bonus = int(self.healthLost * pct)
+                if bonus > 0:
+                    self._logDamage(f"{self.healthLost} Health Lost this Combat (Bloodletter)", flat=bonus)
+                    damageDealt += bonus
+                    console.print(f"[asc_bloodletter]Bloodletter: {ability.name} draws on {self.healthLost} lost Health this combat for +{bonus} Damage.[/asc_bloodletter]")
+
+            if self._ascendancy == 'Bloodletter' and 'consume_stored_damage' in ability.tags:
+                fx = ability.effects.get('self', {}).get('consume_stored_damage', {})
+                stored = self.divineOtherworldDamageTaken
+                if stored > 0:
+                    healPct = fx.get('heal_percent_of_stored', 0) / 100
+                    dmgPct = fx.get('damage_percent_of_stored', 0) / 100
+                    healAmt = int(stored * healPct)
+                    dmgAmt = int(stored * dmgPct)
+                    self.divineOtherworldDamageTaken = 0
+                    if healAmt > 0:
+                        self.heal(healAmt, False)
+                    if dmgAmt > 0:
+                        self._logDamage(f"Consumed {stored} Stored Damage (Bloodletter)", flat=dmgAmt)
+                        damageDealt += dmgAmt
+                    console.print(f"[asc_bloodletter]Bloodletter: {ability.name} converts {stored} stored damage - healed {healAmt} HP, +{dmgAmt} Damage.[/asc_bloodletter]")
+
+            if self._ascendancy == 'Plaguebearer' and 'consume_blood_scent' in ability.tags and self.bloodScent > 0:
+                fx = ability.effects.get('self', {}).get('consume_blood_scent', {})
+                dmgPerStack = fx.get('damage_per_stack', 0)
+                spreadPerStack = fx.get('spread_spike_per_stack', 0)
+                stacksConsumed = self.consumeBloodScent()
+                bonus = dmgPerStack * stacksConsumed
+                if bonus > 0:
+                    self._logDamage(f"Consumed {stacksConsumed} Blood Scent (Plaguebearer)", flat=bonus)
+                    damageDealt += bonus
+                spreadAmt = spreadPerStack * stacksConsumed
+                if spreadAmt > 0 and combatManager:
+                    for e in combatManager.allAlive:
+                        e.bloodSpike = min(self.maxBloodSpikeStacks, e.bloodSpike + spreadAmt)
+                spreadMsg = f", spread {spreadAmt} Blood Spike to all enemies" if spreadAmt > 0 else ""
+                console.print(f"[asc_plaguebearer]Plaguebearer: {ability.name} consumes {stacksConsumed} Blood Scent! +{bonus} Damage{spreadMsg}.[/asc_plaguebearer]")
+
+            if self._ascendancy == 'Necrose' and 'bonus_necrosis_on_hit' in ability.tags:
+                fx = ability.effects.get('target', {}).get('necrosis', {})
+                stacks = fx.get('stacks', 0)
+                if stacks > 0:
+                    for _ in range(stacks):
+                        targetEntity.applyNecrosis()
+                    self.necrosisApplied += stacks
+
+            if self._ascendancy == 'Necrose' and 'consume_target_necrosis' in ability.tags and targetEntity.necrosis > 0:
+                fx = ability.effects.get('self', {}).get('consume_target_necrosis', {})
+                dmgPerStack = fx.get('damage_per_stack', 0)
+                healPerStack = fx.get('heal_per_stack', 0)
+                stacksConsumed = targetEntity.removeNecrosis()
+                bonus = dmgPerStack * stacksConsumed
+                healAmt = healPerStack * stacksConsumed
+                self._logDamage(f"Consumed {stacksConsumed} Necrosis (Necrose)", flat=bonus)
+                damageDealt += bonus
+                if healAmt > 0:
+                    self.heal(healAmt, False)
+                console.print(f"[asc_necrose]Necrose: {ability.name} harvests {stacksConsumed} Necrosis! +{bonus} Damage, healed {healAmt} HP.[/asc_necrose]")
+
         if self._health < (0.4 * self._maxHealth) and damageType == 'dark':
+            self._logDamage("Below 40% Health (Wretch)", percent=0.2)
             damageDealt = int(damageDealt * 1.2)
 
+        if self._ascendancy == 'Bloodletter' and self.under20LastTurn and damageType == 'dark':
+            self._logDamage("Below 20% Health (Bloodletter)", percent=0.3)
+            damageDealt = int(damageDealt * 1.3)
+
         if self._ascendancy == 'Plaguebearer' and self.bloodScent > 0:
-            damageDealt = int(damageDealt * (1.1 * self.bloodScent))
+            self._logDamage(f"Blood Scent ({self.bloodScent} stacks)", percent=0.1 * self.bloodScent)
+            damageDealt = int(damageDealt * (1 + (0.1 * self.bloodScent)))
 
         elif self._ascendancy == 'Necrose' and (self.bloodSpikeApplied > 0 or self.necrosisApplied > 0):
             total = self.bloodSpikeApplied + self.necrosisApplied
-            damageDealt = int(damageDealt * (1.02 * total))
+            self._logDamage(f"Blood Spike + Necrosis Applied ({total}) (Necrose)", percent=0.02 * total)
+            damageDealt = int(damageDealt * (1 + (0.02 * total)))
             if self.rotTurns > 0:
+                self._logDamage("Rot (Necrose)", percent=0.25)
                 damageDealt = int(damageDealt * 1.25)
 
         return damageDealt, damageType
@@ -255,6 +420,7 @@ class Wretch(Player):
                 self.divineOtherworldDamageTaken += damageTaken
 
         if self._ascendancy == 'Necrose' and self.under40LastTurn:
+            attacker._logDamage(f"{self._name}'s Necrose (Below 40% Health)", percent=-0.05)
             damageTaken = int(damageTaken * 0.95)
 
         return damageTaken, damageType
@@ -296,10 +462,10 @@ class Wretch(Player):
     def onCombatEnd(self):
         if self._ascendancy == 'Bloodletter':
             heal = int(self.divineOtherworldDamageTaken * 0.33)
-            self.heal(heal)
+            self.heal(heal, reason="Bloodletter (Stored Divine/Otherworld Damage)")
         elif self._ascendancy == 'Plaguebearer':
             heal = int(self._maxHealth * 0.02 * self.bloodScent)
-            self.heal(heal)
+            self.heal(heal, reason=f"Plaguebearer ({self.bloodScent} Blood Scent stacks)")
 
         self.divineOtherworldDamageTaken = 0
         self.healthLost = 0
@@ -333,11 +499,9 @@ class Wretch(Player):
 
         if self._ascendancy == 'Bloodletter':
             if not self.under20LastTurn and self._health <= (self._maxHealth * 0.2):
-                self._stats['Temporary']['increased_dark_damage'] += 30
                 self.under20LastTurn = True
                 self._stats['Temporary']['lifesteal'] += 10
             elif self.under20LastTurn and self._health > (self._maxHealth * 0.2):
-                self._stats['Temporary']['increased_dark_damage'] -= 30
                 self._stats['Temporary']['lifesteal'] -= 10
                 self.under20LastTurn = False
 
@@ -366,6 +530,7 @@ class Wretch(Player):
         crit, damage = super().rollCritical(target, damageDealt)
         if crit and self._ascendancy == 'Exsanguinator':
             if target and target.entity.bloodSpike > 0:
+                console.print(f"[asc_exsanguinator]Exsanguinator: Consuming {target.entity.bloodSpike} Blood Spike for +{int(0.05 * target.entity.bloodSpike * 100)}% Critical Damage![/asc_exsanguinator]")
                 damage = int(damage * (1 + (0.05 * target.entity.bloodSpike)))
 
         return crit, damage
@@ -376,11 +541,11 @@ class Wretch(Player):
             '_baseDamage': 1,
             '_stats.baseCritChance': 0.05,
             '_stats.baseCritMulti': -0.25,
-            '_stats.Permanent.added_energy_shield': 50,
+            '_stats.Permanent.added_energy_shield': 25,
             'maxBloodSpikeStacks': 5,
         },
         'Bloodletter': {
-            '_baseHealth': 25,
+            '_baseHealth': 20,
             '_baseDamage': 2,
             '_baseSpeed': 0.1,
             '_stats.Permanent.dark': 15,
@@ -394,16 +559,16 @@ class Wretch(Player):
             'maxBloodSpikeStacks': -3,
         },
         'Necrose': {
-            '_baseHealth': -15,
-            '_baseDamage': 3,
+            '_baseHealth': -10,
+            '_baseDamage': 10,
             '_baseSpeed': 0.1,
             '_stats.Permanent.dark': 15,
             '_stats.Permanent.resistance_penetration': 10,
             'maxBloodSpikeStacks': -5,
         },
         'Necromancer': {
-            '_baseHealth': 20,
-            '_baseDamage': -2,
+            '_baseHealth': 40,
+            '_baseDamage': 2,
             '_baseSpeed': -0.1,
             '_stats.Permanent.hp_regen': 5,
             '_stats.Permanent.otherworld': 10,
@@ -423,3 +588,5 @@ class Wretch(Player):
         self.ascendancyDescription = WRETCH_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
+        self.gainClassAbilities()
+        return True

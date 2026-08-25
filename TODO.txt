@@ -1,6 +1,7 @@
 BUGS:
 - Dreadnought (marauder ascendancy) currently does not grant +5% max cold resistance. must be implemented after max resistances are added/implemented properly
 - enemy ability have no tags
+- damage breakdown doesn't show flat damage reduction factored in
 
 NEW AFFIXES:
   - +x to max y resistance suffix (rings, amulet, armour)
@@ -17,15 +18,6 @@ NEW AFFIXES:
         > all res roll 7-10
   > mythic and soulbound affixes could include learning new abilities
 
-- debug/fix/test until a full playtest can be run, play to level 20 without crafting/shops and record stats to help balance ascendancies per class
-  > Classes complete:
-    - Cultist: 159 HP, 51 Damage, 1.09 Speed, 107 Armour, 131 Evasion. Resistances: 8% Lightning, 7% Arcane, 18% Psychic, 7% Divine (40% total)
-
-  > Classes in progress:
-    - paladin
-    - wretch
-    - warrior
-
 OTHER STUFF:
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
   - add foresight rune
@@ -36,36 +28,25 @@ OTHER STUFF:
         > foresightResults cleared whenever a rune is actually applied
   - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, forge runePages, etc.)
   - a tutorial option on the start menu
+
+CURRENTLY WORKING ON: (main order of implementation)
   - should display armour and evasion amount using values from combatManager
   - playtime per save file
   - when an ability upgrades, it should display the upgrade same as a normal ability 
   - equipment equipping should be split between item categories
-
-CURRENTLY WORKING ON: (main order of implementation)
-  - rework druid
-
-  - ascendancy abilities:
-    > ascendancies add 2 abilities each, with 2 evolutions, and edit up to 2 existing base class abilities
-
-  - new main menu option:
-    > instead of 'explore' to fight a random group of enemies, "fight waves of enemies"
-      - either explore is split into 'random group' vs 'waves' or its available directly in main menu, probably better inside explore
-    > waves of enemies option only unlocks after level 20
-    > simply spawns multiple encounters with a minimum enemy count of 2 per encounter, ranging from 2-x waves, could be increased by player level
-    > players get .onBattleEnd procs at the end of waves, letting them heal, potentially added heal on top if too challenging
-    > all loot is savec in a large loot table, then distributed accordingly at the end of the waves
-    > might be sensible to max wave encounters scale off of (areaLevel // 2) so that it feels like 'a swarm of slightly weaker than usual' enemies
-    > actual benefits to wave encounters:
-      - increased xp and gold gain per wave defeated
-      - increased equipment/runes from per wave defeated
-        > added + randomly rolled extras separate from actual enemy drops
-        > higher average rarity gear per number of waves defeated
+  
+  - when being displayed runes in forge crafting:
+    > sometime table glitches and shows multiple of the same rune on multiple different rows/columns
+    > there should be a check in runePages: if slot is weapon, no defense randomisers, vice versa, and only show correct rarity runes
 
   - consumable rework
 
   - item rework
+    > weapons most likely need significant base damage nerfs: carry early game too hard
 
   - market rework
+
+  - rethink value of questBoard, potential to remove if no mechanical benefit can be found (game plays completely fine without it)
 
   - completely rewrite help.py and all sections of Help to better explain everything
     > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.

@@ -22,7 +22,7 @@ WANDERER_DESCRIPTIONS = {
         "- Whilst you have more Hopeless than Hope, you cannot Critically Hit, but Lost attacks deal 60% Increased Damage.\n"
         "- Upon critically hitting an enemy, take Psychic damage equal to 2% of your Max HP and gain 1 Hope.\n"
         "- When an enemy critically hits you, heal 1% Max HP per stack of Hope and Hopeless you have, and gain 1 Hopeless.\n"
-        "[bold]Stat Changes:[/bold] -10 HP. +4 Damage. +0.05 Speed. +3% Crit Chance. +20% Crit Damage.",
+        "[bold]Stat Changes:[/bold] -5 HP. +10 Damage. +0.05 Speed. +3% Crit Chance. +20% Crit Damage.",
     "Manifestation": "[lore]Your search was fruitless. A meaningless excuse. No longer. The truth shall rewrite reality. Become as you were, and unmake them.[/lore]"
         "- Lost triggers upon taking more than 5% of your Max HP as damage. Lost attacks have a 20% Chance to miss. Upon missing a Lost attack, apply Otherworld Exposure to all enemies, and lose 3 Hope.\n"
         "- When gaining Hope or Hopeless, gain twice as much. Hope and Hopeless have a maximum of 8 stacks.\n"
@@ -30,7 +30,7 @@ WANDERER_DESCRIPTIONS = {
         "- Transcendence: All attacks are Critical Hits, 20% Increased Defenses, 25% Increased Psychic Damage, 75% Less Evasion.\n"
         "- If you are hit whilst you have Transcendence, your attacker takes True damage equal to 5% of their Max HP.\n"
         "- Whenever an enemy dies, randomly consume all your Hope or Hopeless. Consuming Hope heals you for 3% Max HP per stack consumed. Consuming Hopeless grants 20% Increased damage on your next attack per stack consumed.\n"
-        "[bold]Stat Changes:[/bold] +25 HP. -4 Damage. -0.05 Speed. +25% Crit Damage.",
+        "[bold]Stat Changes:[/bold] +40 HP. -0.05 Speed. +25% Crit Damage.",
     "Weaver": "[lore]Peace, a dull concept. Harmony, a beautiful one. Unfurl the tapestry of fate. Recreate them in your image. Then cut them down, until threads remain.[/lore]"
         "- 20% Increased Psychic Damage dealt. 30% Less Non-Psychic Damage dealt. Upon taking Divine Damage, gain 2 Hopeless.\n"
         "- Devastation now also grants +10% Crit Chance, -0.2 Speed, and 10% Reduced Defenses.\n"
@@ -40,7 +40,7 @@ WANDERER_DESCRIPTIONS = {
         "- If you trigger Lost whilst you have Harmony, heal for 10% of the Damage Dealt.\n"
         "- When Lost is triggered, apply Weaken and Exposed to all enemies and gain +10 Damage for the rest of combat.\n"
         "- Upon killing an enemy, overkill damage is dealt evenly split to all living enemies.\n"
-        "[bold]Stat Changes:[/bold] +20 HP. -4 Damage. +0.05 Speed. +20% Crit Damage. +10% Psychic Resistance.",
+        "[bold]Stat Changes:[/bold] +25 HP. +0.05 Speed. +20% Crit Damage. +10% Psychic Resistance.",
     "Abyssal": "[lore]Peace? Salvation? These words have no meaning. The darkness is your home. Your vitality, your army. The Abyss calls you by name, and it is ravenous for their corpses.[/lore]"
         "- You are always Lost. Lost has no damage bonus. 15% Less Damage Dealt. 10% Increased Max HP. 25% of Energy Shield converted to Max HP.\n"
         "- Hope and Hopeless have a maximum of 10 stacks. Radiance and Devastation have 50% Increased Effect.\n"
@@ -58,14 +58,14 @@ WANDERER_DESCRIPTIONS = {
         "- At the start of your turn, if you are not Lost or Warped, take Psychic damage equal to 5% of your Max HP. This damage cannot kill you.\n"
         "- If you have Radiance, you are Immune to Psychic Damage. If you have Devastation, 20% Increased Defenses, +2% Max HP Regen.\n"
         "- If your attack is fully blocked by Energy Shield, gain Lost and Warped, and deal True damage to the enemy equal to 3% of your Current HP.\n"
-        "[bold]Stat Changes:[/bold] +15 HP. +4 Damage. -0.1 Speed. +10% Physical Resistance. +25% Crit Damage.",
+        "[bold]Stat Changes:[/bold] +15 HP. +10 Damage. -0.1 Speed. +10% Physical Resistance. +25% Crit Damage.",
     "Mindbreaker": "[lore]Embrace the suffering. Pull them in with you. Their minds are weak, and you are the whisper of doom. Feel their sanity decay, then dismantle them swiftly.[/lore]"
         "- Non-critical hits against you deal 20% Less Damage. All Psychic Damage permanently applies Torture on targets. Torture: +2% Damage Taken, -2% Damage Dealt.\n"
         "- When Lost triggers, 1% Chance per Torture for Damage Dealt to each individual target to be doubled and apply Otherworld Exposure.\n"
         "- Enemies lose all Torture upon critically hitting you. Upon being critically hit, double how much Hope or Hopeless you have, based on whichever resource has more stacks.\n"
         "- If you have Radiance or Devastation, apply twice as much Torture. If you have Radiance, enemies are unable to lose Torture. If you have Devastation, enemies lose 1% Max HP per Torture upon losing Torture.\n"
         "- If you have Radiance, take 30% Less Damage from Otherworld Damage. If you have Devastation, chance to deal double damage per Torture is doubled.\n"
-        "[bold]Stat Changes:[/bold] -20 HP. +5 Damage. -0.1 Speed. +2% Crit Chance. +20% Crit Damage. +10% Psychic Resistance.",
+        "[bold]Stat Changes:[/bold] +5 HP. +10 Damage. +2% Crit Chance. +20% Crit Damage. +10% Psychic Resistance.",
 }
 
 class Wanderer(Player):
@@ -168,7 +168,7 @@ class Wanderer(Player):
             maxHeal = self._maxHealth - self._health
             heal = min(maxHeal, int(self._maxHealth * (0.1 if self._ascendancy != 'Abyssal' else 0.15)))
             excess = int(self._maxHealth * 0.1) - heal
-            self.heal(heal)
+            self.heal(heal, False)
             self._shield += excess
             shieldStr = f" and gained {excess} Shield" if excess > 0 else ""
             console.print(f"[class_wanderer]Wanderer: Radiance! Healed for {heal} HP{shieldStr}.[/class_wanderer]")
@@ -259,13 +259,21 @@ class Wanderer(Player):
             self.hunted = 0
             self.huntedAttackThisTurn = True
 
+    def gainWarped(self):
+        if not self.warped:
+            self.warped = True
+            self._stats['Temporary']['lifesteal'] += 20
+            self._stats['Temporary']['crit_chance'] += 0.1
+
     def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
-        if random.random() < self.lostHitChance:
-            if self._ascendancy == 'Manifestation':
+        if self._ascendancy == 'Manifestation' and self.lostTrigger and damageType != 'heal':
+            if random.random() >= self.lostHitChance:
                 console.print('  [warning]- Manifestation: Lost attack missed! Applied Otherworld Exposure to all enemies.[/warning]')
                 exposure = Effects.createOtherworldExposure()
                 for enemy in combatManager.allAlive:
                     combatManager.addStatusEffect(enemy, exposure, self)
+                for _ in range(3):
+                    self.loseHope()
                 return damage, damageType, None
 
         if self.lostTrigger and damageType != 'heal':
@@ -295,9 +303,50 @@ class Wanderer(Player):
                     target.tortureStacks += 1
             doubleDamageChance = target.tortureStacks / (100 if not self.devastation else 50)
             if self.lostTrigger and random.random() <= doubleDamageChance:
+                self._logDamage(f"Torture Proc ({target.tortureStacks} Torture, Mindbreaker)", percent=1.0)
                 finalDamage *= 2
                 self._queueEffect(Effects.createOtherworldExposure())
         return finalDamage
+
+    def onAbilityCast(self, ability, combatManager):
+        super().onAbilityCast(ability, combatManager)
+        if not ability:
+            return
+
+        if 'lost_reset' in ability.tags and ability.effects.get('self', {}).get('lost_charge', {}).get('activate'):
+            self.lostTrigger = True
+            console.print(f"[class_wanderer]Wanderer: {ability.name} triggers Lost![/class_wanderer]")
+
+        if self._ascendancy == 'Fractured' and 'gain_fracture_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_fracture', {})
+            for _ in range(fx.get('stacks', 0)):
+                self.gainFracture()
+
+        if self._ascendancy == 'Manifestation' and 'gain_hope_and_hopeless_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_dual', {})
+            stacks = fx.get('stacks', 0)
+            for _ in range(stacks):
+                self.gainHope()
+                self.gainHopeless()
+            if stacks > 0:
+                console.print(f"[asc_manifestation]Manifestation: {ability.name} grants {stacks} Hope and {stacks} Hopeless.[/asc_manifestation]")
+
+        if self._ascendancy == 'Weaver' and 'gain_woven_damage_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_woven', {})
+            amount = fx.get('amount', 0)
+            if amount > 0:
+                self.wovenDamage += amount
+                console.print(f"[asc_weaver]Weaver: {ability.name} adds {amount} to your Woven Damage.[/asc_weaver]")
+
+        if self._ascendancy == 'Abyssal' and 'gain_hunted_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_hunted', {})
+            for _ in range(fx.get('stacks', 0)):
+                self.gainHunted()
+
+        if self._ascendancy == 'Warper' and 'grants_warped_and_lost_on_cast' in ability.tags:
+            self.lostTrigger = True
+            self.gainWarped()
+            console.print(f"[asc_warper]Warper: {ability.name} grants Lost and Warped.[/asc_warper]")
 
     def onKill(self, entity, attackData, combatManager):
         super().onKill()
@@ -308,7 +357,7 @@ class Wanderer(Player):
             consume = random.choice(['hope', 'hopeless'])
             if consume == 'hope':
                 hopeHeal = 0.03 * self.hope
-                self.heal(hopeHeal)
+                self.heal(hopeHeal, reason="Manifestation (Consumed Hope on Kill)")
                 for _ in range(self.hope):
                     self.loseHope()
             else:
@@ -330,7 +379,28 @@ class Wanderer(Player):
             heal = int(self._maxHealth * 0.1)
             if self.radiance:
                 heal *= 2
-            self.heal(heal)
+            self.heal(heal, reason=f"Hunted Attack Kill{' (Radiance Doubled)' if self.radiance else ''} (Abyssal)")
+
+        # generic ability.effects.onKill processing - available to any Wanderer ability
+        ability = attackData.get('ability') if attackData else None
+        onKillFx = ability.effects.get('onKill', {}) if ability else {}
+        if onKillFx:
+            if onKillFx.get('lost_charge', {}).get('activate'):
+                self.lostTrigger = True
+                console.print(f"[class_wanderer]{ability.name} triggers Lost![/class_wanderer]")
+
+            regenFx = onKillFx.get('regeneration')
+            if regenFx:
+                pct = regenFx.get('amount_percent', 0)
+                pct = pct / 100 if pct > 1 else pct
+                effect = Effects.createRegeneration(regenFx.get('turns', 2), pct, regenFx.get('amount_flat', 0))
+                combatManager.addStatusEffect(self, effect, self)
+
+            healPct = onKillFx.get('heal', {}).get('percent', 0)
+            if healPct:
+                heal = int(self._maxHealth * healPct)
+                self.heal(heal, False)
+                console.print(f"[class_wanderer]{ability.name} claims its due! Healed {heal} HP.[/class_wanderer]")
 
         return {}
 
@@ -338,7 +408,7 @@ class Wanderer(Player):
         if self._ascendancy == 'Warper':
             if finalDamage == 0 and esDamagePrevented > 0:
                 self.lostTrigger = True
-                self.warped = True
+                self.gainWarped()
                 dmg = int(self._health * 0.03)
                 target.damage(dmg, 'true')
 
@@ -346,6 +416,88 @@ class Wanderer(Player):
 
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
+
+        targetEntity = target.entity if target else None
+
+        if ability:
+            if self._ascendancy == 'Fractured' and 'consumes_fracture_for_damage' in ability.tags and self.fracture > 0:
+                fx = ability.effects.get('self', {}).get('consume_fracture', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                stacksConsumed = self.fracture
+                self.loseAllFracture()
+                self._logDamage(f"Consumed {stacksConsumed} Fracture ({ability.name})", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[asc_fractured]Fractured: {ability.name} consumes {stacksConsumed} Fracture for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_fractured]")
+
+            if self._ascendancy == 'Manifestation' and 'consumes_higher_resource' in ability.tags and (self.hope > 0 or self.hopeless > 0):
+                fx = ability.effects.get('self', {}).get('consume_higher', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                if self.hope >= self.hopeless:
+                    stacksConsumed = self.hope
+                    for _ in range(stacksConsumed):
+                        self.loseHope()
+                else:
+                    stacksConsumed = self.hopeless
+                    for _ in range(stacksConsumed):
+                        self.loseHopeless()
+                self._logDamage(f"Consumed {stacksConsumed} stacks ({ability.name})", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[asc_manifestation]Manifestation: {ability.name} consumes {stacksConsumed} stacks for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_manifestation]")
+
+            if self._ascendancy == 'Weaver' and 'consumes_imbalance' in ability.tags and self.hope != self.hopeless:
+                fx = ability.effects.get('self', {}).get('consume_imbalance', {})
+                dmgPerPoint = fx.get('damage_per_point', 0)
+                diff = abs(self.hope - self.hopeless)
+                if self.hope > self.hopeless:
+                    for _ in range(diff):
+                        self.loseHope()
+                else:
+                    for _ in range(diff):
+                        self.loseHopeless()
+                bonus = dmgPerPoint * diff
+                self._logDamage(f"Weaved {diff} Imbalance ({ability.name})", flat=bonus)
+                damageDealt += bonus
+                console.print(f"[asc_weaver]Weaver: {ability.name} weaves away {diff} imbalance for +{bonus} Damage.[/asc_weaver]")
+
+            if self._ascendancy == 'Abyssal' and 'consumes_hunted_for_damage' in ability.tags and self.hunted > 0:
+                fx = ability.effects.get('self', {}).get('consume_hunted', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                stacksConsumed = self.hunted
+                self._stats['Temporary']['speed'] += 0.1 * stacksConsumed
+                if self.hunted == 3:
+                    self._stats['Temporary']['crit_chance'] -= 1
+                self.hunted = 0
+                self._logDamage(f"Consumed {stacksConsumed} Hunted ({ability.name})", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[asc_abyssal]Abyssal: {ability.name} consumes {stacksConsumed} Hunted for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_abyssal]")
+
+            if self._ascendancy == 'Warper' and 'consumes_warped_amplified' in ability.tags and self.warped:
+                fx = ability.effects.get('self', {}).get('consume_warped_amplified', {})
+                bonus = fx.get('damage_bonus', 0)
+                self.warped = False
+                self._stats['Temporary']['lifesteal'] -= 20
+                self._stats['Temporary']['crit_chance'] -= 0.1
+                self._logDamage(f"Unmade Warped ({ability.name})", flat=bonus)
+                damageDealt += bonus
+                console.print(f"[asc_warper]Warper: {ability.name} unmakes Warped early for +{bonus} Damage.[/asc_warper]")
+
+            if targetEntity and self._ascendancy == 'Mindbreaker':
+                if 'bonus_torture_on_hit' in ability.tags:
+                    fx = ability.effects.get('target', {}).get('torture', {})
+                    stacks = fx.get('stacks', 0)
+                    if stacks > 0:
+                        targetEntity.tortureStacks += stacks
+                        console.print(f"[asc_mindbreaker]Mindbreaker: {ability.name} applies {stacks} Torture to {targetEntity._name}.[/asc_mindbreaker]")
+
+                if 'consumes_target_torture' in ability.tags and targetEntity.tortureStacks > 0:
+                    fx = ability.effects.get('self', {}).get('consume_target_torture', {})
+                    dmgPerStack = fx.get('damage_per_stack', 0)
+                    stacksConsumed = targetEntity.tortureStacks
+                    targetEntity.tortureStacks = 0
+                    bonus = dmgPerStack * stacksConsumed
+                    self._logDamage(f"Broke {stacksConsumed} Torture ({ability.name})", flat=bonus)
+                    damageDealt += bonus
+                    console.print(f"[asc_mindbreaker]Mindbreaker: {ability.name} breaks {stacksConsumed} Torture for +{bonus} Damage.[/asc_mindbreaker]")
 
         if self._ascendancy == 'Fractured':
             if self.lostTrigger and self.fracture == 5:
@@ -359,6 +511,7 @@ class Wanderer(Player):
                 self.devastationDamage += int(self._maxHealth * 0.03 * (1.5 if self._ascendancy == 'Abyssal' else 1))
 
             if self._ascendancy != 'Abyssal':
+                self._logDamage("Lost", percent=0.5)
                 damageDealt = int(damageDealt * 1.5)
                 self.lostTrigger = False
             if self._ascendancy == 'Fractured':
@@ -366,45 +519,65 @@ class Wanderer(Player):
                 if self.radiance:
                     self.gainFracture()
                 if self.hope < self.hopeless:
+                    self._logDamage("Hopeless > Hope, Lost Attack (Fractured)", percent=0.6)
                     damageDealt = int(damageDealt * 1.6)
             elif self._ascendancy == 'Weaver' and self.harmony:
                 heal = int(damageDealt * 0.1)
-                self.heal(heal)
+                self.heal(heal, reason="Harmony (Weaver, 10% of Lost Damage Dealt)")
 
             self.randomGainHopeOrHopeless()
 
+        if self.hope > 0:
+            self._logDamage("Hope", percent=0.1 * self.hope)
         damageDealt = int(damageDealt * (1 + (0.1 * self.hope)))
 
         if self.devastation:
+            self._logDamage("Devastation", percent=1.5 if self._ascendancy == 'Abyssal' else 1.0)
             damageDealt = int(damageDealt * (2.5 if self._ascendancy == 'Abyssal' else 2))
 
         if self._ascendancy == 'Fractured' and self.fracture > 0:
             if damageType == 'psychic':
+                self._logDamage(f"Fracture ({self.fracture} stacks)", percent=0.05 * self.fracture)
                 damageDealt = int(damageDealt * (1 + 0.05 * self.fracture))
             if self.fracture >= 5:
+                self._logDamage("Max Fracture (5 stacks)", percent=0.5)
                 damageDealt = int(damageDealt * 1.5)
             if self.hope > self.hopeless and not crit:
+                self._logDamage("Hope > Hopeless, Non-Critical (Fractured)", percent=-0.4)
                 damageDealt = int(damageDealt * 0.6)
 
         elif self._ascendancy == 'Manifestation':
             if self.transcendence and damageType == 'psychic':
+                self._logDamage("Transcendence (Manifestation)", percent=0.25)
                 damageDealt = int(damageDealt * 1.25)
+            if self.manifestationIncreasedDamagePercent:
+                self._logDamage("Consumed Hopeless (Manifestation)", percent=self.manifestationIncreasedDamagePercent)
             damageDealt = int(damageDealt * (1 + self.manifestationIncreasedDamagePercent))
             self.manifestationIncreasedDamagePercent = 0
 
         elif self._ascendancy == 'Weaver':
+            if self.wovenDamage:
+                self._logDamage("Woven Damage (Weaver)", flat=self.wovenDamage)
             damageDealt += self.wovenDamage
             if damageType == 'psychic':
+                self._logDamage("Psychic Damage (Weaver)", percent=0.2)
                 damageDealt = int(damageDealt * 1.2)
             else:
+                self._logDamage("Non-Psychic Damage (Weaver)", percent=-0.3)
                 damageDealt = int(damageDealt * 0.7)
             if self.harmony:
+                self._logDamage("Harmony (Weaver)", percent=0.3)
                 damageDealt = int(damageDealt * 1.3)
 
         elif self._ascendancy == 'Abyssal':
+            self._logDamage("Abyssal (Always Lost, No Damage Bonus)", percent=-0.15)
             damageDealt = int(damageDealt * 0.85)
+            if damageType == 'psychic' and self.abyssalPsychicBuff:
+                self._logDamage("Cumulative Psychic Damage (Abyssal)", percent=self.abyssalPsychicBuff)
             if damageType == 'psychic':
                 damageDealt = int(damageDealt * (1 + self.abyssalPsychicBuff))
+            if self.hunted > 0:
+                self._logDamage(f"Hunted ({self.hunted} stacks)", percent=0.25 * self.hunted)
             damageDealt = int(damageDealt * (1 + (0.25 * self.hunted)))
             self.abyssalDamageDealt += damageDealt
 
@@ -421,6 +594,7 @@ class Wanderer(Player):
         damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
         if self.devastation:
+            attacker._logDamage(f"{self._name}'s Devastation", percent=0.2 if self._ascendancy != 'Abyssal' else 0.3)
             damageTaken = int(damageTaken * (1.2 if self._ascendancy != 'Abyssal' else 1.3))
 
         if damageTaken >= round(self._maxHealth * self.lostPercent):
@@ -438,21 +612,23 @@ class Wanderer(Player):
             if damageTaken <= int(self._maxHealth * 0.05):
                 self.lostTrigger = True
             if self.lostTrigger and not self.warped:
-                self.warped = True
-                self._stats['Temporary']['lifesteal'] += 20
-                self._stats['Temporary']['crit_chance'] += 0.1
+                self.gainWarped()
 
         elif self._ascendancy == 'Weaver' and damageType in DIVINE_RES:
             self.gainHopeless()
             self.gainHopeless()
 
         elif self._ascendancy == 'Abyssal':
+            if self.hunted > 0:
+                attacker._logDamage(f"{self._name}'s Hunted ({self.hunted} stacks)", percent=0.05 * self.hunted)
             damageTaken = int(damageTaken * (1 + (0.05 * self.hunted)))
 
         elif self._ascendancy == 'Mindbreaker':
             if not crit:
+                attacker._logDamage(f"{self._name}'s Mindbreaker (Non-Critical)", percent=-0.2)
                 damageTaken = int(damageTaken * 0.8)
             if self.radiance and damageType in OTHERWORLD_RES:
+                attacker._logDamage(f"{self._name}'s Mindbreaker Radiance (Otherworld Resistance)", percent=-0.3)
                 damageTaken = int(damageTaken * 0.7)
 
         return damageTaken, damageType
@@ -484,6 +660,7 @@ class Wanderer(Player):
             self.damage(damageTaken, 'psychic')
             self.gainHope()
             if self.hope > self.hopeless:
+                console.print("[asc_fractured]Fractured: Hope exceeds Hopeless - Critical Damage doubled![/asc_fractured]")
                 critDamage *= 2
 
         elif self._ascendancy == 'Abyssal':
@@ -501,7 +678,7 @@ class Wanderer(Player):
     def onCriticallyHit(self, attacker, combatManager, critDamage, damageType):
         if self._ascendancy == 'Fractured':
             heal = int(self._maxHealth * 0.01 * (self.hope + self.hopeless))
-            self.heal(heal)
+            self.heal(heal, reason="Fractured (Critically Hit, Hope+Hopeless stacks)")
             self.gainHopeless()
 
         elif self._ascendancy == 'Weaver':
@@ -544,7 +721,7 @@ class Wanderer(Player):
                 self.damage(damage, 'psychic', lethal=False)
             if self.devastation:
                 heal = int(self._maxHealth * 0.02)
-                self.heal(heal)
+                self.heal(heal, reason="Devastation (Warper, Max HP Regen)")
 
         super().onTurnStart(combatManager)
 
@@ -584,21 +761,21 @@ class Wanderer(Player):
 
     ASCENDANCY_DELTAS = {
         'Fractured': {
-            '_baseHealth': -10,
-            '_baseDamage': 4,
+            '_baseHealth': -5,
+            '_baseDamage': 10,
             '_baseSpeed': 0.05,
             '_stats.baseCritChance': 0.02,
             '_stats.baseCritMulti': 0.2,
         },
         'Manifestation': {
-            '_baseHealth': 25,
-            '_baseDamage': -4,
+            '_baseHealth': 40,
+            '_baseDamage': 0,
             '_baseSpeed': -0.05,
             '_stats.baseCritMulti': 0.25,
         },
         'Weaver': {
-            '_baseHealth': 20,
-            '_baseDamage': -4,
+            '_baseHealth': 25,
+            '_baseDamage': 0,
             '_baseSpeed': 0.05,
             '_stats.baseCritMulti': 0.2,
             '_stats.Permanent.psychic': 10,
@@ -613,15 +790,14 @@ class Wanderer(Player):
         },
         'Warper': {
             '_baseHealth': 15,
-            '_baseDamage': 4,
+            '_baseDamage': 10,
             '_baseSpeed': -0.1,
             '_stats.Permanent.physical': 10,
             '_stats.baseCritMulti': 0.25,
         },
         'Mindbreaker': {
-            '_baseHealth': -20,
-            '_baseDamage': 5,
-            '_baseSpeed': -0.1,
+            '_baseHealth': 5,
+            '_baseDamage': 10,
             '_stats.baseCritChance': 0.02,
             '_stats.baseCritMulti': 0.2,
             '_stats.Permanent.psychic': 10,
@@ -662,5 +838,7 @@ class Wanderer(Player):
             self.maxHope = 10
             self.maxHopeless = 10
         self._recalculateStats()
+        self.gainClassAbilities()
+        return True
 
 ...

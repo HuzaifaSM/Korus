@@ -371,7 +371,7 @@ class Equipment(Item):
         e.baseEntropyResistance = data.get('baseEntropyResistance', ENTROPY_RESISTANCE[e.rarity])
         e.entropyResistance = data.get('entropyResistance', e.baseEntropyResistance)
         e.destabilised = data.get('destabilised', False)
-        from crafting.destabilisationRune import DestabilisedAffix
+        from scripts.crafting.destabilisationRune import DestabilisedAffix
         e.destabilisedAffixes = []
         for daData in data.get('destabilisedAffixes', []):
             da = DestabilisedAffix(
@@ -1157,7 +1157,38 @@ RARITY_WEIGHTS = {
     ItemRarity.MYTHIC: 0.2,
 }
 
-def rollRarity(level: int = 0) -> ItemRarity:
+def _shiftRarityWeights(rarity: float, weights: Dict[ItemRarity, float]) -> Dict[ItemRarity, float]:
+    if rarity == 1.0:
+        return weights # no change
+
+    DISTRIBUTION = {
+        ItemRarity.COMMON: -0.2,
+        ItemRarity.UNCOMMON: 0.2,
+        ItemRarity.RARE: 0.5,
+        ItemRarity.EPIC: 0.4,
+        ItemRarity.LEGENDARY: 0.1,
+        ItemRarity.MYTHIC: 0,
+    }
+    if weights[ItemRarity.MYTHIC] > 0:
+        DISTRIBUTION[ItemRarity.LEGENDARY] -= 0.05
+        DISTRIBUTION[ItemRarity.MYTHIC] += 0.05
+
+    shiftAmount = rarity - 1.0 # positive = rarer, negative = more common
+
+    newWeights = dict(weights)
+    commonShift = weights[ItemRarity.COMMON] * abs(DISTRIBUTION[ItemRarity.COMMON]) * shiftAmount
+    newWeights[ItemRarity.COMMON] = max(weights[ItemRarity.COMMON] * 0.05, weights[ItemRarity.COMMON] - commonShift)
+    commonShift = weights[ItemRarity.COMMON] - newWeights[ItemRarity.COMMON] # actual amount moved, after the floor clamp
+
+    giveShares = {r: w for r, w in DISTRIBUTION.items() if r != ItemRarity.COMMON}
+    shareTotal = sum(giveShares.values())
+
+    for r, share in giveShares.items():
+        newWeights[r] = max(0.0, weights[r] + commonShift * (share / shareTotal))
+
+    return newWeights
+
+def rollRarity(level: int = 0, rarity: float = 1.0) -> ItemRarity:
     weights = RARITY_WEIGHTS.copy()
     if level > 0:
         shiftAmount = level / 100
@@ -1172,16 +1203,18 @@ def rollRarity(level: int = 0) -> ItemRarity:
         else:
             weights[ItemRarity.MYTHIC] = 0
 
-    totalWeight = round(sum(weights.values()))
-    roll = random.randint(1, totalWeight)
-    currentWeight = 0
-    
-    for rarity, weight in weights.items():
+    weights = _shiftRarityWeights(rarity, weights)
+
+    totalWeight = sum(weights.values())
+    roll = random.uniform(0, totalWeight)
+    currentWeight = 0.0
+
+    for r, weight in weights.items():
         currentWeight += weight
         if roll <= currentWeight:
-            return rarity
-        
-    return ItemRarity.COMMON
+            return r
+
+    return list(weights.keys())[-1]
 
 class LootTable:
     def __init__(self):

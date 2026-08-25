@@ -1,17 +1,17 @@
 import random
 from typing import List, Tuple, Optional
 
-from crafting.chaosRune import CHAOS_RUNES
-from crafting.erasingRune import ERASING_RUNES
-from crafting.growthRune import GROWTH_RUNES
-from crafting.randomiserRunes import RANDOMISER_RUNES
-from crafting.uniqueRunes import UNIQUE_RUNES
-from crafting.masteryRune import MASTERY_RUNES
-from crafting.rarityRune import RARITY_RUNES
-from crafting.destabilisationRune import DESTABILISATION_RUNES
-from crafting.revealingRune import REVEALING_RUNES
-from crafting.manipulationRune import MANIPULATION_RUNES
-from crafting.base import CraftingItem
+from scripts.crafting.chaosRune import CHAOS_RUNES
+from scripts.crafting.erasingRune import ERASING_RUNES
+from scripts.crafting.growthRune import GROWTH_RUNES
+from scripts.crafting.randomiserRunes import RANDOMISER_RUNES
+from scripts.crafting.uniqueRunes import UNIQUE_RUNES
+from scripts.crafting.masteryRune import MASTERY_RUNES
+from scripts.crafting.rarityRune import RARITY_RUNES
+from scripts.crafting.destabilisationRune import DESTABILISATION_RUNES
+from scripts.crafting.revealingRune import REVEALING_RUNES
+from scripts.crafting.manipulationRune import MANIPULATION_RUNES
+from scripts.crafting.base import CraftingItem
 
 ALL_RUNES = {
     'chaos': CHAOS_RUNES,
@@ -64,8 +64,10 @@ def getDropChanceForLevel(level: int) -> Tuple[float, float]:
     else:
         return (0.8, 0.35)
 
-def rollRuneDrops(level: int, isBoss: bool = False) -> List[Tuple[str, str]]:
+def rollRuneDrops(level: int, isBoss: bool = False, quantityModifier: float = 1.0) -> List[Tuple[str, str]]:
     baseChance, multiChance = getDropChanceForLevel(level)
+    baseChance = min(0.95, baseChance * quantityModifier)
+    multiChance = min(0.9, multiChance * quantityModifier)
 
     drops = []
 
@@ -74,12 +76,20 @@ def rollRuneDrops(level: int, isBoss: bool = False) -> List[Tuple[str, str]]:
         if rune:
             drops.append(rune)
 
-        maxDrops = 3 + (level // 12)
+        maxDrops = max(1, round((3 + (level // 12)) * quantityModifier))
         while random.random() < multiChance and len(drops) < maxDrops:
             rune = _rollSingleRune(level)
             if rune:
                 drops.append(rune)
 
+    return drops
+
+def rollGuaranteedRunes(level: int, count: int) -> List[Tuple[str, str]]:
+    drops = []
+    for _ in range(count):
+        rune = _rollSingleRune(level)
+        if rune:
+            drops.append(rune)
     return drops
 
 def _rollSingleRune(level: int) -> Tuple[str, str]:

@@ -61,28 +61,28 @@ FIGHTER_DESCRIPTIONS = {
         "- Impatience has no stack limits. Whenever a Stance reaches All-In, consume all Impatience to gain buffs.\n"
         "- Upon reaching All-In Aggression, for each stack of Impatience, gain +1% Crit Chance and +1 Damage until you lose All-In Aggression.\n"
         "- Upon reaching All-In Discipline, for each stack of Impatience, gain +2 HP Regen, +1 Damage Reduction until you lose All-In Discipline.\n"
-        "[bold]Stat Changes:[/bold] -15 HP. +5 Damage. +0.05 Speed. +25% Crit Damage. +5% Increased Defenses.",
+        "[bold]Stat Changes:[/bold] -5 HP. +10 Damage. +0.05 Speed. +25% Crit Damage. +5% Increased Defenses.",
     "Arbiter": "[lore]There is no strength in excess. No wisdom in weakness. Hesitation and recklessness have no place here. To master yourself, you must rid the whispers of grandeur. Only then, this world shall bow to you.[/lore]"
         "- Trained Aggression has 50% Increased Effect. Trained Discipline grants 5% Less Damage Taken.\n"
         "- For every turn you have Trained Aggression and Trained Discipline, gain 1 stack of Balance. Balance has no stack limit.\n"
         "- Balance: 5% Increased Damage, 1% Less Damage Taken. Whenever a Stance reaches Dedicated, consume all Balance to gain buffs.\n"
         "- Upon reaching Dedicated Aggression, for each stack of Balance, gain 5% Increased Damage and +1% Lifesteal until you lose Dedicated Aggression.\n"
         "- Upon reaching Dedicated Discipline, for each stack of Balance, gain 1% Less Damage Taken and Thorns equal to half your level.\n"
-        "[bold]Stat Changes:[/bold] +20 HP. +3 Damage. -0.1 Speed. +15% Physical Resistance.",
+        "[bold]Stat Changes:[/bold] +25 HP. +8 Damage. -0.1 Speed. +15% Physical Resistance.",
     "Transgressor": "[lore]Their training fell short. They could not exceed the body. They could not fathom the mind. But you could. So go, and walk through the boundaries of mortality. When their heads roll, only then will they understand.[/lore]"
         "- Every turn, the combined cap of Aggression and Discipline is increased by 10. Upon dealing critical hits or being critically hit, raise your combined cap by 5.\n"
         "- The combined cap of Aggression and Discipline cannot exceed 150. Complacent debuffs have 50% Increased Effects.\n"
         "- If you have Dedicated Aggression and Trained Discipline simultaneously, gain 30% Increased Physical Damage, 10% Less Damage Taken, +5% Crit Chance.\n"
         "- If you have Dedicated Discipline and Trained Aggression simultaneously, gain 20% Increased Defenses, Thorns equal to 2% of your highest Defense, 20% Increased Physical Damage.\n"
         "- If you have Dedicated Aggression and Dedicated Discipline simultaneously, gain +10% Crit Chance, +50% Crit Damage, 25% Increased Defenses, 25% Increased Physical Damage.\n"
-        "[bold]Stat Changes:[/bold] -15 HP. -4 Damage. +0.15 Speed. +5% Crit Chance. +25% Ailment Avoidance.",
+        "[bold]Stat Changes:[/bold] +5 HP. +2 Damage. +0.15 Speed. +5% Crit Chance. +25% Ailment Avoidance.",
     "Triarch": "[lore]Endure, evade, absorb. Their feeble minds could never comprehend. They fail to see the threads between them. Why pick, when all is yours? Why sacrifice, if all returns to you? Become unbreakable as The Sky itself, then collapse upon them with unspeakable might.[/lore]"
         "- If you have Armour, Evasion, and Energy Shield: Gain 10% of Armour as Evasion and Energy Shield, Gain 10% of Evasion as Armour and Energy Shield, Gain 20% of Energy Shield as Armour and Evasion.\n"
         "- Gain 2% Increased Physical Damage per 25 Armour. Gain +0.2% Crit Chance and +1% Crit Damage per 30 Evasion. Gain +1 HP Regen per 25 Current Energy Shield.\n"
         "- For every 50 Max Energy Shield, gain +1 to the combined cap of Aggression and Discipline, to a maximum of +25.\n"
         "- Whenever you kill an enemy, Regenerate Energy Shield equal to the value of your stronger Stance. If you have more Armour than Evasion, this Regeneration is doubled. If you have more Evasion than Armour, this Regeneration applies to Health as well.\n"
         "- When attacked by Otherworld Damage, if you have all three Defenses: your Armour is treated as 150% of its real value, your Evasion is rolled twice, heal Health equal to Damage absorbed by Energy Shield.\n"
-        "[bold]Stat Changes:[/bold] -25 HP. +4 Damage. -0.1 Speed. 10% Increased Defenses.",
+        "[bold]Stat Changes:[/bold] +5 HP. +10 Damage. 10% Increased Defenses.",
     "Autarch": "[lore]You were trained to succumb to limits. You broke through, and ruled over them instead. Their laws cannot bind you. Their strength cannot stop you. Walk atop their corpses, frail and bound. Claim their empire as yours.[/lore]"
         "- At the start of your turn, choose a Pact: Pact of Aggression, Pact of Discipline. If you have a Dedicated Stance, you can choose Pact of Balance. If you have an All-In Stance, you can choose Pact of Purging.\n"
         "- Pacts last until the start of your next turn.\n"
@@ -91,7 +91,7 @@ FIGHTER_DESCRIPTIONS = {
         "- Pact of Balance: Gain the bonuses of Trained Aggression and Trained Discipline alongside your current Stance effects. All Stance changes will aim to balance Stance progress towards 50/50.\n"
         "- Pact of Purging: Gain the All-In buffs of the alternate Stance. Both Stances have no All-In debuffs until the start of your next turn. If you do not kill an enemy this turn, take Physical Damage equal to 25% of your Max HP. This Damage cannot kill you.\n"
         "- Upon killing an enemy, heal equal to 10% of their Max HP and gain Damage equal to their Base Damage for the rest of combat.\n"
-        "[bold]Stat Changes:[/bold] +25 HP. +5 Damage. -0.1 Speed. +10% Physical Resistance. +5% Divine Resistance."
+        "[bold]Stat Changes:[/bold] +25 HP. +7 Damage. -0.1 Speed. +10% Physical Resistance. +5% Divine Resistance."
 }
 
 class Fighter(Player): # higher speed, lower damage, physical damage
@@ -161,6 +161,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.discipline -= costGain
         self.aggression += freeGain + costGain
         self.checkAggressionChange()
+        self.checkDisciplineChange()
 
     def loseAggression(self, amount: int, floorBreak: bool = False):
         if floorBreak:
@@ -181,6 +182,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.aggression -= costGain
         self.discipline += freeGain + costGain
         self.checkDisciplineChange()
+        self.checkAggressionChange()
 
     def loseDiscipline(self, amount: int, floorBreak: bool = False):
         if floorBreak:
@@ -401,7 +403,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
     def onCrit(self, targets, combatManager, critDamage):
         if self.currentAggressionTreshold == Threshold.ALL_IN:
             heal = int(critDamage * 0.1)
-            self.heal(heal)
+            self.heal(heal, reason="All-In Aggression (Critical Hit)")
             self.aggressionDamage += self._baseDamage
 
         if self._ascendancy == 'Transgressor':
@@ -418,6 +420,9 @@ class Fighter(Player): # higher speed, lower damage, physical damage
     def onKill(self, entity, attackData, combatManager):
         if self.currentDisciplineThreshold == Threshold.ALL_IN:
             self.disciplineDamage += entity._damage
+            heal = int(entity._maxHealth * 0.1)
+            self.heal(heal, reason="All-In Discipline (Enemy Killed)")
+            console.print(f"[class_fighter]All-In Discipline: Healed {heal} HP and gained +{entity._damage} Damage for the rest of combat.[/class_fighter]")
 
         if self._ascendancy == 'Triarch':
             base = max(0, max(self.aggression, self.discipline))
@@ -425,49 +430,214 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             before = self._stats['energy_shield']
             self._stats['energy_shield'] = min(self.maxEnergyShield, before + esGain)
             if self.evasion > self.armour:
-                self.heal(base)
+                self.heal(base, reason="Triarch (Stronger Stance, Evasion > Armour)")
             console.print(f"[asc_triarch]Triarch: Regenerated {self._stats['energy_shield'] - before} Energy Shield from your stronger Stance.[/asc_triarch]")
 
         elif self._ascendancy == 'Autarch':
             self.autarchKilledThisTurn = True
             heal = int(entity._maxHealth * 0.1)
-            self.heal(heal)
+            self.heal(heal, reason="Autarch (Enemy Killed)")
             self.autarchBonusDamage += entity._damage
             console.print(f"[asc_autarch]Autarch: Healed {heal} HP and gained +{entity._damage} Damage for the rest of combat.[/asc_autarch]")
 
+        # generic ability.effects.on_kill processing - available to any ascendancy ability
+        ability = attackData.get('ability') if attackData else None
+        healPct = ability.effects.get('on_kill', {}).get('heal_percent_max_hp', 0) if ability else 0
+        if healPct:
+            heal = int(self._maxHealth * healPct / 100)
+            self.heal(heal, reason=f"{ability.name} (On-Kill Effect)")
+            console.print(f"[class_fighter]{ability.name} claims its due! Healed {heal} HP.[/class_fighter]")
+
         return {}
+
+    def _higherStance(self) -> str:
+        if self.aggression > self.discipline:
+            return 'aggression'
+        elif self.discipline > self.aggression:
+            return 'discipline'
+        return random.choice(['aggression', 'discipline'])
+
+    def onAbilityCast(self, ability, combatManager):
+        if not ability:
+            return
+        tags = ability.tags
+        selfFx = ability.effects.get('self', {})
+
+        if 'gain_higher_stance' in tags:
+            amount = selfFx.get('gain_higher_stance', {}).get('amount', 0)
+            if amount:
+                stance = self._higherStance()
+                if stance == 'aggression':
+                    self.gainAggression(amount)
+                else:
+                    self.gainDiscipline(amount)
+                console.print(f"[class_fighter]{ability.name}: +{amount} {stance.title()} (your higher stance).[/class_fighter]")
+
+        if 'grants_discipline_on_cast' in tags:
+            amount = selfFx.get('grant_discipline', {}).get('amount', 0)
+            if amount:
+                self.gainDiscipline(amount)
+
+        if 'grants_aggression_on_cast' in tags:
+            amount = selfFx.get('grant_aggression', {}).get('amount', 0)
+            if amount:
+                self.gainAggression(amount)
+
+        if 'commits_to_dominant_stance' in tags:
+            fx = selfFx.get('commit_to_dominant', {})
+            sacrifice = fx.get('sacrifice_amount', 0)
+            gain = fx.get('gain_amount', 0)
+            dominant = self._higherStance()
+            if dominant == 'aggression':
+                self.loseDiscipline(sacrifice, floorBreak=True)
+                self.gainAggression(gain)
+                console.print(f"[class_fighter]{ability.name}: Sacrificed {sacrifice} Discipline (can go negative) to gain {gain} Aggression.[/class_fighter]")
+            else:
+                self.loseAggression(sacrifice, floorBreak=True)
+                self.gainDiscipline(gain)
+                console.print(f"[class_fighter]{ability.name}: Sacrificed {sacrifice} Aggression (can go negative) to gain {gain} Discipline.[/class_fighter]")
+
+        # -- Dissenter -- #
+        if 'grants_impatience_on_cast' in tags:
+            amount = selfFx.get('grant_impatience', {}).get('amount', 0)
+            if amount:
+                self.impatience += amount
+                console.print(f"[asc_dissenter]{ability.name}: +{amount} Impatience.[/asc_dissenter]")
+
+        # -- Arbiter -- #
+        if 'gains_both_stances' in tags:
+            amount = selfFx.get('gain_both_stances', {}).get('amount', 0)
+            if amount:
+                self.gainAggression(amount)
+                self.gainDiscipline(amount)
+
+        if 'grants_balance_on_cast' in tags:
+            amount = selfFx.get('grant_balance', {}).get('amount', 0)
+            if amount:
+                self.balance += amount
+                console.print(f"[asc_arbiter]{ability.name}: +{amount} Balance.[/asc_arbiter]")
+
+        # -- Transgressor -- #
+        if 'expands_stance_cap' in tags:
+            amount = selfFx.get('expand_cap', {}).get('amount', 0)
+            if amount:
+                self.stanceCap = min(150, self.stanceCap + amount)
+                console.print(f"[asc_transgressor]{ability.name}: Stance cap raised to {self.stanceCap}.[/asc_transgressor]")
+
+        # -- Autarch -- #
+        if 'pact_aligned_gain' in tags:
+            amount = selfFx.get('pact_gain', {}).get('amount', 0)
+            if amount:
+                self.gainAggression(amount)  # Autarch's own gainAggression() already redirects per the active Pact
 
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
+
+        if ability and 'rewards_stance_commitment' in ability.tags:
+            fx = ability.effects.get('self', {}).get('stance_commitment_bonus', {})
+            bonus = 0
+            for threshold in (self.currentAggressionTreshold, self.currentDisciplineThreshold):
+                if threshold == Threshold.ALL_IN:
+                    bonus = max(bonus, fx.get('all_in_percent', 0))
+                elif threshold == Threshold.DEDICATED:
+                    bonus = max(bonus, fx.get('dedicated_percent', 0))
+            if bonus:
+                self._logDamage(f"{ability.name} (Stance Commitment Bonus)", percent=bonus / 100)
+                damageDealt = int(damageDealt * (1 + (bonus / 100)))
+
+        if ability and self._ascendancy == 'Dissenter' and 'consumes_impatience_finisher' in ability.tags and self.impatience > 0:
+            stacksConsumed = self.impatience
+            dmgPerStack = ability.effects.get('self', {}).get('consume_impatience', {}).get('damage_per_stack', 0) / 100
+            self.impatience = 0
+            self._logDamage(f"{ability.name} (Consumed {stacksConsumed} Impatience)", percent=dmgPerStack * stacksConsumed)
+            damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+            console.print(f"[asc_dissenter]{ability.name}: Consumes {stacksConsumed} Impatience for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_dissenter]")
+
+        if ability and self._ascendancy == 'Arbiter' and 'consumes_balance_finisher' in ability.tags and self.balance > 0:
+            stacksConsumed = self.balance
+            dmgPerStack = ability.effects.get('self', {}).get('consume_balance', {}).get('damage_per_stack', 0) / 100
+            self.balance = 0
+            self._logDamage(f"{ability.name} (Consumed {stacksConsumed} Balance)", percent=dmgPerStack * stacksConsumed)
+            damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+            console.print(f"[asc_arbiter]{ability.name}: Consumes {stacksConsumed} Balance for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_arbiter]")
+
+        if ability and self._ascendancy == 'Transgressor' and 'rewards_sync_tier' in ability.tags:
+            fx = ability.effects.get('self', {}).get('sync_tier_bonus', {})
+            tier = self._transgressorCurrentTier()
+            bonusMap = {'agg': 'agg_percent', 'disc': 'disc_percent', 'both': 'both_percent'}
+            if tier and fx.get(bonusMap[tier]):
+                self._logDamage(f"{ability.name} (Sync Tier: {tier}, Transgressor)", percent=fx[bonusMap[tier]] / 100)
+                damageDealt = int(damageDealt * (1 + (fx[bonusMap[tier]] / 100)))
+
+        if ability and self._ascendancy == 'Triarch' and 'defense_scaling_damage' in ability.tags:
+            fx = ability.effects.get('self', {}).get('defense_scaling', {})
+            perHundred = fx.get('percent_per_100', 0)
+            totalDefense = self.armour + self.evasion + self.energyShield
+            if perHundred and totalDefense:
+                self._logDamage(f"{ability.name} (Defense Scaling, Triarch)", percent=(perHundred / 100) * (totalDefense / 100))
+                damageDealt = int(damageDealt * (1 + (perHundred / 100) * (totalDefense / 100)))
+
+        if ability and self._ascendancy == 'Triarch' and 'consumes_energy_shield_finisher' in ability.tags and self.energyShield > 0:
+            fx = ability.effects.get('self', {}).get('consume_es', {})
+            spent = int(self.energyShield * (fx.get('percent_spent', 0) / 100))
+            if spent > 0:
+                self._stats['energy_shield'] -= spent
+                self._logDamage(f"{ability.name} (Energy Shield Consumed, Triarch)", percent=(fx.get('damage_multiplier', 100) / 100) - 1)
+                damageDealt = int(damageDealt * (fx.get('damage_multiplier', 100) / 100))
+                heal = int(spent * (fx.get('heal_percent_of_spent', 0) / 100))
+                if heal:
+                    self.heal(heal, reason=f"{ability.name} (Energy Shield Consumed)")
+                console.print(f"[asc_triarch]{ability.name}: Spends {spent} Energy Shield for a devastating blow.[/asc_triarch]")
+
+        if ability and self._ascendancy == 'Autarch' and 'rewards_current_pact' in ability.tags and self.autarchPact:
+            fx = ability.effects.get('self', {}).get('pact_bonus', {})
+            bonus = fx.get(f'{self.autarchPact}_percent', 0)
+            if bonus:
+                self._logDamage(f"{ability.name} (Pact of {self.autarchPact.title()}, Autarch)", percent=bonus / 100)
+                damageDealt = int(damageDealt * (1 + (bonus / 100)))
 
         aggGain = 3 + (damageDealt // (10 * (1 + self._level // 10)))
         self.gainAggression(aggGain)
 
         if self.currentAggressionTreshold != Threshold.NEUTRAL and damageType == 'physical':
             if self.currentAggressionTreshold == Threshold.COMPLACENT:
+                self._logDamage("Complacent Aggression", percent=-0.3)
                 damageDealt = int(damageDealt * 0.7)
             elif self.currentAggressionTreshold == Threshold.TRAINED:
+                self._logDamage("Trained Aggression", percent=0.2)
                 damageDealt = int(damageDealt * 1.2)
             elif self.currentAggressionTreshold == Threshold.DEDICATED:
+                self._logDamage("Dedicated Aggression", percent=0.5)
                 damageDealt = int(damageDealt * 1.5)
             elif self.currentAggressionTreshold == Threshold.ALL_IN:
+                if self.aggressionDamage:
+                    self._logDamage("All-In Aggression (Bonus Damage from Crits)", flat=self.aggressionDamage)
                 damageDealt += self.aggressionDamage
                 if self._ascendancy == 'Dissenter':
+                    if self.impatienceAggroDamage:
+                        self._logDamage("All-In Aggression (Impatience, Dissenter)", flat=self.impatienceAggroDamage)
                     damageDealt += self.impatienceAggroDamage
+                self._logDamage("All-In Aggression (Doubled Damage)", percent=1.0)
                 damageDealt *= 2
 
         if self.currentDisciplineThreshold == Threshold.ALL_IN:
+            if self.disciplineDamage:
+                self._logDamage("All-In Discipline (Bonus Damage from Kills)", flat=self.disciplineDamage)
             damageDealt += self.disciplineDamage
 
         if damageType == 'physical':
             if self._ascendancy == 'Arbiter' and (self.balance or self.balanceAggroStacks):
+                self._logDamage(f"Balance ({self.balance + self.balanceAggroStacks} stacks, Arbiter)", percent=0.05 * (self.balance + self.balanceAggroStacks))
                 damageDealt = int(damageDealt * (1 + 0.05 * (self.balance + self.balanceAggroStacks)))
             elif self._ascendancy == 'Transgressor' and self.transgressorSyncTier:
+                self._logDamage(f"Dual-Stance Synergy ({self.transgressorSyncTier}, Transgressor)", percent=self.TRANSGRESSOR_SYNC_TIERS[self.transgressorSyncTier]['increasedDamage'])
                 damageDealt = int(damageDealt * (1 + self.TRANSGRESSOR_SYNC_TIERS[self.transgressorSyncTier]['increasedDamage']))
             elif self._ascendancy == 'Triarch' and self.armour >= 25:
+                self._logDamage("Armour (Triarch)", percent=0.02 * (self.armour // 25))
                 damageDealt = int(damageDealt * (1 + 0.02 * (self.armour // 25)))
 
         if self._ascendancy == 'Autarch' and self.autarchBonusDamage:
+            self._logDamage("Bonus Damage from Kills (Autarch)", flat=self.autarchBonusDamage)
             damageDealt += self.autarchBonusDamage
 
         return damageDealt, damageType
@@ -480,16 +650,21 @@ class Fighter(Player): # higher speed, lower damage, physical damage
 
         if self.currentDisciplineThreshold != Threshold.NEUTRAL:
             if self.currentDisciplineThreshold == Threshold.DEDICATED:
+                attacker._logDamage(f"{self._name}'s Dedicated Discipline", percent=-0.15)
                 damageTaken = int(damageTaken * 0.85)
             elif self.currentDisciplineThreshold == Threshold.ALL_IN:
+                attacker._logDamage(f"{self._name}'s All-In Discipline", percent=-0.4)
                 damageTaken = int(damageTaken * 0.6)
 
         if self._ascendancy == 'Arbiter':
             if self.currentDisciplineThreshold == Threshold.TRAINED:
+                attacker._logDamage(f"{self._name}'s Trained Discipline (Arbiter)", percent=-0.05)
                 damageTaken = int(damageTaken * 0.95)
             if self.balance or self.balanceDiscStacks:
+                attacker._logDamage(f"{self._name}'s Balance ({self.balance + self.balanceDiscStacks} stacks, Arbiter)", percent=-(0.01 * (self.balance + self.balanceDiscStacks)))
                 damageTaken = int(damageTaken * (1 - 0.01 * (self.balance + self.balanceDiscStacks)))
         elif self._ascendancy == 'Transgressor' and self.transgressorSyncTier == 'agg':
+            attacker._logDamage(f"{self._name}'s Dual-Stance Synergy (Transgressor)", percent=-self.TRANSGRESSOR_SYNC_TIERS['agg']['lessDamageTaken'])
             damageTaken = int(damageTaken * (1 - self.TRANSGRESSOR_SYNC_TIERS['agg']['lessDamageTaken']))
 
         return damageTaken, damageType
@@ -662,40 +837,39 @@ class Fighter(Player): # higher speed, lower damage, physical damage
     def onAfterMitigation(self, attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager):
         finalDamage = super().onAfterMitigation(attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager)
         if self._ascendancy == 'Triarch' and damageType in OTHERWORLD_RES and self._triarchHasAllDefenses() and esDamagePrevented > 0:
-            self.heal(esDamagePrevented)
+            self.heal(esDamagePrevented, reason="Triarch (Energy Shield Absorption)")
             console.print(f"[asc_triarch]Triarch: Healed {esDamagePrevented} HP from Energy Shield absorption.[/asc_triarch]")
         return finalDamage
 
     ASCENDANCY_DELTAS = {
         'Dissenter': {
-            '_baseHealth': -15,
-            '_baseDamage': 5,
+            '_baseHealth': -5,
+            '_baseDamage': 10,
             '_baseSpeed': 0.05,
             '_stats.baseCritMulti': 0.25,
             '_stats.Permanent.increased_defenses': 5,
         },
         'Arbiter': {
-            '_baseHealth': 20,
-            '_baseDamage': 3,
+            '_baseHealth': 25,
+            '_baseDamage': 8,
             '_baseSpeed': -0.1,
             '_stats.Permanent.physical': 15,
         },
         'Transgressor': {
-            '_baseHealth': -15,
-            '_baseDamage': -4,
+            '_baseHealth': 5,
+            '_baseDamage': 2,
             '_baseSpeed': 0.15,
             '_stats.baseCritChance': 0.05,
             '_stats.Permanent.ailment_avoidance': 25,
         },
         'Triarch': {
-            '_baseHealth': -25,
-            '_baseDamage': 4,
-            '_baseSpeed': -0.1,
+            '_baseHealth': 5,
+            '_baseDamage': 10,
             '_stats.Permanent.increased_defenses': 10,
         },
         'Autarch': {
             '_baseHealth': 25,
-            '_baseDamage': 5,
+            '_baseDamage': 7,
             '_baseSpeed': -0.1,
             '_stats.Permanent.physical': 10,
             '_stats.Permanent.divine': 5,
@@ -715,5 +889,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.ascendancyDescription = FIGHTER_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
+        self.gainClassAbilities()
+        return True
 
 ...

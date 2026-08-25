@@ -5,10 +5,10 @@ from scripts.items import Equipment, ItemRarity, rollRarity, RARITY_SERIALS
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, formatRarity,
-    Panel, checkGlobalCommand, createEquipmentStoragePages
+    Panel, checkGlobalCommand, createEquipmentStoragePages, stepPage
 )
 from scripts.runeDrops import getRuneObject
-from crafting.base import CraftOutcome, CraftResult
+from scripts.crafting.base import CraftOutcome, CraftResult
 from rich.columns import Columns
 from rich.table import Table
 from rich import box
@@ -494,7 +494,7 @@ class Forge(Station):
             totalLevel += e.level
             self.player._equipmentStorage.remove(e)
 
-        level = totalLevel // len(chosenToFuse)
+        level = self.player._level + totalLevel // len(chosenToFuse)
 
         newEquipment = Equipment._generateEquipmentPiece(level, slot, newRarity)
         self.player.addEquipmentToStorage(newEquipment)
@@ -602,9 +602,6 @@ class Forge(Station):
         return f"{rune} [dim](x{quantity})[/dim]"
 
     def _selectEquipment(self) -> Optional[Equipment]:
-        clearScreen()
-        printHeader('Select Equipment')
-
         allEquipment = []
 
         for _, equip in self.player._equipment.items():
@@ -615,24 +612,43 @@ class Forge(Station):
                 allEquipment.append((f'[STORAGE] #{i+1}', equip))
 
         if not allEquipment:
+            clearScreen()
+            printHeader('Select Equipment')
             printWarning('No equipment available.')
             pause()
             return None
-        
-        console.print(f'[gold]Available Equipment[/gold]\n')
-        for i, (location, equip) in enumerate(allEquipment, 1):
-            console.print(f"  [cyan]{i}.[/cyan] {location} {equip.name}")
-            console.print(f"      [dim]Entropy: {equip.entropy} / {equip.maxEntropy} | "
-                          f"Level: {equip.level} | Rarity: {equip.rarity.value.title()}[/dim]\n")
-        
-        choice = console.input("\n[cyan]Choose equipment (0 to cancel):\n> [/cyan]").strip()
-        try:
-            index = int(choice) - 1
-            if 0 <= index < len(allEquipment):
-                return allEquipment[index][1]
-        except ValueError:
-            pass
 
+        pages = createEquipmentStoragePages(allEquipment, render=lambda pair: f"[dim]{pair[0]}[/dim]\n{pair[1]}")
+        totalPages = len(pages)
+        currentPage = 1
+
+        while True:
+            clearScreen()
+            printHeader('Select Equipment')
+            console.print(f"\n[bold cyan]=== Available Equipment (Page {currentPage}/{totalPages}) ===[/bold cyan]")
+            console.print(pages[currentPage])
+
+            prompt = "\n[cyan]Choose equipment (0 to cancel"
+            if totalPages > 1:
+                prompt += ", N for next page, P for previous page"
+            prompt += "):[/cyan]\n> "
+            choice = console.input(prompt).strip().lower()
+
+            newPage = stepPage(currentPage, totalPages, choice)
+            if newPage is not None:
+                currentPage = newPage
+                continue
+
+            try:
+                index = int(choice) - 1
+            except ValueError:
+                printWarning("Invalid input!")
+                pause()
+                return None
+            break
+
+        if 0 <= index < len(allEquipment):
+            return allEquipment[index][1]
         return None
 
 ...

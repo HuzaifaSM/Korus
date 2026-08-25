@@ -15,7 +15,7 @@ from typing import Dict
 
 CLASSES: Dict[str, Player] = {
     "Cultist": Cultist,
-    #"Druid": Druid,
+    "Druid": Druid,
     "Fighter": Fighter,
     "Mage": Mage,
     "Marauder": Marauder,

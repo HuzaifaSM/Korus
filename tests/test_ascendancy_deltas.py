@@ -1,6 +1,6 @@
 """
 Round-trip tests for the ASCENDANCY_DELTAS / _applyStatDelta pattern used by every
-player class (see player/base.py and e.g. player/warrior.py).
+player class (see scripts/player_classes/base.py and e.g. scripts/player_classes/warrior.py).
 
 For every ascendancy on every class: 
 - gaining it should change exactly the stats listed in its delta table by exactly the listed amount
@@ -9,16 +9,16 @@ For every ascendancy on every class:
 import pytest
 
 from scripts.styles import console
-from player.warrior import Warrior
-from player.marauder import Marauder
-from player.wretch import Wretch
-from player.druid import Druid
-from player.spectre import Spectre
-from player.tempest import Tempest
-from player.cultist import Cultist
-from player.paladin import Paladin
-from player.mage import Mage
-from player.wanderer import Wanderer
+from scripts.player_classes.warrior import Warrior
+from scripts.player_classes.marauder import Marauder
+from scripts.player_classes.wretch import Wretch
+from scripts.player_classes.druid import Druid
+from scripts.player_classes.spectre import Spectre
+from scripts.player_classes.tempest import Tempest
+from scripts.player_classes.cultist import Cultist
+from scripts.player_classes.paladin import Paladin
+from scripts.player_classes.mage import Mage
+from scripts.player_classes.wanderer import Wanderer
 
 CLASSES = [Warrior, Marauder, Wretch, Druid, Spectre, Tempest, Cultist, Paladin, Mage, Wanderer]
 

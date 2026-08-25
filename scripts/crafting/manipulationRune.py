@@ -56,7 +56,7 @@ class FusionRune(CraftingItem):
         allFilled = prefixes + suffixes
         if not allFilled:
             return None
-        amount = min(len(allFilled, amount))
+        amount = min(len(allFilled), amount)
         return random.sample(allFilled, k=amount)
 
     def apply(self, item, player=None) -> CraftResult:

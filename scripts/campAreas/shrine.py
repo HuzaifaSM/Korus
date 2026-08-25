@@ -1,5 +1,5 @@
 from .station import Station
-from player.classes import ASCENDANCIES, DESCRIPTIONS
+from scripts.player_classes.classes import ASCENDANCIES, DESCRIPTIONS
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, checkGlobalCommand

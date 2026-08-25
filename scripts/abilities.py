@@ -53,7 +53,7 @@ class Ability:
         required: Dict[str, Any] = self.resources.get('required', {})
         for resource, amount in required.items():
             if resource == 'form':
-                if amount.lower() != player.form.lower():
+                if amount.lower() != player.form.lower() and not player.bypassesFormRequirement():
                     return False, f"{player._name} is not in the correct Form. Form Required: {amount.title()}"
             else:
                 resolved = _resolveResourceAmount(player, resource, amount)
@@ -450,50 +450,64 @@ class Effects:
 
 #=========================================================================================#
 
+def _buildAbilityTree(abilityName: str, abilityData: Dict) -> AbilityTree:
+    baseData = {
+        'name': abilityData['name'],
+        'category': abilityData.get('category', 'damage'),
+        'tags': abilityData.get('tags', []),
+        'stamina_cost': abilityData.get('stamina_cost'),
+        'damage_base': abilityData.get('damage_base', 0),
+        'damage_scaling': abilityData.get('damage_scaling', 0),
+        'damage_type': abilityData.get('damage_type'),
+        'heal_base': abilityData.get('heal_base', 0),
+        'heal_percent': abilityData.get('heal_percent', 0),
+        'cooldown': abilityData.get('cooldown', 0),
+        'level': abilityData.get('level', 1),
+        'targets': abilityData.get('targets', 1),
+        'resources': abilityData.get('resources', {}),
+        'effects': abilityData.get('effects', {}),
+        'requirements': abilityData.get('requirements', {}),
+        'description': abilityData.get('description', ''),
+    }
+    evolutions = _buildEvolutions(abilityData.get('evolutions', {}), abilityName)
+    return AbilityTree(baseData, evolutions)
+
 def loadAbilities() -> Dict[str, Dict[str, Dict]]:
+    """
+    Ascendancy sections in abilities.json are flat {abilityName: data} maps whose entries
+    fall into two kinds, told apart by whether the name matches a base ability:
+      - matches a base ability name -> an ALTERATION: a flat overlay dict merged onto that
+        ability's resolved data via _mergeAbilityData/getCurrentAbility (edits an existing ability).
+      - anything else -> a brand new ascendancy-exclusive ability, shaped exactly like a base
+        ability entry (its own 'level'/'evolutions'/etc.) and built into its own AbilityTree.
+    Stored per ascendancy as {'alterations': {...}, 'abilities': {...}} so
+    scripts/player_classes/base.py's gainClassAbilities() can resolve each kind the way it needs to.
+    """
     with open('data/abilities.json', 'r') as f:
         data: Dict[str, Any] = load(f)
 
     classAbilities = {}
 
     for className, classData in data.items():
-        classAbilities[className] = {}
+        baseTrees = {
+            abilityName: _buildAbilityTree(abilityName, abilityData)
+            for abilityName, abilityData in (classData.get('base') or {}).items()
+        }
+        classAbilities[className] = {'base': baseTrees}
 
         for ascendancyName, ascendancyAbilities in classData.items():
-            if ascendancyName != 'base':
-                # ascendancy sections are flat {baseAbilityName: alterationData} maps, not trees
-                classAbilities[className][ascendancyName] = ascendancyAbilities or {}
+            if ascendancyName == 'base':
                 continue
 
-            classAbilities[className]['base'] = {}
-            if not ascendancyAbilities:
-                continue
+            alterations = {}
+            newAbilities = {}
+            for abilityName, abilityData in (ascendancyAbilities or {}).items():
+                if abilityName in baseTrees:
+                    alterations[abilityName] = abilityData
+                else:
+                    newAbilities[abilityName] = _buildAbilityTree(abilityName, abilityData)
 
-            for abilityName, abilityData in ascendancyAbilities.items():
-                baseData = {
-                    'name': abilityData['name'],
-                    'category': abilityData.get('category', 'damage'),
-                    'tags': abilityData.get('tags', []),
-                    'stamina_cost': abilityData.get('stamina_cost'),
-                    'damage_base': abilityData.get('damage_base', 0),
-                    'damage_scaling': abilityData.get('damage_scaling', 0),
-                    'damage_type': abilityData.get('damage_type'),
-                    'heal_base': abilityData.get('heal_base', 0),
-                    'heal_percent': abilityData.get('heal_percent', 0),
-                    'cooldown': abilityData.get('cooldown', 0),
-                    'level': abilityData.get('level', 1),
-                    'targets': abilityData.get('targets', 1),
-                    'resources': abilityData.get('resources', {}),
-                    'effects': abilityData.get('effects', {}),
-                    'requirements': abilityData.get('requirements', {}),
-                    'description': abilityData.get('description', ''),
-                }
-
-                evolutions = _buildEvolutions(abilityData.get('evolutions', {}), abilityName)
-
-                tree = AbilityTree(baseData, evolutions)
-
-                classAbilities[className]['base'][abilityName] = tree
+            classAbilities[className][ascendancyName] = {'alterations': alterations, 'abilities': newAbilities}
 
     return classAbilities
 

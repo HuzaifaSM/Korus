@@ -20,14 +20,14 @@ SPECTRE_DESCRIPTIONS = {
         "- Whenever you critically hit an enemy, reset your Fading value back to 0, and heal HP equal to the progress lost.\n"
         "- Whenever Vengeance is consumed, heal equal to 3% of your Evasion Rating per Vengeance Consumed.\n"
         "- Whenever you Evade an attack, gain Added Damage equal to 50% of your Fading value on your next attack.\n"
-        "[bold]Stat Changes:[/bold] +10 HP. +4 Damage. -0.05 Speed. +10% Ethereal Resistance.",
+        "[bold]Stat Changes:[/bold] +15 HP. +8 Damage. -0.05 Speed. +10% Ethereal Resistance.",
     "Reaper": "[lore]You have seen the end. You have felt its embrace. You turned it into your power. Now, watch as they fall, weak and helpless. Each target, another feast.[/lore]"
         "- Ghostly grants 5% of ignored Armour Rating gained as Shield.\n"
         "- Deal 15% Increased Damage to enemies below 30% Max HP. Execute Enemies under 10% Max HP on hit. Execute immediately kills the targeted enemy.\n"
         "- When Executing enemies, heal for 10% of their Max HP and gain 1% of their Damage as your own permanently per stack of Vengeance you currently have. Lose all Vengeance when you execute an enemy.\n"
         "- Whenever you critically hit an enemy, gain added Crit Damage equal to 5% of your Damage.\n"
         "- If your attack is Evaded, consume all Vengeance to heal 2% Max HP per stack consumed. If your armour mitigates more than half of an enemy's attack, double your Vengeance.\n"
-        "[bold]Stat Changes:[/bold] -15 HP. -4 Damage. +0.05 Speed. +2% Crit Chance. +100 Armour.",
+        "[bold]Stat Changes:[/bold] -5 HP. -2 Damage. +0.05 Speed. +2% Crit Chance. +100 Armour.",
     "Phantasm": "[lore]They strike at you, yet you remain. They reach for you, yet you slip away. Reality itself cannot grasp you. Drink their fear as you flow through them.[/lore]"
         "- 30% Less Physical Damage Taken. Ghostly heals for 5% of ignored Armour Rating. Ethereal Damage has a 25% chance to apply Phased for 3 turns.\n"
         "- You have an additional 5% chance to apply Phased per stack of Vengeance. Vengeance has a maximum of 20 stacks.\n"
@@ -35,7 +35,7 @@ SPECTRE_DESCRIPTIONS = {
         "- Vengeance can no longer be consumed upon dealing critical hits. Gain no Vengeance from being critically hit. Lose 2 Vengeance whenever you gain Shifting."
         "- Upon attacking a Phased enemy, heal for 1% of their Max HP per Vengeance you have.\n"
         "- Whenever you are Stunned, the enemy who stunned you loses 1% HP per stack of Vengeance you have.\n"
-        "[bold]Stat Changes:[/bold] +20 HP. +6 Damage. -0.1 Speed. -10% Stun Avoidance. +25% Crit Damage.",
+        "[bold]Stat Changes:[/bold] +25 HP. +8 Damage. -0.1 Speed. -10% Stun Avoidance. +25% Crit Damage.",
     "Revenant": "[lore]Death claimed you once. You became its master. Let it come again, only to be denied. Then, face your enemies, unable to touch you. Tear them asunder, then drift on to the next.[/lore]"
         "- Once per combat, upon taking lethal damage, survive at 1 HP and gain Intangible until the end of your turn. Intangible: Immune to Damage, +30% Increased Ethereal Damage.\n"
         "- If you take a hit larger than 30% of your Max HP whilst Intangible, you will die. Upon losing Intangible, heal equal to damage prevented whilst Intangible.\n"
@@ -43,7 +43,7 @@ SPECTRE_DESCRIPTIONS = {
         "- If you deal a critical hit whilst Intangible, heal for 50% of the damage dealt.\n"
         "- Whilst you are above 50% Health: 20% Reduced Defenses, +10% Crit Chance, +25% Crit Damage.\n"
         "- Upon killing an enemy, the next amount of damage you take heals you instead. The healing is doubled if the damage was Ethereal.\n"
-        "[bold]Stat Changes:[/bold] -10 HP. +5 Damage. +0.1 Speed. +30% Healing Magnitude. -10% Physical Resistance.",
+        "[bold]Stat Changes:[/bold] -5 HP. +8 Damage. +0.1 Speed. +30% Healing Magnitude. -10% Physical Resistance.",
     "Lich": "[lore]Flesh decays. Blood dries. Bones crumble. Such trivialities mean nothing. You are free of the fetters of life. What remains cannot bleed, or die.[/lore]"
         "- All sources of healing are applied to Energy Shield. Ghostly heals you for 15% of ignored Armour Rating. You are immune to Bleeding.\n"
         "- While your Energy Shield is above 50%: +10% Damage Dealt, +0.2 Speed, +10% Crit Chance. +30% Crit Damage.\n"
@@ -98,7 +98,7 @@ class Spectre(Player):
 
         if self._ascendancy == 'Wraith':
             heal = int(self.vengeance * 0.03 * self.evasion)
-            self.heal(heal)
+            self.heal(heal, reason="Vengeance Consumed (Wraith)")
 
         self.vengeance = 0
 
@@ -138,13 +138,16 @@ class Spectre(Player):
 
     def onExecuteCheck(self, target, combatManager):
         if self._ascendancy == 'Reaper':
-            if target._health <= (target._maxHealth * 0.1):
+            threshold = 0.1 + getattr(target, 'reaperExecuteBonus', 0)
+            if getattr(target, 'reaperExecuteBonus', 0):
+                target.reaperExecuteBonus = 0  # one-shot: consumed on the next check regardless of outcome
+            if target._health <= (target._maxHealth * threshold):
                 console.print("  [asc_reaper]Reaper: EXECUTE![/asc_reaper]")
                 target.damage(target._health, 'true')
                 combatManager.checkDead(target)
                 heal = int(target._maxHealth * 0.1)
                 dmgBuff = int(target._damage * 0.01 * self.vengeance)
-                self.heal(heal)
+                self.heal(heal, reason="Executing an Enemy (Reaper)")
                 self.reaperDamage += dmgBuff
                 self.loseAllVengeance()
                 console.print(f"  [asc_reaper]Reaper: Executed {target._name}! Healed for {heal} HP and gained {dmgBuff} Damage permanently. Vengeance set to 0.[/asc_reaper]")
@@ -162,19 +165,24 @@ class Spectre(Player):
 
     def onCrit(self, targets, combatManager, critDamage):
         if self._ascendancy != 'Phantasm':
+            if self.vengeance:
+                console.print(f"[class_spectre]Vengeance: Consumed {self.vengeance} stack(s) for +{int(0.15 * self.vengeance * 100)}% Critical Damage![/class_spectre]")
             critDamage = int(critDamage * (1 + (0.15 * self.vengeance)))
 
         if self._ascendancy == 'Wraith':
-            self.heal(self.wraithFading)
+            self.heal(self.wraithFading, reason="Fading (Wraith)")
             console.print(f"[asc_wraith]Wraith: Healed {self.wraithFading} HP from Fading. Fading reset to 0.[/asc_wraith]")
             self.wraithFading = 0
 
         elif self._ascendancy == 'Reaper':
-            critDamage += int(self._damage * 0.05)
+            bonus = int(self._damage * 0.05)
+            if bonus:
+                console.print(f"[asc_reaper]Reaper: +{bonus} Critical Damage (5% of Damage)![/asc_reaper]")
+            critDamage += bonus
 
         elif self._ascendancy == 'Revenant' and self.intangibleTurns > 0:
             heal = critDamage // 2
-            self.heal(heal)
+            self.heal(heal, reason="Critical Hit while Intangible (Revenant)")
 
         elif self._ascendancy == 'Lich':
             esRestore = int(self.maxEnergyShield * 0.02 * self.vengeance)
@@ -194,20 +202,114 @@ class Spectre(Player):
 
         return finalDamage
 
+    def onAbilityCast(self, ability, combatManager):
+        if not ability:
+            return
+        tags = ability.tags
+        selfFx = ability.effects.get('self', {})
+
+        if 'forces_fading_reset' in tags and self._ascendancy == 'Wraith':
+            self.heal(self.wraithFading, reason="Fading (Wraith)")
+            console.print(f"[asc_wraith]{ability.name}: Healed {self.wraithFading} HP from Fading. Fading reset to 0.[/asc_wraith]")
+            self.wraithFading = 0
+
+        if 'grants_intangible_on_cast' in tags and self._ascendancy == 'Revenant':
+            turns = selfFx.get('grant_intangible', {}).get('turns', 0)
+            if turns:
+                self.intangibleTurns = max(self.intangibleTurns, turns)
+                console.print(f"[asc_revenant]{ability.name}: Intangible for {turns} turn(s).[/asc_revenant]")
+
+        if 'converts_hp_to_es' in tags and self._ascendancy == 'Lich':
+            fx = selfFx.get('convert_hp', {})
+            amount = fx.get('hp_amount', 0)
+            multiplier = fx.get('es_multiplier', 100) / 100
+            if amount and self._health > amount:
+                self.damage(amount, 'true', lethal=False)
+                gain = int(amount * multiplier)
+                self._stats['energy_shield'] = min(self.maxEnergyShield, self.energyShield + gain)
+                console.print(f"[asc_lich]{ability.name}: Converted {amount} HP into {gain} Energy Shield.[/asc_lich]")
+
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
         target = target.entity
 
+        if self.damageGain:
+            self._logDamage("Stored Damage from being Hit", flat=self.damageGain)
         damageDealt += self.damageGain
         self.damageGain = 0
 
+        if ability and self._ascendancy == 'Reaper' and 'raises_execute_threshold' in ability.tags:
+            amount = ability.effects.get('target', {}).get('execute_threshold_boost', {}).get('amount', 0)
+            if amount:
+                target.reaperExecuteBonus = getattr(target, 'reaperExecuteBonus', 0) + amount
+
+        if ability and self._ascendancy == 'Phantasm' and 'applies_phased_directly' in ability.tags:
+            target.applyPhased()
+
+        if ability and self._ascendancy == 'Phantasm' and 'phased_vengeance_finisher' in ability.tags:
+            if target.phasedTurns > 0 and self.vengeance > 0:
+                fx = ability.effects.get('self', {}).get('phased_vengeance', {})
+                stacksConsumed = self.vengeance
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                healPerStack = fx.get('heal_percent_per_stack', 0) / 100
+                self._logDamage(f"{ability.name} ({stacksConsumed} Vengeance Consumed)", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                heal = int(self._maxHealth * healPerStack * stacksConsumed)
+                self.loseAllVengeance()
+                if heal:
+                    self.heal(heal, reason=f"{ability.name} (Vengeance Consumed)")
+                console.print(f"[asc_phantasm]{ability.name}: Consumes {stacksConsumed} Vengeance against a Phased target for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_phantasm]")
+            else:
+                target.applyPhased()
+
+        if ability and self._ascendancy == 'Revenant' and 'consumes_intangible_absorbed' in ability.tags and self.intangibleAbsorbed > 0:
+            fx = ability.effects.get('self', {}).get('consume_intangible_absorbed', {})
+            bonus = int(self.intangibleAbsorbed * (fx.get('damage_percent', 0) / 100))
+            if bonus:
+                self._logDamage(f"{ability.name} (Intangible Damage Absorbed)", flat=bonus)
+            damageDealt += bonus
+            console.print(f"[asc_revenant]{ability.name}: Cashes in {self.intangibleAbsorbed} absorbed damage for +{bonus} Damage.[/asc_revenant]")
+            self.intangibleAbsorbed = 0
+
+        if ability and self._ascendancy == 'Wraith' and 'consumes_fading_finisher' in ability.tags and self.wraithFading > 0:
+            fx = ability.effects.get('self', {}).get('consume_fading', {})
+            dmgPercent = fx.get('damage_percent_per_100', 0) / 100
+            redeemAmount = fx.get('redeem_max_hp', 0)
+            stacksConsumed = self.wraithFading
+            self._logDamage(f"{ability.name} ({stacksConsumed} Fading Consumed)", percent=dmgPercent * (stacksConsumed / 100))
+            damageDealt = int(damageDealt * (1 + dmgPercent * (stacksConsumed / 100)))
+            self.wraithFading = 0
+            if redeemAmount and self.wraithLostMaxHp > 0:
+                redeemed = min(redeemAmount, self.wraithLostMaxHp)
+                self.wraithLostMaxHp -= redeemed
+                self._recalculateStats(False, True)
+                console.print(f"[asc_wraith]{ability.name}: Consumes {stacksConsumed} Fading for +{int(dmgPercent * (stacksConsumed / 100) * 100)}% Damage and redeems {redeemed}% of your lost Max HP.[/asc_wraith]")
+            else:
+                console.print(f"[asc_wraith]{ability.name}: Consumes {stacksConsumed} Fading for +{int(dmgPercent * (stacksConsumed / 100) * 100)}% Damage.[/asc_wraith]")
+
+        if ability and self._ascendancy == 'Lich' and 'consumes_energy_shield_finisher' in ability.tags and self.energyShield > 0:
+            fx = ability.effects.get('self', {}).get('consume_es', {})
+            spent = int(self.energyShield * (fx.get('percent_spent', 0) / 100))
+            if spent > 0:
+                self._stats['energy_shield'] -= spent
+                multiplier = fx.get('damage_multiplier', 100) / 100
+                if multiplier != 1:
+                    self._logDamage(f"{ability.name} (Energy Shield Spent)", percent=multiplier - 1)
+                damageDealt = int(damageDealt * multiplier)
+                heal = int(spent * (fx.get('heal_percent_of_spent', 0) / 100))
+                if heal:
+                    self.heal(heal, reason=f"{ability.name} (Energy Shield Spent)")
+                console.print(f"[asc_lich]{ability.name}: Spends {spent} Energy Shield for a devastating blow.[/asc_lich]")
+
         if damageType == 'ethereal':
+            if self.vengeance:
+                self._logDamage(f"Vengeance ({self.vengeance} stacks)", percent=0.1 * self.vengeance)
             damageDealt = int(damageDealt * (1 + (0.1 * self.vengeance)))
             ignoredArmour = target._stats['armour']
             healAmount = int(ignoredArmour * self.ghostlyAmount)
 
             if healAmount > 0:
-                self.heal(healAmount)
+                self.heal(healAmount, reason="Ghostly (Ignored Armour)")
                 console.print(f"  [heal]Ghostly: Healed {healAmount} HP from ignored armor![/heal]")
 
                 if self._ascendancy == 'Wraith':
@@ -223,30 +325,45 @@ class Spectre(Player):
 
             if self._ascendancy == 'Wraith':
                 if target and target._stats['armour'] == 0:
+                    self._logDamage("Unarmoured Target (Wraith)", percent=0.5)
                     damageDealt = int(damageDealt * 1.5)
                     console.print(f"[asc_wraith]Wraith: Unarmored target! +50% damage![/asc_wraith]")
 
+        if self._ascendancy == 'Wraith' and self.wraithDamage:
+            self._logDamage("Added Damage from Evasion (Wraith)", flat=self.wraithDamage)
+            damageDealt += self.wraithDamage
+            self.wraithDamage = 0
+
         if self._ascendancy == 'Reaper':
+            if self.reaperDamage:
+                self._logDamage("Bonus Damage from Executes (Reaper)", flat=self.reaperDamage)
             damageDealt += self.reaperDamage
             if target and target._health < (target._maxHealth * 0.3):
+                self._logDamage("Low HP Target (Reaper)", percent=0.15)
                 damageDealt = int(damageDealt * 1.15)
                 console.print(f"  [buff]Reaper: Low HP target! +15% damage![/buff]")
-    
+
         if self._ascendancy == 'Phantasm' and damageType == 'ethereal':
             if target.phasedTurns > 0:
                 heal = int(target._maxHealth * 0.01 * self.vengeance)
-                self.heal(heal)
+                self.heal(heal, reason="Attacking a Phased Target (Phantasm)")
             if random.random() < 0.25 + (0.05 * self.vengeance):
                 target.applyPhased()
 
         if self._ascendancy == 'Revenant' and self.intangibleTurns > 0 and damageType == 'ethereal':
+            self._logDamage("Intangible (Revenant)", percent=0.3)
             damageDealt = int(damageDealt * 1.3)
 
         if self._ascendancy == 'Lich':
             if self.lichBuffsActive:
+                self._logDamage("Energy Shield above 50% (Lich)", percent=0.1)
                 damageDealt = int(damageDealt * 1.1)
-            damageDealt += int(self.energyShield * 0.05)
+            esBonus = int(self.energyShield * 0.05)
+            if esBonus:
+                self._logDamage("5% of Energy Shield (Lich)", flat=esBonus)
+            damageDealt += esBonus
             if self.maxEnergyShield > target._maxHealth:
+                self._logDamage("Max Energy Shield exceeds Target's Max HP (Lich)", percent=0.2)
                 damageDealt = int(damageDealt * 1.2)
 
         return damageDealt, damageType
@@ -255,6 +372,14 @@ class Spectre(Player):
         super().onKill()
         if self._ascendancy == 'Revenant':
             self.revenantReverseDamage = True
+
+        # generic ability.effects.on_kill processing - available to any ascendancy ability
+        ability = attackData.get('ability') if attackData else None
+        healPct = ability.effects.get('on_kill', {}).get('heal_percent_max_hp', 0) if ability else 0
+        if healPct:
+            heal = int(self._maxHealth * healPct / 100)
+            self.heal(heal, reason=ability.name)
+            console.print(f"[class_spectre]{ability.name} claims its due! Healed {heal} HP.[/class_spectre]")
 
         return {}
 
@@ -269,20 +394,21 @@ class Spectre(Player):
 
         return status
 
-    def heal(self, amount, doPrint: bool = True):
+    def heal(self, amount, doPrint: bool = True, reason: str = None):
         if self._ascendancy == 'Lich':
-            magnitude = self._stats['Bonuses']['healingMagnitude'] / 100
+            magnitude = self._stats['Bonuses']['healing_magnitude'] / 100
             modifiedAmount = int(amount * magnitude)
+            reasonStr = f" due to {reason}" if reason else ""
             if modifiedAmount > 0:
                 self._stats['energy_shield'] = min(
                     self.maxEnergyShield,
                     self.energyShield + modifiedAmount
                 )
-                console.print(f"[success]{self._name} gained {modifiedAmount} Energy Shield from healing![/success] [dim]Energy Shield: {self._stats['energy_shield']} / {self._stats['max_energy_shield']}[/dim]")
+                console.print(f"[success]{self._name} gained {modifiedAmount} Energy Shield from healing{reasonStr}![/success] [dim]Energy Shield: {self._stats['energy_shield']} / {self._stats['max_energy_shield']}[/dim]")
         else:
-            super().heal(amount, doPrint)
+            super().heal(amount, doPrint, reason)
 
-    def onEvade(self):
+    def onEvade(self, combatManager):
         if self._ascendancy == 'Wraith':
             self.wraithDamage += self.wraithFading // 2
 
@@ -311,7 +437,8 @@ class Spectre(Player):
             if self.revenantReverseDamage:
                 self.revenantReverseDamage = False
                 heal = damageTaken * 2 if damageType == 'ethereal' else damageTaken
-                self.heal(heal)
+                attacker._logDamage(f"{self._name}'s Post-Kill Damage Reversal (Revenant)", percent=-1.0)
+                self.heal(heal, reason="Post-Kill Damage Reversal (Revenant)")
                 console.print(f"  [heal]Revenant: The attack heals you instead! +{heal} HP.[/heal]")
                 damageTaken = 0
             if self.intangibleTurns > 0:
@@ -319,6 +446,7 @@ class Spectre(Player):
                     self._health = 0
                     console.print(f"  [warning]Revenant: Massive hit while intangible! Your intangibility fades![/warning]")
                 else:
+                    attacker._logDamage(f"{self._name}'s Intangible (Revenant)", percent=-1.0)
                     self.intangibleAbsorbed += damageTaken
                     damageTaken = 0
                     return super().onHit(0, damageType, crit, attacker, combatManager)
@@ -326,22 +454,26 @@ class Spectre(Player):
                 self._health = 1
                 self.intangibilityUsed = True
                 self.intangibleTurns = 1
+                attacker._logDamage(f"{self._name}'s Death Denied (Revenant)", percent=-1.0)
                 console.print(f"\n[gold1]Revenant: Death denied! Intangible for 1 turn![/gold1]")
                 return super().onHit(0, damageType, crit, attacker, combatManager)
-        
+
         elif self._ascendancy == 'Phantasm':
             if attacker.phasedTurns > 0:
                 self.phantasmGainShifting()
             if damageType == 'physical':
+                attacker._logDamage(f"{self._name}'s Reduced Physical Damage Taken (Phantasm)", percent=-0.3)
                 damageTaken = int(damageTaken * 0.7)
 
         elif self._ascendancy == 'Lich':
             if attacker._health < self.energyShield:
+                attacker._logDamage(f"{self._name}'s Energy Shield exceeds Attacker's HP (Lich)", percent=-0.1)
                 damageTaken = int(damageTaken * 0.9)
             if damageType == 'chaos':
                 shieldHit = int(damageTaken * 0.25)
                 if self.energyShield > 0 and shieldHit > 0:
                     shieldDmg = min(shieldHit, self.energyShield)
+                    attacker._logDamage(f"{self._name}'s Energy Shield absorption (Lich)", flat=-shieldDmg)
                     self._stats['energy_shield'] -= shieldDmg
                     damageTaken -= shieldDmg
                     console.print(f"[asc_lich]Lich: Energy Shield absorbed {shieldDmg} chaos damage![/asc_lich]")
@@ -366,7 +498,8 @@ class Spectre(Player):
                 self.intangibleTurns -= 1
                 if self.intangibleTurns == 0:
                     heal = self.intangibleAbsorbed
-                    self.heal(heal)
+                    self.heal(heal, reason="Damage Absorbed while Intangible (Revenant)")
+                    self.intangibleAbsorbed = 0
             if self.revenantAbove50LastTurn and self._health < self._maxHealth // 2:
                 self.revenantAbove50LastTurn = False
                 self._stats['Temporary']['increased_defenses'] += 20
@@ -404,28 +537,28 @@ class Spectre(Player):
 
     ASCENDANCY_DELTAS = {
         'Wraith': {
-            '_baseHealth': 10,
-            '_baseDamage': 4,
+            '_baseHealth': 15,
+            '_baseDamage': 8,
             '_baseSpeed': -0.05,
             '_stats.Permanent.ethereal': 10,
         },
         'Reaper': {
-            '_baseHealth': -15,
-            '_baseDamage': -4,
+            '_baseHealth': -5,
+            '_baseDamage': -2,
             '_baseSpeed': 0.05,
             '_stats.baseCritChance': 0.02,
             '_stats.Permanent.added_armour': 100,
         },
         'Phantasm': {
-            '_baseHealth': 20,
-            '_baseDamage': 6,
+            '_baseHealth': 25,
+            '_baseDamage': 8,
             '_baseSpeed': -0.1,
             '_stats.Permanent.stun_avoidance': -10,
             '_stats.baseCritMulti': 0.25,
         },
         'Revenant': {
-            '_baseHealth': -10,
-            '_baseDamage': 5,
+            '_baseHealth': -5,
+            '_baseDamage': 8,
             '_baseSpeed': 0.1,
             '_stats.Permanent.healing_magnitude': 30,
             '_stats.Permanent.physical': -10,
@@ -463,3 +596,5 @@ class Spectre(Player):
         elif ascendancy == 'Phantasm':
             self.ghostlyAmount = 0.05
         self._recalculateStats()
+        self.gainClassAbilities()
+        return True

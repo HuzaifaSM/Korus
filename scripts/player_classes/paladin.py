@@ -17,21 +17,21 @@ PALADIN_DESCRIPTIONS = {
         "- Whilst at or above 50 Favour, gain 20% Increased Damage, +5% Crit Chance and +10% Lifesteal.\n"
         "- Upon spending Favour on attack buffs, gain 1 stack of Zealotry per 15 Favour spent. Zealotry has no max stack limit.\n"
         "- Zealotry: +2% Increased Holy Damage, +1 Damage, +0.3% Damage Taken. At the end of combat, heal HP equal to Zealotry stacks.\n"
-        "[bold]Stat Changes:[/bold] +10 HP. +2 Damage. -0.15 Speed. +15% Holy Resistance. -10% Psychic Resistance",
+        "[bold]Stat Changes:[/bold] +20 HP. +8 Damage. -0.05 Speed. +15% Holy Resistance. -10% Psychic Resistance",
     "Guardian": "[lore]Stand firm. Hold your ground. Let them exhaust themselves against the bulwark of your faith.[/lore]"
         "- Attack buffs from Favour have 25% Less Effect. Defense buffs from Favour have 75% Increased Effect and 20% Increased Cost.\n"
         "- +3 Favour Generated. At the start of your turn, gain Shield equal to 5% of your current Favour.\n"
         "- Whilst at or above 60 Favour, gain 10% Increased Damage, 10% Damage Reduction, 50% Ailment Avoidance, and +10 HP Regeneration.\n"
         "- Upon taking damage, spend up to 20 Favour and gain +0.5% Damage Reduction per Favour Spent. Whenever you spend at least 16 Favour this way, gain 1 Bulwark.\n"
         "- Bulwark: -0.05 Speed, +15% Increased Holy Damage. Bulwark has a maximum of 5 stacks.\n"
-        "[bold]Stat Changes:[/bold] +20 HP. -2 Damage. -0.1 Speed. +20% Stun Avoidance. +100 Armour. +30 Energy Shield.",
+        "[bold]Stat Changes:[/bold] +20 HP. -2 Damage. -0.1 Speed. +20% Stun Avoidance. +50 Armour. +15 Energy Shield.",
     "Justicar": "[lore]Their judgement has come. Their sentence has ended. Fear not their evils. Rise, and smite them down.[/lore]"
         "- Gain 1 Favour per 10 damage taken. Gain 2 Favour per 10 damage taken if the damage type was Otherworld.\n"
         "- Favour buffs have 20% Increased Effect and 10% Increased Cost. While you are at or above 70 Favour, your next attack deals 80% Increased Damage and consumes 40 Favour.\n"
         "- Upon taking damage, gain Shield equal to a percentage of damage taken. The percentage is equal to your current Favour percentage, to a maximum of 30%.\n"
         "- Upon killing an enemy, gain Justice for 3 turns: +25% Increased Holy Damage, +5% Damage Reduction, +10% Crit Chance, +0.2 Speed.\n"
         "- Upon dealing a critical hit, gain 5 Favour per living enemy in combat.\n"
-        "[bold]Stat Changes:[/bold] -20 HP. +1 Damage. +0.1 Speed. +50% Crit Damage. +5% Dark Resistance. +5% Holy Resistance",
+        "[bold]Stat Changes:[/bold] -5 HP. +8 Damage. +0.1 Speed. +50% Crit Damage. +5% Dark Resistance. +5% Holy Resistance",
     "Crusader": "[lore]Raise the banner of divinity. Let it glorify their graves. Every victory shall bring you closer to enlightenment.[/lore]"
         "- Favour generation is doubled while below 50% Max HP. For every 15 Favour spent throughout combat, heal 1 HP at the start of your turn.\n"
         "- Deal 2% Increased Damage per 5 Favour spent at the start of your turn. Defensive buffs have 5% Increased Effect per 10 Favour spent on them.\n"
@@ -40,14 +40,14 @@ PALADIN_DESCRIPTIONS = {
         "- Valour: 10% Increased Holy Damage, +0.05 Speed, +1% Damage Taken, +2% Lifesteal.\n"
         "- At 10 Valour: +20% Crit Chance, +50% Crit Damage, +5% Lifesteal.\n"
         "- At the end of combat, gain +1 Permanent Max Favour Generation per 6 stacks of Valour.\n"
-        "[bold]Stat Changes:[/bold] -15 HP. +2 Damage. +0.05 Speed. +25% Crit Damage. +5% Divine Resistance.",
+        "[bold]Stat Changes:[/bold] -5 HP. +8 Damage. +0.1 Speed. +25% Crit Damage. +5% Divine Resistance.",
     "Inquisitor": "[lore]Do not seek their repentance. Do not ask for their forgiveness. Deliver judgement, swift and pitiless, and let the divine empower you.[/lore]"
         "- 50% Increased Favour generation. +50 Max Favour. Holy Damage has 5% Lifesteal.\n"
         "- If you have 80+ Favour when attacking, consume 50% of your current Favour to deal 75% Increased Damage.\n"
         "- If you have 60+ Favour when being attacked, consume 40% of your current Favour to gain Blessing for 2 turns.\n"
         "- Blessing: +5 Favour Generation, +10 HP Regeneration, 10% Increased Holy Damage, 5% Damage Reduction.\n"
         "- All Favour buffs have 30% Increased Effect, but have a minimum cost of 20 Favour.\n"
-        "[bold]Stat Changes:[/bold] +10 HP. +2 Damage. -0.2 Speed. +15% Holy Resistance. +100 Armour.",
+        "[bold]Stat Changes:[/bold] +10 HP. +2 Damage. -0.1 Speed. +15% Holy Resistance. +100 Armour.",
 }
 
 class Paladin(Player): #higher health, lower damage, holy damage
@@ -90,13 +90,13 @@ class Paladin(Player): #higher health, lower damage, holy damage
         if self._ascendancy == 'Guardian':
             if self.favour >= 60:
                 if not self.guardianActiveLastTurn:
-                    self._stats['Temporary']['hpRegen'] += 10
-                    self._stats['Temporary']['ailmentAvoidance'] += 50
+                    self._stats['Temporary']['hp_regen'] += 10
+                    self._stats['Temporary']['ailment_avoidance'] += 50
                 self.guardianActiveLastTurn = True
                 return True
             if self.guardianActiveLastTurn:
-                self._stats['Temporary']['hpRegen'] -= 10
-                self._stats['Temporary']['ailmentAvoidance'] -= 50
+                self._stats['Temporary']['hp_regen'] -= 10
+                self._stats['Temporary']['ailment_avoidance'] -= 50
             self.guardianActiveLastTurn = False
         return False
 
@@ -129,6 +129,18 @@ class Paladin(Player): #higher health, lower damage, holy damage
         if self.blessingTurns == 0:
             self._stats['Temporary']['hp_regen'] += 10
         self.blessingTurns = 2
+
+    def gainBulwark(self):
+        if self.bulwark < 5:
+            self.bulwark += 1
+            self._stats['Temporary']['speed'] -= 0.05
+
+    def consumeBulwark(self) -> int:
+        consumed = self.bulwark
+        if consumed > 0:
+            self._stats['Temporary']['speed'] += 0.05 * consumed
+            self.bulwark = 0
+        return consumed
 
     def serialise(self):
         temp = super().serialise()
@@ -189,6 +201,9 @@ class Paladin(Player): #higher health, lower damage, holy damage
         elif self._ascendancy == 'Inquisitor':
             favourEffect += 0.3
 
+        if 'crit_' in buffType:
+            val /= 100
+
         val = int(val * amount * favourEffect)
         buff = buffType.replace('_', ' ').title()
         ex = "" if buffType == 'damage' else "%"
@@ -248,47 +263,172 @@ class Paladin(Player): #higher health, lower damage, holy damage
         console.print(f"  [gold1]Spent {amount} Favour on defensive buff: +{strVal}{ex} {buff}.[/gold1]")
         return {buffType: val}
 
+    def onAbilityCast(self, ability, combatManager):
+        super().onAbilityCast(ability, combatManager)
+        if not ability:
+            return
+
+        if self._ascendancy == 'Zealot' and 'gain_zealotry_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_zealotry', {})
+            stacks = fx.get('stacks', 0)
+            if stacks > 0:
+                self.zealotry += stacks
+                console.print(f"[asc_zealot]Zealot: {ability.name} grants {stacks} Zealotry.[/asc_zealot]")
+
+        if self._ascendancy == 'Guardian' and 'gain_bulwark_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_bulwark', {})
+            stacks = fx.get('stacks', 0)
+            for _ in range(stacks):
+                self.gainBulwark()
+            if stacks > 0:
+                console.print(f"[holy]Guardian: {ability.name} grants {stacks} Bulwark.[/holy]")
+
+        if self._ascendancy == 'Justicar' and 'gains_favour_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_favour', {})
+            amount = fx.get('amount', 0)
+            if amount > 0:
+                self.favour = min(self.maxFavour, self.favour + amount)
+                console.print(f"[holy]Justicar: {ability.name} grants {amount} Favour.[/holy]")
+
+        if self._ascendancy == 'Crusader' and 'gain_valour_on_cast' in ability.tags:
+            fx = ability.effects.get('self', {}).get('gain_valour', {})
+            stacks = fx.get('stacks', 0)
+            for _ in range(stacks):
+                self.crusaderGainValour()
+            if stacks > 0:
+                console.print(f"[holy]Crusader: {ability.name} grants {stacks} Valour.[/holy]")
+
+        if self._ascendancy == 'Inquisitor' and 'grants_blessing_on_cast' in ability.tags:
+            self.inquisitorGainBlessing()
+            console.print(f"[holy]Inquisitor: {ability.name} grants Blessing.[/holy]")
+
+    def onKill(self, entity, attackData, combatManager=None):
+        super().onKill()
+        if self._ascendancy == 'Justicar':
+            if self.justiceTurns == 0:
+                self._stats['Temporary']['crit_chance'] += 0.1
+                self._stats['Temporary']['speed'] += 0.2
+            self.justiceTurns = 3
+
+        elif self._ascendancy == 'Crusader':
+            self.crusaderGainValour()
+
+        ability = attackData.get('ability') if attackData else None
+        onKillFx = ability.effects.get('onKill', {}) if ability else {}
+        if onKillFx:
+            healPct = onKillFx.get('heal', {}).get('percent', 0)
+            if healPct:
+                heal = int(self._maxHealth * healPct)
+                self.heal(heal, reason=ability.name)
+                console.print(f"[class_paladin]{ability.name} claims its due! Healed {heal} HP.[/class_paladin]")
+
+            favourGain = onKillFx.get('favour_gain', {}).get('amount', 0)
+            if favourGain:
+                self.favour = min(self.maxFavour, self.favour + favourGain)
+                console.print(f"[class_paladin]{ability.name} grants {favourGain} Favour.[/class_paladin]")
+
+        return {}
+
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
+
+        if ability:
+            if self._ascendancy == 'Zealot' and 'consumes_zealotry' in ability.tags and self.zealotry > 0:
+                fx = ability.effects.get('self', {}).get('consume_zealotry', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                stacksConsumed = self.zealotry
+                self.zealotry = 0
+                self._logDamage(f"{ability.name} consumes {stacksConsumed} Zealotry (Zealot)", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[asc_zealot]Zealot: {ability.name} consumes {stacksConsumed} Zealotry for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/asc_zealot]")
+
+            if self._ascendancy == 'Guardian' and 'consumes_bulwark_for_shield' in ability.tags and self.bulwark > 0:
+                fx = ability.effects.get('self', {}).get('consume_bulwark', {})
+                pctPerStack = fx.get('shield_percent_max_hp_per_stack', 0) / 100
+                stacksConsumed = self.consumeBulwark()
+                shieldGain = int(self._maxHealth * pctPerStack * stacksConsumed)
+                self._shield += shieldGain
+                console.print(f"[holy]Guardian: {ability.name} consumes {stacksConsumed} Bulwark for +{shieldGain} Shield.[/holy]")
+
+            if self._ascendancy == 'Justicar' and 'consumes_all_favour_execution' in ability.tags and self.favour > 0:
+                fx = ability.effects.get('self', {}).get('consume_all_favour', {})
+                pctPerFavour = fx.get('damage_percent_per_favour', 0) / 100
+                amount = self.favour
+                self.favour = 0
+                self._logDamage(f"{ability.name} consumes {amount} Favour (Justicar)", percent=pctPerFavour * amount)
+                damageDealt = int(damageDealt * (1 + (pctPerFavour * amount)))
+                console.print(f"[holy]Justicar: {ability.name} consumes {amount} Favour for +{int(pctPerFavour * amount * 100)}% Damage.[/holy]")
+
+            if self._ascendancy == 'Crusader' and 'consumes_valour_for_damage' in ability.tags and self.valour > 0:
+                fx = ability.effects.get('self', {}).get('consume_valour', {})
+                dmgPerStack = fx.get('damage_per_stack', 0) / 100
+                stacksConsumed = self.valour
+                self.valour = 0
+                self._logDamage(f"{ability.name} consumes {stacksConsumed} Valour (Crusader)", percent=dmgPerStack * stacksConsumed)
+                damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                console.print(f"[holy]Crusader: {ability.name} consumes {stacksConsumed} Valour for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/holy]")
+
+            if self._ascendancy == 'Inquisitor' and 'amplified_favour_execution' in ability.tags:
+                fx = ability.effects.get('self', {}).get('consume_favour_amplified', {})
+                minFavour = fx.get('min_favour', 0)
+                pctPerFavour = fx.get('damage_percent_per_favour', 0) / 100
+                if self.favour >= minFavour:
+                    amount = self.favour
+                    self.favour = 0
+                    self._logDamage(f"{ability.name} consumes {amount} Favour (Inquisitor)", percent=pctPerFavour * amount)
+                    damageDealt = int(damageDealt * (1 + (pctPerFavour * amount)))
+                    console.print(f"[holy]Inquisitor: {ability.name} consumes {amount} Favour for +{int(pctPerFavour * amount * 100)}% Damage.[/holy]")
 
         buffs = self.favourOffenseBuffs
         if buffs:
             buff, val = list(buffs.items())[0]
             if buff == 'damage':
+                self._logDamage("Favour Buff (+Damage)", flat=val)
                 damageDealt += val
             elif buff == 'increased_damage':
+                self._logDamage("Favour Buff (+Increased Damage)", percent=val / 100)
                 damageDealt = int(damageDealt * (1 + (val / 100)))
 
         if self._ascendancy == 'Zealot':
             if self.zealotry > 0:
+                self._logDamage(f"Zealotry ({self.zealotry} stacks)", flat=self.zealotry)
                 damageDealt += self.zealotry
                 if damageType == 'holy':
+                    self._logDamage(f"Zealotry ({self.zealotry} stacks, Holy Damage)", percent=self.zealotry / 50)
                     damageDealt = int(damageDealt * (1 + (self.zealotry / 50)))
             if self.zealotActive:
+                self._logDamage("50+ Favour Active (Zealot)", percent=0.2)
                 damageDealt = int(damageDealt * 1.2)
-        
+
         elif self._ascendancy == 'Guardian':
             if self.guardianActive:
+                self._logDamage("60+ Favour Active (Guardian)", percent=0.1)
                 damageDealt = int(damageDealt * 1.1)
             if self.bulwark > 0:
+                self._logDamage(f"Bulwark ({self.bulwark} stacks)", percent=self.bulwark * 0.15)
                 damageDealt = int(damageDealt * (1 + (self.bulwark * 0.15)))
 
         elif self._ascendancy == 'Justicar':
             if self.justiceTurns > 0 and damageType == 'holy':
+                self._logDamage("Justice Active (Justicar, Holy Damage)", percent=0.25)
                 damageDealt = int(damageDealt * 1.25)
             if self.favour >= 70:
                 self.favour -= 40
+                self._logDamage("Spent 40 Favour (Justicar)", percent=0.8)
                 damageDealt = int(damageDealt * 1.8)
                 console.print("  [holy]Justicar: Spent 40 Favour to gain +80% Increased Damage![/holy]")
 
         elif self._ascendancy == 'Crusader':
             bonus = 1 + ((self.favourSpentThisTurn // 5) * 0.02)
+            self._logDamage(f"Favour Spent ({self.favourSpentThisTurn})", percent=bonus - 1)
             damageDealt = int(damageDealt * bonus)
 
             if self.valour > 0 and damageType == 'holy':
+                self._logDamage(f"Valour ({self.valour} stacks, Holy Damage)", percent=self.valour * 0.1)
                 damageDealt = int(damageDealt * (1 + (self.valour * 0.1)))
 
             if damageType == 'holy' and self.crusaderActive:
+                self._logDamage("75%+ Max HP Active (Crusader, Holy Damage)", percent=0.15)
                 damageDealt = int(damageDealt * 1.15)
 
             if damageDealt > self._maxHealth * 0.1:
@@ -297,12 +437,14 @@ class Paladin(Player): #higher health, lower damage, holy damage
         elif self._ascendancy == 'Inquisitor':
             if self.favour >= 80:
                 self.favour //= 2
+                self._logDamage("80+ Favour Consumed (Inquisitor)", percent=0.75)
                 damageDealt = int(damageDealt * 1.75)
             if damageType == 'holy':
                 if self.blessingTurns > 0:
+                    self._logDamage("Blessing Active (Inquisitor, Holy Damage)", percent=0.1)
                     damageDealt = int(damageDealt * 1.1)
                 heal = int(damageDealt * 0.05)
-                self.heal(heal)
+                self.heal(heal, reason="5% Holy Damage Lifesteal (Inquisitor)")
 
         return damageDealt, damageType
     
@@ -316,27 +458,32 @@ class Paladin(Player): #higher health, lower damage, holy damage
                 gain = int(self._maxHealth * val)
                 self._shield += gain
             elif buff == 'damage_reduction':
+                attacker._logDamage(f"{self._name}'s Favour Buff (-Damage Taken)", flat=-val)
                 damageTaken = max(0, damageTaken - val)
             elif buff == 'percent_damage_reduction':
+                attacker._logDamage(f"{self._name}'s Favour Buff (-% Damage Taken)", percent=-val)
                 damageTaken = int(damageTaken * (1 - val))
 
         if self._ascendancy == 'Zealot' and self.zealotry > 0:
             bonus = 1 + (self.zealotry * 0.003)
+            attacker._logDamage(f"{self._name}'s Zealotry ({self.zealotry} stacks)", percent=bonus - 1)
             damageTaken = int(damageTaken * bonus)
 
         elif self._ascendancy == 'Guardian' and self.favour > 0:
             if self.guardianActive:
+                attacker._logDamage(f"{self._name}'s 60+ Favour Active (Guardian)", percent=-0.1)
                 damageTaken = int(damageTaken * 0.9)
             spent = min(20, self.favour)
             dr = spent * 0.005
+            attacker._logDamage(f"{self._name}'s Spent {spent} Favour (Guardian)", percent=-dr)
             console.print(f"  [holy]Guardian: Spent {spent} Favour to gain an additional +{(dr*100)}% Damage Reduction.[/holy]")
             damageTaken = int(damageTaken * (1 - dr))
-            if spent >= 16 and self.bulwark < 5:
-                self.bulwark += 1
-                self._stats['Temporary']['speed'] -= 0.05
+            if spent >= 16:
+                self.gainBulwark()
 
         elif self._ascendancy == 'Justicar':
             if self.justiceTurns > 0:
+                attacker._logDamage(f"{self._name}'s Justice Active (Justicar)", percent=-0.05)
                 damageTaken = int(damageTaken * 0.95)
 
             fGain = damageTaken // 10 * (2 if damageType in OTHERWORLD_RES else 1)
@@ -347,6 +494,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
             self._shield += sGain
 
         elif self._ascendancy == 'Crusader' and self.valour > 0:
+            attacker._logDamage(f"{self._name}'s Valour ({self.valour} stacks, Crusader)", percent=self.valour * 0.01)
             damageTaken = int(damageTaken * (1 + (self.valour * 0.01)))
 
         elif self._ascendancy == 'Inquisitor':
@@ -354,22 +502,10 @@ class Paladin(Player): #higher health, lower damage, holy damage
                 self.favour = int(self.favour * 0.6)
                 self.inquisitorGainBlessing()
             if self.blessingTurns > 0:
+                attacker._logDamage(f"{self._name}'s Blessing Active (Inquisitor)", percent=-0.05)
                 damageTaken = int(damageTaken * 0.95)
 
         return damageTaken, damageType
-
-    def onKill(self, entity, attackData, combatManager=None):
-        super().onKill()
-        if self._ascendancy == 'Justicar':
-            if self.justiceTurns == 0:
-                self._stats['Temporary']['crit_chance'] += 0.1
-                self._stats['Temporary']['speed'] += 0.2
-            self.justiceTurns = 3
-
-        elif self._ascendancy == 'Crusader':
-            self.crusaderGainValour()
-
-        return {}
 
     def rollCritical(self, target, damageDealt = None):
         target = target.entity
@@ -425,6 +561,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
                 self._stats['Temporary']['crit_chance'] -= 0.1
                 self._stats['Temporary']['speed'] -= 0.2
 
+        choice = ''
         if (self.favour >= 5 and self._ascendancy != 'Inquisitor') or (self._ascendancy == 'Inquisitor' and self.favour >= 20):
             console.print(f"[class_paladin]Paladin: Spend Favour this turn? (y/n):[/class_paladin]")
             choice = console.input("[cyan]> [/cyan]").strip().lower()
@@ -463,9 +600,9 @@ class Paladin(Player): #higher health, lower damage, holy damage
 
     ASCENDANCY_DELTAS = {
         'Zealot': {
-            '_baseHealth': 10,
-            '_baseDamage': 2,
-            '_baseSpeed': -0.15,
+            '_baseHealth': 20,
+            '_baseDamage': 8,
+            '_baseSpeed': -0.05,
             '_stats.Permanent.holy': 15,
             '_stats.Permanent.psychic': -10,
             'maxFavour': -25,
@@ -475,30 +612,30 @@ class Paladin(Player): #higher health, lower damage, holy damage
             '_baseDamage': -2,
             '_baseSpeed': -0.1,
             '_stats.Permanent.stun_avoidance': 20,
-            '_stats.Permanent.added_armour': 100,
-            '_stats.Permanent.added_energy_shield': 30,
+            '_stats.Permanent.added_armour': 50,
+            '_stats.Permanent.added_energy_shield': 15,
             'favourMinGain': 3,
             'favourMaxGain': 3,
         },
         'Justicar': {
-            '_baseHealth': -20,
-            '_baseDamage': 1,
+            '_baseHealth': -5,
+            '_baseDamage': 8,
             '_baseSpeed': 0.1,
             '_stats.baseCritMulti': 0.5,
             '_stats.Permanent.dark': 5,
             '_stats.Permanent.holy': 5,
         },
         'Crusader': {
-            '_baseHealth': -15,
-            '_baseDamage': 2,
-            '_baseSpeed': 0.05,
+            '_baseHealth': -5,
+            '_baseDamage': 8,
+            '_baseSpeed': 0.1,
             '_stats.baseCritMulti': 0.25,
             '_stats.Permanent.divine': 5,
         },
         'Inquisitor': {
             '_baseHealth': 10,
             '_baseDamage': 2,
-            '_baseSpeed': -0.2,
+            '_baseSpeed': -0.1,
             '_stats.Permanent.holy': 15,
             '_stats.Permanent.added_armour': 100,
             'maxFavour': 50,
@@ -518,5 +655,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.ascendancyDescription = PALADIN_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
+        self.gainClassAbilities()
+        return True
 
 ...
