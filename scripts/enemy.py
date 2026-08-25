@@ -1,7 +1,8 @@
 import random
 from typing import Dict
 from .entities import Entity
-from .items import Equipment, ItemRarity, LootTable, RESOURCES, rollRarity, RARITY_WEIGHTS
+from .items.items import ItemRarity, LootTable, RESOURCES, rollRarity, RARITY_WEIGHTS
+from .items.equipment import Equipment
 from .runeDrops import rollRuneDrops
 from .abilities import ENEMY_ABILITIES, EnemyAbility, BasicAttack
 from json import load
@@ -44,6 +45,8 @@ class Enemy(Entity):
 
         self.rarityModifer = rarityModifier
         self.quantityModifier = quantityModifier
+
+        self.consumable.updateValue(max(1, min(55, level) - 15)) # cannot have better than healing flasks
 
         self.ai = EnemyAI(self)
 

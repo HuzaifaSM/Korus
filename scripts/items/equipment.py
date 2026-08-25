@@ -1,19 +1,34 @@
-from enum import Enum
-from typing import Dict, Optional, List, Any, Tuple
+from .items import Item, ItemRarity, ItemType, RARITY_SERIALS, RARITY_VALUES
+from scripts.affixes import Affix, rollAffix
+from scripts.styles import console, printError
+# from scripts.mythicAffixes import rollMythicAffix
+from typing import Optional, List, Any, Tuple
 import random
-from .styles import console, printError
-from .affixes import rollAffix, Affix
-from .mythicAffixes import rollMythicAffix
 
-class ItemRarity(Enum):
-    COMMON = "common"
-    UNCOMMON = "uncommon"
-    RARE = "rare"
-    EPIC = "epic"
-    LEGENDARY = "legendary"
-    MYTHIC = "mythic"
-    BLANK = "blank"
-    QUEST = "quest"
+ENTROPY_RESISTANCE = {
+    ItemRarity.COMMON: 0.0,
+    ItemRarity.UNCOMMON: 0.05,
+    ItemRarity.RARE: 0.125,
+    ItemRarity.EPIC: 0.20,
+    ItemRarity.LEGENDARY: 0.35,
+    ItemRarity.MYTHIC: 0.5,
+}
+
+MAX_PRESERVATIONS = {
+    ItemRarity.COMMON: 1,
+    ItemRarity.UNCOMMON: 1,
+    ItemRarity.RARE: 2,
+    ItemRarity.EPIC: 2,
+    ItemRarity.LEGENDARY: 3,
+    ItemRarity.MYTHIC: 4,
+}
+
+DAMAGE_TYPES = [
+    'physical',
+    'fire', 'cold', 'lightning', 'earth',
+    'dark', 'holy', 'arcane',
+    'ethereal', 'psychic', 'chaos'
+]
 
 class AffixSlot:
     def __init__(self, kind: str, affix: Optional[Affix] = None):
@@ -75,124 +90,6 @@ class AffixSlot:
 
 ARMOUR_SLOTS = ['head', 'chest', 'legs', 'feet']
 
-RARITY_VALUES = {
-    "common": 1,
-    "uncommon": 2,
-    "rare": 3,
-    "epic": 4,
-    "legendary": 5,
-    "mythic": 10,
-    "quest": 1
-}
-
-RARITY_SERIALS = {
-    "common": ItemRarity.COMMON,
-    "uncommon": ItemRarity.UNCOMMON,
-    "rare": ItemRarity.RARE,
-    "epic": ItemRarity.EPIC,
-    "legendary": ItemRarity.LEGENDARY,
-    "mythic": ItemRarity.MYTHIC,
-    "blank": ItemRarity.BLANK,
-    "quest": ItemRarity.QUEST
-}
-
-VALUE_MULTIPLIER = {
-    ItemRarity.COMMON: 1,
-    ItemRarity.UNCOMMON: 1.5,
-    ItemRarity.RARE: 2,
-    ItemRarity.EPIC: 3.5,
-    ItemRarity.LEGENDARY: 4.5,
-}
-
-ENTROPY_RESISTANCE = {
-    ItemRarity.COMMON: 0.0,
-    ItemRarity.UNCOMMON: 0.05,
-    ItemRarity.RARE: 0.125,
-    ItemRarity.EPIC: 0.20,
-    ItemRarity.LEGENDARY: 0.35,
-    ItemRarity.MYTHIC: 0.5,
-}
-
-MAX_PRESERVATIONS = {
-    ItemRarity.COMMON: 1,
-    ItemRarity.UNCOMMON: 1,
-    ItemRarity.RARE: 2,
-    ItemRarity.EPIC: 2,
-    ItemRarity.LEGENDARY: 3,
-    ItemRarity.MYTHIC: 4,
-}
-
-class ItemType(Enum):
-    RESOURCE = "resource"
-    CONSUMABLE = "consumable"
-    EQUIPMENT = "equipment"
-    QUEST = "quest"
-    DUNGEON = "dungeon"
-
-TYPE_SERIALS = {
-    "resource": ItemType.RESOURCE,
-    "consumable": ItemType.CONSUMABLE,
-    "equipment": ItemType.EQUIPMENT,
-    "quest": ItemType.QUEST
-}
-
-CONSUMABLES = {
-    "Small Health Potion": 20,
-    "Medium Health Potion": 40,
-    "Large Health Potion": 80,
-    "Superior Health Potion": 180,
-    "Godly Health Potion": 400
-}
-
-DAMAGE_TYPES = [
-    'physical',
-    'fire', 'cold', 'lightning', 'earth',
-    'dark', 'holy', 'arcane',
-    'ethereal', 'psychic', 'chaos'
-]
-
-class Item:
-    def __init__(self, name: str, itemType: ItemType, rarity: ItemRarity = ItemRarity.COMMON,
-                 value: int = 1, stackable: bool = False, maxStack: int = 1):
-        self.name = name
-        self.itemType = itemType
-        self.rarity = rarity
-        self.value = value
-        self.stackable = stackable
-        self.maxStack = maxStack
-
-    def __rich__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return f"[rarity]{self.name}[/rarity] [dim]Max Stack:[/dim] {self.maxStack}"
-
-    def serialise(self):
-        return {
-            "name": self.name,
-            "itemType": self.itemType.value,
-            "rarity": self.rarity.value,
-            "value": self.value,
-            "stackable": self.stackable,
-            "maxStack": self.maxStack,
-        }
-    
-    @classmethod
-    def deserialise(cls, data: Dict):
-        cls = Item(
-            data.get('name', 'Item'),
-            data.get('itemType'),
-            RARITY_SERIALS[data.get('rarity', 'common')],
-            data.get('value', 0),
-            data.get('stackable', False),
-            data.get('maxStack', 1)
-        )
-        cls.itemType = TYPE_SERIALS[data.get('itemType')]
-        return cls
-
-class Resource(Item):
-    def __init__(self, name: str, rarity: ItemRarity = ItemRarity.COMMON, value: int = 1):
-        super().__init__(name, ItemType.RESOURCE, rarity, value, stackable=True, maxStack=999)
 
 class Equipment(Item):
     def __init__(self, slot: str, rarity: ItemRarity = ItemRarity.COMMON,
@@ -233,32 +130,55 @@ class Equipment(Item):
 
         self.mastery = 0
 
+        self._statsDirty = True
         self.update()
         self.baseMaxDurability = self.maxDurability
         self.durability = self.maxDurability
 
+    def _ensureStatsCache(self):
+        if not self._statsDirty:
+            return
+        prefixes = [s.affix for s in self.prefixSlots if s.affix]
+        suffixes = [s.affix for s in self.suffixSlots if s.affix]
+        allSlots = self.prefixSlots + self.suffixSlots
+
+        self._prefixesCache = prefixes
+        self._suffixesCache = suffixes
+        self._statsCache = prefixes + suffixes
+        self._allSlotsFilledCache = all(s.affix is not None for s in allSlots)
+        self._allSlotsEmptyCache = all(s.affix is None for s in allSlots)
+        self._lockedCache = any(affix.locked for affix in self._statsCache)
+        self._statsDirty = False
+
     @property
     def prefixes(self) -> List[Affix]:
-        return [s.affix for s in self.prefixSlots if s.affix]
-    
+        self._ensureStatsCache()
+        return self._prefixesCache
+
     @property
     def suffixes(self) -> List[Affix]:
-        return [s.affix for s in self.suffixSlots if s.affix]
+        self._ensureStatsCache()
+        return self._suffixesCache
 
     @property
     def stats(self) -> List[Affix]:
-        return self.prefixes + self.suffixes
+        self._ensureStatsCache()
+        return self._statsCache
+
+    @property
+    def allSlotsFilled(self) -> bool:
+        self._ensureStatsCache()
+        return self._allSlotsFilledCache
+
+    @property
+    def allSlotsEmpty(self) -> bool:
+        self._ensureStatsCache()
+        return self._allSlotsEmptyCache
 
     @property
     def locked(self) -> bool:
-        for affix in self.suffixes + self.prefixes:
-            if affix.locked:
-                return True
-        return False
-
-    @property
-    def entropyLocked(self) -> bool:
-        return self.entropy >= self.maxEntropy
+        self._ensureStatsCache()
+        return self._lockedCache
 
     @property
     def soulbound(self) -> bool:
@@ -266,6 +186,10 @@ class Equipment(Item):
             if slot.soulbound:
                 return True
         return False
+
+    @property
+    def entropyLocked(self) -> bool:
+        return self.entropy >= self.maxEntropy
 
     @property
     def craftable(self) -> bool:
@@ -616,6 +540,7 @@ class Equipment(Item):
         return damage, damageType
 
     def update(self):
+        self._statsDirty = True
         self.applyMastery()
         self.recalculateDamage()
         self.recalculateDefenses()
@@ -1036,254 +961,3 @@ class Equipment(Item):
             printError(f"\n{self.name} gained {effective} entropy! Current Entropy: {self.entropy} / {self.maxEntropy}\n")
         if self.entropyLocked:
             printError(f"\n{self.name} has become too unstable! It is no longer modifiable. (Entropy Locked)\n")
-
-class Consumable(Item):
-    def __init__(self, name: str, rarity: ItemRarity = ItemRarity.COMMON, value: int = 1,
-                 effect: Dict = None):
-        super().__init__(name, "consumable", rarity, value, stackable=True, maxStack=999)
-        self.effect = effect or {}
-        self.value = effect.get('heal', 20) * 50
-
-    def use(self, target):
-        if "heal" in self.effect:
-            oldHealth = target._health
-            target._health = min(target._health + self.effect['heal'], target._maxHealth)
-            actualHeal = target._health - oldHealth
-            console.print(f"Healed for {actualHeal} HP")
-            return True
-        return False
-
-    def serialise(self):
-        current = super().serialise()
-        current['effect'] = self.effect
-        return current
-
-    @classmethod
-    def deserialise(cls, data):
-        cls = Consumable(
-            data.get('name', 'Consumable'),
-            data.get('rarity', ItemRarity.COMMON),
-            data.get('value', 0)
-        )
-        i = super().deserialise(data)
-
-        cls.itemType = i.itemType
-        cls.stackable = i.stackable
-        cls.maxStack  = i.maxStack
-
-        cls.effect = data.get('effect', {})
-
-        return cls
-
-class QuestItem(Item):
-    def __init__(self, name: str, value: int = 1):
-        super().__init__(name, "quest", ItemRarity.QUEST, value, stackable=False, maxStack=1)
-
-DUNGEON_RARITY_MULTIPLIERS = {
-    ItemRarity.COMMON: {'difficulty': 1.0, 'rewards': 1.0},
-    ItemRarity.UNCOMMON: {'difficulty': 1.2, 'rewards': 1.5},
-    ItemRarity.RARE: {'difficulty': 1.5, 'rewards': 2.0},
-    ItemRarity.EPIC: {'difficulty': 2.0, 'rewards': 3.0},
-    ItemRarity.LEGENDARY: {'difficulty': 3, 'rewards': 5.0}
-}
-
-class DungeonMap(Item):
-    def __init__(self, name: str, level: int, waves: int, tier: int,
-                 rarity: ItemRarity = ItemRarity.COMMON, description: str = ""):
-        super().__init__(name, ItemType.DUNGEON, rarity, 1, False, 1)
-        self.level = level
-        self.waves = waves
-        self.tier = tier
-        self.description = description
-
-    def serialise(self):
-        temp = super().serialise()
-        temp['level'] = self.level
-        temp['waves'] = self.waves
-        temp['tier'] = self.tier
-        temp['description'] = self.description
-
-        return temp
-    
-    @classmethod
-    def deserialise(cls, data):
-        cls = DungeonMap(
-            data.get('name', 'Dungeon Map'),
-            data.get('level', 1),
-            data.get('waves', 1),
-            data.get('tier', 1),
-            data.get('rarity', ItemRarity.COMMON),
-            data.get('description', "")
-        )
-
-        i = super().deserialise(data)
-
-        cls.itemType = i.itemType
-        cls.value = i.value
-        cls.stackable = i.stackable or False
-        cls.maxStack  = i.maxStack or 1
-
-        return cls
-    
-    def getDifficultyMultiplier(self):
-        return DUNGEON_RARITY_MULTIPLIERS[self.rarity]['difficulty']
-    
-    def getRewardMultiplier(self):
-        return DUNGEON_RARITY_MULTIPLIERS[self.rarity]['rewards']
-
-RESOURCES = {
-    "wood": Resource("Wood", ItemRarity.COMMON, 1),
-    "stone": Resource("Stone", ItemRarity.COMMON, 1),
-    "cloth": Resource("Cloth", ItemRarity.COMMON, 2),
-    "herbs": Resource("Herbs", ItemRarity.COMMON, 2),
-    "leather": Resource("Leather", ItemRarity.UNCOMMON, 2),
-    "iron_ore": Resource("Iron Ore", ItemRarity.UNCOMMON, 3),
-    "bone": Resource("Bone", ItemRarity.UNCOMMON, 5),
-    "crystal": Resource("Crystal", ItemRarity.RARE, 10),
-    "soul": Resource("Soul", ItemRarity.RARE, 10),
-    "mana_essence": Resource("Mana Essence", ItemRarity.EPIC, 15),
-    "ancient_wood" : Resource("Ancient Wood", ItemRarity.EPIC, 30),
-    "diamond": Resource("Diamond", ItemRarity.EPIC, 30),
-    "dragon_scale": Resource("Dragon Scale", ItemRarity.LEGENDARY, 50),
-    "ascended_essence": Resource("Ascended Essence", ItemRarity.LEGENDARY, 75)
-}
-
-RARITY_WEIGHTS = {
-    ItemRarity.COMMON: 75,
-    ItemRarity.UNCOMMON: 20,
-    ItemRarity.RARE: 10,
-    ItemRarity.EPIC: 4,
-    ItemRarity.LEGENDARY: 1,
-    ItemRarity.MYTHIC: 0.2,
-}
-
-def _shiftRarityWeights(rarity: float, weights: Dict[ItemRarity, float]) -> Dict[ItemRarity, float]:
-    if rarity == 1.0:
-        return weights # no change
-
-    DISTRIBUTION = {
-        ItemRarity.COMMON: -0.2,
-        ItemRarity.UNCOMMON: 0.2,
-        ItemRarity.RARE: 0.5,
-        ItemRarity.EPIC: 0.4,
-        ItemRarity.LEGENDARY: 0.1,
-        ItemRarity.MYTHIC: 0,
-    }
-    if weights[ItemRarity.MYTHIC] > 0:
-        DISTRIBUTION[ItemRarity.LEGENDARY] -= 0.05
-        DISTRIBUTION[ItemRarity.MYTHIC] += 0.05
-
-    shiftAmount = rarity - 1.0 # positive = rarer, negative = more common
-
-    newWeights = dict(weights)
-    commonShift = weights[ItemRarity.COMMON] * abs(DISTRIBUTION[ItemRarity.COMMON]) * shiftAmount
-    newWeights[ItemRarity.COMMON] = max(weights[ItemRarity.COMMON] * 0.05, weights[ItemRarity.COMMON] - commonShift)
-    commonShift = weights[ItemRarity.COMMON] - newWeights[ItemRarity.COMMON] # actual amount moved, after the floor clamp
-
-    giveShares = {r: w for r, w in DISTRIBUTION.items() if r != ItemRarity.COMMON}
-    shareTotal = sum(giveShares.values())
-
-    for r, share in giveShares.items():
-        newWeights[r] = max(0.0, weights[r] + commonShift * (share / shareTotal))
-
-    return newWeights
-
-def rollRarity(level: int = 0, rarity: float = 1.0) -> ItemRarity:
-    weights = RARITY_WEIGHTS.copy()
-    if level > 0:
-        shiftAmount = level / 100
-        commonReduction = RARITY_WEIGHTS[ItemRarity.COMMON] * shiftAmount * 0.5
-        weights[ItemRarity.COMMON] = max(10, RARITY_WEIGHTS[ItemRarity.COMMON] - commonReduction)
-        weights[ItemRarity.UNCOMMON] += commonReduction * 0.3
-        weights[ItemRarity.RARE] += commonReduction * 0.3
-        weights[ItemRarity.EPIC] += commonReduction * 0.25
-        weights[ItemRarity.LEGENDARY] += commonReduction * 0.15
-        if level >= 60:
-            weights[ItemRarity.MYTHIC] += commonReduction * 0.03
-        else:
-            weights[ItemRarity.MYTHIC] = 0
-
-    weights = _shiftRarityWeights(rarity, weights)
-
-    totalWeight = sum(weights.values())
-    roll = random.uniform(0, totalWeight)
-    currentWeight = 0.0
-
-    for r, weight in weights.items():
-        currentWeight += weight
-        if roll <= currentWeight:
-            return r
-
-    return list(weights.keys())[-1]
-
-class LootTable:
-    def __init__(self):
-        self.resources: Dict[str, tuple] = {}  # {resource_name: (min_amount, max_amount, drop_chance)}
-        self.equipmentPool: list = []  # List of possible equipment
-        self.runeDrops = []
-        self.extras = {}
-
-    def __rich__(self):
-        return self.__str__()
-
-    def __str__(self):
-        output = ""
-        
-        if self.resources:
-            output += "\n === Resources ==="
-            for resource, (minAmt, maxAmt, dropChance) in self.resources.items():
-                output += f"\n  - {resource}: {minAmt}-{maxAmt} | {dropChance * 100:.0f}% chance"
-        
-        if self.equipmentPool:
-            output += "\n\n === Equipment ==="
-            for equipment, dropChance in self.equipmentPool:
-                output += f"\n  - {equipment.name} (Lv.{equipment.level}) | {dropChance * 100:.0f}% chance"
-
-        if self.runeDrops:
-            output += "\n\n === Runes ==="
-
-        if self.extras:
-            output += "\n\n === Extras ==="
-            for name, data in self.extras.items():
-                output += f"\n  - {name} : {data}"
-        
-        return output if output else "\n  No loot available"
-        
-    def addResource(self, resourceName: str, minAmount: int, maxAmount: int, dropChance: float = 1.0):
-        self.resources[resourceName] = (minAmount, maxAmount, min(1.0, dropChance))
-    
-    def addEquipment(self, equipment: Equipment, dropChance: float = 0.1):
-        self.equipmentPool.append((equipment, min(1.0, dropChance)))
-
-    def addRune(self, category: str, runeType: str, dropChance: float = 0.8):
-        self.runeDrops.append((category, runeType, dropChance))
-
-    def addExtra(self, name, data, dictVersion=None):
-        """Use dict version to send multiple otherwise use name/data"""
-        if dictVersion:
-            for k, v in dictVersion:
-                self.extras[k] = v
-        else:
-            self.extras[name] = data
-
-    def rollLoot(self) -> tuple[Dict[str, int], List[Equipment], List[str, str]]:
-        droppedResources = {}
-        droppedEquipment = []
-        droppedRunes = []
-
-        for resourceName, (minAmt, maxAmt, dropChance) in self.resources.items():
-            if random.random() <= dropChance:
-                amount = random.randint(minAmt, maxAmt)
-                droppedResources[resourceName] = amount
-
-        for equipment, dropChance in self.equipmentPool:
-            if random.random() <= dropChance:
-                droppedEquipment.append(equipment)
-
-        for category, runeType, runeChance in self.runeDrops:
-            if random.random() <= dropChance:
-                droppedRunes.append((category, runeType))
-
-        return droppedResources, droppedEquipment, droppedRunes
-
-...

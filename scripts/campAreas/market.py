@@ -2,7 +2,8 @@ from typing import Optional, Dict
 import random
 import datetime
 from .station import Station
-from scripts.items import Equipment, ItemRarity, RESOURCES, CONSUMABLES
+from scripts.items.items import ItemRarity, RESOURCES
+from scripts.items.equipment import Equipment
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, printInfo, checkGlobalCommand
@@ -101,16 +102,8 @@ class Market(Station):
             possibleRarities = rarityChances.get(self.level, [ItemRarity.COMMON, ItemRarity.UNCOMMON])
             rarity = random.choice(possibleRarities)
             equipment = Equipment._generateEquipmentPiece(equipLevel, slot, rarity, className=self.player.className)
-            price = int((random.uniform(1, 3) * equipment.value * 5) + 1000)
-            price = int(equipment.value * random.uniform(1, 3))
+            price = int((random.uniform(1, 5) * equipment.value) * (1 + equipLevel // 10) + 1000)
             self.stock[equipment.name] = (1, price, equipment)
-        # consumables
-        if self.level >= 2:
-            consumableCount = 1 + self.level
-            for potion in list(CONSUMABLES.keys())[:consumableCount]:
-                quantity = random.randint(2, 10)
-                price = CONSUMABLES[potion] * 50
-                self.stock[potion] = (quantity, price)
 
         self.lastRestock = datetime.datetime.now()
 
@@ -196,7 +189,7 @@ class Market(Station):
                 if len(itemData) == 3:  # equipment
                     quantity, price, equipment = itemData
                     console.print(f"  [cyan]{i}.[/cyan] [dim]{price}g\n{equipment}")
-                else:  # resource or consumable
+                else:  # resources
                     quantity, price = itemData
                     console.print(f"  [cyan]{i}.[/cyan] {itemName} x{quantity} - [dim]{price}g/each[/dim]")
 
@@ -358,3 +351,5 @@ class Market(Station):
         except ValueError:
             pass
         pause()
+
+...

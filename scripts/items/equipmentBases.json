@@ -1,0 +1,74 @@
+{
+    "weapons": {
+        "one_handed": {
+
+        },
+        "two_handed": {
+
+        }
+    },
+    "head": {
+        "armour": {
+            
+        },
+        "evasion": {
+
+        },
+        "energy_shield": {
+
+        }
+    },
+    "chest": {
+        "armour": {
+            
+        },
+        "evasion": {
+
+        },
+        "energy_shield": {
+
+        }
+    },
+    "legs": {
+        "armour": {
+            
+        },
+        "evasion": {
+
+        },
+        "energy_shield": {
+
+        }
+    },
+    "feet": {
+        "armour": {
+            
+        },
+        "evasion": {
+
+        },
+        "energy_shield": {
+
+        }
+    },
+    "shield": {
+        "armour": {
+            
+        },
+        "evasion": {
+
+        },
+        "energy_shield": {
+
+        }
+    },
+    "ring": {
+
+    },
+    "amulet": {
+
+    },
+    "sigil": {
+        
+    }
+}

@@ -655,7 +655,7 @@ class Paladin(Player): #higher health, lower damage, holy damage
         self.ascendancyDescription = PALADIN_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True
 
 ...

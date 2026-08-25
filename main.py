@@ -8,7 +8,6 @@ import subprocess
 from scripts.player import Player, selectClass, deserialisePlayer
 from scripts.enemy import Enemy, createEnemy
 from scripts.combat import CombatManager
-from scripts.items import CONSUMABLES
 from scripts.runeDrops import rollGuaranteedRunes
 from scripts.camp import Camp
 from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, displayExistingSaves
@@ -19,10 +18,9 @@ from scripts.help import Help
 from scripts.styles import (
     console, printHeader, printSeparator, pause, clearScreen,
     printWarning, printError, printInfo, printSuccess,
-    displayDeath, displayVictory, formatRarity, formatDamageType,
+    displayDeath, displayVictory,
     createAbilityTables, createCombatStatusTable, createEnemyPreview,
-    createEquipmentStoragePages, ReturnToMainMenu, GoToSaveMenu, checkGlobalCommand,
-    stepPage, selectFromNumberedList
+    ReturnToMainMenu, GoToSaveMenu, checkGlobalCommand
 )
 
 class Game:
@@ -254,7 +252,7 @@ class Game:
             else:
                 printHeader(f"{self.player._name} - Level {self.player._level} {self.player._ascendancy} ({self.player.className})")
 
-            dType = formatDamageType(self.player._damageType.title(), self.player._damageType)
+            dType = f"[{self.player._damageType}]{self.player._damageType.title()}[/{self.player._damageType}]"
             console.print(f"[health]HP:[/health] {self.player._health}/{self.player._maxHealth} | "
                           f"[damage]DMG:[/damage] {self.player._damage} | Type: {dType} | "
                           f"[speed]SPD:[/speed] {self.player._speed:.2f}")
@@ -384,7 +382,7 @@ class Game:
                     case 2:
                         self.player.showCraftingInventory()
                     case 3:
-                        self.equipmentMenu()
+                        self.player.equipmentMenu()
                     case 4:
                         self.player.showAbilities()
                     case _:
@@ -501,219 +499,6 @@ class Game:
             except ValueError as e:
                 printError(f"{e}")
 
-    def equipmentMenu(self):
-        while True:
-            clearScreen()
-            printHeader("Equipment Management")
-
-            console.print("\n[bold cyan]=== Currently Equipped ===[/bold cyan]")
-            hasEquipment = False
-            for _, equip in self.player._equipment.items():
-                if equip:
-                    hasEquipment = True
-                    console.print(equip)
-            if not hasEquipment:
-                console.print("  [dim]Nothing equipped[/dim]")
-
-            # Show storage count
-            console.print(f"\n[bold cyan]=== Equipment Storage ===[/bold cyan]")
-            console.print(f"[dim]Items in storage: {len(self.player._equipmentStorage)}[/dim]")
-            
-            printSeparator()
-            console.print("[dim]0.[/dim] [red]Return[/red]")
-            console.print("[dim]1.[/dim] [green]Equip from Storage[/green]")
-            console.print("[dim]2.[/dim] [yellow]Unequip to Storage[/yellow]")
-            console.print("[dim]3.[/dim] [cyan]View All Equipment Details[/cyan]")
-            console.print("[dim]4.[/dim] [orange1]Compare Equipment[/orange1]")
-            
-            choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
-            checkGlobalCommand(choice)
-
-            try:
-                choice = int(choice)
-                match choice:
-                    case 0:
-                        return
-                    case 1:
-                        self.equipFromStorage()
-                    case 2:
-                        self.unequipToStorage()
-                    case 3:
-                        self.viewAllEquipment()
-                    case 4:
-                        self.compareEquipment()
-                    case _:
-                        printWarning("Invalid choice!")
-                        time.sleep(1)
-            except ValueError:
-                printWarning("Invalid input!")
-                time.sleep(1)
-
-    def equipFromStorage(self):
-        if not self.player._equipmentStorage:
-            printWarning("No equipment in storage!")
-            pause()
-            return
-
-        inventoryPages = createEquipmentStoragePages(self.player._equipmentStorage)
-        totalPages = len(inventoryPages)
-        currentPage = 1
-
-        while True:
-            clearScreen()
-            printHeader("Equip from Storage")
-
-            console.print(f"\n[bold cyan]=== Storage (Page {currentPage}/{totalPages}) ===[/bold cyan]")
-            console.print(inventoryPages[currentPage])
-
-            prompt = "\n[cyan]Choose item to equip (0 to cancel"
-            if totalPages > 1:
-                prompt += ", N for next page, P for previous page"
-            prompt += "):[/cyan]\n> "
-            choice = console.input(prompt).strip().lower()
-
-            newPage = stepPage(currentPage, totalPages, choice)
-            if newPage is not None:
-                currentPage = newPage
-                continue
-
-            try:
-                index = int(choice) - 1
-            except ValueError:
-                printWarning("Invalid input!")
-                pause()
-                return
-            break
-
-        if 0 <= index < len(self.player._equipmentStorage):
-            equipment = self.player._equipmentStorage[index]
-            slot = equipment.slot
-
-            # Show comparison if slot is occupied
-            if self.player._equipment[slot]:
-                current = self.player._equipment[slot]
-                console.print(f"\n{equipment.compareTo(current)}")
-                confirm = console.input("\n[cyan]Equip this item? (y/n):[/cyan] ").strip().lower()
-                if confirm != 'y':
-                    return
-                
-                # Unequip current and move to storage
-                old = self.player.unequip(slot)
-                if old:
-                    self.player._equipmentStorage.append(old)
-            
-            # Equip new item and remove from storage
-            self.player._equipmentStorage.pop(index)
-            self.player.equip(equipment)
-            printSuccess(f"Equipped {equipment.name}!")
-            pause()
-
-    def unequipToStorage(self):
-        equippedSlots = [(slot, equip) for slot, equip in self.player._equipment.items() if equip]
-
-        if not equippedSlots:
-            printWarning("Nothing equipped!")
-            pause()
-            return
-
-        clearScreen()
-        printHeader("Unequip to Storage")
-
-        console.print("\n[bold cyan]=== Equipped Items ===[/bold cyan]")
-
-        def renderEquipped(i, slotEquip):
-            slot, equip = slotEquip
-            equipName = formatRarity(equip.name, equip.rarity.value)
-            console.print(f"[cyan]{i}.[/cyan] [{slot.upper()}] {equipName}")
-            console.print(f"{equip}")
-
-        index = selectFromNumberedList(equippedSlots, "Choose item to unequip (0 to cancel):", render=renderEquipped)
-        if index is None:
-            return
-
-        slot, equipment = equippedSlots[index]
-        confirm = console.input(f"\n[warning]Unequip {equipment.name}? (y/n):[/warning] ").strip().lower()
-        if confirm == 'y':
-            unequipped = self.player.unequip(slot)
-            if unequipped:
-                self.player._equipmentStorage.append(unequipped)
-                printSuccess(f"Unequipped {equipment.name} to storage!")
-                pause()
-
-    def viewAllEquipment(self):
-        inventoryPages = createEquipmentStoragePages(self.player._equipmentStorage) if self.player._equipmentStorage else {}
-        totalPages = len(inventoryPages)
-        currentPage = 1
-
-        while True:
-            clearScreen()
-            printHeader("All Equipment Details")
-
-            console.print("\n[bold cyan]=== EQUIPPED ===[/bold cyan]")
-            hasEquipped = False
-            for equip in self.player._equipment.values():
-                if equip:
-                    hasEquipped = True
-                    console.print(equip)
-            if not hasEquipped:
-                console.print("  [dim]Nothing equipped[/dim]")
-
-            console.print(f"\n[bold cyan]=== STORAGE ({len(self.player._equipmentStorage)} items) ===[/bold cyan]")
-            if inventoryPages:
-                console.print(f"[dim]Page {currentPage}/{totalPages}[/dim]")
-                console.print(inventoryPages[currentPage])
-            else:
-                console.print("  [dim]Storage is empty[/dim]")
-
-            if totalPages > 1:
-                choice = console.input("\n[cyan](N)ext page, (P)revious page, or Enter to return:[/cyan]\n> ").strip().lower()
-                newPage = stepPage(currentPage, totalPages, choice)
-                if newPage is not None:
-                    currentPage = newPage
-                    continue
-                return
-            else:
-                pause()
-                break
-
-    def compareEquipment(self):
-        clearScreen()
-        printHeader("Compare Equipment")
-
-        allEquipment = []
-        for slot, equip in self.player._equipment.items():
-            if equip:
-                allEquipment.append((f"[EQUIPPED] {slot}", equip))
-        for i, equip in enumerate(self.player._equipmentStorage):
-            allEquipment.append((f"[STORAGE] #{i+1}", equip))
-        
-        if len(allEquipment) < 2:
-            printWarning("Need at least 2 equipment pieces to compare!")
-            return
-        
-        def renderChoice(i, locationEquip):
-            location, equip = locationEquip
-            equipName = formatRarity(equip.name, equip.rarity.value)
-            console.print(f"  [cyan]{i}.[/cyan] [dim]{location}[/dim] {equipName}")
-
-        console.print("\n[bold cyan]=== Select First Item ===[/bold cyan]")
-        index1 = selectFromNumberedList(allEquipment, "Choose first item:", render=renderChoice)
-        if index1 is None:
-            return
-
-        console.print("\n[bold cyan]=== Select Second Item ===[/bold cyan]")
-        index2 = selectFromNumberedList(allEquipment, "Choose second item:", render=renderChoice, skip={index1})
-        if index2 is None:
-            return
-
-        _, equip1 = allEquipment[index1]
-        _, equip2 = allEquipment[index2]
-
-        console.print("\n" + "="*50)
-        console.print(equip1.compareTo(equip2))
-        console.print("="*50)
-        pause()
-
     def postBattle(self, result: str, enemies: List[Enemy], *, waveEncounter: bool = False, lootBonus: int = 0):
         if result == "victory":
             self.player.onCombatEnd()
@@ -765,11 +550,12 @@ class Game:
     def _waveCombat(self):
         numWaves = random.randint(2, max(6, (3 + (self.player._level // 15))))
         currentWave = 1
+        wavesCompleted = 0
         rewardPerWave = 100 // numWaves # final wave grants 100% increased item rarity/quantity
         lootBonus = 0
         fled = False
 
-        while currentWave < numWaves and not fled:
+        while wavesCompleted < numWaves and not fled:
             console.print(f"[dim]Wave:[/dim] {currentWave}/{numWaves}")
 
             cont = console.input("[bold red]Continue to the next wave? (Y/N)[/bold red]\n[cyan]>[/cyan] ").lower().strip()
@@ -792,6 +578,7 @@ class Game:
                 self.postBattle(result, enemies, waveEncounter=True, lootBonus=lootBonus)
 
                 currentWave += 1
+                wavesCompleted += 1
 
             else:
                 continue
@@ -818,6 +605,8 @@ class Game:
 
                 except ValueError:
                     printWarning("Invalid input")
+                    continue
+                return
 
     def generateEnemies(self, waveEncounter: bool = False, lootBonus: int = 0) -> List[Enemy]:
         numEnemies = random.randint(min(3, 1 + (self.player._level + self.areaLevel) // 40), min(1 + self.areaLevel//8, 4))
@@ -883,36 +672,8 @@ class Game:
                 break
 
         return ""
-    
-    def useCombatConsumable(self):
-        consumables = self.player.hasConsumables
-        
-        if not consumables:
-            printWarning("No consumables available!")
-            pause()
-            return
-        if self.player.consumableUsed:
-            printWarning("Already used a consumable this turn!")
-            pause()
-            return
-        console.print("\n[bold]Consumables:[/bold]")
-        for i, item in enumerate(consumables, 1):
-            console.print(f"  [cyan]{i}.[/cyan] {item} [dim](x{self.player._inventory[item]})[/dim]")
-        choice = console.input("\n[cyan]Choose consumable (0 to cancel)[/cyan]\n> ").strip()
-        try:
-            index = int(choice) - 1
-            if 0 <= index < len(consumables):
-                itemName = consumables[index]
-                if itemName in CONSUMABLES:
-                    self.player.heal(CONSUMABLES[itemName])
-                    self.player.removeItem(itemName, 1)
-                    self.player.consumableUsed = True
-        except ValueError:
-            pass
 
     def playerTurn(self, enemies: List[Enemy]):
-        self.player.consumableUsed = False
-
         self.player.onTurnStart(self.combatManager)
 
         if not self._monitorCombatResults(enemies):
@@ -926,8 +687,8 @@ class Game:
             aliveEnemies = [e for e in enemies if not e._isDead]
 
             console.print("\n[bold cyan]=== Actions ===[/bold cyan]\n")
-            # if self.player.hasConsumables:
-            #     console.print("[dim]C.[/dim] Use Consumable [dim](Free Action)[/dim]")
+            if self.player.consumable.useable:
+                console.print(f"[dim]C.[/dim] [green]Use {self.player.consumable.name} to heal for {int(self.player.consumable.healPercent*100)}% Max HP.[/green] [bold](Free Action)[/bold]")
             console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
             console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
             console.print("[dim]P. Pass Turn[/dim]")
@@ -953,9 +714,9 @@ class Game:
                         if eq is not None:
                             console.print(f"{slot}:\n{eq}")
                 pause()
-            # elif action.lower() == 'c':
-            #     self.useCombatConsumable()
-            #     continue
+            elif action.lower() == 'c' and self.player.consumable.useable:
+                self.player.useConsumable()
+                continue
             elif action.lower() == 'f':
                 console.print("[red]Fled from battle.[/red]")
                 self.combatManager.battleActive = False
@@ -980,7 +741,8 @@ class Game:
                             target = aliveEnemies[0]
                             console.print(f"\n[buff]{abilityName} will hit {'ALL enemies' if ability.targets == 'all' else 'MULTIPLE enemies'}[/buff]")
                         else:
-                            target = self.chooseTarget(aliveEnemies)
+                            if ability.category == 'damage':
+                                target = self.chooseTarget(aliveEnemies)
 
                         if target:
                             self.combatManager.performAttack(self.player, target, abilityName)

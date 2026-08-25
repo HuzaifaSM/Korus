@@ -1,12 +1,13 @@
 from typing import Dict, Optional, List, TypedDict, TypeVar
 import random
 from copy import deepcopy
-from .items import Equipment, Consumable
+from .items.items import Consumable
+from .items.equipment import Equipment
 from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, BasicAttack
 from .runeDrops import getRuneObject
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo,
-    formatDamageType, formatDamageValue, formatRarity, createHealthBar,
+    formatDamageValue, formatRarity, createHealthBar,
     formatEffectsDetailed, formatAbilityCost, pause
 )
 
@@ -76,6 +77,21 @@ class GeneralStatBlock(TypedDict):
     elemental: float
     otherworld: float
     all: float
+    max_physical: float
+    max_fire: float
+    max_earth: float
+    max_lightning: float
+    max_cold: float
+    max_holy: float
+    max_dark: float
+    max_psychic: float
+    max_chaos: float
+    max_ethereal: float
+    max_arcane: float
+    max_divine: float
+    max_elemental: float
+    max_otherworld: float
+    max_all: float
     resistance_penetration: float
     speed: float
     stun_avoidance: float
@@ -227,6 +243,21 @@ class Entity:
                 'elemental': 0,
                 'otherworld': 0,
                 'all': 0,
+                'max_physical': 0,
+                'max_fire': 0,
+                'max_earth': 0,
+                'max_lightning': 0,
+                'max_cold': 0,
+                'max_holy': 0,
+                'max_dark': 0,
+                'max_psychic': 0,
+                'max_chaos': 0,
+                'max_ethereal': 0,
+                'max_arcane': 0,
+                'max_divine': 0,
+                'max_elemental': 0,
+                'max_otherworld': 0,
+                'max_all': 0,
                 'resistance_penetration': 0,
                 'stun_avoidance': 0,
                 'dot_resistance': 0,
@@ -270,6 +301,21 @@ class Entity:
                 'elemental': 0,
                 'otherworld': 0,
                 'all': 0,
+                'max_physical': 0,
+                'max_fire': 0,
+                'max_earth': 0,
+                'max_lightning': 0,
+                'max_cold': 0,
+                'max_holy': 0,
+                'max_dark': 0,
+                'max_psychic': 0,
+                'max_chaos': 0,
+                'max_ethereal': 0,
+                'max_arcane': 0,
+                'max_divine': 0,
+                'max_elemental': 0,
+                'max_otherworld': 0,
+                'max_all': 0,
                 'resistance_penetration': 0,
                 'stun_avoidance': 0,
                 'dot_resistance': 0,
@@ -336,6 +382,7 @@ class Entity:
         self._ascendancy = None
         self.ascendancyDescription = None
         self.isPlayer = isPlayer
+        self.consumable = Consumable()
         self.combatUnit = None
         self._pendingEffects = []
         self._damageLog: List[tuple] = []  # (reason, flatAmount, percentAmount) contributions to the hit currently being resolved
@@ -381,7 +428,7 @@ class Entity:
 
     def __str__(self):
         healthBar = createHealthBar(self._health, self._maxHealth)
-        baseStr =  f"[health]Health:[/health] {healthBar} | [damage]Damage:[/damage] {self._damage} [dim]({formatDamageType(self._damageType, self._damageType)})[/dim] | [speed]Speed:[/speed] {self._speed}"
+        baseStr =  f"[health]Health:[/health] {healthBar} | [damage]Damage:[/damage] {self._damage} | Type: [{self._damageType}]{self._damageType.title()}[/{self._damageType}] | [speed]Speed:[/speed] {self._speed}"
 
         if self._stats.get('armour', 0) > 0:
             baseStr += f"\n[armour]Armour:[/armour] {self.armour}"
@@ -427,6 +474,7 @@ class Entity:
                 'equipmentStorage': equipmentStorage,
                 'craftingInventory': self._craftingInventory,
                 'inventory': self._inventory,
+                'consumable': self.consumable.serialise(),
                 'className': self.className,
                 'classDescription': self.classDescription,
                 'ascendancy': self._ascendancy,
@@ -468,6 +516,10 @@ class Entity:
         
         self._inventory = data.get('inventory', {})
         self._craftingInventory = data.get('craftingInventory', {})
+        if 'consumable' in data:
+            self.consumable = self.consumable.deserialise(data['consumable'])
+        else:
+            self.consumable.updateValue(self._level)
         self._abilities = {"Basic Attack": BasicAttack()}
 
         self._recalculateStats()
@@ -477,7 +529,7 @@ class Entity:
         if resistance in self._stats['Resistances']:
             self._stats['Resistances'][resistance] = min(
                 self._stats['Resistances'][resistance] + amount,
-                75
+                self._stats['Max_Resistances'][resistance]
             )
 
     def calcXpRequirement(self):
@@ -510,11 +562,11 @@ class Entity:
         damageReductionValue = preMitigation - damage
 
         if damageReductionValue > 0:
-            console.print(f"  [dim]- {self._name}'s Damage Reduction reduces the damage by {damageReductionValue}[/dim]")
+            console.print(f"  [dim]- -{damageReductionValue} Damage from Damage Reduction[/dim]")
         if resistMod > 0:
-            console.print(f"  [dim]- {self._name}'s {damageType.title()} Resistance reduces the damage taken by {round(resistMod * 100):.1f}%[/dim]")
+            console.print(f"  [dim]- {'-' if resistMod > 0 else '+'}{round(resistMod * 100)}% Damage from {damageType.title()} Resistance[/dim]")
         if stoneskinMod > 0:
-            console.print(f"  [dim]- {self._name}'s Stoneskin Buff reduces the damage taken by {round(stoneskinMod * 100):.1f}%[/dim]")
+            console.print(f"  [dim]- -{round(stoneskinMod  * 100)} Damage from Stoneskin Buff%[/dim]")
 
         damage = int(round(damage * (1 - resistMod) * (1 - stoneskinMod)))
         trueDamage = max(0, damage - self._shield)
@@ -526,7 +578,7 @@ class Entity:
             if not lethal and self._health <= 0:
                 self._health = 1
                 console.print(f"  [warning]Non-lethal damage dealt![/warning]")
-            damageTypeFormatted = formatDamageType(damageType, damageType)
+            damageTypeFormatted = f"[{damageType}]{damageType.title()}[/{damageType}]"
             dmgColour = formatDamageValue(trueDamage)
             console.print(f"[damage]- {self._name} took[/damage] [{dmgColour}]{trueDamage}[/{dmgColour}] [damage]{damageTypeFormatted} damage.[/damage] [dim]({damagePrevented} damage prevented with shield)[/dim] | [health]HP remaining: {self._health} / {self._maxHealth}[/health]")
             if self._isDead:
@@ -589,7 +641,7 @@ class Entity:
         if doPrint:
             console.print(f"[success]{self._name} Learnt {ability}![/success]")
             if resolved.damageType:
-                damageTypeFormatted = formatDamageType(resolved.damageType, resolved.damageType)
+                damageTypeFormatted = f"[{resolved.damageType}]{resolved.damageType.title()}[/{resolved.damageType}]"
                 console.print(f"[dim]Base Damage: {resolved.baseDamage} + {resolved.damageScaling*100:.0f}% of damage | Type: {damageTypeFormatted}[/dim]")
             costStr = formatAbilityCost(getattr(resolved, 'resources', {}))
             if costStr != "-":
@@ -619,7 +671,7 @@ class Entity:
         for name, ability in self._abilities.items():
             console.print(f"  [cyan]- {name}[/cyan]")
             if ability.damageType:
-                damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
+                damageTypeFormatted = f"[{ability.damageType}]{ability.damageType.title()}[/{ability.damageType}]"
                 console.print(f"    [dim]Base Damage: {ability.baseDamage} + {ability.damageScaling*100:.0f}% of damage | Type: {damageTypeFormatted}[/dim]")
             if ability.healBase or ability.healPercent:
                 console.print(f"    [heal]Heal: {ability.healBase} + {ability.healPercent*100:.0f}% Max HP[/heal]")
@@ -649,13 +701,6 @@ class Entity:
         if self._craftingInventory[key] <= 0:
             del self._craftingInventory[key]
         return True
-    
-    def getRune(self, category: str, runeType: str) -> int:
-        key = f'{category}_{runeType}'
-        return self._craftingInventory.get(key, 0)
-
-    def hasRune(self, category: str, runeType: str) -> bool:
-        return self.getRune(category, runeType) > 0
 
     def addItem(self, itemName: str, quantity: int = 1, doPrint: bool = True):
         if quantity > 0:
@@ -686,16 +731,6 @@ class Entity:
         if 0 <= index < len(self._equipmentStorage):
             return self._equipmentStorage.pop(index)
         return None
-
-    def showEquipmentStorage(self):
-        console.print("\n[bold cyan]=== Equipment Storage ===[/bold cyan]")
-        if not self._equipmentStorage:
-            console.print("  [dim]Empty[/dim]")
-        else:
-            for i, equipment in enumerate(self._equipmentStorage, 1):
-                equipName = formatRarity(equipment.name, equipment.rarity.value)
-                console.print(f"  [cyan]{i}.[/cyan] {equipName}")
-                console.print(f"    [dim]Durability: {equipment.durability} / {equipment.maxDurability}[/dim]")
 
     def equip(self, equipment: Equipment, doPrint: bool = True) -> bool:
         slot = equipment.slot
@@ -730,7 +765,8 @@ class Entity:
             return item
         return None
 
-    def _getExtraBonuses(self, stat: str) -> int: # gets temporary + permanent buffs for a stat
+    def _getExtraBonuses(self, stat: str) -> int:
+        """gets temporary + permanent buffs for a stat, divided by 100 if 'increased_'"""
         perm = self._stats['Permanent'].get(stat, 0)
         temp = self._stats['Temporary'].get(stat, 0)
         if 'increased_' in stat:
@@ -750,6 +786,7 @@ class Entity:
 
         for res in self._stats['Resistances']:
             self._stats['Resistances'][res] = 0
+            self._stats['Max_Resistances'][res] = 75
 
         armour = 0
         evasion = 0
@@ -789,12 +826,17 @@ class Entity:
                 if slot == "weapon":
                     self._damageType = equipment.getDamageType() if equipment.getDamageType() else self._damageType
 
-                for damageType in self._stats['Resistances'].keys():
-                    resFlat, _, _ = equipment.getStatBonuses(f'{damageType}_resistance')
-                    self._stats['Resistances'][damageType] = min(
-                        self._stats['Resistances'][damageType] + resFlat,
-                        self._stats['Max_Resistances'][damageType], 90
-                    )
+                else: # all non-weapons can roll resistances/max resistances
+                    for damageType in self._stats['Resistances'].keys():
+                        resFlat, _, _ = equipment.getStatBonuses(f'{damageType}_resistance')
+                        maxResFlat, _, _ = equipment.getStatBonuses(f'max_{damageType}_resistance')
+                        self._stats['Max_Resistances'][damageType] = min(
+                            self._stats['Max_Resistances'][damageType] + maxResFlat, 90
+                        )
+                        self._stats['Resistances'][damageType] = min(
+                            self._stats['Resistances'][damageType] + resFlat,
+                            self._stats['Max_Resistances'][damageType]
+                        )
 
                 for bonus in self._stats['Bonuses'].keys():
                     bonusFlat, bonusInc, _ = equipment.getStatBonuses(bonus)
@@ -820,10 +862,14 @@ class Entity:
                     globalEsInc += gIncEs
 
         for damageType in self._stats['Resistances'].keys():
+            maxExtra = self._getExtraBonuses(f'max_{damageType}')
             extra = self._getExtraBonuses(damageType)
+            self._stats['Max_Resistances'][damageType] = min(
+                self._stats['Max_Resistances'][damageType] + maxExtra, 90
+            )
             self._stats['Resistances'][damageType] = min(
                 self._stats['Resistances'][damageType] + extra,
-                75
+                self._stats['Max_Resistances'][damageType]
             )
 
         for bonus in self._stats['Bonuses'].keys():
@@ -881,17 +927,18 @@ class Entity:
             if resistances:
                 console.print("\n[bold]Resistances:[/bold]")
                 for r, v in resistances.items():
-                    console.print(f"-  [{r}]{r.title()}[/{r}]: [cyan]{v}%[/cyan]")
+                    vMax = self._stats['Max_Resistances'][r]
+                    console.print(f"-  [{r}]{r.title()}[/{r}]: {v}% [dim](Max: {vMax}%)[/dim]")
 
             console.print()
             pause()
 
-    def useConsumable(self, consumable: Consumable) -> bool:
-        if consumable.use(self):
-            self.removeItem(consumable.name, 1)
-            return True
-        return False
-    
+    def useConsumable(self):
+        if self.consumable.useable:
+            heal = int(self._maxHealth * self.consumable.healPercent)
+            self.heal(heal, reason=self.consumable.name)
+            self.consumable.usesRemaining -= 1
+
     def showInventory(self):
         console.print("\n[bold cyan]=== INVENTORY ===[/bold cyan]")
         if not self._inventory:
@@ -901,15 +948,6 @@ class Entity:
                 item = item.replace('_', ' ').title()
                 console.print(f" [cyan]- {item}:[/cyan] [gold]{quantity}[/gold]")
 
-    def showEquipment(self):
-        console.print("\n[bold cyan]=== EQUIPMENT ===[/bold cyan]")
-        for slot, equipment in self._equipment.items():
-            if equipment:
-                equipName = formatRarity(equipment.name, equipment.rarity.value)
-                console.print(f"  [cyan]{slot.capitalize()}:[/cyan] {equipName}")
-            else:
-                console.print(f"  [cyan]{slot.capitalize()}:[/cyan] [dim]Empty[/dim]")
-
     def showAbilities(self):
         console.print("\n[bold cyan]=== abilities ===[/bold cyan]")
         if not self._abilities:
@@ -918,7 +956,7 @@ class Entity:
         for name, ability in self._abilities.items():
             console.print(f" [bold]= {name} =[/bold]")
             if ability.damageType:
-                damageTypeFormatted = formatDamageType(ability.damageType, ability.damageType)
+                damageTypeFormatted = f"[{ability.damageType}]{ability.damageType.title()}[/{ability.damageType}]"
                 console.print(f"  [dim]- Base Damage: {ability.baseDamage} + {ability.damageScaling*100:.0f}% of damage | Type: {damageTypeFormatted}[/dim]")
             if ability.healBase or ability.healPercent:
                 console.print(f"  [heal]- Heal: {ability.healBase} + {ability.healPercent*100:.0f}% Max HP[/heal]")
@@ -1153,6 +1191,7 @@ class Entity:
         for stat in self._stats['Temporary'].keys():
             self._stats['Temporary'][stat] = 0
         self.combatUnit = None
+        self.consumable.usesRemaining = self.consumable.maxUses
 
     def onAfterAttack(self, target: Entity, targetUnit, finalDamage: int, combatManager):
         """Rewrite per class. No return"""

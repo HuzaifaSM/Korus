@@ -754,7 +754,7 @@ class Druid(Player): # balanced damage and speed, earth damage
         self._ascendancy = ascendancy
         self.ascendancyDescription = DRUID_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         self._applyFormBonuses()
         self._recalculateStats()
         return True

@@ -47,7 +47,7 @@ class MythicAffix(Affix):
         return self.description
 
 def _createMythicAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
-    fp = 'Korus/data/mythicAffixes.json' if exists('Korus') else 'data/mythicAffixes.json'
+    fp = 'Korus/data/everything old/mythicAffixes.json' if exists('Korus') else 'data/everything old/mythicAffixes.json'
     with open(fp, 'r') as f:
         affixData = json.load(f)
 
@@ -105,7 +105,7 @@ def rollMythicAffix(equipType: str, affixType: str, itemLevel: int, rarity: obje
                     excludeIds: Set[str], defenseType: str = None,
                     minAffixLevel: int | None = None) -> Optional[Affix]:
     """rarity = ItemRarity"""
-    from .items import ItemRarity
+    from .items.items import ItemRarity
     if rarity != ItemRarity.MYTHIC:
         return None
 

@@ -1,7 +1,3 @@
-"""
-mastery = deep_sky_blue3
-perfect = steel_blue bold"""
-
 from .base import CraftingItem, CraftOutcome, CraftResult
 import random
 from typing import Dict

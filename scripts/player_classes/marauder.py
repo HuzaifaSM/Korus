@@ -601,7 +601,7 @@ class Marauder(Player):
         self.ascendancyDescription = MARAUDER_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True
 
 ...

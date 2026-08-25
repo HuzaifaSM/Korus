@@ -27,7 +27,6 @@ SURVIVAL_HEALTH = 10_000_000_000
 
 ARMOUR_SLOTS_ORDER = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
 
-
 def _setSurvivalMode(player, on: bool):
     """Inflates baseHealth to survive a fight's turns (on=True), or restores the real value
     the player actually earned via leveling (on=False) - call the latter before granting XP/

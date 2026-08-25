@@ -47,17 +47,16 @@ class EnemyAI:
                 "effects": rustEffects,
             })
 
-        # consumables
-        for itemName, item in self._enemy._inventory.items():
-            healVal = getattr(item, 'healAmount', None)
-            if healVal:
-                actions.append({
-                    "id": itemName,
-                    "category": "consumable",
-                    "heal": healVal,
-                    "cost": {},
-                    "effects": []
-                })
+        # consumable
+        consumable = self._enemy.consumable
+        if consumable.useable:
+            actions.append({
+                "id": "use_consumable",
+                "category": "consumable",
+                "heal": int(self._enemy._maxHealth * consumable.healPercent),
+                "cost": {},
+                "effects": []
+            })
 
         return actions
 
@@ -70,8 +69,8 @@ class EnemyAI:
             combatManager.performAttack(enemy, player, "Basic Attack")
             return
 
-        if actionId in enemy._inventory:
-            self._useConsumable(actionId)
+        if actionId == 'use_consumable':
+            self._useConsumable()
             return
 
         if actionId in enemy._abilities:
@@ -106,16 +105,10 @@ class EnemyAI:
         elif ability.targets == 'self':
             combatManager.performAttack(enemy, enemy, abilityName=ability.name)
 
-    def _useConsumable(self, itemName: str):
-        from .items import CONSUMABLES
+    def _useConsumable(self):
         enemy = self._enemy
-        amount = enemy._inventory.get(itemName)
-        if amount is None or amount <= 0:
-            return
-        heal = CONSUMABLES.get(itemName)
-        if heal:
-            enemy.heal(heal)
-        enemy._inventory[itemName] -= 1
+        console.print(f"\n[ability]{enemy._name}[/ability] uses [bold]{enemy.consumable.name}[/bold]!")
+        enemy.useConsumable()
 
     # -- turn-level static method -- #
     @staticmethod

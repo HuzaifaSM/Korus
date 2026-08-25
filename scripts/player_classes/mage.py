@@ -749,7 +749,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self.ascendancyDescription = MAGE_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True
 
 ...

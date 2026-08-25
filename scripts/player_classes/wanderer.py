@@ -838,7 +838,7 @@ class Wanderer(Player):
             self.maxHope = 10
             self.maxHopeless = 10
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True
 
 ...

@@ -651,7 +651,7 @@ class Tempest(Player):
         elif ascendancy == 'Mirage':
             self.staticBuffs['increased_evasion'] = 3
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True
 
 ...

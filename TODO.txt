@@ -1,13 +1,10 @@
 BUGS:
 - Dreadnought (marauder ascendancy) currently does not grant +5% max cold resistance. must be implemented after max resistances are added/implemented properly
 - enemy ability have no tags
-- damage breakdown doesn't show flat damage reduction factored in
 
 NEW AFFIXES:
   - +x to max y resistance suffix (rings, amulet, armour)
     > move off of armour and onto sigils and shields once they exist
-    > needs a new section in Entity._stats['Resistances']
-      - Entity._stats['Resistances']['max'] per resistance, default 75, increased by affix, final cap at 90%
       > +1 to +10 across 7 tiers
         > t1-3 are static 1/2/3 resistance, t4 = 4-5, t5 = 6-7, t6 = 7-8, t7 = 9-10
       > multi-res roll +1 to +8 across 7 tiers (t7 is 7-8)
@@ -26,23 +23,13 @@ OTHER STUFF:
       - for example: all equipment get a 'foresightResults' dict, whenver a rune is 'applied' to them, the result is stored as:
         > {rune: result} and whenever that rune is re-applied, the existing result is used instead "if self.name in item.foresightResults"
         > foresightResults cleared whenever a rune is actually applied
-  - for any properties that need it, add cache functionality if they are computationally heavy (e.g. equipment: suffixes, prefixes, locked, forge runePages, etc.)
-  - a tutorial option on the start menu
+  - playtime per save file
 
 CURRENTLY WORKING ON: (main order of implementation)
-  - should display armour and evasion amount using values from combatManager
-  - playtime per save file
-  - when an ability upgrades, it should display the upgrade same as a normal ability 
-  - equipment equipping should be split between item categories
-  
-  - when being displayed runes in forge crafting:
-    > sometime table glitches and shows multiple of the same rune on multiple different rows/columns
-    > there should be a check in runePages: if slot is weapon, no defense randomisers, vice versa, and only show correct rarity runes
-
-  - consumable rework
-
   - item rework
     > weapons most likely need significant base damage nerfs: carry early game too hard
+
+  - add a quick sell option when getting an item at the end of combat (simple QoL)
 
   - market rework
 
@@ -190,15 +177,6 @@ ITEM REWORK/IMPROVEMENTS
               > not a true destabilisation unless player used the rune
               > only in name to prevent further modification to the item
           > before being revealed, name should be just the name of the item e.g. "Axe" with ethereal theme tint
-    - add a quick sell option when getting an item at the end of combat (simple QoL)
-
-CONSUMABLES REWORK
- - keep them minimal, maybe even remove them as something you craft, just something you own permanently
- - you have a limited number of uses of them in combat
- - they heal %max hp rather than flat values
- - they recharge at the end of combats
- - OPEN QUESTION: does the recharge-at-end-of-combat also apply inside dungeons/waves, given dungeons are
-   meant to have no healing between fights (see dungeons section) - need to decide if dungeons suspend the recharge
 
 - ENEMY REWORK
   - enemy rarity system

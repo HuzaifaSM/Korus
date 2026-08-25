@@ -1,7 +1,8 @@
 """
 Crafting Sandbox - Test your crafting runes!
 """
-from scripts.items import Equipment, ItemRarity
+from scripts.items.items import ItemRarity
+from scripts.items.equipment import Equipment
 from scripts.crafting.chaosRune import CHAOS_RUNES
 from scripts.crafting.erasingRune import ERASING_RUNES
 from scripts.crafting.growthRune import GROWTH_RUNES

@@ -1,14 +1,15 @@
 from typing import Dict, Optional, List
 from .station import Station
 import random
-from scripts.items import Equipment, ItemRarity, rollRarity, RARITY_SERIALS
+from scripts.items.items import ItemRarity, rollRarity, RARITY_SERIALS
+from scripts.items.equipment import Equipment, ARMOUR_SLOTS
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, formatRarity,
     Panel, checkGlobalCommand, createEquipmentStoragePages, stepPage
 )
 from scripts.runeDrops import getRuneObject
-from scripts.crafting.base import CraftOutcome, CraftResult
+from scripts.crafting.base import CraftOutcome, CraftResult, CraftingItem
 from rich.columns import Columns
 from rich.table import Table
 from rich import box
@@ -19,6 +20,10 @@ class Forge(Station):
     Crafting station for creating equipment and applying runes to equipment.\n
     Features a split-screen interface showing before/after item states
     """
+    _FILLED_BLOCKED_RUNES = frozenset({'growth', 'conversion', 'revealing', 'soulbound', 'echoing'})
+    _EMPTY_BLOCKED_RUNES = frozenset({'erasing', 'fusion', 'equilibrium', 'sacrifice', 'chaos',
+                                       'tier randomiser', 'value randomiser', 'affix randomiser', 'immutable'})
+
     def __init__(self, player):
         super().__init__(player, "Forge")
         self.fuel = 0
@@ -27,6 +32,11 @@ class Forge(Station):
         self.currentItem = None
         self.currentCraftingPage = 1
         self.runeFilter = ""
+        self._runePagesCache: Dict[int, List[Dict[str, int]]] = {}
+        self._runePagesDirty = True
+
+    def _invalidateRunePages(self):
+        self._runePagesDirty = True
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
@@ -47,25 +57,62 @@ class Forge(Station):
                 }
         }
 
+    def _checkRuneEligibility(self, rune: CraftingItem) -> bool:
+        eq = self.currentItem
+        runeLevel = rune.minItemLevel or 1
+        runeName = rune.name.lower()
+
+        if hasattr(rune, 'fromRarity'):
+            if rune.fromRarity != eq.rarity:
+                return False
+
+        if 'defense randomiser' in runeName and eq.slot not in ARMOUR_SLOTS:
+            return False
+
+        elif 'damage randomiser' in runeName and eq.slot != 'weapon':
+            return False
+
+        if eq.allSlotsFilled and any(k in runeName for k in self._FILLED_BLOCKED_RUNES):
+            return False
+
+        if eq.allSlotsEmpty and any(k in runeName for k in self._EMPTY_BLOCKED_RUNES):
+            return False
+
+        if eq.mastery == 20 and 'mastery' in runeName:
+            return False
+
+        if eq.level < runeLevel:
+            return False
+        
+        if self.runeFilter != "":
+            if self.runeFilter not in rune.name.lower():
+                return False
+
+        return True
+
     @property
-    def runePages(self) -> Dict[int, List[Dict[str, int]]]: # NEEDS TO BE CACHED
-        temp = {}
+    def runePages(self) -> Dict[int, List[Dict[str, int]]]:
+        if self._runePagesDirty:
+            self._runePagesCache = self._buildRunePages()
+            self._runePagesDirty = False
+        return self._runePagesCache
+
+    def _buildRunePages(self) -> Dict[int, List[Dict[str, int]]]:
+        temp: dict[int, list[Dict[str, int]]] = {}
         for i in range(20):
             temp[i+1] = []
         runesAdded = 0
         playerRunes = self.player._craftingInventory
+
         for rune, quant in playerRunes.items():
             page = runesAdded // 12 + 1
             cat, rType = rune.split('_', 1)
-            runeLevel = getRuneObject(cat,rType).minItemLevel or 1
-            if self.currentItem.level >= runeLevel:
-                if self.runeFilter != "":
-                    if self.runeFilter in rune.lower():
-                        temp[page].append({rune: quant})
-                        runesAdded += 1
-                else:
-                    temp[page].append({rune: quant})
-                    runesAdded += 1
+            runeObj = getRuneObject(cat, rType)
+
+            if self._checkRuneEligibility(runeObj):
+                temp[page].append({rune: quant})
+                runesAdded += 1
+
         for k, v in temp.copy().items():
             if v == []:
                 temp.pop(k)
@@ -249,6 +296,7 @@ class Forge(Station):
 
         self.currentItem = item
         self.previousItem = None
+        self._invalidateRunePages()
 
         while True:
             clearScreen()
@@ -315,6 +363,7 @@ class Forge(Station):
                 if confirm == 'y':
                     result = rune.apply(self.currentItem, self.player)
                     outcome = result.outcome
+                    self._invalidateRunePages()
 
                     self.player._recalculateStats(False)
 
@@ -349,9 +398,11 @@ class Forge(Station):
             elif choice.lower() == 'c':
                 self.runeFilter = ""
                 self.currentCraftingPage = 1
+                self._invalidateRunePages()
             elif choice.strip().lower() != "":
                 self.runeFilter = choice.lower().strip()
                 self.currentCraftingPage = 1
+                self._invalidateRunePages()
 
         clearScreen()
         console.print("[gold1 bold]=== CRAFTING COMPLETE ===[/gold1 bold]\n")
@@ -573,8 +624,8 @@ class Forge(Station):
 
         for row in range(rows):
             leftIndex = row
-            centreIndex = (row + rows) // 2
-            rightIndex = row + rows
+            centreIndex = row + rows
+            rightIndex = row + rows * 2
 
             leftNum, leftName = "", ""
             if leftIndex < len(runeList):

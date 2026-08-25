@@ -44,6 +44,7 @@ class ImmutableRune(CraftingItem):
         
         slot = random.choice(candidates)
         slot.lock()
+        item.update()
 
         item.addEntropy(self.successEntropy)
         return CraftResult(

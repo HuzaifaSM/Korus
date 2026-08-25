@@ -1,4 +1,5 @@
-from .items import Equipment, RESOURCES, CONSUMABLES, ItemRarity
+from .items.items import RESOURCES, ItemRarity
+from .items.equipment import Equipment
 from .abilities import CLASS_ABILITIES
 from scripts.crafting.base import CraftingItem
 from scripts.crafting.chaosRune import CHAOS_RUNES
@@ -34,7 +35,7 @@ def getAllRunes() -> Dict[str, str]: # make get runes/crafting debug: 100 of eac
     return allRunes
 
 COMMANDS = {
-    "give_item", "remove_item", "give_equipment", 'eq', "give_consumable", "consumable", "give_xp", "xp", "give_gold", "gold",
+    "give_item", "remove_item", "give_equipment", 'eq', "give_xp", "xp", "give_gold", "gold",
     "restock", "area", "area_level", "heal", 'runes', 'give_runes', 'crafting', 'lvl', 'level', 'recalc', 'stats', 'simulate', 'sim'
 }
 
@@ -190,43 +191,6 @@ class Debugger:
                 pause()
                 break
 
-    def giveConsumable(self):
-        while True:
-            clearScreen()
-            printHeader("Give Consumable - Debug")
-            console.print("[dim]0.[/dim] Exit")
-            console.print("[dim]1.[/dim] View Consumables")
-            console.print("\n[cyan]Otherwise type number to get consumable[/cyan]")
-            choice = console.input("> ").strip()
-            if choice == "0":
-                break
-            elif choice == "1":
-                console.print("\n[bold cyan]=== Available Consumables ===[/bold cyan]")
-                for cons, heal in CONSUMABLES.items():
-                    console.print(f"  [green]{cons}:[/green] [health]+{heal} HP[/health]")
-                pause()
-            else:
-                console.print("\n[bold cyan]=== Select Consumable ===[/bold cyan]")
-                for i, cons in enumerate(CONSUMABLES.keys(), 1):
-                    console.print(f"  [cyan]{i}.[/cyan] {cons}")
-                choice = console.input("> ").strip()
-                try:
-                    choice = int(choice)
-                    if 0 < choice <= len(CONSUMABLES):
-                        name = list(CONSUMABLES.keys())[choice - 1]
-                        amount = int(console.input("[cyan]Input amount to get:[/cyan]\n> ").strip())
-                        if amount > 0:
-                            self.game.player.addItem(name, amount)
-                            printSuccess(f"Gave {amount}x {name}")
-                            pause()
-                            break
-                    else:
-                        printError("Invalid choice!")
-                        pause()
-                except ValueError:
-                    printError("Invalid input!")
-                    pause()
-
     def giveXp(self):
         while True:
             clearScreen()
@@ -377,8 +341,6 @@ class Debugger:
                 self.removeItem()
             elif choice in ["give_equipment", "eq"]:
                 self.giveEquipment()
-            elif choice in ["give_consumable", "consumable"]:
-                self.giveConsumable()
             elif choice in ["give_xp", "xp"]:
                 self.giveXp()
             elif choice in ["give_gold", "gold"]:

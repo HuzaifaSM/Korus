@@ -596,5 +596,5 @@ class Spectre(Player):
         elif ascendancy == 'Phantasm':
             self.ghostlyAmount = 0.05
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True

@@ -438,7 +438,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             heal = int(entity._maxHealth * 0.1)
             self.heal(heal, reason="Autarch (Enemy Killed)")
             self.autarchBonusDamage += entity._damage
-            console.print(f"[asc_autarch]Autarch: Healed {heal} HP and gained +{entity._damage} Damage for the rest of combat.[/asc_autarch]")
+            console.print(f"[asc_autarch]Autarch: Gained +{entity._damage} Damage for the rest of combat.[/asc_autarch]")
 
         # generic ability.effects.on_kill processing - available to any ascendancy ability
         ability = attackData.get('ability') if attackData else None
@@ -889,7 +889,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.ascendancyDescription = FIGHTER_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True
 
 ...

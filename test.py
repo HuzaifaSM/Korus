@@ -1,4 +1,4 @@
-from scripts.items import ItemRarity
+from scripts.items.items import ItemRarity
 
 x = ItemRarity.UNCOMMON
 y = list(ItemRarity)

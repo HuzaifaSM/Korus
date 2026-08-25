@@ -462,10 +462,6 @@ def formatRarity(text: str, rarity: str) -> str:
     colour = RARITY_COLOURS.get(rarity.lower(), 'white')
     return f"[{colour}]{text}[/{colour}]"
 
-def formatDamageType(text: str, damageType: str) -> str:
-    colour = DAMAGE_TYPE_COLOURS.get(damageType.lower(), "white")
-    return f"[{colour}]{text}[/{colour}]"
-
 def formatDamageValue(damage: int) -> str:
     if damage < 100:
         return 'orange1'
@@ -479,7 +475,7 @@ def formatDamageValue(damage: int) -> str:
         return 'red3 bold underline'
 
 def formatDamageBreakdown(baseDamage: int, log: List, finalDamage: int, damageType: str) -> List[str]:
-    dmgTypeFormatted = formatDamageType(damageType.title(), damageType)
+    dmgTypeFormatted = f"[{damageType}]{damageType.title()}[/{damageType}]"
     lines = [f"[damage]Dealt {baseDamage} {dmgTypeFormatted} Damage.[/damage]"]
     for reason, flat, percent in log:
         if percent:
@@ -675,7 +671,7 @@ def displayCombatStatus(player, enemies: list):
     playerInfo = f"[bold cyan]{player._name}[/bold cyan] (Lv. {player._level})\n"
     playerInfo += f"HP: {playerHP}\n"
     playerInfo += f"DMG: [damage]{player._damage}[/damage] | "
-    playerInfo += f"Type: {formatDamageType(player._damageType, player._damageType)}"
+    playerInfo += f"Type: [{player._damageType}]{player._damageType.title()}[/{player._damageType}]"
 
     playerPanel = Panel(playerInfo, title="[bold green]Player[/bold green]",
                         box=box.ROUNDED, border_style="green")
@@ -813,7 +809,7 @@ def createEnemyPreview(enemies: List) -> Table:
         col.append("")
 
         col.append(f"[health]HP:[/health] {enemy._health}/{enemy._maxHealth}")
-        col.append(f"[damage]DMG:[/damage] {enemy._damage} [dim]({formatDamageType(enemy._damageType, enemy._damageType)})[/dim]")
+        col.append(f"[damage]DMG:[/damage] {enemy._damage} | Type: [{enemy._damageType}]{enemy._damageType.title()}[/{enemy._damageType}]")
         col.append(f"[speed]SPD:[/speed] {enemy._speed}")
         col.append("")
 
@@ -1062,6 +1058,16 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         col.append(f"[health]Health:[/health]  {healthBar}")
         if entity.energyShield > 0 and entity.maxEnergyShield > 0:
             col.append(f"[energy_shield]Energy Shield:[/energy_shield] {entity.energyShield}/{entity.maxEnergyShield}")
+        defStr = ""
+        if entity.armour > 0 and entity.evasion > 0:
+            defStr = f"[armour]Armour:[/armour] {entity.armour} | [evasion]Evasion:[/evasion] {entity.evasion}"
+        else:
+            if entity.armour > 0:
+                defStr = f"[armour]Armour:[/armour] {entity.armour}"
+            if entity.evasion > 0:
+                defStr = f"[evasion]Evasion:[/evasion] {entity.evasion}"
+        if defStr != "":
+            col.append(defStr)
         if entity._shield > 0:
             col.append(f"[dim cyan]Shield:[/dim cyan] {entity._shield}")
         if isPlayer:
@@ -1071,7 +1077,7 @@ def createCombatStatusTable(player, enemies: List) -> Table:
             if player.className == 'Mage':
                 manaBar = createStaminaBar(entity._mana, entity._maxMana, width) # mana uses same colours as stamina
                 col.append(f'[arcane]Mana:[/arcane]    {manaBar}')
-        col.append(f"[damage]DMG:[/damage] {entity._damage} [dim]({formatDamageType(entity._damageType, entity._damageType)})[/dim]")
+        col.append(f"[damage]DMG:[/damage] {entity._damage} | Type: [{entity._damageType}]{entity._damageType.title()}[/{entity._damageType}]")
         col.append(f"[speed]SPD:[/speed] {entity._speed if not isPlayer else f'{entity._speed:.2f}'}")
 
         if isPlayer:
@@ -1169,7 +1175,7 @@ def createAbilityTables(abilities: dict, playerDamageType: str) -> Table:
 
         damageStr = str(ability.baseDamage) if ability.baseDamage else "-"
         scalingStr = f"{ability.damageScaling*100:.0f}%" if ability.damageScaling else "-"
-        dmgTypeFormatted = formatDamageType(ability.damageType, ability.damageType) if ability.damageType else formatDamageType(playerDamageType, playerDamageType)
+        dmgTypeFormatted = f"[{ability.damageType}]{ability.damageType.title()}[/{ability.damageType}]" if ability.damageType else f"[{playerDamageType}]{playerDamageType.title}[/{playerDamageType}]"
         healStr = f"{ability.healBase}+{ability.healPercent*100:.0f}%" if (ability.healBase or ability.healPercent) else "-"
         costStr = formatAbilityCost(ability.resources.get('required'), ability.staminaCost)
         gainLines = formatResourceGainDetailed(ability.resources.get('gain'))

@@ -278,7 +278,7 @@ class BaseConversionRune(CraftingItem):
                 message=f'Item has no empty {self.toConvert} slots.'
             )
         
-        from scripts.items import AffixSlot
+        from scripts.items.equipment import AffixSlot
         if self.toConvert == 'prefix':
             item.prefixSlots.pop(index)
             item.suffixSlots.append(AffixSlot('suffix'))

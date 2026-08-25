@@ -239,7 +239,7 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
               excludeIds: Set[str] = None, tierBias: float = 0.0,
               defenseType: str = None,
               minAffixLevel: int | None = None, noEmpty: bool = False) -> Optional[Affix]:
-    from .items import ItemRarity
+    from .items.items import ItemRarity
     baseEmptyChance = {
         ItemRarity.COMMON: 0.4,
         ItemRarity.UNCOMMON: 0.25,

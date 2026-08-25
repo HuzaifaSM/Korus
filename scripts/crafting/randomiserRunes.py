@@ -1,9 +1,3 @@
-#all randomiser runes
-"""
-base = yellow3
-greater = gold1 bold
-perfect = bright_black on yellow"""
-
 from .base import CraftingItem, CraftOutcome, CraftResult
 from scripts.affixes import getTierVariants, Affix, rollAffix, AFFIX_POOL
 import random
@@ -317,7 +311,7 @@ class DefenseRandomiserRune(BaseRandomiserRune):
     dropWeight = 150
 
     def apply(self, item, player=None):
-        from scripts.items import Equipment
+        from scripts.items.equipment import Equipment
         output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output

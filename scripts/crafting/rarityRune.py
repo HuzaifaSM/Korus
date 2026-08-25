@@ -1,5 +1,6 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.items import ItemRarity, ENTROPY_RESISTANCE, RARITY_VALUES
+from scripts.items.items import ItemRarity, RARITY_VALUES
+from scripts.items.equipment import ENTROPY_RESISTANCE
 import random
 from typing import Dict
 
@@ -78,7 +79,7 @@ class BaseRarityRune(CraftingItem):
 
         currentPrefixCount = len(item.prefixSlots)
         if newPrefixCount > currentPrefixCount:
-            from scripts.items import AffixSlot
+            from scripts.items.equipment import AffixSlot
             for _ in range(newPrefixCount - currentPrefixCount):
                 item.prefixSlots.append(AffixSlot('prefix'))
         elif newPrefixCount < currentPrefixCount:
@@ -90,7 +91,7 @@ class BaseRarityRune(CraftingItem):
 
         currentSuffixCount = len(item.suffixSlots)
         if newSuffixCount > currentSuffixCount:
-            from scripts.items import AffixSlot
+            from scripts.items.equipment import AffixSlot
             for _ in range(newSuffixCount - currentSuffixCount):
                 item.suffixSlots.append(AffixSlot('suffix'))
         elif newSuffixCount < currentSuffixCount:

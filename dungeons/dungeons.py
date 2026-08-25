@@ -3,7 +3,7 @@ from typing import List, Dict
 from scripts.enemy import createEnemy
 
 from scripts.styles import console, printSuccess, printWarning, pause, clearScreen, printSeparator
-from scripts.items import ItemRarity, DungeonMap
+from scripts.items.items import ItemRarity, DungeonMap
 
 class DungeonModifier:
     def __init__(self, name: str, modType: str, value: float, description: str):

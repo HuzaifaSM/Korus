@@ -1,5 +1,5 @@
-from .base import Player, ELEMENTAL_RES, DIVINE_RES
-from scripts.styles import console, formatDamageType, pause
+from .base import Player
+from scripts.styles import console
 from scripts.abilities import Effects
 import random
 
@@ -434,7 +434,7 @@ class Warrior(Player):
         self.ascendancyDescription = WARRIOR_DESCRIPTIONS[ascendancy]
         self._applyStatDelta(self.ASCENDANCY_DELTAS[ascendancy], sign=1)
         self._recalculateStats()
-        self.gainClassAbilities()
+        self.gainClassAbilities(True)
         return True
 
 ...
