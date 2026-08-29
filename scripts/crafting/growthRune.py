@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import rollAffix, Affix, AFFIX_POOL
+from scripts.affixes import rollAffix, Affix, AFFIX_POOL, resolveAffixPoolKey
 from scripts.mythicAffixes import rollMythicAffix, MythicAffix, MYTHIC_AFFIX_POOL
 import random
 from typing import Dict
@@ -60,7 +60,7 @@ class BaseGrowthRune(CraftingItem):
                 defenseType = item.defenseType
             
             affix = rollAffix(
-                equipType=item.slot,
+                equipType=resolveAffixPoolKey(item),
                 affixType=slot.kind,
                 itemLevel=item.level,
                 rarity=item.rarity,
@@ -273,7 +273,7 @@ class DuplicatingGrowthRune(BaseGrowthRune):
         if not categoryWeights:
             super().apply(item, player=None)
 
-        equipType = item.slot
+        equipType = resolveAffixPoolKey(item)
         affixType = 'prefixes' if slot.kind == 'prefix' else 'suffixes'
         availableAffixes = AFFIX_POOL[equipType][affixType]
 
@@ -371,7 +371,7 @@ class ImitatingGrowthRune(BaseGrowthRune):
             minLevel = min(a.levelReq for a in existingAffixes)
             maxLevel = max(a.levelReq for a in existingAffixes)
 
-        equipType = item.slot
+        equipType = resolveAffixPoolKey(item)
         affixType = 'prefixes' if slot.kind == 'prefix' else 'suffixes'
         availableAffixes = AFFIX_POOL[equipType][affixType]
         

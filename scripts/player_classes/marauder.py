@@ -57,6 +57,7 @@ class Marauder(Player):
         super().__init__(name,health, damage, 0.04, 1.3, damageType, speed, className="Marauder", classDescription=MARAUDER_DESCRIPTIONS["Marauder"])
         self.siphonedDamage = 0
         self.echoDamage = {} # entity: echoDamage
+        self._recentlyActedEnemies = set()
 
         self.colossusEsBroken = False
         self.colossusDamage = 0
@@ -161,7 +162,8 @@ class Marauder(Player):
 
     def onBeforeCritRoll(self, targetUnit, targets, combatManager):
         self._sovereignCritBuffed = False
-        if self._ascendancy == 'Sovereign' and targetUnit and (not targetUnit.hasActed or self._sovereignForceAmbush):
+        targetHasActed = bool(targetUnit) and targetUnit.entity in self._recentlyActedEnemies
+        if self._ascendancy == 'Sovereign' and targetUnit and (not targetHasActed or self._sovereignForceAmbush):
             console.print(f"[asc_sovereign]Sovereign: Ambush against {targetUnit.entity._name}! +25% Crit Chance, +75% Crit Damage.[/asc_sovereign]")
             self._stats['Temporary']['crit_chance'] += 0.25
             self._stats['Temporary']['crit_multi'] += 0.75
@@ -175,6 +177,8 @@ class Marauder(Player):
 
     def onHit(self, damageTaken, damageType, crit, attacker, combatManager):
         damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
+        if attacker:
+            self._recentlyActedEnemies.add(attacker)
         if self._ascendancy == 'Colossus' and self.colossusRetaliateCharges > 0 and attacker:
             attacker.applyCrush()
             self.colossusRetaliateCharges -= 1
@@ -226,12 +230,14 @@ class Marauder(Player):
         finalDamage = super().onDealDamage(target, targetUnit, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, combatManager)
 
         self._harrowerExecuteReady = False
-        if targetUnit.hasActed:
+        targetHasActed = target in self._recentlyActedEnemies
+        self._recentlyActedEnemies.discard(target)
+        if targetHasActed:
             if self._ascendancy == 'Colossus':
                 target.applyCrush()
-                self.echoDamage[target] = int(finalDamage * 0.15)
+                self.echoDamage[target] = max(1, int(finalDamage * 0.15))
             else:
-                self.echoDamage[target] = int(finalDamage * 0.35)
+                self.echoDamage[target] = max(1, int(finalDamage * 0.35))
 
             if self._ascendancy == 'Butcher':
                 target.applyCarved()
@@ -530,6 +536,7 @@ class Marauder(Player):
 
         self.siphonedDamage = 0
         self.echoDamage = {}
+        self._recentlyActedEnemies = set()
 
         self.colossusEsBroken = False
         self.colossusDamage = 0
@@ -563,6 +570,7 @@ class Marauder(Player):
             '_stats.Permanent.increased_health': 20,
             '_stats.Permanent.healing_magnitude': 50,
             '_stats.Permanent.cold': 15,
+            '_stats.Permanent.max_cold': 5,
         },
         'Sovereign': {
             '_baseHealth': 30,

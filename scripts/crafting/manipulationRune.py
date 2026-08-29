@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import MAX_TIERS, Affix, AFFIX_POOL, getTierVariants, getTieredAffix
+from scripts.affixes import MAX_TIERS, Affix, AFFIX_POOL, getTierVariants, getTieredAffix, resolveAffixPoolKey
 import random
 from typing import Dict, List
 
@@ -84,7 +84,7 @@ class FusionRune(CraftingItem):
         totalPower = 0
         for s in removeSlots:
             affix = s.affix
-            removedAffixes.append(affix.id)
+            removedAffixes.append(affix)
             removedTiers.append(affix.tier)
             totalPower += tierPower(affix.tier)
 
@@ -108,7 +108,7 @@ class FusionRune(CraftingItem):
                 message='No empty slots'
             )
 
-        slotType = item.slot
+        slotType = resolveAffixPoolKey(item)
         affixType = 'prefixes' if addSlot.kind == 'prefix' else 'suffixes'
         availableAffixes = AFFIX_POOL[slotType][affixType]
 
@@ -170,7 +170,7 @@ class FusionRune(CraftingItem):
             levelReq=chosenAffix.levelReq,
             tier=chosenAffix.tier,
             stat=chosenAffix.stat,
-            slot=item.slot,
+            slot=chosenAffix.slot,
             minVal=chosenAffix.minVal,
             maxVal=chosenAffix.maxVal,
             isPercent=chosenAffix.isPercent,
@@ -190,9 +190,13 @@ class FusionRune(CraftingItem):
         item._generateName()
         item.addEntropy(self.successEntropy)
 
+        removedStr = ""
+        for a in removedAffixes:
+            removedStr += f"\n- {a}"
+
         return CraftResult(
             outcome=CraftOutcome.SUCCESS,
-            message=f'Removed {removedAffixes}. Added {chosenAffix.id}.',
+            message=f'[green bold]Successfully applied {self.name}[/green bold]\nRemoved:{removedStr}.\nAdded:\n{newAffix}.',
             entropyAdded=self.successEntropy
         )
 
@@ -376,7 +380,7 @@ class EquilibriumRune(CraftingItem):
 
             affixId = affix.id.split('_t')[0]
             affixId = f"{affixId}_t{tier}"
-            newAffix = getTieredAffix(item.slot, affix.kind, affixId=affixId)
+            newAffix = getTieredAffix(affix.slot, affix.kind, affixId=affixId)
             newAffix.rollValue()
             slot.affix = newAffix
 
@@ -397,7 +401,7 @@ class EquilibriumRune(CraftingItem):
                 if overflow >= cost:
                     affixId = affix.id.split('_t')[0]
                     affixId = f'{affixId}_t{tier}'
-                    newAffix = getTieredAffix(slot, affix.kind, affixId=affixId)
+                    newAffix = getTieredAffix(affix.slot, affix.kind, affixId=affixId)
                     newAffix.rollValue()
                     slot.affix = affix
 
@@ -454,7 +458,7 @@ class DeceivingEquilibriumRune(EquilibriumRune):
                 afId = affix.id.split('_t')[0]
                 nextTier = affix.tier + 1
                 affixId = f'{afId}_t{nextTier}'
-                newAffix = getTieredAffix(item.slot, affix.kind, affixId=affixId)
+                newAffix = getTieredAffix(affix.slot, affix.kind, affixId=affixId)
                 if newAffix is not None:
                     newAffix.rollValue()
                     slot.affix = newAffix
@@ -511,13 +515,12 @@ class SacrificeRune(CraftingItem):
                 message='Not enough slots to carry out operations'
             )
 
-        sacrifice = random.choice(slots)
-        slots.remove(sacrifice)
+        sacrifice = random.choice(slots) # slot with affix being removed
+        sacrifiedAffix = sacrifice.affix
+        slots.remove(sacrifice) # removed to prevent being attempted to add onto
         sacrificeTier = sacrifice.affix.tier
         sacrificeAffixId = sacrifice.affix.id
         sacrifice.affix = None
-
-        equipType = item.slot
 
         totalPower = tierPower(sacrificeTier)
         totalPower = applyEfficiency(totalPower, self.tierEfficiency)
@@ -526,7 +529,7 @@ class SacrificeRune(CraftingItem):
         for s in slots:
             affix = s.affix
             baseId = affix.id.split('_t')[0]
-            maxTier = MAX_TIERS.get((equipType, baseId))
+            maxTier = MAX_TIERS.get((affix.slot, baseId))
             if maxTier is None:
                 continue
             if affix.tier < maxTier and powerToTier(totalPower, list(range(1, maxTier + 1))) > affix.tier: # if affix isn't max tier, and if the result will actually increase the affix's tier
@@ -536,12 +539,12 @@ class SacrificeRune(CraftingItem):
                 outcome=CraftOutcome.NO_EFFECT,
                 message='No valid affixes to upgrade'
             )
-        
+
         targetSlot = random.choice(candidates)
         targetAffix = targetSlot.affix
 
         baseId = targetAffix.id.split('_t')[0]
-        maxTier = MAX_TIERS[(equipType, baseId)]
+        maxTier = MAX_TIERS[(targetAffix.slot, baseId)]
         availableTiers = list(range(1, maxTier + 1))
 
         rawTier = powerToTier(totalPower, availableTiers)
@@ -558,7 +561,7 @@ class SacrificeRune(CraftingItem):
         
         newAffixId = f'{baseId}_t{finalTier}'
         newAffix = getTieredAffix(
-            slot=equipType, kind=targetAffix.kind, affixId=newAffixId
+            slot=targetAffix.slot, kind=targetAffix.kind, affixId=newAffixId
         )
         newAffix.rollValue()
         targetSlot.affix = newAffix
@@ -574,7 +577,7 @@ class SacrificeRune(CraftingItem):
 
         return CraftResult(
             outcome=CraftOutcome.SUCCESS,
-            message=f'Removed {sacrificeAffixId}. Upgraded {newAffix.id} from T{oldTier} to T{finalTier}',
+            message=f'Removed {sacrifiedAffix}.\nUpgraded {newAffix} from Tier {oldTier} to Tier {finalTier}',
             entropyAdded=self.successEntropy
         )
 

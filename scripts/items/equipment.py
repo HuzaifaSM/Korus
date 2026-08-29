@@ -2,8 +2,29 @@ from .items import Item, ItemRarity, ItemType, RARITY_SERIALS, RARITY_VALUES
 from scripts.affixes import Affix, rollAffix
 from scripts.styles import console, printError
 # from scripts.mythicAffixes import rollMythicAffix
-from typing import Optional, List, Any, Tuple
+from typing import Optional, List, Dict, Any, Tuple
 import random
+import json
+from os.path import exists
+
+def _loadEquipmentBases() -> dict:
+    fp = 'Korus/scripts/items/equipmentBases.json' if exists('Korus') else 'scripts/items/equipmentBases.json'
+    with open(fp, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+EQUIPMENT_BASES = _loadEquipmentBases()
+
+def _selectTier(tiers: dict, level: int) -> Tuple[str, dict]:
+    eligible = sorted(
+        ((name, data) for name, data in tiers.items() if data['minLevel'] <= level),
+        key=lambda nd: nd[1]['minLevel']
+    )
+    if not eligible:
+        return min(tiers.items(), key=lambda nd: nd[1]['minLevel'])
+    candidates = eligible[-2:]
+    if len(candidates) == 1:
+        return candidates[0]
+    return random.choices(candidates, weights=[30, 70], k=1)[0]
 
 ENTROPY_RESISTANCE = {
     ItemRarity.COMMON: 0.0,
@@ -88,19 +109,29 @@ class AffixSlot:
             affix=affix
         )
 
-ARMOUR_SLOTS = ['head', 'chest', 'legs', 'feet']
+ARMOUR_SLOTS = ['head', 'chest', 'legs', 'feet', 'offhand']
+EQUIPMENT_BASES_KEY = {'offhand': 'shield'}  # equipment.slot -> equipmentBases.json top-level key, where they differ
+
+RARITY_MULTIPLIERS = {
+    ItemRarity.COMMON: 1,
+    ItemRarity.UNCOMMON: 1.2,
+    ItemRarity.RARE: 1.5,
+    ItemRarity.EPIC: 1.8,
+    ItemRarity.LEGENDARY: 2.2,
+    ItemRarity.MYTHIC: 2.5,
+}
 
 
 class Equipment(Item):
     def __init__(self, slot: str, rarity: ItemRarity = ItemRarity.COMMON,
-                 defenses: dict[str, int] = {}, damages: dict[str, Any] = {},
+                 defenses: dict[str, int] = {}, damages: dict[str, Any] = {}, implicits: dict[str, float] = {},
                  prefixes: List[Affix] = None, suffixes: List[Affix] = None, numPrefixes: int = 1, numSuffixes: int = 1,
-                 level: int = 1, maxEntropy: float | None = None):
+                 level: int = 1, maxEntropy: float | None = None, baseTypeName: Optional[str] = None):
 
         itemType = ItemType.EQUIPMENT
 
         super().__init__("", itemType, rarity)
-        self.slot = slot  # weapon, head, chest, legs, feet, ring, amulet
+        self.slot = slot  # weapon, offhand, head, chest, legs, feet, ring, amulet, sigil
         self.prefixSlots = [AffixSlot('prefix') for _ in range(numPrefixes)]
         for slot, affix in zip(self.prefixSlots, prefixes or []):
             slot.affix = affix
@@ -116,6 +147,11 @@ class Equipment(Item):
         self.damage = damages.get('damage', 0)
         self.baseDamage = damages.get('baseDamage', 0)
         self.damageType = damages.get('damageType', None)
+        self.twoHanded: bool = bool(damages.get('twoHanded', False))
+
+        self.implicits: Dict[str, float] = dict(implicits or {})
+        self.baseTypeName: Optional[str] = baseTypeName
+
         self._generateName()
 
         self.entropy = 0
@@ -221,6 +257,10 @@ class Equipment(Item):
         temp['damage'] = self.damage
         temp['baseDamage'] = self.baseDamage
         temp['damageType'] = self.damageType
+        temp['twoHanded'] = self.twoHanded
+
+        temp['implicits'] = self.implicits
+        temp['baseTypeName'] = self.baseTypeName
 
         temp['entropy'] = self.entropy
         temp['entropyPreserved'] = self.entropyPreserved
@@ -270,12 +310,15 @@ class Equipment(Item):
             {
                 'damage': data.get('damage', 0),
                 'baseDamage': data.get('baseDamage', 0),
-                'damageType': data.get('damageType', None)
+                'damageType': data.get('damageType', None),
+                'twoHanded': data.get('twoHanded', False)
             },
+            data.get('implicits', {}),
             prefixes,
             suffixes,
             len(prefixSlots), len(suffixSlots),
-            data.get('level', 1)
+            data.get('level', 1),
+            baseTypeName=data.get('baseTypeName', None)
         )
         i = super().deserialise(data)
 
@@ -356,6 +399,13 @@ class Equipment(Item):
                 dType = self.damageType
                 typeStr = f" | [cyan]Damage Type:[/cyan] [{dType}]{dType.title()}[/{dType}]"
             damageString = f"\n[cyan]Damage:[/cyan] {self.damage} (Base: {self.baseDamage}){typeStr}"
+        implicitString = ""
+        if self.implicits:
+            implicitLines = "\n".join(
+                f"    |-> [cyan]{stat.replace('_', ' ').title()}:[/cyan] {value}"
+                for stat, value in self.implicits.items()
+            )
+            implicitString = f"\n[bold dim] === IMPLICITS ===[/bold dim]\n{implicitLines}"
         entropyString = f"\n[red3 bold]Entropy:[/red3 bold] {self.entropy} / {self.maxEntropy} | [hot_pink]Entropy Resistance:[/hot_pink] {round(self.entropyResistance * 100)}%"
         if self.numPreserved > 0:
             if self.preservable:
@@ -373,7 +423,7 @@ class Equipment(Item):
         if self.parallel:
             parStr = " [misty_rose3 bold underline]Parallel Item[/misty_rose3 bold underline] | "
         masteryString = f" | [gold1]Mastery:[/gold1] {self.mastery}%"
-        return f"{destabilisedString}{parStr}{self.name} | [bold]Durability:[/bold] {self.durability} / {self.maxDurability}{masteryString}{entropyString}{damageString}{defenseString}\n{stat_string}{corruptedString}"
+        return f"{destabilisedString}{parStr}{self.name} | [bold]Durability:[/bold] {self.durability} / {self.maxDurability}{masteryString}{entropyString}{damageString}{defenseString}{implicitString}\n{stat_string}{corruptedString}"
 
     def calculateMaxDurability(self):
         if hasattr(self, 'maxDurability') and hasattr(self, 'durability'):
@@ -456,88 +506,194 @@ class Equipment(Item):
         return excludedPre, excludedSuf
 
     @staticmethod
-    def _calculateDefenseRoll(slot: str, level: int, rarity: ItemRarity, defenseType: str = None) -> List[str, int]:
-        if slot not in ARMOUR_SLOTS:
-            return None, 0
-
-        if not defenseType:
-            defenseTypes = ['armour', 'evasion', 'energy_shield']
-            selectedType = random.choice(defenseTypes)
-        else:
-            selectedType = defenseType
-
-        defenseRanges = {
-            'head': {
-            'armour': (10, 17),
-            'evasion': (13, 20),
-            'energy_shield': (4, 9)
-            },
-            'chest': {
-                'armour': (18, 32),
-                'evasion': (21, 35),
-                'energy_shield': (8, 13)
-            },
-            'legs': {
-                'armour': (18, 32),
-                'evasion': (21, 35),
-                'energy_shield': (8, 13)
-            },
-            'feet': {
-                'armour': (10, 17),
-                'evasion': (13, 20),
-                'energy_shield': (4, 9)
-            }
-        }
-
-        baseMin, baseMax = defenseRanges[slot][selectedType]
-        baseMin += int(level / 2.5)
-        baseMax += int(level / 1.25)
-
-        rarityMultipliers = {
-            ItemRarity.COMMON: 1,
-            ItemRarity.UNCOMMON: 1.2,
-            ItemRarity.RARE: 1.5,
-            ItemRarity.EPIC: 1.8,
-            ItemRarity.LEGENDARY: 2.2,
-            ItemRarity.MYTHIC: 2.5
-        }
-        multiplier = rarityMultipliers.get(rarity, 1) + level / 100
-        if selectedType == 'energy_shield':
+    def _rollRangeValue(baseMin: float, baseMax: float, rarity: ItemRarity, level: int, halveForES: bool = False) -> int:
+        """Shared rarity/level scaling used by both the damage and defense base rolls."""
+        multiplier = RARITY_MULTIPLIERS.get(rarity, 1) + level / 100
+        if halveForES:
             multiplier = round(multiplier / 2, 3)
-
-        minVal = int(baseMin * multiplier)
-        maxVal = int(baseMax * multiplier)
-        defenseValue = random.randint(minVal, maxVal)
-
-        return selectedType, defenseValue
+        return random.randint(int(baseMin * multiplier), int(baseMax * multiplier))
 
     @staticmethod
-    def _calculateDamageRoll(slot: str, level: int, rarity: ItemRarity) -> List[int, str | None]:
+    def _calculateDefenseRoll(slot: str, level: int, rarity: ItemRarity, defenseType: str = None) -> Tuple[Optional[str], int, dict, Optional[str]]:
+        if slot not in ARMOUR_SLOTS:
+            return None, 0, {}, None
+
+        selectedType = defenseType or random.choice(['armour', 'evasion', 'energy_shield'])
+        tiers = EQUIPMENT_BASES[EQUIPMENT_BASES_KEY.get(slot, slot)][selectedType]
+        tierName, tierData = _selectTier(tiers, level)
+
+        defenseValue = Equipment._rollRangeValue(
+            tierData['defenseMin'], tierData['defenseMax'], rarity, level, halveForES=(selectedType == 'energy_shield')
+        )
+        implicits = dict(tierData.get('implicits', {}))
+
+        return selectedType, defenseValue, implicits, tierName
+
+    WEAPON_HANDEDNESS_WEIGHTS = {'one_handed': 65, 'two_handed': 35}
+    WEAPON_TYPE_WEIGHTS = {
+        'one_handed': {'sword': 1, 'axe': 1, 'dagger': 1, 'mace': 1, 'claw': 1},
+        'two_handed': {'sword': 1, 'axe': 1, 'mace': 1, 'quarterstaff': 1, 'maul': 1, 'spear': 1},
+    }
+
+    @staticmethod
+    def _pickWeaponBase(level: int) -> Tuple[bool, str, dict]:
+        """Returns (twoHanded, tierName, tierData)."""
+        handedness = random.choices(
+            list(Equipment.WEAPON_HANDEDNESS_WEIGHTS),
+            weights=list(Equipment.WEAPON_HANDEDNESS_WEIGHTS.values()), k=1
+        )[0]
+        typeWeights = Equipment.WEAPON_TYPE_WEIGHTS[handedness]
+        weaponType = random.choices(list(typeWeights), weights=list(typeWeights.values()), k=1)[0]
+        tiers = EQUIPMENT_BASES['weapons'][handedness][weaponType]
+        tierName, tierData = _selectTier(tiers, level)
+        return handedness == 'two_handed', tierName, tierData
+
+    @staticmethod
+    def _calculateDamageRoll(slot: str, level: int, rarity: ItemRarity) -> Tuple[int, Optional[str], dict, bool, Optional[str]]:
         if slot != 'weapon':
-            return 0, None
+            return 0, None, {}, False, None
 
-        baseMin = random.randint(2, 4) + int(level * 2 / 3) - (1 if level < 3 else 0)
-        baseMax = random.randint(6, 8) + int(level * 4 / 3) - (random.randint(1, 2) if level < 5 else 0)
-
-        rarityMultipliers = {
-            ItemRarity.COMMON: 1,
-            ItemRarity.UNCOMMON: 1.2,
-            ItemRarity.RARE: 1.5,
-            ItemRarity.EPIC: 1.8,
-            ItemRarity.LEGENDARY: 2.2,
-        }
-        multiplier = rarityMultipliers.get(rarity, 1) + level / 100
-
-        minVal = int(baseMin * multiplier)
-        maxVal = int(baseMax * multiplier)
-        damage = random.randint(minVal, maxVal)
+        twoHanded, tierName, tierData = Equipment._pickWeaponBase(level)
+        damage = Equipment._rollRangeValue(tierData['damageMin'], tierData['damageMax'], rarity, level)
 
         if random.random() <= 0.3:
             damageType = random.choice(DAMAGE_TYPES)
         else:
             damageType = None
-        
-        return damage, damageType
+
+        implicits = dict(tierData.get('implicits', {}))
+
+        return damage, damageType, implicits, twoHanded, tierName
+
+    @staticmethod
+    def _rollImplicitRange(rng: dict) -> float:
+        if isinstance(rng['min'], float) or isinstance(rng['max'], float):
+            return round(random.uniform(rng['min'], rng['max']), 2)
+        return random.randint(rng['min'], rng['max'])
+
+    @staticmethod
+    def _pickFromFamilies(entries: dict, level: int) -> Tuple[Optional[str], dict]:
+        families: Dict[str, dict] = {}
+        for name, data in entries.items():
+            statKey = next(iter(data['implicits']))
+            families.setdefault(statKey, {})[name] = data
+
+        eligibleFamilies = {
+            stat: fam for stat, fam in families.items()
+            if any(d['minLevel'] <= level for d in fam.values())
+        }
+        if not eligibleFamilies:
+            return None, {}
+
+        chosenStat = random.choice(list(eligibleFamilies))
+        tierName, tierData = _selectTier(eligibleFamilies[chosenStat], level)
+        value = Equipment._rollImplicitRange(tierData['implicits'][chosenStat])
+
+        return tierName, {chosenStat: value}
+
+    @staticmethod
+    def _pickAccessoryImplicit(slot: str, level: int) -> Tuple[Optional[str], dict]:
+        return Equipment._pickFromFamilies(EQUIPMENT_BASES[slot], level)
+
+    @staticmethod
+    def _pickSigilImplicit(level: int) -> Tuple[Optional[str], dict, str]:
+        category = random.choice(['offensive', 'defensive'])
+        tierName, implicits = Equipment._pickFromFamilies(EQUIPMENT_BASES['sigil'][category], level)
+        return tierName, implicits, f'sigil_{category}'
+
+    @staticmethod
+    def _rerollBaseType(item: 'Equipment') -> bool:
+        if not item.baseTypeName:
+            return False
+
+        if item.slot == 'weapon':
+            handedness = 'two_handed' if item.twoHanded else 'one_handed'
+            weaponTypes = EQUIPMENT_BASES['weapons'][handedness]
+
+            currentType, currentLevel = None, None
+            for wType, tiers in weaponTypes.items():
+                if item.baseTypeName in tiers:
+                    currentType, currentLevel = wType, tiers[item.baseTypeName]['minLevel']
+                    break
+            if currentType is None:
+                return False
+
+            candidates = [
+                (name, data) for wType, tiers in weaponTypes.items() if wType != currentType
+                for name, data in tiers.items() if data['minLevel'] == currentLevel
+            ]
+            if not candidates:
+                return False
+
+            tierName, tierData = random.choice(candidates)
+            item.baseDamage = Equipment._rollRangeValue(tierData['damageMin'], tierData['damageMax'], item.rarity, item.level)
+            item.baseDamage += tierData.get('implicits', {}).get('damage', 0)
+            item.damage = item.baseDamage
+            item.implicits = dict(tierData.get('implicits', {}))
+            item.baseTypeName = tierName
+            return True
+
+        if item.slot in ARMOUR_SLOTS:
+            poolKey = EQUIPMENT_BASES_KEY.get(item.slot, item.slot)
+            defenseTypes = EQUIPMENT_BASES[poolKey]
+
+            currentType, currentLevel = None, None
+            for dType, tiers in defenseTypes.items():
+                if item.baseTypeName in tiers:
+                    currentType, currentLevel = dType, tiers[item.baseTypeName]['minLevel']
+                    break
+            if currentType is None:
+                return False
+
+            candidates = [
+                (name, data, dType) for dType, tiers in defenseTypes.items() if dType != currentType
+                for name, data in tiers.items() if data['minLevel'] == currentLevel
+            ]
+            if not candidates:
+                return False
+
+            tierName, tierData, newType = random.choice(candidates)
+            oldType = currentType
+            item.defenseType = newType
+            item.baseDefenseValue = Equipment._rollRangeValue(
+                tierData['defenseMin'], tierData['defenseMax'], item.rarity, item.level, halveForES=(newType == 'energy_shield')
+            )
+            item.implicits = dict(tierData.get('implicits', {}))
+            item.baseTypeName = tierName
+
+            from scripts.affixes import getTieredAffix
+            for slot in item.prefixSlots:
+                if slot.affix is None or slot.affix.stat != oldType:
+                    continue
+                version = 'added' if slot.affix.isFlat else 'increased'
+                newAffix = getTieredAffix(item.slot, 'prefixes', affixId=f'{version}_{newType}_t{slot.affix.tier}')
+                if newAffix is not None:
+                    newAffix.rollValue()
+                    slot.affix = newAffix
+
+            return True
+
+        if item.slot in ('ring', 'amulet'):
+            entries = EQUIPMENT_BASES[item.slot]
+            if item.baseTypeName not in entries:
+                return False
+            currentLevel = entries[item.baseTypeName]['minLevel']
+            currentStat = next(iter(item.implicits)) if item.implicits else None
+
+            candidates = [
+                (name, data) for name, data in entries.items()
+                if data['minLevel'] == currentLevel and next(iter(data['implicits'])) != currentStat
+            ]
+            if not candidates:
+                return False
+
+            tierName, tierData = random.choice(candidates)
+            chosenStat = next(iter(tierData['implicits']))
+            item.implicits = {chosenStat: Equipment._rollImplicitRange(tierData['implicits'][chosenStat])}
+            item.baseTypeName = tierName
+            return True
+
+        return False
 
     def update(self):
         self._statsDirty = True
@@ -643,7 +799,10 @@ class Equipment(Item):
             'durability': 100,
             'maxDurability': 100,
             'prefixes': [],
-            'suffixes': []
+            'suffixes': [],
+            'implicits': {},
+            'baseTypeName': None,
+            'twoHanded': False,
         }
 
         defenseType, defenseValue = None, 0
@@ -651,20 +810,37 @@ class Equipment(Item):
 
         if slot in ARMOUR_SLOTS:
 
-            defenseType, defenseValue = Equipment._calculateDefenseRoll(slot, level, rarity)
+            defenseType, defenseValue, implicits, tierName = Equipment._calculateDefenseRoll(slot, level, rarity)
 
             equipment['defenseType'] = defenseType
             equipment['defenseValue'] = defenseValue
             equipment['baseDefenseValue'] = defenseValue
+            equipment['implicits'] = implicits
+            equipment['baseTypeName'] = tierName
 
         elif slot == 'weapon':
-            baseDamage, damageType = Equipment._calculateDamageRoll(slot, level, rarity)
+            baseDamage, damageType, implicits, twoHanded, tierName = Equipment._calculateDamageRoll(slot, level, rarity)
+            baseDamage += implicits.get('damage', 0)  # fold weapon 'damage' implicit into baseDamage once, here only
 
             equipment['damage'] = baseDamage
             equipment['baseDamage'] = baseDamage
             equipment['damageType'] = damageType
+            equipment['implicits'] = implicits
+            equipment['baseTypeName'] = tierName
+            equipment['twoHanded'] = twoHanded
 
-        numPrefixes, numSuffixes = getAffixCounts(level, rarity) 
+        elif slot in ('ring', 'amulet'):
+            tierName, implicits = Equipment._pickAccessoryImplicit(slot, level)
+            equipment['implicits'] = implicits
+            equipment['baseTypeName'] = tierName
+
+        elif slot == 'sigil':
+            tierName, implicits, sigilAffixPool = Equipment._pickSigilImplicit(level)
+            equipment['implicits'] = implicits
+            equipment['baseTypeName'] = tierName
+            equipment['sigilAffixPool'] = sigilAffixPool
+
+        numPrefixes, numSuffixes = getAffixCounts(level, rarity)
 
         prefixes = []
         suffixes = []
@@ -688,15 +864,24 @@ class Equipment(Item):
         tierBias = calculateTierBias(level, rarity)
 
         defenseType = equipment.get('defenseType', None)
+        # a one-handed weapon rolls from the separate, lower-value 'one_handed' pool, even though
+        # Equipment.slot stays 'weapon' for both hand categories - see resolveAffixPoolKey.
+        # A sigil rolls from whichever of sigil_offensive/sigil_defensive its implicit picked.
+        if slot == 'weapon':
+            affixPoolKey = 'one_handed' if not equipment.get('twoHanded', False) else slot
+        elif slot == 'sigil':
+            affixPoolKey = equipment['sigilAffixPool']
+        else:
+            affixPoolKey = slot
 
         for _ in range(numPrefixes - mythicPre):
-            affix = rollAffix(slot, 'prefixes', level, rarity, excludedPrefixIds, tierBias, defenseType)
+            affix = rollAffix(affixPoolKey, 'prefixes', level, rarity, excludedPrefixIds, tierBias, defenseType)
             if affix:
                 prefixes.append(affix)
                 excludedPrefixIds.add(affix.id.split('_t')[0])
-        
+
         for _ in range(numSuffixes - mythicSuf):
-            affix = rollAffix(slot, 'suffix', level, rarity, excludedSuffixIds, tierBias, defenseType)
+            affix = rollAffix(affixPoolKey, 'suffix', level, rarity, excludedSuffixIds, tierBias, defenseType)
             if affix:
                 suffixes.append(affix)
                 excludedSuffixIds.add(affix.id.split('_t')[0])
@@ -739,23 +924,27 @@ class Equipment(Item):
                 equipment['rarity'],
                 {'defenseType': equipment['defenseType'], 'baseDefenseValue': equipment['baseDefenseValue'], 'defenseValue': equipment['defenseValue']},
                 {},
+                equipment['implicits'],
                 equipment['prefixes'],
                 equipment['suffixes'],
                 numPrefixes,
                 numSuffixes,
-                equipment['level']
+                equipment['level'],
+                baseTypeName=equipment['baseTypeName']
             )
         elif 'damageType' in equipment and equipment.get('damage', 0) > 0:
             e = Equipment(
                 equipment['slot'],
                 equipment['rarity'],
                 {},
-                {'damage': equipment['damage'], 'baseDamage': equipment['baseDamage'], 'damageType': equipment['damageType']},
+                {'damage': equipment['damage'], 'baseDamage': equipment['baseDamage'], 'damageType': equipment['damageType'], 'twoHanded': equipment['twoHanded']},
+                equipment['implicits'],
                 equipment['prefixes'],
                 equipment['suffixes'],
                 numPrefixes,
                 numSuffixes,
                 equipment['level'],
+                baseTypeName=equipment['baseTypeName']
             )
         else:
             e = Equipment(
@@ -763,11 +952,13 @@ class Equipment(Item):
                 equipment['rarity'],
                 {},
                 {},
+                equipment['implicits'],
                 equipment['prefixes'],
                 equipment['suffixes'],
                 numPrefixes,
                 numSuffixes,
-                equipment['level']
+                equipment['level'],
+                baseTypeName=equipment['baseTypeName']
             )
 
         e.update()
@@ -842,7 +1033,7 @@ class Equipment(Item):
                 damage = f"{typePrefixes[self.damageType]} "
         
         rarity = self.rarity.value.title()
-        slot = f" {self.slot.title()}"
+        slot = f" {self.baseTypeName}" if getattr(self, 'baseTypeName', None) else f" {self.slot.title()}"
 
         name = f"[{self.rarity.value}]{prefix}{damage}{rarity}{slot}{suffix}[/{self.rarity.value}]"
         self.name = name
@@ -929,7 +1120,7 @@ class Equipment(Item):
             self.durability = min(self.durability + amount, self.maxDurability)
 
     def getStatBonuses(self, stat: str) -> Tuple[int, float, float]:
-        totalBonus = 0
+        totalBonus = self.implicits.get(stat, 0)
         totalIncrease = 0
         globalIncrease = 0
 

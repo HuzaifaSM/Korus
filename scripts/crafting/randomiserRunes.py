@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import getTierVariants, Affix, rollAffix, AFFIX_POOL
+from scripts.affixes import getTierVariants, Affix, rollAffix
 import random
 from typing import Dict
 
@@ -174,7 +174,7 @@ class BaseTierRandomiserRune(BaseRandomiserRune):
                 levelReq=chosen.levelReq,
                 tier=chosen.tier,
                 stat=chosen.stat,
-                slot=item.slot,
+                slot=chosen.slot,
                 minVal=chosen.minVal,
                 maxVal=chosen.maxVal,
                 isPercent=chosen.isPercent,
@@ -248,7 +248,7 @@ class BaseAffixRandomiserRune(BaseRandomiserRune):
         excludeIds = []
         for slot in validSlots:
             newAffix = rollAffix(
-                equipType=item.slot,
+                equipType=slot.affix.slot,
                 affixType=slot.kind,
                 itemLevel=item.level,
                 rarity=item.rarity,
@@ -304,9 +304,9 @@ class PerfectAffixRandomiserRune(BaseAffixRandomiserRune):
     minItemLevel = 60
     dropWeight = 15
 
-class DefenseRandomiserRune(BaseRandomiserRune):
-    name = '[dodger_blue2]Defense Randomiser Rune[/dodger_blue2]'
-    description = 'Randomises the defense type and base defense value of an item.'
+class BaseTypeRandomiserRune(BaseRandomiserRune):
+    name = '[dodger_blue2]Base Type Randomiser Rune[/dodger_blue2]'
+    description = 'Randomises the item into a different base type of the same tier (a different weapon type, armour/shield defense type, or ring/amulet archetype), excluding its current one.'
     successEntropy = 0.05
     dropWeight = 150
 
@@ -315,33 +315,12 @@ class DefenseRandomiserRune(BaseRandomiserRune):
         output = super().apply(item, player=None)
         if output.outcome != CraftOutcome.SUCCESS:
             return output
-        
-        if getattr(item, 'defenseType', None) == None or item.defenseValue <= 0:
+
+        if not Equipment._rerollBaseType(item):
             return CraftResult(
                 CraftOutcome.NO_EFFECT,
-                message='Item does not have defenses'
+                message='Item has no other base type to randomise into'
             )
-
-        defenses = ['armour', 'evasion', 'energy_shield']
-        oldDefense = item.defenseType
-        defenses.remove(oldDefense)
-        newDefense = random.choice(defenses)
-        item.defenseType, item.baseDefenseValue = Equipment._calculateDefenseRoll(item.slot, item.level, item.rarity, newDefense)
-        equipType = item.slot
-
-        # swap old defense affixes for new defense affixes
-        for slot in item.prefixSlots:
-            if slot.affix is None:
-                continue
-            if slot.affix.stat == oldDefense:
-                oldAffix = slot.affix
-                version = 'added' if oldAffix.isFlat else 'increased'
-                newId = f'{version}_{newDefense}_t{oldAffix.tier}'
-                
-                newAffix = AFFIX_POOL[equipType]['prefixes'][newId]
-                newAffix.rollValue()
-
-                slot.affix = newAffix
 
         item.addEntropy(self.successEntropy)
         item.update()
@@ -349,66 +328,7 @@ class DefenseRandomiserRune(BaseRandomiserRune):
 
         return CraftResult(
             CraftOutcome.SUCCESS,
-            message='Item defense type successfully randomised',
-            entropyAdded=self.successEntropy
-        )
-
-class DamageRandomsierRune(BaseRandomiserRune):
-    name = '[red]Damage Randomiser Rune[/red]'
-    description = 'Randomises the damage type of a weapon.'
-    successEntropy = 0.05
-    dropWeight = 150
-
-    damageTypes = [
-        'physical',
-        'fire', 'cold', 'lightning', 'earth',
-        'dark', 'holy', 'arcane',
-        'ethereal', 'psychic', 'chaos',
-        'none'
-    ]
-
-    damageWeights = [
-        3,
-        3, 3, 3, 3,
-        3, 3, 3,
-        1, 1, 1,
-        1
-    ]
-
-    def apply(self, item, player=None):
-        output = super().apply(item, player=None)
-        if output.outcome != CraftOutcome.SUCCESS:
-            return output
-        
-        if item.slot != 'weapon':
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item is not a weapon',
-            )
-
-        damageTypes = self.damageTypes.copy()
-        damageWeights = self.damageWeights.copy()
-
-        currentDamage = getattr(item, 'damageType', None)
-        if currentDamage is not None:
-            ind = self.damageTypes.index(currentDamage)
-            damageTypes.pop(ind)
-            damageWeights.pop(ind)
-        else:
-            damageTypes.remove('none')
-            damageWeights = self.damageWeights[:-1]
-
-        newDamage = random.choices(damageTypes, damageWeights, k=1)[0]
-        if newDamage == 'none':
-            item.damageType = None
-        else:
-            item.damageType = newDamage
-
-        item.addEntropy(self.successEntropy)
-        item._generateName()
-        return CraftResult(
-            CraftOutcome.SUCCESS,
-            message='Item damage type successfully randomised',
+            message='Item base type successfully randomised',
             entropyAdded=self.successEntropy
         )
 
@@ -425,8 +345,7 @@ RANDOMISER_RUNES: Dict[str, BaseRandomiserRune] = {
     'greater_affix': GreaterAffixRandomiserRune(),
     'perfect_affix': PerfectAffixRandomiserRune(),
 
-    'defense': DefenseRandomiserRune(),
-    'damage': DamageRandomsierRune()
+    'base_type': BaseTypeRandomiserRune()
 }
 
 """

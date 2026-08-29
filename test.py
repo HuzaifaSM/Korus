@@ -1,6 +1,12 @@
+from scripts.affixes import rollAffix
 from scripts.items.items import ItemRarity
 
-x = ItemRarity.UNCOMMON
-y = list(ItemRarity)
-a = y[y.index(x)+1]
-print(a)
+x = []
+x.append(rollAffix('weapon', 'prefix', 10, ItemRarity.RARE))
+x.append(rollAffix('weapon', 'prefix', 10, ItemRarity.RARE))
+x.append(rollAffix('weapon', 'prefix', 10, ItemRarity.RARE))
+
+y = ""
+for a in x:
+    y += f"- {a}\n"
+print(y)

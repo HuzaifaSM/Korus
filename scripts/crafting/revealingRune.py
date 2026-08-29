@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import rollAffix, Affix
+from scripts.affixes import rollAffix, Affix, resolveAffixPoolKey
 import random
 from typing import Dict
 from scripts.styles import console
@@ -45,7 +45,7 @@ class BaseRevealingRune(CraftingItem):
 
             currentExcluded = excludedIds | usedBaseIds
             affix = rollAffix(
-                equipType=item.slot,
+                equipType=resolveAffixPoolKey(item),
                 affixType=slot.kind,
                 itemLevel=item.level,
                 rarity=item.rarity,

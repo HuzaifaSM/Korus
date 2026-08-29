@@ -1,6 +1,6 @@
 import random
 from typing import Dict
-from .entities import Entity
+from .entities import Entity, SIGIL_SLOTS
 from .items.items import ItemRarity, LootTable, RESOURCES, rollRarity, RARITY_WEIGHTS
 from .items.equipment import Equipment
 from .runeDrops import rollRuneDrops
@@ -223,8 +223,13 @@ class Enemy(Entity):
     def displayLoot(self):
         console.print(self._lootTable)
 
+    def _slotIsFull(self, slot: str) -> bool:
+        if slot == 'sigil':
+            return all(self._equipment[s] is not None for s in SIGIL_SLOTS[:self.unlockedSigilSlots])
+        return self._equipment[slot] is not None
+
     def _generateEquipment(self):
-        slots = ['head', 'chest', 'legs', 'feet', 'weapon', 'amulet', 'ring']
+        slots = ['head', 'chest', 'legs', 'feet', 'weapon', 'amulet', 'ring', 'offhand', 'sigil']
         maxEquipment = max(1, min(4, self._level // 15)) if self._level < 100 else 5
         maxEquipment = min(len(slots), max(1, round(maxEquipment * self.quantityModifier)))
         numEquipped = 0
@@ -259,7 +264,7 @@ class Enemy(Entity):
             numEq = min(len(slots), max(1, round(numEq * self.quantityModifier)))
             for _ in range(numEq):
                 slot = random.choice(slots)
-                while self._equipment[slot] is not None:
+                while self._slotIsFull(slot):
                     slot = random.choice(slots)
                 rarity = None
                 while rarity in [None, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]:
@@ -276,7 +281,7 @@ class Enemy(Entity):
                 numEq = 2
             for _ in range(numEq):
                 slot = random.choice(slots)
-                while self._equipment[slot] is not None:
+                while self._slotIsFull(slot):
                     slot = random.choice(slots)
                 rarity = None
                 while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC] or (rarity == ItemRarity.RARE and random.random() < 0.5):
@@ -395,6 +400,7 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity: float = 0, quan
         res = random.choice(DAMAGE_TYPES)
         amount = min(random.randint(-10+(level//3), 15+(level//4)), 35)
         enemy._addResistance(res, amount)
+    enemy._recalculateStats(False)
 
     possibleAbilities = []
     for abilityName, ability in ENEMY_ABILITIES.items():

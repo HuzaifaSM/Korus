@@ -3,7 +3,7 @@ import random
 from copy import deepcopy
 from .items.items import Consumable
 from .items.equipment import Equipment
-from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, BasicAttack
+from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, BasicAttack, Effects
 from .runeDrops import getRuneObject
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo,
@@ -15,6 +15,22 @@ ELEMENTAL_RES: frozenset = ['fire', 'earth', 'cold', 'lightning']
 DIVINE_RES: frozenset = ['holy', 'dark', 'arcane']
 OTHERWORLD_RES: frozenset = ['chaos', 'ethereal', 'psychic']
 T = TypeVar("T")
+
+SIGIL_SLOTS = ('sigil_1', 'sigil_2', 'sigil_3', 'sigil_4', 'sigil_5')
+
+def _slotAccepts(slotKey: str, equipment: Equipment) -> bool:
+    if slotKey in SIGIL_SLOTS:
+        return equipment.slot == 'sigil'
+    if slotKey == 'offhand':
+        return equipment.slot == 'offhand' or (equipment.slot == 'weapon' and not equipment.twoHanded)
+    return equipment.slot == slotKey
+
+_PROC_EFFECTS = {
+    'chance_to_bleed': lambda: Effects.createBleed(),
+    'chance_to_apply_vulnerable': lambda: Effects.createVulnerable(),
+    'chance_to_apply_exposed': lambda: Effects.createExposed(),
+    'chance_to_stun': lambda: Effects.createStun(),
+}
 
 class ResistanceBlock(TypedDict):
     physical: float
@@ -40,7 +56,6 @@ class BonusBlock(TypedDict):
     xp_gain: float
     gold_gain: float
     stun_avoidance: float
-    dot_resistance: float
     ailment_avoidance: float
     healing_magnitude: float
     crit_chance: float
@@ -60,6 +75,11 @@ class BonusBlock(TypedDict):
     stamina_on_hit: float
     stamina_on_kill: float
     thorns: float
+    chance_to_bleed: float
+    chance_to_apply_vulnerable: float
+    chance_to_apply_exposed: float
+    chance_to_stun: float
+    chance_to_block: float
 
 class GeneralStatBlock(TypedDict):
     physical: float
@@ -95,7 +115,6 @@ class GeneralStatBlock(TypedDict):
     resistance_penetration: float
     speed: float
     stun_avoidance: float
-    dot_resistance: float
     ailment_avoidance: float
     healing_magnitude: float
     crit_resistance: float
@@ -118,6 +137,13 @@ class GeneralStatBlock(TypedDict):
     increased_evasion: float
     increased_energy_shield: float
     increased_health: float
+    increased_crit_chance: float
+    increased_crit_multi: float
+    chance_to_bleed: float
+    chance_to_apply_vulnerable: float
+    chance_to_apply_exposed: float
+    chance_to_stun: float
+    chance_to_block: float
 
 class Stats(TypedDict):
     Max_Resistances: ResistanceBlock
@@ -131,6 +157,8 @@ class Stats(TypedDict):
     evasion: float
     energy_shield: float
     max_energy_shield: float
+    critChanceIncreased: float
+    critMultiIncreased: float
 
 class LockedDict(dict):
     """
@@ -206,7 +234,6 @@ class Entity:
                 'xp_gain': 0,
                 'gold_gain': 0,
                 'stun_avoidance': 0,
-                'dot_resistance': 0,
                 'ailment_avoidance': 0,
                 'healing_magnitude': 100,
                 'crit_chance': 0,
@@ -226,6 +253,11 @@ class Entity:
                 'stamina_on_hit': 0,
                 'stamina_on_kill': 0,
                 'thorns': 0,
+                'chance_to_bleed': 0,
+                'chance_to_apply_vulnerable': 0,
+                'chance_to_apply_exposed': 0,
+                'chance_to_stun': 0,
+                'chance_to_block': 0,
             },
             'Permanent': {
                 'physical': 0,
@@ -260,18 +292,24 @@ class Entity:
                 'max_all': 0,
                 'resistance_penetration': 0,
                 'stun_avoidance': 0,
-                'dot_resistance': 0,
                 'ailment_avoidance': 0,
                 'speed': 0,
                 'healing_magnitude': 0,
                 'crit_resistance': 0,
                 'crit_chance': 0,
                 'crit_multi': 0,
+                'increased_crit_chance': 0,
+                'increased_crit_multi': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
                 'increased_damage_reduction': 0,
                 'hp_regen': 0,
                 'thorns': 0,
+                'chance_to_bleed': 0,
+                'chance_to_apply_vulnerable': 0,
+                'chance_to_apply_exposed': 0,
+                'chance_to_stun': 0,
+                'chance_to_block': 0,
                 'stamina_regen': 0,
                 'enemy_quantity': 0,
                 'added_multihits': 0,
@@ -318,18 +356,24 @@ class Entity:
                 'max_all': 0,
                 'resistance_penetration': 0,
                 'stun_avoidance': 0,
-                'dot_resistance': 0,
                 'ailment_avoidance': 0,
                 'speed': 0,
                 'healing_magnitude': 0,
                 'crit_resistance': 0,
                 'crit_chance': 0,
                 'crit_multi': 0,
+                'increased_crit_chance': 0,
+                'increased_crit_multi': 0,
                 'lifesteal': 0,
                 'damage_reduction': 0,
                 'increased_damage_reduction': 0,
                 'hp_regen': 0,
                 'thorns': 0,
+                'chance_to_bleed': 0,
+                'chance_to_apply_vulnerable': 0,
+                'chance_to_apply_exposed': 0,
+                'chance_to_stun': 0,
+                'chance_to_block': 0,
                 'stamina_regen': 0,
                 'enemy_quantity': 0,
                 'added_multihits': 0,
@@ -348,7 +392,9 @@ class Entity:
             'armour': 0,
             'evasion': 0,
             'energy_shield': 0,
-            'max_energy_shield': 0
+            'max_energy_shield': 0,
+            'critChanceIncreased': 0,
+            'critMultiIncreased': 0
         }
         self._stats: Stats = _freeze(_rawStats)
         self._abilities: Dict[str, Ability] = {"Basic Attack": BasicAttack()}
@@ -357,12 +403,18 @@ class Entity:
         self._equipmentStorage: List[Equipment] = [] # store equipment objects
         self._equipment: Dict[str, Optional[Equipment]] = {
             'weapon': None,
+            'offhand': None,
             'head': None,
             'chest': None,
             'legs': None,
             'feet': None,
             'ring': None,
-            'amulet': None
+            'amulet': None,
+            'sigil_1': None,
+            'sigil_2': None,
+            'sigil_3': None,
+            'sigil_4': None,
+            'sigil_5': None,
         }
         # stats before equipment
         self._baseHealth = health
@@ -408,12 +460,20 @@ class Entity:
         return self._stats['max_energy_shield']
 
     @property
+    def unlockedSigilSlots(self) -> int:
+        return len(SIGIL_SLOTS)
+
+    @property
     def critChance(self) -> float:
-        return self._stats['baseCritChance'] + self._stats['Bonuses']['crit_chance'] + self._getExtraBonuses('crit_chance')
+        flat = self._stats['baseCritChance'] + self._stats['Bonuses']['crit_chance'] + self._getExtraBonuses('crit_chance')
+        increased = self._stats['critChanceIncreased'] + self._getExtraBonuses('increased_crit_chance')
+        return flat * (1 + increased)
 
     @property
     def critMulti(self) -> float:
-        return self._stats['baseCritMulti'] + self._stats['Bonuses']['crit_multi'] + self._getExtraBonuses('crit_multi')
+        flat = self._stats['baseCritMulti'] + self._stats['Bonuses']['crit_multi'] + self._getExtraBonuses('crit_multi')
+        increased = self._stats['critMultiIncreased'] + self._getExtraBonuses('increased_crit_multi')
+        return flat * (1 + increased)
 
     @property
     def numMultihits(self) -> int:
@@ -525,12 +585,8 @@ class Entity:
         self._recalculateStats()
 
     def _addResistance(self, resistance: str, amount: int):
-        """Amount can be negative or positive (no lower limit for resistances)"""
-        if resistance in self._stats['Resistances']:
-            self._stats['Resistances'][resistance] = min(
-                self._stats['Resistances'][resistance] + amount,
-                self._stats['Max_Resistances'][resistance]
-            )
+        if resistance in self._stats['Permanent']:
+            self._stats['Permanent'][resistance] += amount
 
     def calcXpRequirement(self):
         self._xpToNextLevel = max(int((self._level * 25) ** 0.717), (3 * self._level) ** 2)
@@ -563,9 +619,9 @@ class Entity:
 
         if damageReductionValue > 0:
             console.print(f"  [dim]- -{damageReductionValue} Damage from Damage Reduction[/dim]")
-        if resistMod > 0:
+        if resistMod != 0:
             console.print(f"  [dim]- {'-' if resistMod > 0 else '+'}{round(resistMod * 100)}% Damage from {damageType.title()} Resistance[/dim]")
-        if stoneskinMod > 0:
+        if stoneskinMod != 0:
             console.print(f"  [dim]- -{round(stoneskinMod  * 100)} Damage from Stoneskin Buff%[/dim]")
 
         damage = int(round(damage * (1 - resistMod) * (1 - stoneskinMod)))
@@ -722,26 +778,66 @@ class Entity:
     def getItem(self, itemName: str) -> int:
         return self._inventory.get(itemName, 0)
 
-    def addEquipmentToStorage(self, equipment: Equipment):
+    def addEquipmentToStorage(self, equipment: Equipment, doPrint: bool = True):
         self._equipmentStorage.append(equipment)
-        equipName = formatRarity(equipment.name, equipment.rarity.value)
-        console.print(f"[info]Stored {equipName} in equipment storage.[/info]")
+        if doPrint:
+            equipName = formatRarity(equipment.name, equipment.rarity.value)
+            console.print(f"[info]Stored {equipName} in equipment storage.[/info]")
 
     def removeEquipmentFromStorage(self, index: int) -> Optional[Equipment]:
         if 0 <= index < len(self._equipmentStorage):
             return self._equipmentStorage.pop(index)
         return None
 
-    def equip(self, equipment: Equipment, doPrint: bool = True) -> bool:
-        slot = equipment.slot
+    def _resolveEquipSlot(self, equipment: Equipment) -> str:
+        if equipment.slot == 'sigil':
+            unlockedSlots = SIGIL_SLOTS[:self.unlockedSigilSlots]
+            return next((s for s in unlockedSlots if self._equipment.get(s) is None), SIGIL_SLOTS[0])
+        if equipment.slot == 'weapon':
+            mainHand = self._equipment.get('weapon')
+            if mainHand is not None and not equipment.twoHanded and not mainHand.twoHanded \
+                    and self._equipment.get('offhand') is None:
+                return 'offhand'
+            return 'weapon'
+        return equipment.slot
+
+    def equip(self, equipment: Equipment, doPrint: bool = True, slot: Optional[str] = None) -> bool:
+        if slot is None:
+            slot = self._resolveEquipSlot(equipment)
 
         if slot not in self._equipment:
             if doPrint:
                 printError(f"Invalid equipment slot: {slot}")
             return False
-        
+
+        if not _slotAccepts(slot, equipment):
+            if doPrint:
+                printError(f"{equipment.name} cannot be equipped in the {slot} slot.")
+            return False
+
+        if slot in SIGIL_SLOTS:
+            slotIndex = SIGIL_SLOTS.index(slot) + 1
+            if slotIndex > self.unlockedSigilSlots:
+                if doPrint:
+                    printError(f"Sigil slot {slotIndex} is not unlocked yet (unlocks at level {(slotIndex - 1) * 20}).")
+                return False
+
+        if slot == 'offhand':
+            mainHand = self._equipment.get('weapon')
+            if mainHand is not None and mainHand.twoHanded:
+                if doPrint:
+                    printError("Cannot equip an offhand item while wielding a two-handed weapon.")
+                return False
+
+        if slot == 'weapon' and equipment.twoHanded and self._equipment.get('offhand'):
+            evicted = self.unequip('offhand', doPrint)
+            if evicted:
+                self.addEquipmentToStorage(evicted, doPrint)
+
         if self._equipment[slot]:
-            self.unequip(slot)
+            displaced = self.unequip(slot, doPrint)
+            if displaced:
+                self.addEquipmentToStorage(displaced, doPrint)
 
         self._equipment[slot] = equipment
         self._recalculateStats(doPrint)
@@ -802,6 +898,8 @@ class Entity:
         dmgInc = 0
         spdFlat = 0
         spdInc = 0
+        critChanceInc = 0
+        critMultiInc = 0
 
         for slot, equipment in self._equipment.items():
             if equipment:
@@ -840,8 +938,12 @@ class Entity:
 
                 for bonus in self._stats['Bonuses'].keys():
                     bonusFlat, bonusInc, _ = equipment.getStatBonuses(bonus)
-                    if bonus in ('crit_chance', 'crit_multi'):
-                        self._stats['Bonuses'][bonus] += (bonusFlat / 100) * (1 + bonusInc)
+                    if bonus == 'crit_chance':
+                        self._stats['Bonuses'][bonus] += bonusFlat / 100
+                        critChanceInc += bonusInc
+                    elif bonus == 'crit_multi':
+                        self._stats['Bonuses'][bonus] += bonusFlat / 100
+                        critMultiInc += bonusInc
                     else:
                         self._stats['Bonuses'][bonus] += round(bonusFlat * (1 + bonusInc))
 
@@ -852,6 +954,10 @@ class Entity:
                         evasion += equipment.defenseValue
                     elif equipment.defenseType == 'energy_shield':
                         es += equipment.defenseValue
+
+                armour += equipment.implicits.get('armour', 0)
+                evasion += equipment.implicits.get('evasion', 0)
+                es += equipment.implicits.get('energy_shield', 0)
 
                 if equipment.slot == 'amulet':
                     _, _, gIncArm = equipment.getStatBonuses('armour')
@@ -877,6 +983,9 @@ class Entity:
                 continue
             self._stats['Bonuses'][bonus] += round(self._getExtraBonuses(bonus))
 
+        self._stats['critChanceIncreased'] = critChanceInc
+        self._stats['critMultiIncreased'] = critMultiInc
+
         healthInc += self._getExtraBonuses('increased_health')
         globalArmourInc += self._getExtraBonuses('increased_armour')
         globalEvasionInc += self._getExtraBonuses('increased_evasion')
@@ -895,11 +1004,11 @@ class Entity:
         # cap bonuses
         self._stats['Bonuses']['enemy_quantity'] = min(self._stats['Bonuses']['enemy_quantity'], 100)
         self._stats['Bonuses']['stun_avoidance'] = min(self._stats['Bonuses']['stun_avoidance'], 100)
-        self._stats['Bonuses']['dot_resistance'] = min(self._stats['Bonuses']['dot_resistance'], 100)
         self._stats['Bonuses']['crit_resistance'] = min(self._stats['Bonuses']['crit_resistance'], 100)
         self._stats['Bonuses']['resistance_penetration'] = min(self._stats['Bonuses']['resistance_penetration'], 200)
+        self._stats['Bonuses']['chance_to_block'] = min(self._stats['Bonuses']['chance_to_block'], 75)
 
-        globalIncDef = self._getExtraBonuses('increased_defenses')
+        globalIncDef = self._stats['Bonuses']['increased_defenses'] / 100
         finalArmour = int(armour * (1 + globalArmourInc + globalIncDef))
         finalEvasion = int(evasion * (1 + globalEvasionInc + globalIncDef))
         finalEs = int(es * (1 + globalEsInc + globalIncDef))
@@ -1095,6 +1204,10 @@ class Entity:
         """Rewrite per class"""
         return
 
+    def onBlock(self, combatManager):
+        """Rewrite per class"""
+        return
+
     def onMultihitActivated(self):
         """Rewrite per class"""
         return
@@ -1126,11 +1239,16 @@ class Entity:
 
         ability.cooldown = ability.maxCooldown
 
+        for stat, factory in _PROC_EFFECTS.items():
+            chance = self._stats['Bonuses'].get(stat, 0)
+            if chance > 0 and random.random() * 100 < chance:
+                self._queueEffect(factory())
+
         return damageDealt, damageType
 
     def onHit(self, damageTaken: int, damageType: str, crit: bool, attacker: Entity, combatManager):
         durabilityLoss = max(1, damageTaken // 30)
-        for slot in ['head', 'chest', 'legs', 'feet']:
+        for slot in ['head', 'chest', 'legs', 'feet', 'offhand']:
             if self._equipment.get(slot):
                 armour = self._equipment.get(slot)
                 armour.durability = max(0, armour.durability - (durabilityLoss // max(1, armour.level // 10)))
@@ -1175,10 +1293,6 @@ class Entity:
             self._speed = 0.2
 
     def onTurnEnd(self):
-        """Rewrite per class"""
-        pass
-
-    def onBlock(self):
         """Rewrite per class"""
         pass
 

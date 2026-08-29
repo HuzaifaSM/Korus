@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import rollAffix, Affix
+from scripts.affixes import rollAffix, Affix, resolveAffixPoolKey
 import random
 import json
 from typing import Dict
@@ -145,7 +145,7 @@ class EchoingRune(CraftingItem):
         value = self.getCopiedValue(item)
 
         affix = rollAffix(
-            equipType=item.slot,
+            equipType=resolveAffixPoolKey(item),
             affixType=slot.kind,
             itemLevel=item.level,
             rarity=item.rarity,
@@ -203,8 +203,13 @@ class SoulboundRune(CraftingItem):
         if not allEmpty:
             return None
         return random.choice(allEmpty)
-    
+
     def apply(self, item, player=None):
+        # TEMPORARY
+        return CraftResult(
+            outcome=CraftOutcome.NO_EFFECT,
+            message="This item is temporarily disabled"
+        )
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -214,6 +219,11 @@ class SoulboundRune(CraftingItem):
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
                 message='Item level too low'
+            )
+        if item.soulbound:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Equipment already has a Soulbound affix"
             )
         
         slot = self.getRandomEmptySlot(item)
@@ -252,7 +262,6 @@ class SoulboundRune(CraftingItem):
             if affixData.get('levelReq', 0) <= item.level
             and (
                 affixData.get('stat') not in defenseStats
-                or affixData.get('isGlobal', False) # global defense affixes ignore the item's own defense type
                 or affixData.get('stat') == item.defenseType
             )
         }
@@ -299,7 +308,7 @@ class SoulboundRune(CraftingItem):
 
         return CraftResult(
                 outcome=CraftOutcome.SUCCESS,
-                message='Item successfully gained a soulbound affix',
+                message=f'Item successfully gained a soulbound affix: {soulboundAffix}',
                 entropyAdded=self.successEntropy
             )
 

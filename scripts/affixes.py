@@ -5,6 +5,11 @@ from .styles import console, printError, highlightKeywords
 from copy import deepcopy
 from os.path import exists
 
+def resolveAffixPoolKey(item) -> str:
+    if item.slot == 'weapon' and not getattr(item, 'twoHanded', False):
+        return 'one_handed'
+    return item.slot
+
 class Affix:
     def __init__(self, id: str, name: str, levelReq: int, tier: int, stat: str, slot: str,
                  minVal: float, maxVal: float,
@@ -162,27 +167,35 @@ def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
 
     affixPool = {
         'weapon': {'prefixes': {}, 'suffixes': {}},
+        'one_handed': {'prefixes': {}, 'suffixes': {}},
         'head': {'prefixes': {}, 'suffixes': {}},
         'chest': {'prefixes': {}, 'suffixes': {}},
         'legs': {'prefixes': {}, 'suffixes': {}},
         'feet': {'prefixes': {}, 'suffixes': {}},
         'ring': {'prefixes': {}, 'suffixes': {}},
         'amulet': {'prefixes': {}, 'suffixes': {}},
+        'offhand': {'prefixes': {}, 'suffixes': {}},
+        'sigil_offensive': {'prefixes': {}, 'suffixes': {}},
+        'sigil_defensive': {'prefixes': {}, 'suffixes': {}},
     }
     maxTiers: Dict[tuple[str, str], int] = {}
 
-    for equipType in ['weapon',
+    JSON_POOL_KEY = {'offhand': 'shield'}
+
+    for equipType in ['weapon', 'one_handed',
                       'head', 'chest', 'legs', 'feet',
-                      'ring', 'amulet'
+                      'ring', 'amulet', 'offhand',
+                      'sigil_offensive', 'sigil_defensive'
                       ]:
-        if equipType not in affixData:
+        jsonPoolKey = JSON_POOL_KEY.get(equipType, equipType)
+        if jsonPoolKey not in affixData:
             continue
 
         for affixType in ['prefixes', 'suffixes']:
-            if affixType not in affixData[equipType]:
+            if affixType not in affixData[jsonPoolKey]:
                 continue
 
-            for affixId, affixInfo in affixData[equipType][affixType].items():
+            for affixId, affixInfo in affixData[jsonPoolKey][affixType].items():
                 maxTier = int(max(list(affixInfo['tiers'].keys())))
                 if maxTier > 6:
                     topEnd = maxTier - 1
@@ -349,7 +362,7 @@ def getMaxAffixTier(equipType: str, kind: str, affixId: str) -> Optional[int]:
     return None
 
 def getTierVariants(item, affix) -> List[Affix]:
-    equipType = item.slot
+    equipType = affix.slot  # not item.slot - a 1h weapon's affixes live in the 'one_handed' pool
     poolType = 'prefixes' if affix.kind == 'prefix' else 'suffixes'
     affixId = affix.id
 

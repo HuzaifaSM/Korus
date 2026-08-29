@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import rollAffix
+from scripts.affixes import rollAffix, resolveAffixPoolKey
 import random
 from typing import Dict
 
@@ -54,12 +54,14 @@ class BaseChaosRune(CraftingItem):
         # removal
         toRemove = min(self.affixesToRemove, len(filledSlots))
         removedSlots = random.sample(filledSlots, toRemove)
+        removedData = {s: s.affix for s in removedSlots}
 
         for slot in removedSlots:
             slot.affix = None
 
         # addition
         added = 0
+        addedData = {}
         for _ in range(self.affixesToAdd):
             emptySlots = self.getEmptySlots(item)
             if not emptySlots:
@@ -75,7 +77,7 @@ class BaseChaosRune(CraftingItem):
                 defenseType = item.defenseType
 
             affix = rollAffix(
-                equipType=item.slot,
+                equipType=resolveAffixPoolKey(item),
                 affixType=slot.kind,
                 itemLevel=item.level,
                 rarity=item.rarity,
@@ -96,6 +98,7 @@ class BaseChaosRune(CraftingItem):
                 else:
                     item.durability = int(item.durability * (1 + (affix.value / 100)))
             added += 1
+            addedData[slot] = affix
 
         item.update()
         item._generateName()
@@ -103,25 +106,25 @@ class BaseChaosRune(CraftingItem):
         # resolution
         if len(removedSlots) == self.affixesToRemove and added == self.affixesToAdd:
             item.addEntropy(self.successEntropy)
+            removedStr = ""
+            for a in removedData.values():
+                removedStr += f"\n- {a}"
+            addedStr = ""
+            for a in addedData.values():
+                addedStr += f"\n- {a}"
             return CraftResult(
                 outcome=CraftOutcome.SUCCESS,
-                message=f'Removed {toRemove} affixes and added {added} affixes.',
+                message=f'[green]Successfully applied {self.name}\n[bold red]Removed:[/bold red]{removedStr}\n[bold green]Added:[/bold green]{addedStr}',
                 entropyAdded=self.successEntropy
             )
-        elif len(removedSlots) < toRemove or added < self.affixesToAdd:
-            partialEntropy = self.partialSuccessEntropy * len(removedSlots) + self.partialSuccessEntropy * added
-            item.addEntropy(partialEntropy)
+        else: # unsuccessful, revert to original state, no entropy
+            slot.affix = None
+            for s, aff in removedData.items():
+                s.affix = aff
             return CraftResult(
-                outcome=CraftOutcome.PARTIAL_SUCCESS,
-                message=f'Removed {len(removedSlots)} affixes and added {added} affixes',
-                entropyAdded=partialEntropy
+                outcome=CraftOutcome.FAILURE,
+                message=f'Failed to remove {toRemove} Affixes and add {self.affixesToAdd} Affixes. No change was made to the item.',
             )
-
-        return CraftResult(
-            outcome=CraftOutcome.PARTIAL_SUCCESS,
-            message=f'Removed {len(removedSlots)} affixes and added {added} affixes',
-            entropyAdded=partialEntropy
-        )
 
 class ChaosRune(BaseChaosRune):
     name = '[purple4]Chaos Rune[/purple4]'

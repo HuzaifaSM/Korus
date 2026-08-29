@@ -308,6 +308,123 @@
                 "max": 40,
                 "levelReq": 85
             },
+            "soulbound_max_fire_resistance": {
+                "stat": "max_fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "fire", "defensive", "soulbound"],
+                "name": ", Cataclysm's Ember",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_cold_resistance": {
+                "stat": "max_cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "cold", "defensive", "soulbound"],
+                "name": ", The Absolute Chill",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_lightning_resistance": {
+                "stat": "max_lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "lightning", "defensive", "soulbound"],
+                "name": ", The Storm Eternal",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_dark_resistance": {
+                "stat": "max_dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "dark", "defensive", "soulbound"],
+                "name": ", The Devouring Umbra",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_holy_resistance": {
+                "stat": "max_holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "holy", "defensive", "soulbound"],
+                "name": ", The Undying Radiance",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_arcane_resistance": {
+                "stat": "max_arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "arcane", "defensive", "soulbound"],
+                "name": ", The Archon's Ward",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_earth_resistance": {
+                "stat": "max_earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "earth", "defensive", "soulbound"],
+                "name": ", The World-Root's Embrace",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_chaos_resistance": {
+                "stat": "max_chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "chaos", "defensive", "soulbound"],
+                "name": ", Entropy Incarnate",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_psychic_resistance": {
+                "stat": "max_psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "psychic", "defensive", "soulbound"],
+                "name": ", The Unbreakable Mind",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_ethereal_resistance": {
+                "stat": "max_ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "ethereal", "defensive", "soulbound"],
+                "name": ", The Voidwalker's Veil",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_all_resistance": {
+                "stat": "max_all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "defensive", "soulbound"],
+                "name": ", The Boundless Ascension",
+                "min": 7,
+                "max": 10,
+                "levelReq": 95
+            },
+            "soulbound_max_divine_resistance": {
+                "stat": "max_divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "defensive", "soulbound"],
+                "name": ", The Divine Ascendant's Pact",
+                "min": 9,
+                "max": 12,
+                "levelReq": 92
+            },
+            "soulbound_max_elemental_resistance": {
+                "stat": "max_elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Elemental Sovereign's Pact",
+                "min": 9,
+                "max": 12,
+                "levelReq": 92
+            },
             "soulbound_splash_damage": {
                 "stat": "splash_damage",
                 "isPercent": true,
@@ -385,6 +502,123 @@
                 "min": 25,
                 "max": 40,
                 "levelReq": 85
+            },
+            "soulbound_max_fire_resistance": {
+                "stat": "max_fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "fire", "defensive", "soulbound"],
+                "name": ", Cataclysm's Ember",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_cold_resistance": {
+                "stat": "max_cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "cold", "defensive", "soulbound"],
+                "name": ", The Absolute Chill",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_lightning_resistance": {
+                "stat": "max_lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "lightning", "defensive", "soulbound"],
+                "name": ", The Storm Eternal",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_dark_resistance": {
+                "stat": "max_dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "dark", "defensive", "soulbound"],
+                "name": ", The Devouring Umbra",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_holy_resistance": {
+                "stat": "max_holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "holy", "defensive", "soulbound"],
+                "name": ", The Undying Radiance",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_arcane_resistance": {
+                "stat": "max_arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "arcane", "defensive", "soulbound"],
+                "name": ", The Archon's Ward",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_earth_resistance": {
+                "stat": "max_earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "earth", "defensive", "soulbound"],
+                "name": ", The World-Root's Embrace",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_chaos_resistance": {
+                "stat": "max_chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "chaos", "defensive", "soulbound"],
+                "name": ", Entropy Incarnate",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_psychic_resistance": {
+                "stat": "max_psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "psychic", "defensive", "soulbound"],
+                "name": ", The Unbreakable Mind",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_ethereal_resistance": {
+                "stat": "max_ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "ethereal", "defensive", "soulbound"],
+                "name": ", The Voidwalker's Veil",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_all_resistance": {
+                "stat": "max_all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "defensive", "soulbound"],
+                "name": ", The Boundless Ascension",
+                "min": 7,
+                "max": 10,
+                "levelReq": 95
+            },
+            "soulbound_max_divine_resistance": {
+                "stat": "max_divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "defensive", "soulbound"],
+                "name": ", The Divine Ascendant's Pact",
+                "min": 9,
+                "max": 12,
+                "levelReq": 92
+            },
+            "soulbound_max_elemental_resistance": {
+                "stat": "max_elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Elemental Sovereign's Pact",
+                "min": 9,
+                "max": 12,
+                "levelReq": 92
             },
             "soulbound_speed": {
                 "stat": "speed",
@@ -678,6 +912,123 @@
                 "min": 25,
                 "max": 40,
                 "levelReq": 85
+            },
+            "soulbound_max_fire_resistance": {
+                "stat": "max_fire_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "fire", "defensive", "soulbound"],
+                "name": ", Cataclysm's Ember",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_cold_resistance": {
+                "stat": "max_cold_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "cold", "defensive", "soulbound"],
+                "name": ", The Absolute Chill",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_lightning_resistance": {
+                "stat": "max_lightning_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "lightning", "defensive", "soulbound"],
+                "name": ", The Storm Eternal",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_dark_resistance": {
+                "stat": "max_dark_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "dark", "defensive", "soulbound"],
+                "name": ", The Devouring Umbra",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_holy_resistance": {
+                "stat": "max_holy_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "holy", "defensive", "soulbound"],
+                "name": ", The Undying Radiance",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_arcane_resistance": {
+                "stat": "max_arcane_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "arcane", "defensive", "soulbound"],
+                "name": ", The Archon's Ward",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_earth_resistance": {
+                "stat": "max_earth_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "earth", "defensive", "soulbound"],
+                "name": ", The World-Root's Embrace",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_chaos_resistance": {
+                "stat": "max_chaos_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "chaos", "defensive", "soulbound"],
+                "name": ", Entropy Incarnate",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_psychic_resistance": {
+                "stat": "max_psychic_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "psychic", "defensive", "soulbound"],
+                "name": ", The Unbreakable Mind",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_ethereal_resistance": {
+                "stat": "max_ethereal_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "ethereal", "defensive", "soulbound"],
+                "name": ", The Voidwalker's Veil",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_max_all_resistance": {
+                "stat": "max_all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "defensive", "soulbound"],
+                "name": ", The Boundless Ascension",
+                "min": 7,
+                "max": 10,
+                "levelReq": 95
+            },
+            "soulbound_max_divine_resistance": {
+                "stat": "max_divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "divine", "defensive", "soulbound"],
+                "name": ", The Divine Ascendant's Pact",
+                "min": 9,
+                "max": 12,
+                "levelReq": 92
+            },
+            "soulbound_max_elemental_resistance": {
+                "stat": "max_elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Elemental Sovereign's Pact",
+                "min": 9,
+                "max": 12,
+                "levelReq": 92
             },
             "soulbound_crit_chance": {
                 "stat": "crit_chance",

@@ -52,6 +52,11 @@ class Player(Entity):
         """Druid/Confluence: once fused, Form no longer gates which abilities can be used."""
         return False
 
+    @property
+    def unlockedSigilSlots(self) -> int:
+        """Players start with 1 sigil slot, unlocking 1 more every 20 levels, up to 5 total."""
+        return min(5, 1 + self._level // 20)
+
     def death(self):
         console.print("\n[bold red]" + "="*25 + "[/bold red]")
         console.print("[bold red]YOU HAVE DIED[/bold red]")

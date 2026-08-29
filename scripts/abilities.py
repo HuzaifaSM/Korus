@@ -280,11 +280,6 @@ class StatusEffect:
         if self.effectType == 'dot':
             damage = self.data['baseDamage'] + int(self.attacker._damage * self.data['damagePercent'])
             damageType = self.data.get('damageType')
-            dotResistance = self.target._stats['Bonuses'].get('dot_resistance', 0)
-            if dotResistance > 0:
-                damage = int(damage * (1 - (dotResistance / 100)))
-                if damage < 0:
-                    damage = 0
 
             if self.target.className == 'Rogue' and self.target._ascendancy == 'Shadow' and self.name == 'poison':
                 damage //= 2

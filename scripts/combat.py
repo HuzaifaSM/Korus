@@ -333,6 +333,8 @@ class CombatManager:
             console.print(f"  [debuff]- {target._name} is afflicted with {statusEffect.name.capitalize()}![/debuff]")
 
     def checkDead(self, target: Entity):
+        if type(target) is list:
+            target = target[0]
         if target._isDead:
             for unit in self.units:
                 if unit.entity == target:
@@ -340,15 +342,24 @@ class CombatManager:
             return True
         return False
 
-    def applyDamageWithDefenses(self, target: Entity, damage: int, damageType: str, combatUnit: CombatUnit=None, armourIgnorePercent: float = 0.0) -> Tuple[int, int, int, bool]:
+    def applyDamageWithDefenses(self, target: Entity, damage: int, damageType: str, combatUnit: CombatUnit=None, armourIgnorePercent: float = 0.0) -> Tuple[int, int, int, bool, bool]:
         finalDamage = damage
 
         energyShield = target.energyShield
 
         didEvade = False
+        didBlock = False
         armourDamagePrevented = 0
         esDamagePrevented = 0
-        if damageType != 'true': # true damage ignores all defenses
+
+        if damageType != 'ethereal': # blocking negates all damage apart from ethereal - even 'true' damage
+            blockChance = target._stats['Bonuses']['chance_to_block']
+            if blockChance > 0 and random.random() * 100 < blockChance:
+                didBlock = True
+                target.onBlock(self)
+                return 0, armourDamagePrevented, esDamagePrevented, didEvade, didBlock
+
+        if damageType != 'true': # true damage ignores all other defenses
             if damageType != 'psychic': # psychic ignores evasion
                 effectiveEvasion = target.getEffectiveEvasion(damageType, combatUnit)
                 rollCount = max(1, target.getEvasionRollCount(damageType))
@@ -356,7 +367,7 @@ class CombatManager:
 
                 if didEvade:
                     target.onEvade(self)
-                    return 0, armourDamagePrevented, esDamagePrevented, True
+                    return 0, armourDamagePrevented, esDamagePrevented, True, didBlock
 
             if damageType != 'ethereal': # ethereal ignores armour
                 effectiveArmour = target.getEffectiveArmour(damageType, combatUnit)
@@ -376,9 +387,9 @@ class CombatManager:
                         esDamagePrevented = finalDamage
                         target._stats['energy_shield'] -= finalDamage
                         console.print(f"    [cyan]{target._name}'s energy shield absorbed {finalDamage:.0f} damage![/cyan]")
-                        return 0, armourDamagePrevented, esDamagePrevented, False
+                        return 0, armourDamagePrevented, esDamagePrevented, False, didBlock
 
-        return finalDamage, armourDamagePrevented, esDamagePrevented, didEvade
+        return finalDamage, armourDamagePrevented, esDamagePrevented, didEvade, didBlock
 
     def performAttack(self, attacker: Entity, target: Entity, abilityName: str = None):
         attackerUnit = None
@@ -525,16 +536,16 @@ class CombatManager:
 
                         preMitigationDamage = finalDamage
 
-                        finalDamage, armourDamagePrevented, esDamagePrevented, evaded = self.applyDamageWithDefenses(t, finalDamage, damageType, targetUnit, armourIgnorePercent)
+                        finalDamage, armourDamagePrevented, esDamagePrevented, evaded, blocked = self.applyDamageWithDefenses(t, finalDamage, damageType, targetUnit, armourIgnorePercent)
                         if armourDamagePrevented > 0:
                             attacker._logDamage("Armour Mitigation", flat=-armourDamagePrevented)
                         if esDamagePrevented > 0:
                             attacker._logDamage(f"{t._name}'s Energy Shield", flat=-esDamagePrevented)
                         finalDamage, damageType = t.onHit(finalDamage, damageType, isCrit, attacker, self)
 
-                        finalDamage = attacker.onDealDamage(t, targetUnit, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, self)
+                        finalDamage = attacker.onDealDamage(t, targetUnit, finalDamage, damageType, evaded or blocked, armourDamagePrevented, esDamagePrevented, self)
 
-                        finalDamage = t.onAfterMitigation(attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, self)
+                        finalDamage = t.onAfterMitigation(attacker, finalDamage, damageType, evaded or blocked, armourDamagePrevented, esDamagePrevented, preMitigationDamage, self)
 
                         if attacker._stats['Bonuses']['lifesteal'] > 0:
                             heal = int(finalDamage * (attacker._stats['Bonuses']['lifesteal'] / 100))
@@ -544,6 +555,9 @@ class CombatManager:
                         if evaded:
                             console.print(f'[evasion bold]{t._name} evaded the attack![/evasion bold]')
                             t.onEvade(self)
+                        elif blocked:
+                            console.print(f'[cyan bold]{t._name} blocked the attack![/cyan bold]')
+                            t.onBlock(self)
                         else:
                             if attacker._damageLog:
                                 for line in formatDamageBreakdown(baseDamageForBreakdown, attacker._damageLog, finalDamage, damageType):
@@ -558,7 +572,7 @@ class CombatManager:
 
                             attacker.onAfterAttack(t, targetUnit, finalDamage, self)
 
-                        if not evaded:
+                        if not evaded and not blocked:
                             if mechanics and not t._isDead:
                                 for mechanic in mechanics:
                                     mechanic = t.onStatusApplied(mechanic, attacker)
@@ -606,10 +620,6 @@ class CombatManager:
         if not aliveTargets:
             return
 
-        # if isinstance(enemy, Boss):
-        #     self.performAttack(enemy, random.choice(aliveTargets), enemy.chooseAbility(aliveTargets[0]))
-        #     return
-        
         if not self._enemyDecisions: # build snapshot for all enemies this round, cache it
             actionLists = [e.ai.buildActionList() for e in self.allAlive]
             self._enemyDecisions = EnemyAI.decideTurn(self.allAlive, aliveTargets[0], actionLists)

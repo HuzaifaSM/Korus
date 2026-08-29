@@ -1,24 +1,15 @@
 BUGS:
-- Dreadnought (marauder ascendancy) currently does not grant +5% max cold resistance. must be implemented after max resistances are added/implemented properly
 - enemy ability have no tags
 
 NEW AFFIXES:
-  - +x to max y resistance suffix (rings, amulet, armour)
-    > move off of armour and onto sigils and shields once they exist
-      > +1 to +10 across 7 tiers
-        > t1-3 are static 1/2/3 resistance, t4 = 4-5, t5 = 6-7, t6 = 7-8, t7 = 9-10
-      > multi-res roll +1 to +8 across 7 tiers (t7 is 7-8)
-      > all res rolls +1 to +5 across 5 tiers
-      > soulbound suffixes on chestplate, legs and amulet
-        > 1 res roll 10-15
-        > multi-res roll 9-12
-        > all res roll 7-10
+  > hybrid mod system?
   > mythic and soulbound affixes could include learning new abilities
 
 OTHER STUFF:
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
   - add foresight rune
-    > foresight rune might need a complex system:
+    > no entropy cost, next actually applied rune has (25 or 50)% increased entropy applied
+    > might need a complex system:
       - chatgpt recommended: give each item an id, and whenever a foresight is used and any craft results are previewed, save that result as the only result rollable from that specific item
       - for example: all equipment get a 'foresightResults' dict, whenver a rune is 'applied' to them, the result is stored as:
         > {rune: result} and whenever that rune is re-applied, the existing result is used instead "if self.name in item.foresightResults"
@@ -27,9 +18,16 @@ OTHER STUFF:
 
 CURRENTLY WORKING ON: (main order of implementation)
   - item rework
-    > weapons most likely need significant base damage nerfs: carry early game too hard
+    > all entities get a base of 5% crit chance and 150% crit multi, overwritten if equipped weapons change it
+      - main hand weapon always used as overwrite tool
+        > offhand weapon grants 50% of crit chane/multi differential
+      - player classes instead grant crit chance/multi deltas at spawn rather than set amounts, no real change apart from changing initial setting logic
+    > still to do:
+      - class-specific equipment bases
+      - rarer item bases
+      - blank and mythic items proper implementation
 
-  - add a quick sell option when getting an item at the end of combat (simple QoL)
+  - add a quick sell option when getting equipment at the end of combat (simple QoL)
 
   - market rework
 
@@ -108,65 +106,24 @@ MARKET REWORK
   - player can choose to 'vaporise' an item at the market to get a selection of runes of similar level to the item's level
     > number of runes could be dictated by item level, number of affix slots, total tiers of items, total rarity of item affixes + item
 
-ITEM REWORK/IMPROVEMENTS
+EQUIPMENT REWORK/IMPROVEMENTS
   - introduce item bases + base types
-    > each base type has 1-2 base buffs they apply to themselves/the player, similar to affixes
-      - e.g. daggers give +multihit chance, plate armour gives +x damage reduction, axes give chance to bleed on hit, etc.
-      - buffs should be varied but of roughly similar power (shouldn't be any obvious BIS base unless build-specific)
-      - better base types should be unlocked at higher levels e.g. low lvl 1 dagger might have 1-2% multihit, lvl 100 could have 20+
-        > stats dont scale linearly - might be easier to have a json file with all base types + their buffs with roll ranges
     > small chance for items dropped to be class specific
       - should only be for the player's class until the account stash is added
       - class items should have unique affixes/base buffs that target class mechanics
-        > e.g. berserker weapons could have +rage gained, berserker armour could have %reduced rage loss
-        > e.g. rogue weapons grant %chance for bonus siphon, rogue armour grants increased siphon effect
-        > e.g. mage weapons grant +%elemental damage (higher than base damage), mage armour grants +max mana, +mana regen
-  - two new item slots:
-    > off hand
-      - can be used to wield a new type of item: shields
-        - shields function similarly to armour
-          > they can roll defense types and defense values
-          > shields have block chance and unique-to-shield affixes like +x added block chance, +x% increased block chance
-          > other shield affixes should be the same as head/feet affix values
-          > block chance should have a maximum value (perhaps 75%), blocking negates all damage from any hit apart from ethereal
-      - alternatively can be used for wielding a secondary weapons
-        > offhand weapons should have x% reduced stat buffs whilst in the offhand
-          - can be made as a property or similar to applyMastery method, only applied to affix.value and not affix.baseValue
-        > using two weapons still only counts as 1 attack (not 2 separate) for the purposes of combat
-      - or can be used with new item type: two handed weapons (2h)
-        > reqiure both hands empty to wield, stats should be significant enough that deciding between 2h and 1h + 1h takes thought
-        > 2h should not have 2x affix stats, but would share the same stats as weapons
-          - 2h should be able to roll +x block chance at a reduced amount than shields, perhaps between 1-20 through tiers
-    > sigils
-      - up to 5 item slots for sigils
-      - used for smaller but noticeable buffs and some sigil-only affixes
-      - sigil affixes should be maxed at 3 prefix/3 suffix - never more than that unless through runes
-      - different base types of sigils can roll from different affix pools
-        > e.g. 'bloody sigil' rolls offensive affixes, 'guarding sigil' rolls defensive
-          - some sigils can be more focused, focused sigils should be rarer
-            > e.g. 'focused elemental sigil' rolls only elemental affixes
-        > all sigils should always be able to roll:
-          - flat/increased damage/defenses + resistances
-        > all sigil affixes have 6-8 tiers, no more no less
-      - player begins with 1 sigil slot
-        > sigil slots unlocked every 20 levels (max 5)
     - UNIQUE ITEM REWORK
       > delete unique items, replace with the two following:
         - mythic items
           > 1 tier higher than legendary, extremely rare
           > only drop after level 60 (endgame items)
-          > 4p/4s base affix slots
+          > [3, 4]p/[3, 4]s base affix slots
           > base entropy is 1.5, base resistance is 20%
           > have 1-2 unique 'mythic affix' slots
             - new affixes that are allowed to completely overwrite rules
-              > e.g. "damage over time heals you instead", "ignore enemy x resistance", "speed is permanently 0.01, +x damage taken, +y% damage multiplier"
-              > should be extremely strong and build defining, could even make a build completely change its course
-                - e.g. a tank gets an extremely powerful weapon with an affix of "no defenses, +20% damage per 1% missing hp" and becomes crazy strong
-                - or a super-dps gets a very defensive weapon with an affix like "-50% damage dealt, 10% max hp gained as thorns. when thorns kills an enemy, double your damage" and becomes super long-fight Scaling
         - blank items
           > crafters dream item
           > should be similar rarity to strong legendary or mythic items
-          > [3, 4]p/[3, 4]s base affix slots
+          > 4p/4s base affix slots
           > blank items have no entropy and no entropy resistance (entropy = float('inf'))
           > upon interacting with a blank item:
             - a new menu opens up
@@ -176,7 +133,9 @@ ITEM REWORK/IMPROVEMENTS
             - once the player confirms their item, it is 'destabilised'
               > not a true destabilisation unless player used the rune
               > only in name to prevent further modification to the item
+              > can also hard-set entropy locked instead
           > before being revealed, name should be just the name of the item e.g. "Axe" with ethereal theme tint
+          > blank items should probably have their own inventory storage/way to begin crafting, e.g. "Reveal Blank Items" option if player has any blank items, all displayed items are unrevealed blank items
 
 - ENEMY REWORK
   - enemy rarity system

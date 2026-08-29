@@ -2,7 +2,7 @@ from typing import Dict, Optional, List
 from .station import Station
 import random
 from scripts.items.items import ItemRarity, rollRarity, RARITY_SERIALS
-from scripts.items.equipment import Equipment, ARMOUR_SLOTS
+from scripts.items.equipment import Equipment
 from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, formatRarity,
@@ -66,10 +66,7 @@ class Forge(Station):
             if rune.fromRarity != eq.rarity:
                 return False
 
-        if 'defense randomiser' in runeName and eq.slot not in ARMOUR_SLOTS:
-            return False
-
-        elif 'damage randomiser' in runeName and eq.slot != 'weapon':
+        if 'base type randomiser' in runeName and not getattr(eq, 'baseTypeName', None):
             return False
 
         if eq.allSlotsFilled and any(k in runeName for k in self._FILLED_BLOCKED_RUNES):
@@ -177,7 +174,7 @@ class Forge(Station):
             printHeader("CRAFT EQUIPMENT")
             console.print(f"[gold]Blueprints:[/gold] {self.blueprints}")
             
-            slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
+            slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet', 'offhand', 'sigil']
             console.print("\n[bold]Select slot to craft:[/bold]")
             for i, slot in enumerate(slots, 1):
                 console.print(f"  [cyan]{i}.[/cyan] {slot.capitalize()}")
@@ -450,7 +447,7 @@ class Forge(Station):
                 printWarning("Invalid Choice")
 
     def getFusionSlot(self) -> str:
-        slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
+        slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet', 'offhand', 'sigil']
         chosenSlot = None
         while True:
             clearScreen()

@@ -1175,7 +1175,7 @@ def createAbilityTables(abilities: dict, playerDamageType: str) -> Table:
 
         damageStr = str(ability.baseDamage) if ability.baseDamage else "-"
         scalingStr = f"{ability.damageScaling*100:.0f}%" if ability.damageScaling else "-"
-        dmgTypeFormatted = f"[{ability.damageType}]{ability.damageType.title()}[/{ability.damageType}]" if ability.damageType else f"[{playerDamageType}]{playerDamageType.title}[/{playerDamageType}]"
+        dmgTypeFormatted = f"[{ability.damageType}]{ability.damageType.title()}[/{ability.damageType}]" if ability.damageType else f"[{playerDamageType}]{playerDamageType.title()}[/{playerDamageType}]"
         healStr = f"{ability.healBase}+{ability.healPercent*100:.0f}%" if (ability.healBase or ability.healPercent) else "-"
         costStr = formatAbilityCost(ability.resources.get('required'), ability.staminaCost)
         gainLines = formatResourceGainDetailed(ability.resources.get('gain'))

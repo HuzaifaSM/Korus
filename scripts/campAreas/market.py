@@ -91,7 +91,7 @@ class Market(Station):
         equipmentCount = 2 * self.level + random.randint(1, 3)
         for _ in range(equipmentCount):
             equipLevel = self.player._level + random.randint(1, 1 + self.level * 3)
-            slot = random.choice(['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet'])
+            slot = random.choice(['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet', 'offhand', 'sigil'])
             rarityChances = {
                 1: [ItemRarity.COMMON, ItemRarity.COMMON, ItemRarity.UNCOMMON],
                 2: [ItemRarity.COMMON, ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.UNCOMMON, ItemRarity.RARE],

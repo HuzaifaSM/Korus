@@ -40,7 +40,7 @@ COMMANDS = {
 }
 
 SLOTS = {
-    1: "weapon", 2: "head", 3: "chest", 4: "legs", 5: "feet", 6: "ring", 7: "amulet"
+    1: "weapon", 2: "head", 3: "chest", 4: "legs", 5: "feet", 6: "ring", 7: "amulet", 8: "offhand", 9: "sigil"
 }
 
 RARITIES = {

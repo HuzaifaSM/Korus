@@ -743,6 +743,8 @@ class Game:
                         else:
                             if ability.category == 'damage':
                                 target = self.chooseTarget(aliveEnemies)
+                            else:
+                                target = [self.player]
 
                         if target:
                             self.combatManager.performAttack(self.player, target, abilityName)
@@ -886,13 +888,8 @@ class Game:
                     if choice == 'n':
                         continue
                     elif choice == 'y':
-                        if self.player._equipment[equipment.slot]:
-                            old = self.player.unequip(equipment.slot)
-                            if old:
-                                self.player.addEquipmentToStorage(old)
-                        self.player.equip(equipment)
-                    elif choice == 's':
-                        self.player.addEquipmentToStorage(equipment)
+                        if not self.player.equip(equipment):
+                            self.player.addEquipmentToStorage(equipment)
                     else:
                         self.player.addEquipmentToStorage(equipment)
                 else:
