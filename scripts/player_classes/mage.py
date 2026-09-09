@@ -127,13 +127,14 @@ class Mage(Player): # higher damage, lower health, arcane damage
         self._maxMana = data['maxMana']
         self._mana = data['maxMana']
 
-    def gainMastery(self):
+    def gainMastery(self, amount: int = 1):
+        amount += self._stats['Bonuses'].get('mastery_gain_flat', 0)
         if self.mastery < self.maxMastery or self._ascendancy == 'Empyrean':
-            self.mastery += 1
-            self._stats['Temporary']['crit_chance'] += 0.01
-            self._stats['Temporary']['crit_multi'] += 0.05
+            self.mastery += amount
+            self._stats['Temporary']['crit_chance'] += 0.01 * amount
+            self._stats['Temporary']['crit_multi'] += 0.05 * amount
             if self._ascendancy == 'Arcanist':
-                self.manaRegen += 2
+                self.manaRegen += 2 * amount
 
     def gainFireAdaptation(self):
         if not self.fireAdaptation and not (self._ascendancy == 'Calamity' and self.relinquishedFire):
@@ -439,7 +440,8 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
         if damageType in ELEMENTAL_RES or damageType == 'arcane':
             baseCost = damageDealt // 5 + 5
-            manaCost = min(self._mana, int(baseCost * self.manaCostMultiplier))
+            costMulti = self.manaCostMultiplier * (1 - self._stats['Bonuses'].get('mana_cost_reduced', 0) / 100)
+            manaCost = min(self._mana, int(baseCost * costMulti))
 
             if self._ascendancy == 'Arcanist':
                 arcFree = False
@@ -460,11 +462,12 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
             self._mana = max(0, self._mana - manaCost)
 
+            manaDamageReturn = int(manaCost * (1 + self._stats['Bonuses'].get('mana_damage_return_increased', 0) / 100))
             if manaCost > 0:
-                self._logDamage("Mana Spent", flat=manaCost)
-            damageDealt += manaCost
+                self._logDamage("Mana Spent", flat=manaDamageReturn)
+            damageDealt += manaDamageReturn
             if manaCost > 0:
-                console.print(f"[class_mage]Used {manaCost} mana to empower attack with +{manaCost} damage.[/class_mage]")
+                console.print(f"[class_mage]Used {manaCost} mana to empower attack with +{manaDamageReturn} damage.[/class_mage]")
             if self._ascendancy == 'Arcanist':
                 if arcFree:
                     console.print(f"  [asc_arcanist]Arcanist:[/asc_arcanist] Attack consumed no Mana! Regained {int(0.5 * manaCost)} Mana.")
@@ -529,6 +532,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         if self._ascendancy == 'Unmaker' and self.unmakerPrecision == 10 and not self.unmakerCritChanceDoubled:
             self._stats['baseCritChance'] *= 2
             self._stats['Bonuses']['crit_chance'] *= 2
+            self._stats['Permanent']['crit_chance'] *= 2
             self._stats['Temporary']['crit_chance'] *= 2
             self.unmakerCritChanceDoubled = True
 
@@ -549,6 +553,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
         if self._ascendancy == 'Unmaker' and self.unmakerCritChanceDoubled:
             self._stats['baseCritChance'] /= 2
             self._stats['Bonuses']['crit_chance'] /= 2
+            self._stats['Permanent']['crit_chance'] /= 2
             self._stats['Temporary']['crit_chance'] /= 2
             self.unmakerCritChanceDoubled = False
 
@@ -724,14 +729,14 @@ class Mage(Player): # higher damage, lower health, arcane damage
             '_baseDamage': 0,
             '_baseSpeed': -0.1,
             'manaRegen': 5,
-            '_stats.baseCritChance': 0.05,
+            '_stats.Permanent.crit_chance': 0.05,
             '_stats.Permanent.added_energy_shield': 25,
         },
         'Unmaker': {
             '_baseHealth': -10,
             '_baseDamage': 10,
             '_baseSpeed': 0.1,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_multi': 0.25,
         },
     }
 

@@ -18,7 +18,7 @@ KORUS_THEME = Theme({
     "epic": "magenta",
     "legendary": "gold1 bold",
     "mythic": "deep_pink3 bold",
-    "blank": "bold thistle1 italic",
+    "blank": "thistle1 bold underline",
 
     "ability": "dim cyan",
 
@@ -870,7 +870,7 @@ def createEnemyPreview(enemies: List) -> Table:
 
 def formatPlayerMechanics(player, col: list) -> list:
     if player.className == 'Warrior':
-        col.append(f"[class_warrior]Rage:[/class_warrior] {player._rage}/{player._maxRage}")
+        col.append(f"[class_warrior]Rage:[/class_warrior] {player._rage}/{player.maxRage}")
         if player._ascendancy == 'Warlord':
             col.append(f"[asc_warlord]Fury:[/asc_warlord] {player._fury}/{player._maxFury}")
         elif player._ascendancy == 'Juggernaut':
@@ -1068,6 +1068,9 @@ def createCombatStatusTable(player, enemies: List) -> Table:
                 defStr = f"[evasion]Evasion:[/evasion] {entity.evasion}"
         if defStr != "":
             col.append(defStr)
+        blockChance = entity._stats['Bonuses'].get('chance_to_block', 0)
+        if blockChance > 0:
+            col.append(f"[cyan]Chance to Block:[/cyan] {blockChance}%")
         if entity._shield > 0:
             col.append(f"[dim cyan]Shield:[/dim cyan] {entity._shield}")
         if isPlayer:

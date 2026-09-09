@@ -1,4 +1,4 @@
-from scripts.affixes import rollAffix
+from scripts.items.affixes import rollAffix
 from scripts.items.items import ItemRarity
 
 x = []

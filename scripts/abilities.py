@@ -64,7 +64,7 @@ class Ability:
                     return False, f"Not enough {resource}: {playerVal} / {resolved}"
 
         return True, ""
-    
+
     def _checkRequirements(self, player) -> Tuple[bool, str]:
         req = self.requirements
         if 'form' in req:
@@ -325,6 +325,7 @@ class Effects:
     - Haste (speed+dmg multiplier)
     - Stokeskin
     """
+
     @staticmethod
     def createBleed(stacks: int = 1) -> List[StatusEffect]:
         return [StatusEffect('bleed', 'dot', turns=3, damageType='physical',
@@ -468,16 +469,6 @@ def _buildAbilityTree(abilityName: str, abilityData: Dict) -> AbilityTree:
     return AbilityTree(baseData, evolutions)
 
 def loadAbilities() -> Dict[str, Dict[str, Dict]]:
-    """
-    Ascendancy sections in abilities.json are flat {abilityName: data} maps whose entries
-    fall into two kinds, told apart by whether the name matches a base ability:
-      - matches a base ability name -> an ALTERATION: a flat overlay dict merged onto that
-        ability's resolved data via _mergeAbilityData/getCurrentAbility (edits an existing ability).
-      - anything else -> a brand new ascendancy-exclusive ability, shaped exactly like a base
-        ability entry (its own 'level'/'evolutions'/etc.) and built into its own AbilityTree.
-    Stored per ascendancy as {'alterations': {...}, 'abilities': {...}} so
-    scripts/player_classes/base.py's gainClassAbilities() can resolve each kind the way it needs to.
-    """
     with open('data/abilities.json', 'r') as f:
         data: Dict[str, Any] = load(f)
 

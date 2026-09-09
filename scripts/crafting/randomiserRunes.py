@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import getTierVariants, Affix, rollAffix
+from scripts.items.affixes import getTierVariants, Affix, rollAffix
 import random
 from typing import Dict
 

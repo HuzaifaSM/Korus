@@ -22,7 +22,6 @@ def selectClass(name: str, quick: bool = False) -> Player:
             if 0 <= choice < len(CLASSES):
                 chosen = list(CLASSES.keys())[choice]
                 
-                # Show description
                 console.print(f"\n[bold gold1]{chosen}[/bold gold1]")
                 console.print(f"{DESCRIPTIONS[chosen][chosen]}\n")
 

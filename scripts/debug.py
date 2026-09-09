@@ -181,7 +181,7 @@ class Debugger:
                 slot = _chooseSlot()
                 level = _chooseLevel()
                 rarity = _chooseRarity()
-                equipment = Equipment._generateEquipmentPiece(level, slot, rarity, self.game.player.className)
+                equipment = Equipment._generateEquipmentPiece(level, slot, rarity, self.game.player.className, self.game.player._name)
                 self.game.player.addEquipmentToStorage(equipment)
                 equipName = formatRarity(equipment.name, equipment.rarity.value)
                 console.print(f"\n[success]Generated equipment![/success]")

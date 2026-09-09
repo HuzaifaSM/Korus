@@ -311,7 +311,7 @@ class Cultist(Player):
         return {}
 
     def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
-        if self._ascendancy == 'Harbinger' and self.insanity == self.maxInsanity:
+        if self._ascendancy == 'Harbinger' and self.insanity >= self.maxInsanity - 2:
             self._queueEffect(Effects.createCurse(2))
 
         elif self._ascendancy == 'Anarchist':
@@ -426,10 +426,13 @@ class Cultist(Player):
             damageDealt += self.absorbedToAdd
             self.absorbedToAdd = 0
 
-        if self.insanity == self.maxInsanity:
-            self._logDamage("Insanity at Maximum", percent=1.0)
-            damageDealt *= 2
-            selfDamage = int(damageDealt * 0.1)
+        if self.insanity >= self.maxInsanity - 2:
+            extremeBonus = self._stats['Bonuses'].get('insanity_extreme_effect_increased', 0) / 100
+            extremeMulti = 2 + extremeBonus
+            self._logDamage("Insanity at Maximum", percent=extremeMulti - 1)
+            damageDealt = int(damageDealt * extremeMulti)
+            selfDamagePercent = 0.1 * (1 - self._stats['Bonuses'].get('insanity_penalty_reduction', 0) / 100)
+            selfDamage = int(damageDealt * selfDamagePercent)
 
             if self._ascendancy == 'Doomsayer':
                 selfDamage //= 2 #5%
@@ -437,15 +440,15 @@ class Cultist(Player):
             self.damage(selfDamage, 'chaos', lethal=False)
             self._randomiseInsanity(max = -1)
 
+        elif -1 <= self.insanity <= 1:
+            self._logDamage("Insanity at 0", percent=0.75)
+            damageDealt = int(damageDealt * 1.75)
+            self._randomiseInsanity()
+
         elif self.insanity > 0:
             bonus = 1 + (0.02 * self.insanity)
             self._logDamage(f"Positive Insanity ({self.insanity})", percent=0.02 * self.insanity)
             damageDealt = int(damageDealt * bonus)
-
-        elif self.insanity == 0:
-            self._logDamage("Insanity at 0", percent=0.75)
-            damageDealt = int(damageDealt * 1.75)
-            self._randomiseInsanity()
 
         if self._ascendancy == 'Umbralist' and self.shadow > 0 and damageType == 'chaos':
             self._logDamage(f"Shadow ({self.shadow} stacks) (Umbralist)", percent=self.shadow * 0.03)
@@ -491,20 +494,20 @@ class Cultist(Player):
                 self.volatility = min(self.maxVolatility, self.volatility + vGain)
 
             elif self.volatility == self.maxVolatility:
-                if self.insanity > 0:
-                    pass # > 0 handled in combat
-                elif self.insanity < 0:
-                    heal = int(self._damage * abs(self.insanity) * 0.01)
-                    self.heal(heal, reason="Anarchist (Negative Discharge)")
-                    self._shield += heal
-                    self._randomiseInsanity(min=-30, max=10)
-                elif self.insanity == 0:
+                if -1 <= self.insanity <= 1:
                     self.insanity = random.choice([self.minInsanity, self.maxInsanity])
                     damage = int(self._maxHealth * 0.05)
                     self.damage(damage, 'true', lethal=False)
                     if damageType == 'chaos':
                         self._logDamage("Neutral Discharge (Anarchist)", percent=0.75)
                         damageDealt = int(damageDealt * 1.75)
+                elif self.insanity > 0:
+                    pass # > 0 handled in combat
+                elif self.insanity < 0:
+                    heal = int(self._damage * abs(self.insanity) * 0.01)
+                    self.heal(heal, reason="Anarchist (Negative Discharge)")
+                    self._shield += heal
+                    self._randomiseInsanity(min=-30, max=10)
                 self.volatility = 0
 
         elif self._ascendancy == 'Desecrator':
@@ -524,8 +527,9 @@ class Cultist(Player):
         if self.combatStart: # dont apply insanity effects before player's first turn
             return damageTaken, damageType
 
-        if self.insanity == self.minInsanity:
-            self.absorbedToAdd += int(damageTaken * 0.25)
+        if self.insanity <= self.minInsanity + 2:
+            extremeBonus = self._stats['Bonuses'].get('insanity_extreme_effect_increased', 0) / 100
+            self.absorbedToAdd += int(damageTaken * (0.25 + extremeBonus))
 
             if self._ascendancy == 'Umbralist':
                 self.absorbedToAdd *= 2
@@ -537,6 +541,15 @@ class Cultist(Player):
                 attacker._logDamage(f"{self._name}'s Insanity at Minimum", percent=-1.0)
             self._randomiseInsanity(min = 1)
             damageTaken = 0
+
+        elif -1 <= self.insanity <= 1:
+            if attacker:
+                attacker._logDamage(f"{self._name}'s Insanity at 0", percent=-0.35)
+            damageTaken = int(damageTaken * 0.65)
+
+            if self._ascendancy == 'Desecrator' and attacker and attacker.ruin > 0:
+                damage = int(attacker._maxHealth * (0.03 * attacker.ruin))
+                attacker.damage(damage, 'true')
 
         elif self.insanity < 0:
             dr = abs(self.insanity) // 5 * 0.01
@@ -551,17 +564,6 @@ class Cultist(Player):
                         attacker._logDamage(f"{self._name}'s Desecrator Absorb (Tainted/Desecrated attacker)", flat=-absorb)
                     self.absorbedToAdd += absorb
                     damageTaken -= absorb
-
-        elif self.insanity == 0:
-            if attacker:
-                attacker._logDamage(f"{self._name}'s Insanity at 0", percent=-0.35)
-            damageTaken = int(damageTaken * 0.65)
-
-            if self._ascendancy == 'Desecrator' and attacker and attacker.ruin > 0:
-                damage = int(attacker._maxHealth * (0.03 * attacker.ruin))
-                attacker.damage(damage, 'true')
-
-            self._randomiseInsanity()
 
         if self._ascendancy == 'Umbralist' and self.shadow > 0:
             if attacker:
@@ -603,6 +605,12 @@ class Cultist(Player):
         else:
             effect = random.choice(list(INSANITY_EFFECTS.keys()))
             val = random.choice(INSANITY_EFFECTS[effect])
+            swingBonus = self._stats['Bonuses'].get('insanity_swing_increased', 0) / 100
+            if swingBonus:
+                if effect == 'flat':
+                    val = int(val * (1 + swingBonus))
+                elif effect == 'multiply':
+                    val = val * (1 - swingBonus) if val < 1 else val * (1 + swingBonus)
             proceed = True
             if self._ascendancy == 'Doomsayer':
                 if self._doomsayerSkew(effect, val):
@@ -671,7 +679,7 @@ class Cultist(Player):
             '_baseHealth': 40,
             '_baseDamage': 2,
             '_baseSpeed': -0.1,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_multi': 0.25,
         },
         'Ritualist': {
             '_baseHealth': -10,
@@ -690,8 +698,8 @@ class Cultist(Player):
             'minInsanity': 10,
             'maxInsanity': 20,
             '_stats.Permanent.chaos': 15,
-            '_stats.baseCritChance': 0.08,
-            '_stats.baseCritMulti': 0.4,
+            '_stats.Permanent.crit_chance': 0.08,
+            '_stats.Permanent.crit_multi': 0.4,
             '_stats.Permanent.lifesteal': 5,
         },
         'Desecrator': {

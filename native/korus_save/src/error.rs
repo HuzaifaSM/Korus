@@ -1,3 +1,5 @@
+#![allow(non_snake_case)]
+
 use std::fmt;
 
 #[derive(Debug)]
@@ -7,6 +9,7 @@ pub enum KorusError {
     VersionMismatch(u32),
     ChecksumFailed,
     InvalidUtf8,
+    DecompressionFailed,
 }
 
 impl fmt::Display for KorusError {
@@ -17,6 +20,7 @@ impl fmt::Display for KorusError {
             KorusError::VersionMismatch(v)   => write!(f, "Unsupported .korus version: {}", v),
             KorusError::ChecksumFailed       => write!(f, "Checksum failed — file may be corrupted or tampered with"),
             KorusError::InvalidUtf8          => write!(f, "Payload is not valid UTF-8"),
+            KorusError::DecompressionFailed  => write!(f, "Payload is corrupt (decompression failed)"),
         }
     }
 }

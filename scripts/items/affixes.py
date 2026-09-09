@@ -1,13 +1,15 @@
 import json
 from typing import Optional, Dict, Set, Any, List
 import random
-from .styles import console, printError, highlightKeywords
+from ..styles import console, printError, highlightKeywords
 from copy import deepcopy
 from os.path import exists
 
 def resolveAffixPoolKey(item) -> str:
     if item.slot == 'weapon' and not getattr(item, 'twoHanded', False):
         return 'one_handed'
+    if item.slot == 'sigil':
+        return f"sigil_{getattr(item, 'sigilType', None) or 'offensive'}"
     return item.slot
 
 class Affix:
@@ -55,7 +57,7 @@ class Affix:
     @property
     def value(self):
         if self.baseValue is not None:
-            mastery = min(0.2, self.mastery / 100) # mastery cannot exceed 20%
+            mastery = self.mastery / 100
             if isinstance(self.baseValue, float):
                 return round(self.baseValue * (1 + mastery), 2)
             else:
@@ -161,7 +163,7 @@ class Affix:
         return affix
 
 def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
-    fp = 'Korus/data/affixes.json' if exists('Korus') else 'data/affixes.json'
+    fp = 'Korus/scripts/items/affixes.json' if exists('Korus') else 'scripts/items/affixes.json'
     with open(fp, 'r') as f:
         affixData = json.load(f)
 
@@ -252,7 +254,7 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
               excludeIds: Set[str] = None, tierBias: float = 0.0,
               defenseType: str = None,
               minAffixLevel: int | None = None, noEmpty: bool = False) -> Optional[Affix]:
-    from .items.items import ItemRarity
+    from .items import ItemRarity
     baseEmptyChance = {
         ItemRarity.COMMON: 0.4,
         ItemRarity.UNCOMMON: 0.25,

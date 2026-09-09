@@ -258,6 +258,40 @@ class Entity:
                 'chance_to_apply_exposed': 0,
                 'chance_to_stun': 0,
                 'chance_to_block': 0,
+                'rage_gain_on_attack': 0,
+                'rage_gain_on_hit': 0,
+                'max_rage': 0,
+                'mana_cost_reduced': 0,
+                'mana_damage_return_increased': 0,
+                'mastery_gain_flat': 0,
+                'insanity_swing_increased': 0,
+                'insanity_penalty_reduction': 0,
+                'insanity_extreme_effect_increased': 0,
+                'beast_form_damage_flat': 0,
+                'verdance_gain_flat': 0,
+                'human_form_defenses_flat': 0,
+                'aggression_gain_flat': 0,
+                'discipline_gain_flat': 0,
+                'trained_threshold_reduction': 0,
+                'dedicated_threshold_reduction': 0,
+                'allin_threshold_reduction': 0,
+                'lost_damage_increased': 0,
+                'hope_gain_flat': 0,
+                'hopeless_gain_flat': 0,
+                'blood_spike_gain_flat': 0,
+                'buff_effect_increased_low_hp': 0,
+                'favour_gain_flat': 0,
+                'favour_defensive_effect_increased': 0,
+                'favour_heal_increased': 0,
+                'crit_chance_when_faster': 0,
+                'unleash_cost_reduced': 0,
+                'static_flow_gain_flat': 0,
+                'vengeance_gain_flat': 0,
+                'vengeance_consume_crit_damage_increased': 0,
+                'ghostly_heal_increased': 0,
+                'siphon_cap_flat': 0,
+                'echo_damage_increased': 0,
+                'siphon_immune': 0,
             },
             'Permanent': {
                 'physical': 0,
@@ -296,8 +330,8 @@ class Entity:
                 'speed': 0,
                 'healing_magnitude': 0,
                 'crit_resistance': 0,
-                'crit_chance': 0,
-                'crit_multi': 0,
+                'crit_chance': (baseCritChance - 0.05) if baseCritChance else 0,
+                'crit_multi': (baseCritMulti - 1.5) if baseCritMulti else 0,
                 'increased_crit_chance': 0,
                 'increased_crit_multi': 0,
                 'lifesteal': 0,
@@ -387,8 +421,8 @@ class Entity:
                 'increased_energy_shield': 0,
                 'increased_health': 0,
             },
-            'baseCritChance': baseCritChance or 0.05,
-            'baseCritMulti': baseCritMulti or 1.5,
+            'baseCritChance': 0.05,
+            'baseCritMulti': 1.5,
             'armour': 0,
             'evasion': 0,
             'energy_shield': 0,
@@ -498,6 +532,8 @@ class Entity:
             es = self.energyShield
             maxEs = self.maxEnergyShield
             baseStr += f"\n[energy_shield]Energy Shield:[/energy_shield] {es} / {maxEs}"
+        if self._stats['Bonuses'].get('chance_to_block', 0) > 0:
+            baseStr += f"\n[cyan]Chance to Block:[/cyan] {self._stats['Bonuses']['chance_to_block']}%"
 
         return baseStr
 
@@ -865,9 +901,13 @@ class Entity:
         """gets temporary + permanent buffs for a stat, divided by 100 if 'increased_'"""
         perm = self._stats['Permanent'].get(stat, 0)
         temp = self._stats['Temporary'].get(stat, 0)
+        total = perm + temp
+        lowHpBonus = self._stats['Bonuses'].get('buff_effect_increased_low_hp', 0)
+        if lowHpBonus and self._maxHealth > 0 and self._health / self._maxHealth < 0.4:
+            total *= (1 + lowHpBonus / 100)
         if 'increased_' in stat:
-            return ((perm + temp) / 100)
-        return perm + temp
+            return (total / 100)
+        return total
 
     def _recalculateStats(self, doPrint: bool = True, inCombat: bool = False):
         self._maxHealth = self._baseHealth

@@ -1,6 +1,6 @@
 import time
 
-from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES
+from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES, SIGIL_SLOTS
 from scripts.styles import (
     console, displayLevelUp, pause,
     formatEffectsDetailed, formatAbilityCost, clearScreen, printHeader,
@@ -245,7 +245,13 @@ class Player(Entity):
             pause()
             return
 
-        slots = list(self._equipment.keys())
+        slots = []
+        for slot in self._equipment.keys():
+            if slot in SIGIL_SLOTS:
+                if 'sigil' not in slots:
+                    slots.append('sigil')
+                continue
+            slots.append(slot)
 
         while True:
             clearScreen()
@@ -317,22 +323,47 @@ class Player(Entity):
 
         storageIndex, equipment = slotItems[choiceIndex]
 
+        if slot == 'sigil':
+            unlockedSlots = SIGIL_SLOTS[:self.unlockedSigilSlots]
+            targetSlot = next((s for s in unlockedSlots if self._equipment.get(s) is None), None)
+            if targetSlot is None:
+                console.print("\n[bold cyan]=== Choose Sigil Slot to Replace ===[/bold cyan]")
+                for i, s in enumerate(unlockedSlots, 1):
+                    equipped = self._equipment[s]
+                    console.print(f"[cyan]{i}.[/cyan] {equipped.name}")
+                replaceChoice = console.input("\n[cyan]Choose a sigil slot (0 to cancel):[/cyan]\n> ").strip()
+                if replaceChoice == '0':
+                    return
+                try:
+                    replaceIndex = int(replaceChoice) - 1
+                except ValueError:
+                    printWarning("Invalid input!")
+                    pause()
+                    return
+                if not (0 <= replaceIndex < len(unlockedSlots)):
+                    printWarning("Invalid choice!")
+                    pause()
+                    return
+                targetSlot = unlockedSlots[replaceIndex]
+        else:
+            targetSlot = slot
+
         # Show comparison if slot is occupied
-        if self._equipment[slot]:
-            current = self._equipment[slot]
+        if self._equipment[targetSlot]:
+            current = self._equipment[targetSlot]
             console.print(f"\n{equipment.compareTo(current)}")
             confirm = console.input("\n[cyan]Equip this item? (y/n):[/cyan] ").strip().lower()
             if confirm != 'y':
                 return
 
             # Unequip current and move to storage
-            old = self.unequip(slot)
+            old = self.unequip(targetSlot)
             if old:
                 self._equipmentStorage.append(old)
 
         # Equip new item and remove from storage
         self._equipmentStorage.pop(storageIndex)
-        self.equip(equipment)
+        self.equip(equipment, slot=targetSlot)
         printSuccess(f"Equipped {equipment.name}!")
         pause()
 

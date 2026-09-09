@@ -1,6 +1,6 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import rollAffix, Affix, AFFIX_POOL, resolveAffixPoolKey
-from scripts.mythicAffixes import rollMythicAffix, MythicAffix, MYTHIC_AFFIX_POOL
+from scripts.items.affixes import rollAffix, Affix, AFFIX_POOL, resolveAffixPoolKey
+from scripts.items.mythicAffixes import rollMythicAffix, MythicAffix, MYTHIC_AFFIX_POOL
 import random
 from typing import Dict
 
@@ -40,7 +40,13 @@ class BaseGrowthRune(CraftingItem):
                     outcome=CraftOutcome.NO_EFFECT,
                     message='Item level is too low'
                 )
-        
+
+        if item.allSlotsFilled:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item has no empty affix slots"
+            )
+
         added = 0
         addedAffixes: list[Affix] = []
 
@@ -55,9 +61,7 @@ class BaseGrowthRune(CraftingItem):
             prefixExcluded, suffixExcluded = item.getExcludedIds()
             excludedIds = prefixExcluded if slot.kind == 'prefix' else suffixExcluded
 
-            defenseType = None
-            if hasattr(item, 'defenseType') and item.defenseValue > 0:
-                defenseType = item.defenseType
+            defenseType = item.defenseType
             
             affix = rollAffix(
                 equipType=resolveAffixPoolKey(item),
@@ -95,7 +99,7 @@ class BaseGrowthRune(CraftingItem):
 
         addedStr = ""
         for a in addedAffixes:
-            addedStr += f"[dim green1]- {a}[/dim green1]"
+            addedStr += f"[dim green1]- {a}[/dim green1]\n"
 
         if added == self.affixesToAdd:
             return CraftResult(
@@ -420,12 +424,92 @@ class ImitatingGrowthRune(BaseGrowthRune):
         item.update()
         item._generateName()
         item.addEntropy(self.successEntropy)
-        
+
         return CraftResult(
                 outcome=CraftOutcome.SUCCESS,
                 message=f'Added {self.affixesToAdd} affixes. Added:\n{addedStr}',
                 entropyAdded=self.successEntropy
             )
+
+class OverflowingGrowthRune(BaseGrowthRune):
+    name = '[bold italic spring_green4]Overflowing Growth Rune[/bold italic spring_green4]'
+    description = 'Adds a random affix to every empty affix slot.'
+    minItemLevel = 40
+    successEntropy = 0.25
+    dropWeight = 125
+
+    def apply(self, item, player=None) -> CraftResult:
+        if not item.craftable:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item cannot be modified",
+            )
+        if item.level < self.minItemLevel:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item level is too low"
+            )
+        if item.allSlotsFilled:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item has no empty affix slots"
+            )
+
+        addedAffixes = []
+        failedAttempts = 0
+
+        while not item.allSlotsFilled and failedAttempts < 5:
+            slot = self.getRandomEmptySlot(item)
+            equipType = resolveAffixPoolKey(item)
+            affixType = 'prefixes' if slot.kind == 'prefix' else 'suffixes'
+
+            prefixExcluded, suffixExcluded = item.getExcludedIds()
+            excludedIds = prefixExcluded if slot.kind == 'prefix' else suffixExcluded
+
+            defenseType = item.defenseType
+
+            affix = rollAffix(
+                equipType,
+                affixType,
+                item.level,
+                item.rarity,
+                excludedIds,
+                tierBias=0.0,
+                defenseType=defenseType,
+                noEmpty=True
+            )
+
+            if affix is None:
+                failedAttempts += 1
+                continue
+
+            slot.affix = affix
+            if affix.stat == 'durability':
+                if affix.isFlat:
+                    item.durability += affix.value
+                else:
+                    item.durability = int(item.durability * (1 + (affix.value / 100)))
+
+            addedAffixes.append(affix)
+
+        if len(addedAffixes) == 0:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="No affixes were added"
+            )
+
+        item.update()
+        item._generateName()
+        item.addEntropy(self.successEntropy)
+
+        addedStr = ""
+        for a in addedAffixes:
+            addedStr += f"[dim green1]- {a}[/dim green1]\n"
+
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message=f"[green1]Successfully added {len(addedAffixes)} affixes. Added:[/green1]\n{addedStr}"
+        )
 
 GROWTH_RUNES: Dict[str, BaseGrowthRune] = {
     'growth': GrowthRune(),
@@ -448,7 +532,9 @@ GROWTH_RUNES: Dict[str, BaseGrowthRune] = {
 
     'duplicating': DuplicatingGrowthRune(),
 
-    'imitating': ImitatingGrowthRune()
+    'imitating': ImitatingGrowthRune(),
+
+    'overflowing': OverflowingGrowthRune(),
 }
 
 """

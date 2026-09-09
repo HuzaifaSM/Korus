@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import Affix, getTierVariants
+from scripts.items.affixes import Affix, getTierVariants
 from scripts.styles import console
 import json
 import random

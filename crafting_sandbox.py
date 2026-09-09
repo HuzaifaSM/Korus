@@ -15,6 +15,7 @@ from scripts.crafting.revealingRune import REVEALING_RUNES
 from scripts.crafting.manipulationRune import MANIPULATION_RUNES
 from scripts.crafting.base import CraftOutcome
 from scripts.styles import console, pause, printError
+from scripts.korusFeedClient import reportItem
 from rich.prompt import Prompt, IntPrompt
 
 def createTestItem():
@@ -43,9 +44,9 @@ def createTestItem():
     if rarity == ItemRarity.MYTHIC and level < 60:
         printError("[ERROR] Mythic items cannot be below level 60")
         return False
-    
+
     # Generate item
-    item = Equipment._generateEquipmentPiece(level, slot, rarity)
+    item = Equipment._generateEquipmentPiece(level, slot, rarity, playerName='Sandbox')
     
     console.print("\n[green bold]✓ Item created![/green bold]")
     console.print(item)
@@ -144,6 +145,7 @@ def craftingSandbox():
         # Apply the rune
         console.print(f"\n[yellow]Applying {rune.name}...[/yellow]")
         result = rune.apply(item)
+        reportItem(item, 'Sandbox', f'Applied {rune.name}:\n{result.message}')
 
         if result == CraftOutcome.NO_EFFECT:
             console.print("[red]✗ Rune had no effect![/red]")

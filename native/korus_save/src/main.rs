@@ -1,6 +1,7 @@
 mod format;
 mod error;
 mod codec;
+mod compress;
 
 use std::env;
 

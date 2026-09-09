@@ -4,7 +4,9 @@
             "sword": {
                 "Rusted Sword": {
                     "implicits": {
-                        "damage": 1
+                        "damage": 1,
+                        "crit_chance": 1,
+                        "crit_multi": 8
                     },
                     "damageMin": 2,
                     "damageMax": 4,
@@ -12,7 +14,9 @@
                 },
                 "Shortsword": {
                     "implicits": {
-                        "damage": 3
+                        "damage": 3,
+                        "crit_chance": 2,
+                        "crit_multi": 14
                     },
                     "damageMin": 5,
                     "damageMax": 9,
@@ -20,7 +24,9 @@
                 },
                 "Broadsword": {
                     "implicits": {
-                        "damage": 6
+                        "damage": 6,
+                        "crit_chance": 3,
+                        "crit_multi": 21
                     },
                     "damageMin": 9,
                     "damageMax": 15,
@@ -28,7 +34,9 @@
                 },
                 "Cavalry Sword": {
                     "implicits": {
-                        "damage": 10
+                        "damage": 10,
+                        "crit_chance": 4,
+                        "crit_multi": 29
                     },
                     "damageMin": 14,
                     "damageMax": 23,
@@ -36,7 +44,9 @@
                 },
                 "Legion Sword": {
                     "implicits": {
-                        "damage": 15
+                        "damage": 15,
+                        "crit_chance": 6,
+                        "crit_multi": 38
                     },
                     "damageMin": 20,
                     "damageMax": 33,
@@ -44,7 +54,9 @@
                 },
                 "Elegant Sword": {
                     "implicits": {
-                        "damage": 21
+                        "damage": 21,
+                        "crit_chance": 8,
+                        "crit_multi": 48
                     },
                     "damageMin": 28,
                     "damageMax": 45,
@@ -52,7 +64,9 @@
                 },
                 "Master's Sword": {
                     "implicits": {
-                        "damage": 28
+                        "damage": 28,
+                        "crit_chance": 10,
+                        "crit_multi": 60
                     },
                     "damageMin": 37,
                     "damageMax": 60,
@@ -60,17 +74,320 @@
                 },
                 "Exquisite Blade": {
                     "implicits": {
-                        "damage": 37
+                        "damage": 37,
+                        "crit_chance": 12,
+                        "crit_multi": 74
                     },
                     "damageMin": 48,
                     "damageMax": 78,
                     "minLevel": 88
+                },
+                "Duelist's Rapier": {
+                    "implicits": {
+                        "damage": 8,
+                        "crit_chance": 9,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 28,
+                    "damageMax": 52,
+                    "minLevel": 45,
+                    "weight": 15
+                },
+                "Vanguard's Blade": {
+                    "implicits": {
+                        "aggression_gain_flat": 1,
+                        "crit_chance": 3,
+                        "crit_multi": 21
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Fighter"
+                },
+                "Vanguard's Saber": {
+                    "implicits": {
+                        "aggression_gain_flat": 2,
+                        "crit_chance": 4,
+                        "crit_multi": 29
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Fighter"
+                },
+                "Vanguard's Longsword": {
+                    "implicits": {
+                        "aggression_gain_flat": 3,
+                        "crit_chance": 6,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Fighter"
+                },
+                "Vanguard's Broadsword": {
+                    "implicits": {
+                        "aggression_gain_flat": 4,
+                        "crit_chance": 8,
+                        "crit_multi": 48
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Fighter"
+                },
+                "Vanguard's Greatblade": {
+                    "implicits": {
+                        "aggression_gain_flat": 5,
+                        "crit_chance": 10,
+                        "crit_multi": 60
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Fighter"
+                },
+                "Vanguard's Ultimatum": {
+                    "implicits": {
+                        "aggression_gain_flat": 6,
+                        "crit_chance": 12,
+                        "crit_multi": 74
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Fighter"
+                },
+                "Harrowed Blade": {
+                    "implicits": {
+                        "lost_damage_increased": 10,
+                        "crit_chance": 3,
+                        "crit_multi": 21
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Wanderer"
+                },
+                "Harrowed Saber": {
+                    "implicits": {
+                        "lost_damage_increased": 15,
+                        "crit_chance": 4,
+                        "crit_multi": 29
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Wanderer"
+                },
+                "Harrowed Longsword": {
+                    "implicits": {
+                        "lost_damage_increased": 20,
+                        "crit_chance": 6,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Wanderer"
+                },
+                "Harrowed Cleaver": {
+                    "implicits": {
+                        "lost_damage_increased": 25,
+                        "crit_chance": 8,
+                        "crit_multi": 48
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Wanderer"
+                },
+                "Harrowed Greatblade": {
+                    "implicits": {
+                        "lost_damage_increased": 30,
+                        "crit_chance": 10,
+                        "crit_multi": 60
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Wanderer"
+                },
+                "Harrowed Cause": {
+                    "implicits": {
+                        "lost_damage_increased": 35,
+                        "crit_chance": 12,
+                        "crit_multi": 74
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Wanderer"
+                },
+                "Stormedge Blade": {
+                    "implicits": {
+                        "crit_chance_when_faster": 3,
+                        "crit_chance": 3,
+                        "crit_multi": 21
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Tempest"
+                },
+                "Stormedge Saber": {
+                    "implicits": {
+                        "crit_chance_when_faster": 5,
+                        "crit_chance": 4,
+                        "crit_multi": 29
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Tempest"
+                },
+                "Stormedge Longsword": {
+                    "implicits": {
+                        "crit_chance_when_faster": 7,
+                        "crit_chance": 6,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Tempest"
+                },
+                "Stormedge Cleaver": {
+                    "implicits": {
+                        "crit_chance_when_faster": 9,
+                        "crit_chance": 8,
+                        "crit_multi": 48
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Tempest"
+                },
+                "Stormedge Greatblade": {
+                    "implicits": {
+                        "crit_chance_when_faster": 12,
+                        "crit_chance": 10,
+                        "crit_multi": 60
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Tempest"
+                },
+                "Stormedge Zenith": {
+                    "implicits": {
+                        "crit_chance_when_faster": 15,
+                        "crit_chance": 12,
+                        "crit_multi": 74
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Tempest"
+                },
+                "Wraithblade Shard": {
+                    "implicits": {
+                        "vengeance_consume_crit_damage_increased": 5,
+                        "crit_chance": 3,
+                        "crit_multi": 21
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Spectre"
+                },
+                "Wraithblade Edge": {
+                    "implicits": {
+                        "vengeance_consume_crit_damage_increased": 8,
+                        "crit_chance": 4,
+                        "crit_multi": 29
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Spectre"
+                },
+                "Wraithblade Saber": {
+                    "implicits": {
+                        "vengeance_consume_crit_damage_increased": 11,
+                        "crit_chance": 6,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Spectre"
+                },
+                "Wraithblade Cleaver": {
+                    "implicits": {
+                        "vengeance_consume_crit_damage_increased": 14,
+                        "crit_chance": 8,
+                        "crit_multi": 48
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Spectre"
+                },
+                "Wraithblade Reaper": {
+                    "implicits": {
+                        "vengeance_consume_crit_damage_increased": 18,
+                        "crit_chance": 10,
+                        "crit_multi": 60
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Spectre"
+                },
+                "Wraithblade Oblivion": {
+                    "implicits": {
+                        "vengeance_consume_crit_damage_increased": 22,
+                        "crit_chance": 12,
+                        "crit_multi": 74
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Spectre"
                 }
             },
             "axe": {
                 "Rusted Hatchet": {
                     "implicits": {
-                        "chance_to_bleed": 15
+                        "chance_to_bleed": 15,
+                        "crit_chance": 1,
+                        "crit_multi": 6
                     },
                     "damageMin": 2,
                     "damageMax": 4,
@@ -78,7 +395,9 @@
                 },
                 "Hand Axe": {
                     "implicits": {
-                        "chance_to_bleed": 25
+                        "chance_to_bleed": 25,
+                        "crit_chance": 1,
+                        "crit_multi": 10
                     },
                     "damageMin": 5,
                     "damageMax": 9,
@@ -86,7 +405,9 @@
                 },
                 "Battle Axe": {
                     "implicits": {
-                        "chance_to_bleed": 40
+                        "chance_to_bleed": 40,
+                        "crit_chance": 2,
+                        "crit_multi": 15
                     },
                     "damageMin": 9,
                     "damageMax": 15,
@@ -94,7 +415,9 @@
                 },
                 "War Axe": {
                     "implicits": {
-                        "chance_to_bleed": 58
+                        "chance_to_bleed": 58,
+                        "crit_chance": 3,
+                        "crit_multi": 21
                     },
                     "damageMin": 14,
                     "damageMax": 23,
@@ -102,7 +425,9 @@
                 },
                 "Butcher's Axe": {
                     "implicits": {
-                        "chance_to_bleed": 78
+                        "chance_to_bleed": 78,
+                        "crit_chance": 4,
+                        "crit_multi": 27
                     },
                     "damageMin": 20,
                     "damageMax": 33,
@@ -110,7 +435,9 @@
                 },
                 "Bearded Axe": {
                     "implicits": {
-                        "chance_to_bleed": 100
+                        "chance_to_bleed": 100,
+                        "crit_chance": 5,
+                        "crit_multi": 35
                     },
                     "damageMin": 28,
                     "damageMax": 45,
@@ -118,7 +445,9 @@
                 },
                 "Reaver's Axe": {
                     "implicits": {
-                        "chance_to_bleed": 120
+                        "chance_to_bleed": 120,
+                        "crit_chance": 7,
+                        "crit_multi": 44
                     },
                     "damageMin": 37,
                     "damageMax": 60,
@@ -126,17 +455,177 @@
                 },
                 "Executioner's Axe": {
                     "implicits": {
-                        "chance_to_bleed": 145
+                        "chance_to_bleed": 145,
+                        "crit_chance": 9,
+                        "crit_multi": 54
                     },
                     "damageMin": 48,
                     "damageMax": 78,
                     "minLevel": 88
+                },
+                "Headsman's Cleaver": {
+                    "implicits": {
+                        "damage": 8,
+                        "chance_to_bleed": 40,
+                        "crit_chance": 4,
+                        "crit_multi": 27
+                    },
+                    "damageMin": 20,
+                    "damageMax": 38,
+                    "minLevel": 45,
+                    "weight": 15
+                },
+                "Bloodhewn Hatchet": {
+                    "implicits": {
+                        "rage_gain_on_attack": 1,
+                        "crit_chance": 2,
+                        "crit_multi": 15
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Warrior"
+                },
+                "Warbrand Axe": {
+                    "implicits": {
+                        "rage_gain_on_attack": 2,
+                        "crit_chance": 3,
+                        "crit_multi": 21
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Warrior"
+                },
+                "Ragehewn Cleaver": {
+                    "implicits": {
+                        "rage_gain_on_attack": 3,
+                        "crit_chance": 4,
+                        "crit_multi": 27
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Warrior"
+                },
+                "Fury's Edge": {
+                    "implicits": {
+                        "rage_gain_on_attack": 4,
+                        "crit_chance": 5,
+                        "crit_multi": 35
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Warrior"
+                },
+                "Wrathblade": {
+                    "implicits": {
+                        "rage_gain_on_attack": 5,
+                        "crit_chance": 7,
+                        "crit_multi": 44
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Warrior"
+                },
+                "Ragebound Axe": {
+                    "implicits": {
+                        "rage_gain_on_attack": 6,
+                        "crit_chance": 9,
+                        "crit_multi": 54
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Warrior"
+                },
+                "Chainbreaker Hatchet": {
+                    "implicits": {
+                        "siphon_cap_flat": 2,
+                        "crit_chance": 2,
+                        "crit_multi": 15
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Marauder"
+                },
+                "Chainbreaker Axe": {
+                    "implicits": {
+                        "siphon_cap_flat": 3,
+                        "crit_chance": 3,
+                        "crit_multi": 21
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Marauder"
+                },
+                "Chainbreaker Cleaver": {
+                    "implicits": {
+                        "siphon_cap_flat": 4,
+                        "crit_chance": 4,
+                        "crit_multi": 27
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Marauder"
+                },
+                "Chainbreaker Warblade": {
+                    "implicits": {
+                        "siphon_cap_flat": 5,
+                        "crit_chance": 5,
+                        "crit_multi": 35
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Marauder"
+                },
+                "Chainbreaker Ravager": {
+                    "implicits": {
+                        "siphon_cap_flat": 6,
+                        "crit_chance": 7,
+                        "crit_multi": 44
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Marauder"
+                },
+                "Chainbreaker Sunderer": {
+                    "implicits": {
+                        "siphon_cap_flat": 8,
+                        "crit_chance": 9,
+                        "crit_multi": 54
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Marauder"
                 }
             },
             "dagger": {
                 "Rusted Dirk": {
                     "implicits": {
-                        "chance_to_multihit": 8
+                        "chance_to_multihit": 8,
+                        "crit_chance": 2,
+                        "crit_multi": 15
                     },
                     "damageMin": 2,
                     "damageMax": 4,
@@ -144,7 +633,9 @@
                 },
                 "Shiv": {
                     "implicits": {
-                        "chance_to_multihit": 14
+                        "chance_to_multihit": 14,
+                        "crit_chance": 4,
+                        "crit_multi": 25
                     },
                     "damageMin": 5,
                     "damageMax": 9,
@@ -152,7 +643,9 @@
                 },
                 "Stiletto": {
                     "implicits": {
-                        "chance_to_multihit": 22
+                        "chance_to_multihit": 22,
+                        "crit_chance": 6,
+                        "crit_multi": 38
                     },
                     "damageMin": 9,
                     "damageMax": 15,
@@ -160,7 +653,9 @@
                 },
                 "Kris Blade": {
                     "implicits": {
-                        "chance_to_multihit": 30
+                        "chance_to_multihit": 30,
+                        "crit_chance": 9,
+                        "crit_multi": 52
                     },
                     "damageMin": 14,
                     "damageMax": 23,
@@ -168,7 +663,9 @@
                 },
                 "Parrying Dagger": {
                     "implicits": {
-                        "chance_to_multihit": 40
+                        "chance_to_multihit": 40,
+                        "crit_chance": 12,
+                        "crit_multi": 68
                     },
                     "damageMin": 20,
                     "damageMax": 33,
@@ -176,7 +673,9 @@
                 },
                 "Main Gauche": {
                     "implicits": {
-                        "chance_to_multihit": 50
+                        "chance_to_multihit": 50,
+                        "crit_chance": 16,
+                        "crit_multi": 87
                     },
                     "damageMin": 28,
                     "damageMax": 45,
@@ -184,7 +683,9 @@
                 },
                 "Assassin's Dagger": {
                     "implicits": {
-                        "chance_to_multihit": 58
+                        "chance_to_multihit": 58,
+                        "crit_chance": 20,
+                        "crit_multi": 108
                     },
                     "damageMin": 37,
                     "damageMax": 60,
@@ -192,17 +693,237 @@
                 },
                 "Twinfang Dagger": {
                     "implicits": {
-                        "chance_to_multihit": 65
+                        "chance_to_multihit": 65,
+                        "crit_chance": 25,
+                        "crit_multi": 132
                     },
                     "damageMin": 48,
                     "damageMax": 78,
                     "minLevel": 88
+                },
+                "Spellpoint Dirk": {
+                    "implicits": {
+                        "mana_damage_return_increased": 10,
+                        "crit_chance": 6,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Mage"
+                },
+                "Arclight Dirk": {
+                    "implicits": {
+                        "mana_damage_return_increased": 15,
+                        "crit_chance": 9,
+                        "crit_multi": 52
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Mage"
+                },
+                "Arclight Stiletto": {
+                    "implicits": {
+                        "mana_damage_return_increased": 20,
+                        "crit_chance": 12,
+                        "crit_multi": 68
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Mage"
+                },
+                "Arclight Kris": {
+                    "implicits": {
+                        "mana_damage_return_increased": 25,
+                        "crit_chance": 16,
+                        "crit_multi": 87
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Mage"
+                },
+                "Arclight Fang": {
+                    "implicits": {
+                        "mana_damage_return_increased": 30,
+                        "crit_chance": 20,
+                        "crit_multi": 108
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Mage"
+                },
+                "Arclight Needle": {
+                    "implicits": {
+                        "mana_damage_return_increased": 35,
+                        "crit_chance": 25,
+                        "crit_multi": 132
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Mage"
+                },
+                "Fractured Shard": {
+                    "implicits": {
+                        "insanity_swing_increased": 15,
+                        "crit_chance": 6,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Cultist"
+                },
+                "Fractured Edge": {
+                    "implicits": {
+                        "insanity_swing_increased": 20,
+                        "crit_chance": 9,
+                        "crit_multi": 52
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Cultist"
+                },
+                "Fractured Kris": {
+                    "implicits": {
+                        "insanity_swing_increased": 25,
+                        "crit_chance": 12,
+                        "crit_multi": 68
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Cultist"
+                },
+                "Fractured Fang": {
+                    "implicits": {
+                        "insanity_swing_increased": 30,
+                        "crit_chance": 16,
+                        "crit_multi": 87
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Cultist"
+                },
+                "Fractured Needle": {
+                    "implicits": {
+                        "insanity_swing_increased": 35,
+                        "crit_chance": 20,
+                        "crit_multi": 108
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Cultist"
+                },
+                "Fractured Ruin": {
+                    "implicits": {
+                        "insanity_swing_increased": 40,
+                        "crit_chance": 25,
+                        "crit_multi": 132
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Cultist"
+                },
+                "Sacrificial Shard": {
+                    "implicits": {
+                        "blood_spike_gain_flat": 1,
+                        "crit_chance": 6,
+                        "crit_multi": 38
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Wretch"
+                },
+                "Sacrificial Knife": {
+                    "implicits": {
+                        "blood_spike_gain_flat": 1,
+                        "crit_chance": 9,
+                        "crit_multi": 52
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Wretch"
+                },
+                "Sacrificial Kris": {
+                    "implicits": {
+                        "blood_spike_gain_flat": 2,
+                        "crit_chance": 12,
+                        "crit_multi": 68
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Wretch"
+                },
+                "Sacrificial Fang": {
+                    "implicits": {
+                        "blood_spike_gain_flat": 2,
+                        "crit_chance": 16,
+                        "crit_multi": 87
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Wretch"
+                },
+                "Sacrificial Ritual Blade": {
+                    "implicits": {
+                        "blood_spike_gain_flat": 3,
+                        "crit_chance": 20,
+                        "crit_multi": 108
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Wretch"
+                },
+                "Sacrificial Altar-knife": {
+                    "implicits": {
+                        "blood_spike_gain_flat": 3,
+                        "crit_chance": 25,
+                        "crit_multi": 132
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Wretch"
                 }
             },
             "mace": {
                 "Rusted Cudgel": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 10
+                        "chance_to_apply_vulnerable": 10,
+                        "crit_chance": 1,
+                        "crit_multi": 10
                     },
                     "damageMin": 2,
                     "damageMax": 4,
@@ -210,7 +931,9 @@
                 },
                 "Club": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 18
+                        "chance_to_apply_vulnerable": 18,
+                        "crit_chance": 1,
+                        "crit_multi": 17
                     },
                     "damageMin": 5,
                     "damageMax": 9,
@@ -218,7 +941,9 @@
                 },
                 "Mace": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 28
+                        "chance_to_apply_vulnerable": 28,
+                        "crit_chance": 2,
+                        "crit_multi": 25
                     },
                     "damageMin": 9,
                     "damageMax": 15,
@@ -226,7 +951,9 @@
                 },
                 "Morning Star": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 38
+                        "chance_to_apply_vulnerable": 38,
+                        "crit_chance": 3,
+                        "crit_multi": 34
                     },
                     "damageMin": 14,
                     "damageMax": 23,
@@ -234,7 +961,9 @@
                 },
                 "Flanged Mace": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 48
+                        "chance_to_apply_vulnerable": 48,
+                        "crit_chance": 4,
+                        "crit_multi": 45
                     },
                     "damageMin": 20,
                     "damageMax": 33,
@@ -242,7 +971,9 @@
                 },
                 "War Mace": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 58
+                        "chance_to_apply_vulnerable": 58,
+                        "crit_chance": 5,
+                        "crit_multi": 57
                     },
                     "damageMin": 28,
                     "damageMax": 45,
@@ -250,7 +981,9 @@
                 },
                 "Skull Crusher": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 68
+                        "chance_to_apply_vulnerable": 68,
+                        "crit_chance": 6,
+                        "crit_multi": 71
                     },
                     "damageMin": 37,
                     "damageMax": 60,
@@ -258,17 +991,93 @@
                 },
                 "Warlord's Mace": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 78
+                        "chance_to_apply_vulnerable": 78,
+                        "crit_chance": 8,
+                        "crit_multi": 87
                     },
                     "damageMin": 48,
                     "damageMax": 78,
                     "minLevel": 88
+                },
+                "Zealot's Cudgel": {
+                    "implicits": {
+                        "favour_gain_flat": 1,
+                        "crit_chance": 2,
+                        "crit_multi": 25
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Paladin"
+                },
+                "Zealot's Mace": {
+                    "implicits": {
+                        "favour_gain_flat": 2,
+                        "crit_chance": 3,
+                        "crit_multi": 34
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Paladin"
+                },
+                "Zealot's Morningstar": {
+                    "implicits": {
+                        "favour_gain_flat": 3,
+                        "crit_chance": 4,
+                        "crit_multi": 45
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Paladin"
+                },
+                "Zealot's Flanged Mace": {
+                    "implicits": {
+                        "favour_gain_flat": 4,
+                        "crit_chance": 5,
+                        "crit_multi": 57
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Paladin"
+                },
+                "Zealot's War Mace": {
+                    "implicits": {
+                        "favour_gain_flat": 5,
+                        "crit_chance": 6,
+                        "crit_multi": 71
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Paladin"
+                },
+                "Zealot's Judgement": {
+                    "implicits": {
+                        "favour_gain_flat": 6,
+                        "crit_chance": 8,
+                        "crit_multi": 87
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Paladin"
                 }
             },
             "claw": {
                 "Rusted Claw": {
                     "implicits": {
-                        "chance_to_apply_exposed": 10
+                        "chance_to_apply_exposed": 10,
+                        "crit_chance": 2,
+                        "crit_multi": 18
                     },
                     "damageMin": 2,
                     "damageMax": 4,
@@ -276,7 +1085,9 @@
                 },
                 "Bagh Nakh": {
                     "implicits": {
-                        "chance_to_apply_exposed": 18
+                        "chance_to_apply_exposed": 18,
+                        "crit_chance": 3,
+                        "crit_multi": 30
                     },
                     "damageMin": 5,
                     "damageMax": 9,
@@ -284,7 +1095,9 @@
                 },
                 "Talon": {
                     "implicits": {
-                        "chance_to_apply_exposed": 28
+                        "chance_to_apply_exposed": 28,
+                        "crit_chance": 5,
+                        "crit_multi": 44
                     },
                     "damageMin": 9,
                     "damageMax": 15,
@@ -292,7 +1105,9 @@
                 },
                 "Serrated Claw": {
                     "implicits": {
-                        "chance_to_apply_exposed": 38
+                        "chance_to_apply_exposed": 38,
+                        "crit_chance": 8,
+                        "crit_multi": 60
                     },
                     "damageMin": 14,
                     "damageMax": 23,
@@ -300,7 +1115,9 @@
                 },
                 "Raptor Claw": {
                     "implicits": {
-                        "chance_to_apply_exposed": 48
+                        "chance_to_apply_exposed": 48,
+                        "crit_chance": 11,
+                        "crit_multi": 79
                     },
                     "damageMin": 20,
                     "damageMax": 33,
@@ -308,7 +1125,9 @@
                 },
                 "Blood Claw": {
                     "implicits": {
-                        "chance_to_apply_exposed": 58
+                        "chance_to_apply_exposed": 58,
+                        "crit_chance": 14,
+                        "crit_multi": 100
                     },
                     "damageMin": 28,
                     "damageMax": 45,
@@ -316,7 +1135,9 @@
                 },
                 "Rending Claw": {
                     "implicits": {
-                        "chance_to_apply_exposed": 68
+                        "chance_to_apply_exposed": 68,
+                        "crit_chance": 18,
+                        "crit_multi": 124
                     },
                     "damageMin": 37,
                     "damageMax": 60,
@@ -324,11 +1145,85 @@
                 },
                 "Ripper's Claw": {
                     "implicits": {
-                        "chance_to_apply_exposed": 78
+                        "chance_to_apply_exposed": 78,
+                        "crit_chance": 22,
+                        "crit_multi": 151
                     },
                     "damageMin": 48,
                     "damageMax": 78,
                     "minLevel": 88
+                },
+                "Feral Talon": {
+                    "implicits": {
+                        "beast_form_damage_flat": 3,
+                        "crit_chance": 5,
+                        "crit_multi": 44
+                    },
+                    "damageMin": 8,
+                    "damageMax": 13,
+                    "minLevel": 20,
+                    "weight": 15,
+                    "requiredClass": "Druid"
+                },
+                "Ferocity Claw": {
+                    "implicits": {
+                        "beast_form_damage_flat": 5,
+                        "crit_chance": 8,
+                        "crit_multi": 60
+                    },
+                    "damageMin": 12,
+                    "damageMax": 20,
+                    "minLevel": 32,
+                    "weight": 15,
+                    "requiredClass": "Druid"
+                },
+                "Ferocity Fang": {
+                    "implicits": {
+                        "beast_form_damage_flat": 7,
+                        "crit_chance": 11,
+                        "crit_multi": 79
+                    },
+                    "damageMin": 17,
+                    "damageMax": 28,
+                    "minLevel": 45,
+                    "weight": 15,
+                    "requiredClass": "Druid"
+                },
+                "Ferocity Rend": {
+                    "implicits": {
+                        "beast_form_damage_flat": 9,
+                        "crit_chance": 14,
+                        "crit_multi": 100
+                    },
+                    "damageMin": 24,
+                    "damageMax": 38,
+                    "minLevel": 58,
+                    "weight": 15,
+                    "requiredClass": "Druid"
+                },
+                "Ferocity Maul": {
+                    "implicits": {
+                        "beast_form_damage_flat": 12,
+                        "crit_chance": 18,
+                        "crit_multi": 124
+                    },
+                    "damageMin": 31,
+                    "damageMax": 51,
+                    "minLevel": 72,
+                    "weight": 15,
+                    "requiredClass": "Druid"
+                },
+                "Ferocity Ravage": {
+                    "implicits": {
+                        "beast_form_damage_flat": 15,
+                        "crit_chance": 22,
+                        "crit_multi": 151
+                    },
+                    "damageMin": 41,
+                    "damageMax": 66,
+                    "minLevel": 88,
+                    "weight": 15,
+                    "requiredClass": "Druid"
                 }
             }
         },
@@ -336,7 +1231,9 @@
             "sword": {
                 "Rusted Greatsword": {
                     "implicits": {
-                        "damage": 2
+                        "damage": 2,
+                        "crit_chance": 2,
+                        "crit_multi": 14
                     },
                     "damageMin": 4,
                     "damageMax": 7,
@@ -344,7 +1241,9 @@
                 },
                 "Longsword": {
                     "implicits": {
-                        "damage": 6
+                        "damage": 6,
+                        "crit_chance": 4,
+                        "crit_multi": 25
                     },
                     "damageMin": 9,
                     "damageMax": 16,
@@ -352,7 +1251,9 @@
                 },
                 "Claymore": {
                     "implicits": {
-                        "damage": 11
+                        "damage": 11,
+                        "crit_chance": 5,
+                        "crit_multi": 37
                     },
                     "damageMin": 16,
                     "damageMax": 27,
@@ -360,7 +1261,9 @@
                 },
                 "Zweihander": {
                     "implicits": {
-                        "damage": 19
+                        "damage": 19,
+                        "crit_chance": 7,
+                        "crit_multi": 51
                     },
                     "damageMin": 25,
                     "damageMax": 40,
@@ -368,7 +1271,9 @@
                 },
                 "Flamberge": {
                     "implicits": {
-                        "damage": 28
+                        "damage": 28,
+                        "crit_chance": 11,
+                        "crit_multi": 67
                     },
                     "damageMin": 35,
                     "damageMax": 58,
@@ -376,7 +1281,9 @@
                 },
                 "Runeblade": {
                     "implicits": {
-                        "damage": 40
+                        "damage": 40,
+                        "crit_chance": 14,
+                        "crit_multi": 84
                     },
                     "damageMin": 49,
                     "damageMax": 79,
@@ -384,7 +1291,9 @@
                 },
                 "Warlord's Greatsword": {
                     "implicits": {
-                        "damage": 53
+                        "damage": 53,
+                        "crit_chance": 18,
+                        "crit_multi": 105
                     },
                     "damageMin": 65,
                     "damageMax": 105,
@@ -392,7 +1301,9 @@
                 },
                 "Ancestral Blade": {
                     "implicits": {
-                        "damage": 70
+                        "damage": 70,
+                        "crit_chance": 21,
+                        "crit_multi": 130
                     },
                     "damageMin": 84,
                     "damageMax": 137,
@@ -402,7 +1313,9 @@
             "axe": {
                 "Rusted Greataxe": {
                     "implicits": {
-                        "chance_to_bleed": 28
+                        "chance_to_bleed": 28,
+                        "crit_chance": 2,
+                        "crit_multi": 11
                     },
                     "damageMin": 4,
                     "damageMax": 7,
@@ -410,7 +1323,9 @@
                 },
                 "Battleaxe": {
                     "implicits": {
-                        "chance_to_bleed": 45
+                        "chance_to_bleed": 45,
+                        "crit_chance": 2,
+                        "crit_multi": 18
                     },
                     "damageMin": 9,
                     "damageMax": 16,
@@ -418,7 +1333,9 @@
                 },
                 "War Cleaver": {
                     "implicits": {
-                        "chance_to_bleed": 72
+                        "chance_to_bleed": 72,
+                        "crit_chance": 4,
+                        "crit_multi": 26
                     },
                     "damageMin": 16,
                     "damageMax": 27,
@@ -426,7 +1343,9 @@
                 },
                 "Great Axe": {
                     "implicits": {
-                        "chance_to_bleed": 100
+                        "chance_to_bleed": 100,
+                        "crit_chance": 5,
+                        "crit_multi": 37
                     },
                     "damageMin": 25,
                     "damageMax": 40,
@@ -434,7 +1353,9 @@
                 },
                 "Reaver's Cleaver": {
                     "implicits": {
-                        "chance_to_bleed": 135
+                        "chance_to_bleed": 135,
+                        "crit_chance": 7,
+                        "crit_multi": 47
                     },
                     "damageMin": 35,
                     "damageMax": 58,
@@ -442,7 +1363,9 @@
                 },
                 "Bearded Greataxe": {
                     "implicits": {
-                        "chance_to_bleed": 175
+                        "chance_to_bleed": 175,
+                        "crit_chance": 9,
+                        "crit_multi": 61
                     },
                     "damageMin": 49,
                     "damageMax": 79,
@@ -450,7 +1373,9 @@
                 },
                 "Blood-Eagle Axe": {
                     "implicits": {
-                        "chance_to_bleed": 210
+                        "chance_to_bleed": 210,
+                        "crit_chance": 12,
+                        "crit_multi": 77
                     },
                     "damageMin": 65,
                     "damageMax": 105,
@@ -458,7 +1383,9 @@
                 },
                 "Doomcleaver": {
                     "implicits": {
-                        "chance_to_bleed": 260
+                        "chance_to_bleed": 260,
+                        "crit_chance": 16,
+                        "crit_multi": 95
                     },
                     "damageMin": 84,
                     "damageMax": 137,
@@ -468,7 +1395,9 @@
             "mace": {
                 "Rusted Greatmace": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 18
+                        "chance_to_apply_vulnerable": 18,
+                        "crit_chance": 2,
+                        "crit_multi": 18
                     },
                     "damageMin": 4,
                     "damageMax": 7,
@@ -476,7 +1405,9 @@
                 },
                 "War Hammer": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 32
+                        "chance_to_apply_vulnerable": 32,
+                        "crit_chance": 2,
+                        "crit_multi": 30
                     },
                     "damageMin": 9,
                     "damageMax": 16,
@@ -484,7 +1415,9 @@
                 },
                 "Battle Hammer": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 48
+                        "chance_to_apply_vulnerable": 48,
+                        "crit_chance": 4,
+                        "crit_multi": 44
                     },
                     "damageMin": 16,
                     "damageMax": 27,
@@ -492,7 +1425,9 @@
                 },
                 "Skullbreaker": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 63
+                        "chance_to_apply_vulnerable": 63,
+                        "crit_chance": 5,
+                        "crit_multi": 60
                     },
                     "damageMin": 25,
                     "damageMax": 40,
@@ -500,7 +1435,9 @@
                 },
                 "Thunder Hammer": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 78
+                        "chance_to_apply_vulnerable": 78,
+                        "crit_chance": 7,
+                        "crit_multi": 79
                     },
                     "damageMin": 35,
                     "damageMax": 58,
@@ -508,7 +1445,9 @@
                 },
                 "Warlord's Hammer": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 90
+                        "chance_to_apply_vulnerable": 90,
+                        "crit_chance": 9,
+                        "crit_multi": 100
                     },
                     "damageMin": 49,
                     "damageMax": 79,
@@ -516,7 +1455,9 @@
                 },
                 "Titan's Hammer": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 100
+                        "chance_to_apply_vulnerable": 100,
+                        "crit_chance": 11,
+                        "crit_multi": 124
                     },
                     "damageMin": 65,
                     "damageMax": 105,
@@ -524,7 +1465,9 @@
                 },
                 "Worldbreaker": {
                     "implicits": {
-                        "chance_to_apply_vulnerable": 100
+                        "chance_to_apply_vulnerable": 100,
+                        "crit_chance": 14,
+                        "crit_multi": 152
                     },
                     "damageMin": 84,
                     "damageMax": 137,
@@ -534,7 +1477,9 @@
             "quarterstaff": {
                 "Rough Staff": {
                     "implicits": {
-                        "chance_to_block": 2
+                        "chance_to_block": 2,
+                        "crit_chance": 2,
+                        "crit_multi": 12
                     },
                     "damageMin": 4,
                     "damageMax": 7,
@@ -542,7 +1487,9 @@
                 },
                 "Quarterstaff": {
                     "implicits": {
-                        "chance_to_block": 5
+                        "chance_to_block": 5,
+                        "crit_chance": 3,
+                        "crit_multi": 20
                     },
                     "damageMin": 9,
                     "damageMax": 16,
@@ -550,7 +1497,9 @@
                 },
                 "Reinforced Staff": {
                     "implicits": {
-                        "chance_to_block": 9
+                        "chance_to_block": 9,
+                        "crit_chance": 5,
+                        "crit_multi": 30
                     },
                     "damageMin": 16,
                     "damageMax": 27,
@@ -558,7 +1507,9 @@
                 },
                 "Monk's Staff": {
                     "implicits": {
-                        "chance_to_block": 13
+                        "chance_to_block": 13,
+                        "crit_chance": 7,
+                        "crit_multi": 41
                     },
                     "damageMin": 25,
                     "damageMax": 40,
@@ -566,7 +1517,9 @@
                 },
                 "Temple Staff": {
                     "implicits": {
-                        "chance_to_block": 18
+                        "chance_to_block": 18,
+                        "crit_chance": 9,
+                        "crit_multi": 54
                     },
                     "damageMin": 35,
                     "damageMax": 58,
@@ -574,7 +1527,9 @@
                 },
                 "Sacred Staff": {
                     "implicits": {
-                        "chance_to_block": 24
+                        "chance_to_block": 24,
+                        "crit_chance": 12,
+                        "crit_multi": 68
                     },
                     "damageMin": 49,
                     "damageMax": 79,
@@ -582,7 +1537,9 @@
                 },
                 "Ascendant Staff": {
                     "implicits": {
-                        "chance_to_block": 30
+                        "chance_to_block": 30,
+                        "crit_chance": 15,
+                        "crit_multi": 85
                     },
                     "damageMin": 65,
                     "damageMax": 105,
@@ -590,7 +1547,9 @@
                 },
                 "Celestial Staff": {
                     "implicits": {
-                        "chance_to_block": 37
+                        "chance_to_block": 37,
+                        "crit_chance": 19,
+                        "crit_multi": 104
                     },
                     "damageMin": 84,
                     "damageMax": 137,
@@ -600,7 +1559,9 @@
             "maul": {
                 "Rusted Maul": {
                     "implicits": {
-                        "chance_to_stun": 5
+                        "chance_to_stun": 5,
+                        "crit_chance": 1,
+                        "crit_multi": 20
                     },
                     "damageMin": 4,
                     "damageMax": 7,
@@ -608,7 +1569,9 @@
                 },
                 "Sledge": {
                     "implicits": {
-                        "chance_to_stun": 8
+                        "chance_to_stun": 8,
+                        "crit_chance": 1,
+                        "crit_multi": 34
                     },
                     "damageMin": 9,
                     "damageMax": 16,
@@ -616,7 +1579,9 @@
                 },
                 "War Maul": {
                     "implicits": {
-                        "chance_to_stun": 12
+                        "chance_to_stun": 12,
+                        "crit_chance": 2,
+                        "crit_multi": 50
                     },
                     "damageMin": 16,
                     "damageMax": 27,
@@ -624,7 +1589,9 @@
                 },
                 "Heavy Maul": {
                     "implicits": {
-                        "chance_to_stun": 16
+                        "chance_to_stun": 16,
+                        "crit_chance": 3,
+                        "crit_multi": 68
                     },
                     "damageMin": 25,
                     "damageMax": 40,
@@ -632,7 +1599,9 @@
                 },
                 "Crusher": {
                     "implicits": {
-                        "chance_to_stun": 21
+                        "chance_to_stun": 21,
+                        "crit_chance": 4,
+                        "crit_multi": 89
                     },
                     "damageMin": 35,
                     "damageMax": 58,
@@ -640,7 +1609,9 @@
                 },
                 "Earthshaker": {
                     "implicits": {
-                        "chance_to_stun": 27
+                        "chance_to_stun": 27,
+                        "crit_chance": 5,
+                        "crit_multi": 113
                     },
                     "damageMin": 49,
                     "damageMax": 79,
@@ -648,7 +1619,9 @@
                 },
                 "Titan's Maul": {
                     "implicits": {
-                        "chance_to_stun": 34
+                        "chance_to_stun": 34,
+                        "crit_chance": 7,
+                        "crit_multi": 140
                     },
                     "damageMin": 65,
                     "damageMax": 105,
@@ -656,17 +1629,33 @@
                 },
                 "Cataclysm": {
                     "implicits": {
-                        "chance_to_stun": 40
+                        "chance_to_stun": 40,
+                        "crit_chance": 9,
+                        "crit_multi": 171
                     },
                     "damageMin": 84,
                     "damageMax": 137,
                     "minLevel": 88
+                },
+                "Colossus Maul": {
+                    "implicits": {
+                        "damage": 15,
+                        "chance_to_stun": 15,
+                        "crit_chance": 4,
+                        "crit_multi": 89
+                    },
+                    "damageMin": 35,
+                    "damageMax": 67,
+                    "minLevel": 45,
+                    "weight": 15
                 }
             },
             "spear": {
                 "Rusted Spear": {
                     "implicits": {
-                        "resistance_penetration": 4
+                        "resistance_penetration": 4,
+                        "crit_chance": 2,
+                        "crit_multi": 10
                     },
                     "damageMin": 4,
                     "damageMax": 7,
@@ -674,7 +1663,9 @@
                 },
                 "Pike": {
                     "implicits": {
-                        "resistance_penetration": 7
+                        "resistance_penetration": 7,
+                        "crit_chance": 4,
+                        "crit_multi": 17
                     },
                     "damageMin": 9,
                     "damageMax": 16,
@@ -682,7 +1673,9 @@
                 },
                 "Lance": {
                     "implicits": {
-                        "resistance_penetration": 11
+                        "resistance_penetration": 11,
+                        "crit_chance": 6,
+                        "crit_multi": 25
                     },
                     "damageMin": 16,
                     "damageMax": 27,
@@ -690,7 +1683,9 @@
                 },
                 "War Spear": {
                     "implicits": {
-                        "resistance_penetration": 16
+                        "resistance_penetration": 16,
+                        "crit_chance": 8,
+                        "crit_multi": 34
                     },
                     "damageMin": 25,
                     "damageMax": 40,
@@ -698,7 +1693,9 @@
                 },
                 "Piercer": {
                     "implicits": {
-                        "resistance_penetration": 22
+                        "resistance_penetration": 22,
+                        "crit_chance": 11,
+                        "crit_multi": 45
                     },
                     "damageMin": 35,
                     "damageMax": 58,
@@ -706,7 +1703,9 @@
                 },
                 "Impaler": {
                     "implicits": {
-                        "resistance_penetration": 29
+                        "resistance_penetration": 29,
+                        "crit_chance": 14,
+                        "crit_multi": 57
                     },
                     "damageMin": 49,
                     "damageMax": 79,
@@ -714,7 +1713,9 @@
                 },
                 "Dragonspine": {
                     "implicits": {
-                        "resistance_penetration": 37
+                        "resistance_penetration": 37,
+                        "crit_chance": 18,
+                        "crit_multi": 71
                     },
                     "damageMin": 65,
                     "damageMax": 105,
@@ -722,11 +1723,25 @@
                 },
                 "Worldpiercer": {
                     "implicits": {
-                        "resistance_penetration": 46
+                        "resistance_penetration": 46,
+                        "crit_chance": 22,
+                        "crit_multi": 87
                     },
                     "damageMin": 84,
                     "damageMax": 137,
                     "minLevel": 88
+                },
+                "Ravener": {
+                    "implicits": {
+                        "damage": 15,
+                        "chance_to_multihit": 6,
+                        "crit_chance": 11,
+                        "crit_multi": 45
+                    },
+                    "damageMin": 35,
+                    "damageMax": 67,
+                    "minLevel": 45,
+                    "weight": 15
                 }
             }
         }
@@ -734,41 +1749,41 @@
     "head": {
         "armour": {
             "Rusted Helm": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Iron Helm": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Steel Helm": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Reinforced Helm": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Plated Helm": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45
             },
             "Battle-forged Helm": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58,
                 "implicits": {
                     "stun_avoidance": 5
                 }
             },
             "Champion's Helm": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72,
                 "implicits": {
                     "stun_avoidance": 8
@@ -781,84 +1796,104 @@
                 "implicits": {
                     "stun_avoidance": 12
                 }
+            },
+            "Warforged Casque": {
+                "implicits": {
+                    "armour": 15,
+                    "stun_avoidance": 6
+                },
+                "defenseMin": 72,
+                "defenseMax": 131,
+                "minLevel": 45,
+                "weight": 15
             }
         },
         "evasion": {
             "Ragged Cap": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Leather Cap": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Padded Cap": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Chain-lined Cap": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Reinforced Cap": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45
             },
             "Stalker's Cap": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58
             },
             "Shadow Cap": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72
             },
             "Phantom Cap": {
                 "defenseMin": 155,
                 "defenseMax": 250,
                 "minLevel": 88
+            },
+            "Duskwoven Hood": {
+                "implicits": {
+                    "evasion": 15,
+                    "crit_resistance": 6
+                },
+                "defenseMin": 72,
+                "defenseMax": 131,
+                "minLevel": 45,
+                "weight": 15
             }
         },
         "energy_shield": {
             "Cracked Circlet": {
-                "defenseMin": 3,
-                "defenseMax": 5,
+                "defenseMin": 8,
+                "defenseMax": 12,
                 "minLevel": 1
             },
             "Glass Circlet": {
-                "defenseMin": 8,
-                "defenseMax": 14,
+                "defenseMin": 17,
+                "defenseMax": 29,
                 "minLevel": 10
             },
             "Crystal Circlet": {
-                "defenseMin": 15,
-                "defenseMax": 24,
+                "defenseMin": 27,
+                "defenseMax": 43,
                 "minLevel": 20
             },
             "Sigil-etched Circlet": {
-                "defenseMin": 24,
-                "defenseMax": 38,
+                "defenseMin": 36,
+                "defenseMax": 57,
                 "minLevel": 32
             },
             "Warded Circlet": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 47,
+                "defenseMax": 75,
                 "minLevel": 45
             },
             "Runic Circlet": {
-                "defenseMin": 52,
-                "defenseMax": 84,
+                "defenseMin": 60,
+                "defenseMax": 97,
                 "minLevel": 58
             },
             "Arcane Circlet": {
-                "defenseMin": 73,
-                "defenseMax": 118,
+                "defenseMin": 77,
+                "defenseMax": 124,
                 "minLevel": 72
             },
             "Ethereal Circlet": {
@@ -871,44 +1906,44 @@
     "chest": {
         "armour": {
             "Rusted Plate": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Iron Plate": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Steel Plate": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Reinforced Plate": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Plated Plate": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45,
                 "implicits": {
                     "damage_reduction": 2
                 }
             },
             "Battle-forged Plate": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58,
                 "implicits": {
                     "damage_reduction": 5
                 }
             },
             "Champion's Plate": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72,
                 "implicits": {
                     "damage_reduction": 10
@@ -921,87 +1956,397 @@
                 "implicits": {
                     "damage_reduction": 20
                 }
+            },
+            "Warforged Plate": {
+                "implicits": {
+                    "armour": 15,
+                    "stun_avoidance": 6
+                },
+                "defenseMin": 72,
+                "defenseMax": 131,
+                "minLevel": 45,
+                "weight": 15
+            },
+            "Bloodguard Wrap": {
+                "implicits": {
+                    "rage_gain_on_hit": 1
+                },
+                "defenseMin": 34,
+                "defenseMax": 55,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Bloodguard Harness": {
+                "implicits": {
+                    "rage_gain_on_hit": 2
+                },
+                "defenseMin": 46,
+                "defenseMax": 74,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Bloodguard Cuirass": {
+                "implicits": {
+                    "rage_gain_on_hit": 3
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Bloodguard Bulwark": {
+                "implicits": {
+                    "rage_gain_on_hit": 4
+                },
+                "defenseMin": 78,
+                "defenseMax": 125,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Bloodguard Mantle": {
+                "implicits": {
+                    "rage_gain_on_hit": 5
+                },
+                "defenseMin": 100,
+                "defenseMax": 161,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Bloodguard Colossus": {
+                "implicits": {
+                    "rage_gain_on_hit": 6
+                },
+                "defenseMin": 132,
+                "defenseMax": 213,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Bark-woven Wrap": {
+                "implicits": {
+                    "verdance_gain_flat": 1
+                },
+                "defenseMin": 34,
+                "defenseMax": 55,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Bark-woven Vest": {
+                "implicits": {
+                    "verdance_gain_flat": 1
+                },
+                "defenseMin": 46,
+                "defenseMax": 74,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Bark-woven Hide": {
+                "implicits": {
+                    "verdance_gain_flat": 2
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Bark-woven Husk": {
+                "implicits": {
+                    "verdance_gain_flat": 2
+                },
+                "defenseMin": 78,
+                "defenseMax": 125,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Bark-woven Bulwark": {
+                "implicits": {
+                    "verdance_gain_flat": 3
+                },
+                "defenseMin": 100,
+                "defenseMax": 161,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Bark-woven Ancient": {
+                "implicits": {
+                    "verdance_gain_flat": 3
+                },
+                "defenseMin": 132,
+                "defenseMax": 213,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Plunderer's Wrap": {
+                "implicits": {
+                    "siphon_immune": 1
+                },
+                "defenseMin": 34,
+                "defenseMax": 55,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Marauder"
+            },
+            "Plunderer's Vest": {
+                "implicits": {
+                    "siphon_immune": 1
+                },
+                "defenseMin": 46,
+                "defenseMax": 74,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Marauder"
+            },
+            "Plunderer's Harness": {
+                "implicits": {
+                    "siphon_immune": 1
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Marauder"
+            },
+            "Plunderer's Hauberk": {
+                "implicits": {
+                    "siphon_immune": 1
+                },
+                "defenseMin": 78,
+                "defenseMax": 125,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Marauder"
+            },
+            "Plunderer's Bulwark": {
+                "implicits": {
+                    "siphon_immune": 1
+                },
+                "defenseMin": 100,
+                "defenseMax": 161,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Marauder"
+            },
+            "Plunderer's Warplate": {
+                "implicits": {
+                    "siphon_immune": 1
+                },
+                "defenseMin": 132,
+                "defenseMax": 213,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Marauder"
             }
         },
         "evasion": {
             "Ragged Vest": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Leather Vest": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Padded Vest": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Chain-lined Vest": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Reinforced Vest": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45
             },
             "Stalker's Vest": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58
             },
             "Shadow Vest": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72
             },
             "Phantom Vest": {
                 "defenseMin": 155,
                 "defenseMax": 250,
                 "minLevel": 88
+            },
+            "Anguished Wrap": {
+                "implicits": {
+                    "lifesteal": 3
+                },
+                "defenseMin": 34,
+                "defenseMax": 55,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Wretch"
+            },
+            "Anguished Vest": {
+                "implicits": {
+                    "lifesteal": 5
+                },
+                "defenseMin": 46,
+                "defenseMax": 74,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Wretch"
+            },
+            "Anguished Hide": {
+                "implicits": {
+                    "lifesteal": 7
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Wretch"
+            },
+            "Anguished Husk": {
+                "implicits": {
+                    "lifesteal": 9
+                },
+                "defenseMin": 78,
+                "defenseMax": 125,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Wretch"
+            },
+            "Anguished Scourge": {
+                "implicits": {
+                    "lifesteal": 12
+                },
+                "defenseMin": 100,
+                "defenseMax": 161,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Wretch"
+            },
+            "Anguished Ruin": {
+                "implicits": {
+                    "lifesteal": 15
+                },
+                "defenseMin": 132,
+                "defenseMax": 213,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Wretch"
+            },
+            "Squallguard Wrap": {
+                "implicits": {
+                    "unleash_cost_reduced": 8
+                },
+                "defenseMin": 34,
+                "defenseMax": 55,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Squallguard Vest": {
+                "implicits": {
+                    "unleash_cost_reduced": 12
+                },
+                "defenseMin": 46,
+                "defenseMax": 74,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Squallguard Harness": {
+                "implicits": {
+                    "unleash_cost_reduced": 16
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Squallguard Mantle": {
+                "implicits": {
+                    "unleash_cost_reduced": 20
+                },
+                "defenseMin": 78,
+                "defenseMax": 125,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Squallguard Vortex": {
+                "implicits": {
+                    "unleash_cost_reduced": 25
+                },
+                "defenseMin": 100,
+                "defenseMax": 161,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Squallguard Maelstrom": {
+                "implicits": {
+                    "unleash_cost_reduced": 30
+                },
+                "defenseMin": 132,
+                "defenseMax": 213,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Tempest"
             }
         },
         "energy_shield": {
             "Cracked Robe": {
-                "defenseMin": 3,
-                "defenseMax": 5,
+                "defenseMin": 8,
+                "defenseMax": 12,
                 "minLevel": 1
             },
             "Glass Robe": {
-                "defenseMin": 8,
-                "defenseMax": 14,
+                "defenseMin": 17,
+                "defenseMax": 29,
                 "minLevel": 10
             },
             "Crystal Robe": {
-                "defenseMin": 15,
-                "defenseMax": 24,
+                "defenseMin": 27,
+                "defenseMax": 43,
                 "minLevel": 20
             },
             "Sigil-etched Robe": {
-                "defenseMin": 24,
-                "defenseMax": 38,
+                "defenseMin": 36,
+                "defenseMax": 57,
                 "minLevel": 32
             },
             "Warded Robe": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 47,
+                "defenseMax": 75,
                 "minLevel": 45
             },
             "Runic Robe": {
-                "defenseMin": 52,
-                "defenseMax": 84,
+                "defenseMin": 60,
+                "defenseMax": 97,
                 "minLevel": 58,
                 "implicits": {
                     "crit_resistance": 6
                 }
             },
             "Arcane Robe": {
-                "defenseMin": 73,
-                "defenseMax": 118,
+                "defenseMin": 77,
+                "defenseMax": 124,
                 "minLevel": 72,
                 "implicits": {
                     "crit_resistance": 13
@@ -1014,137 +2359,399 @@
                 "implicits": {
                     "crit_resistance": 20
                 }
+            },
+            "Sanctum Robe": {
+                "implicits": {
+                    "energy_shield": 10,
+                    "ailment_avoidance": 6
+                },
+                "defenseMin": 47,
+                "defenseMax": 86,
+                "minLevel": 45,
+                "weight": 15
+            },
+            "Runic Wrap": {
+                "implicits": {
+                    "mana_cost_reduced": 8
+                },
+                "defenseMin": 23,
+                "defenseMax": 37,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Runic Vestment": {
+                "implicits": {
+                    "mana_cost_reduced": 12
+                },
+                "defenseMin": 31,
+                "defenseMax": 48,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Runic Ward": {
+                "implicits": {
+                    "mana_cost_reduced": 16
+                },
+                "defenseMin": 40,
+                "defenseMax": 64,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Runic Mantle": {
+                "implicits": {
+                    "mana_cost_reduced": 20
+                },
+                "defenseMin": 51,
+                "defenseMax": 82,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Runic Aegis Robe": {
+                "implicits": {
+                    "mana_cost_reduced": 24
+                },
+                "defenseMin": 65,
+                "defenseMax": 105,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Runic Sovereign": {
+                "implicits": {
+                    "mana_cost_reduced": 28
+                },
+                "defenseMin": 85,
+                "defenseMax": 139,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Straitjacket Wraps": {
+                "implicits": {
+                    "insanity_penalty_reduction": 10
+                },
+                "defenseMin": 23,
+                "defenseMax": 37,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Cultist"
+            },
+            "Straitjacket Bindings": {
+                "implicits": {
+                    "insanity_penalty_reduction": 15
+                },
+                "defenseMin": 31,
+                "defenseMax": 48,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Cultist"
+            },
+            "Straitjacket Vest": {
+                "implicits": {
+                    "insanity_penalty_reduction": 20
+                },
+                "defenseMin": 40,
+                "defenseMax": 64,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Cultist"
+            },
+            "Straitjacket Harness": {
+                "implicits": {
+                    "insanity_penalty_reduction": 25
+                },
+                "defenseMin": 51,
+                "defenseMax": 82,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Cultist"
+            },
+            "Straitjacket Cage": {
+                "implicits": {
+                    "insanity_penalty_reduction": 30
+                },
+                "defenseMin": 65,
+                "defenseMax": 105,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Cultist"
+            },
+            "Straitjacket Prison": {
+                "implicits": {
+                    "insanity_penalty_reduction": 35
+                },
+                "defenseMin": 85,
+                "defenseMax": 139,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Cultist"
+            },
+            "Vestment of Devotion": {
+                "implicits": {
+                    "favour_heal_increased": 10
+                },
+                "defenseMin": 23,
+                "defenseMax": 37,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Vestment of Faith": {
+                "implicits": {
+                    "favour_heal_increased": 15
+                },
+                "defenseMin": 31,
+                "defenseMax": 48,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Vestment of Grace": {
+                "implicits": {
+                    "favour_heal_increased": 20
+                },
+                "defenseMin": 40,
+                "defenseMax": 64,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Vestment of Mercy": {
+                "implicits": {
+                    "favour_heal_increased": 25
+                },
+                "defenseMin": 51,
+                "defenseMax": 82,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Vestment of Sanctity": {
+                "implicits": {
+                    "favour_heal_increased": 30
+                },
+                "defenseMin": 65,
+                "defenseMax": 105,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Vestment of Ascension": {
+                "implicits": {
+                    "favour_heal_increased": 35
+                },
+                "defenseMin": 85,
+                "defenseMax": 139,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Shroud of the Restless": {
+                "implicits": {
+                    "vengeance_gain_flat": 1
+                },
+                "defenseMin": 23,
+                "defenseMax": 37,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Spectre"
+            },
+            "Shroud of the Forsaken": {
+                "implicits": {
+                    "vengeance_gain_flat": 1
+                },
+                "defenseMin": 31,
+                "defenseMax": 48,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Spectre"
+            },
+            "Shroud of the Departed": {
+                "implicits": {
+                    "vengeance_gain_flat": 1
+                },
+                "defenseMin": 40,
+                "defenseMax": 64,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Spectre"
+            },
+            "Shroud of the Hollow": {
+                "implicits": {
+                    "vengeance_gain_flat": 2
+                },
+                "defenseMin": 51,
+                "defenseMax": 82,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Spectre"
+            },
+            "Shroud of the Forgotten": {
+                "implicits": {
+                    "vengeance_gain_flat": 2
+                },
+                "defenseMin": 65,
+                "defenseMax": 105,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Spectre"
+            },
+            "Shroud of the Eternal": {
+                "implicits": {
+                    "vengeance_gain_flat": 2
+                },
+                "defenseMin": 85,
+                "defenseMax": 139,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Spectre"
             }
         }
     },
     "legs": {
         "armour": {
             "Rusted Greaves": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Iron Greaves": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Steel Greaves": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Reinforced Greaves": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Plated Greaves": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45
             },
             "Battle-forged Greaves": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58
             },
             "Champion's Greaves": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72
             },
             "Legion Greaves": {
                 "defenseMin": 155,
                 "defenseMax": 250,
                 "minLevel": 88
+            },
+            "Ironbound Greaves": {
+                "implicits": {
+                    "armour": 15,
+                    "damage_reduction": 4
+                },
+                "defenseMin": 72,
+                "defenseMax": 131,
+                "minLevel": 45,
+                "weight": 15
             }
         },
         "evasion": {
             "Ragged Leggings": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Leather Leggings": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Padded Leggings": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Chain-lined Leggings": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Reinforced Leggings": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45
             },
             "Stalker's Leggings": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58,
                 "implicits": {
                     "speed": 0.02
                 }
             },
             "Shadow Leggings": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72,
                 "implicits": {
                     "speed": 0.05
                 }
             },
             "Phantom Leggings": {
-                "defenseMin": 155,
-                "defenseMax": 250,
-                "minLevel": 88,
                 "implicits": {
-                    "speed": 0.09
-                }
+                    "evasion": 15,
+                    "ailment_avoidance": 6
+                },
+                "defenseMin": 72,
+                "defenseMax": 131,
+                "minLevel": 45,
+                "weight": 15
             }
         },
         "energy_shield": {
             "Cracked Trousers": {
-                "defenseMin": 3,
-                "defenseMax": 5,
+                "defenseMin": 8,
+                "defenseMax": 12,
                 "minLevel": 1
             },
             "Glass Trousers": {
-                "defenseMin": 8,
-                "defenseMax": 14,
+                "defenseMin": 17,
+                "defenseMax": 29,
                 "minLevel": 10
             },
             "Crystal Trousers": {
-                "defenseMin": 15,
-                "defenseMax": 24,
+                "defenseMin": 27,
+                "defenseMax": 43,
                 "minLevel": 20
             },
             "Sigil-etched Trousers": {
-                "defenseMin": 24,
-                "defenseMax": 38,
+                "defenseMin": 36,
+                "defenseMax": 57,
                 "minLevel": 32
             },
             "Warded Trousers": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 47,
+                "defenseMax": 75,
                 "minLevel": 45
             },
             "Runic Trousers": {
-                "defenseMin": 52,
-                "defenseMax": 84,
+                "defenseMin": 60,
+                "defenseMax": 97,
                 "minLevel": 58
             },
             "Arcane Trousers": {
-                "defenseMin": 73,
-                "defenseMax": 118,
+                "defenseMin": 77,
+                "defenseMax": 124,
                 "minLevel": 72
             },
             "Ethereal Trousers": {
@@ -1157,41 +2764,41 @@
     "feet": {
         "armour": {
             "Rusted Boots": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Iron Boots": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Steel Boots": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Reinforced Boots": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Plated Boots": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45
             },
             "Battle-forged Boots": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58,
                 "implicits": {
                     "thorns": 3
                 }
             },
             "Champion's Boots": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72,
                 "implicits": {
                     "thorns": 5
@@ -1204,45 +2811,105 @@
                 "implicits": {
                     "thorns": 8
                 }
+            },
+            "Sanctuary Roots": {
+                "implicits": {
+                    "human_form_defenses_flat": 2
+                },
+                "defenseMin": 34,
+                "defenseMax": 55,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Steadfast Roots": {
+                "implicits": {
+                    "human_form_defenses_flat": 3
+                },
+                "defenseMin": 46,
+                "defenseMax": 74,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Grounded Roots": {
+                "implicits": {
+                    "human_form_defenses_flat": 4
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Deepearth Roots": {
+                "implicits": {
+                    "human_form_defenses_flat": 6
+                },
+                "defenseMin": 78,
+                "defenseMax": 125,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Ancient Roots": {
+                "implicits": {
+                    "human_form_defenses_flat": 8
+                },
+                "defenseMin": 100,
+                "defenseMax": 161,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Druid"
+            },
+            "Primal Roots": {
+                "implicits": {
+                    "human_form_defenses_flat": 10
+                },
+                "defenseMin": 132,
+                "defenseMax": 213,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Druid"
             }
         },
         "evasion": {
             "Ragged Shoes": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 10,
+                "defenseMax": 20,
                 "minLevel": 1
             },
             "Leather Shoes": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 25,
+                "defenseMax": 42,
                 "minLevel": 10
             },
             "Padded Shoes": {
-                "defenseMin": 22,
-                "defenseMax": 36,
+                "defenseMin": 40,
+                "defenseMax": 65,
                 "minLevel": 20
             },
             "Chain-lined Shoes": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 54,
+                "defenseMax": 87,
                 "minLevel": 32
             },
             "Reinforced Shoes": {
-                "defenseMin": 55,
-                "defenseMax": 88,
+                "defenseMin": 72,
+                "defenseMax": 114,
                 "minLevel": 45
             },
             "Stalker's Shoes": {
-                "defenseMin": 80,
-                "defenseMax": 128,
+                "defenseMin": 92,
+                "defenseMax": 147,
                 "minLevel": 58,
                 "implicits": {
                     "speed": 0.04
                 }
             },
             "Shadow Shoes": {
-                "defenseMin": 112,
-                "defenseMax": 180,
+                "defenseMin": 118,
+                "defenseMax": 189,
                 "minLevel": 72,
                 "implicits": {
                     "speed": 0.09
@@ -1255,107 +2922,226 @@
                 "implicits": {
                     "speed": 0.15
                 }
+            },
+            "Stormstep Boots": {
+                "implicits": {
+                    "evasion": 15,
+                    "speed": 2
+                },
+                "defenseMin": 72,
+                "defenseMax": 131,
+                "minLevel": 45,
+                "weight": 15
+            },
+            "Disciplined Stride": {
+                "implicits": {
+                    "trained_threshold_reduction": {
+                        "min": 8,
+                        "max": 12
+                    }
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Hardened Stride": {
+                "implicits": {
+                    "dedicated_threshold_reduction": {
+                        "min": 5,
+                        "max": 8
+                    }
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Relentless Stride": {
+                "implicits": {
+                    "allin_threshold_reduction": {
+                        "min": 5,
+                        "max": 10
+                    }
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Galewalker Boots": {
+                "implicits": {
+                    "static_flow_gain_flat": 1
+                },
+                "defenseMin": 34,
+                "defenseMax": 55,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Galewalker Striders": {
+                "implicits": {
+                    "static_flow_gain_flat": 1
+                },
+                "defenseMin": 46,
+                "defenseMax": 74,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Galewalker Treads": {
+                "implicits": {
+                    "static_flow_gain_flat": 1
+                },
+                "defenseMin": 61,
+                "defenseMax": 97,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Galewalker Runners": {
+                "implicits": {
+                    "static_flow_gain_flat": 1
+                },
+                "defenseMin": 78,
+                "defenseMax": 125,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Galewalker Cyclone": {
+                "implicits": {
+                    "static_flow_gain_flat": 2
+                },
+                "defenseMin": 100,
+                "defenseMax": 161,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Tempest"
+            },
+            "Galewalker Tempest": {
+                "implicits": {
+                    "static_flow_gain_flat": 2
+                },
+                "defenseMin": 132,
+                "defenseMax": 213,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Tempest"
             }
         },
         "energy_shield": {
             "Cracked Sandals": {
-                "defenseMin": 3,
-                "defenseMax": 5,
+                "defenseMin": 8,
+                "defenseMax": 12,
                 "minLevel": 1
             },
             "Glass Sandals": {
-                "defenseMin": 8,
-                "defenseMax": 14,
+                "defenseMin": 17,
+                "defenseMax": 29,
                 "minLevel": 10
             },
             "Crystal Sandals": {
-                "defenseMin": 15,
-                "defenseMax": 24,
+                "defenseMin": 27,
+                "defenseMax": 43,
                 "minLevel": 20
             },
             "Sigil-etched Sandals": {
-                "defenseMin": 24,
-                "defenseMax": 38,
+                "defenseMin": 36,
+                "defenseMax": 57,
                 "minLevel": 32
             },
             "Warded Sandals": {
-                "defenseMin": 36,
-                "defenseMax": 58,
+                "defenseMin": 47,
+                "defenseMax": 75,
                 "minLevel": 45
             },
             "Runic Sandals": {
-                "defenseMin": 52,
-                "defenseMax": 84,
+                "defenseMin": 60,
+                "defenseMax": 97,
                 "minLevel": 58
             },
             "Arcane Sandals": {
-                "defenseMin": 73,
-                "defenseMax": 118,
+                "defenseMin": 77,
+                "defenseMax": 124,
                 "minLevel": 72
             },
             "Ethereal Sandals": {
                 "defenseMin": 100,
                 "defenseMax": 163,
                 "minLevel": 88
+            },
+            "Emberforged Sandals": {
+                "implicits": {
+                    "energy_shield": 10,
+                    "fire_resistance": 6
+                },
+                "defenseMin": 47,
+                "defenseMax": 86,
+                "minLevel": 45,
+                "weight": 15
             }
         }
     },
     "shield": {
         "armour": {
             "Rusted Buckler": {
-                "defenseMin": 2,
-                "defenseMax": 4,
+                "defenseMin": 5,
+                "defenseMax": 10,
                 "minLevel": 1,
                 "implicits": {
-                    "block_chance": 10
+                    "chance_to_block": 10
                 }
             },
             "Iron Buckler": {
-                "defenseMin": 7,
-                "defenseMax": 11,
+                "defenseMin": 15,
+                "defenseMax": 23,
                 "minLevel": 10,
                 "implicits": {
-                    "block_chance": 14
+                    "chance_to_block": 14
                 }
             },
             "Steel Buckler": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 22,
+                "defenseMax": 36,
                 "minLevel": 20,
                 "implicits": {
-                    "block_chance": 18
+                    "chance_to_block": 18
                 }
             },
             "Reinforced Buckler": {
-                "defenseMin": 20,
-                "defenseMax": 32,
+                "defenseMin": 30,
+                "defenseMax": 48,
                 "minLevel": 32,
                 "implicits": {
-                    "block_chance": 22
+                    "chance_to_block": 22
                 }
             },
             "Plated Buckler": {
-                "defenseMin": 30,
-                "defenseMax": 48,
+                "defenseMin": 39,
+                "defenseMax": 62,
                 "minLevel": 45,
                 "implicits": {
-                    "block_chance": 27
+                    "chance_to_block": 27
                 }
             },
             "Battle-forged Buckler": {
-                "defenseMin": 44,
-                "defenseMax": 70,
+                "defenseMin": 51,
+                "defenseMax": 80,
                 "minLevel": 58,
                 "implicits": {
-                    "block_chance": 32
+                    "chance_to_block": 32
                 }
             },
             "Champion's Buckler": {
-                "defenseMin": 62,
-                "defenseMax": 99,
+                "defenseMin": 65,
+                "defenseMax": 104,
                 "minLevel": 72,
                 "implicits": {
-                    "block_chance": 36
+                    "chance_to_block": 36
                 }
             },
             "Legion Buckler": {
@@ -1363,65 +3149,135 @@
                 "defenseMax": 138,
                 "minLevel": 88,
                 "implicits": {
-                    "block_chance": 40
+                    "chance_to_block": 40
                 }
+            },
+            "Aspis of the Vanguard": {
+                "implicits": {
+                    "chance_to_block": 8,
+                    "damage_reduction": 4
+                },
+                "defenseMin": 39,
+                "defenseMax": 71,
+                "minLevel": 45,
+                "weight": 15
+            },
+            "Bastion Buckler": {
+                "implicits": {
+                    "discipline_gain_flat": 1
+                },
+                "defenseMin": 19,
+                "defenseMax": 31,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Bastion Round Shield": {
+                "implicits": {
+                    "discipline_gain_flat": 2
+                },
+                "defenseMin": 26,
+                "defenseMax": 41,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Bastion Aegis": {
+                "implicits": {
+                    "discipline_gain_flat": 3
+                },
+                "defenseMin": 33,
+                "defenseMax": 53,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Bastion Wall": {
+                "implicits": {
+                    "discipline_gain_flat": 4
+                },
+                "defenseMin": 43,
+                "defenseMax": 68,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Bastion Rampart": {
+                "implicits": {
+                    "discipline_gain_flat": 5
+                },
+                "defenseMin": 55,
+                "defenseMax": 88,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Fighter"
+            },
+            "Bastion Citadel": {
+                "implicits": {
+                    "discipline_gain_flat": 6
+                },
+                "defenseMin": 72,
+                "defenseMax": 117,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Fighter"
             }
         },
         "evasion": {
             "Ragged Targe": {
-                "defenseMin": 2,
-                "defenseMax": 4,
+                "defenseMin": 5,
+                "defenseMax": 10,
                 "minLevel": 1,
                 "implicits": {
-                    "block_chance": 10
+                    "chance_to_block": 10
                 }
             },
             "Leather Targe": {
-                "defenseMin": 7,
-                "defenseMax": 11,
+                "defenseMin": 15,
+                "defenseMax": 23,
                 "minLevel": 10,
                 "implicits": {
-                    "block_chance": 14
+                    "chance_to_block": 14
                 }
             },
             "Padded Targe": {
-                "defenseMin": 12,
-                "defenseMax": 20,
+                "defenseMin": 22,
+                "defenseMax": 36,
                 "minLevel": 20,
                 "implicits": {
-                    "block_chance": 18
+                    "chance_to_block": 18
                 }
             },
             "Chain-lined Targe": {
-                "defenseMin": 20,
-                "defenseMax": 32,
+                "defenseMin": 30,
+                "defenseMax": 48,
                 "minLevel": 32,
                 "implicits": {
-                    "block_chance": 22
+                    "chance_to_block": 22
                 }
             },
             "Reinforced Targe": {
-                "defenseMin": 30,
-                "defenseMax": 48,
+                "defenseMin": 39,
+                "defenseMax": 62,
                 "minLevel": 45,
                 "implicits": {
-                    "block_chance": 27
+                    "chance_to_block": 27
                 }
             },
             "Stalker's Targe": {
-                "defenseMin": 44,
-                "defenseMax": 70,
+                "defenseMin": 51,
+                "defenseMax": 80,
                 "minLevel": 58,
                 "implicits": {
-                    "block_chance": 32
+                    "chance_to_block": 32
                 }
             },
             "Shadow Targe": {
-                "defenseMin": 62,
-                "defenseMax": 99,
+                "defenseMin": 65,
+                "defenseMax": 104,
                 "minLevel": 72,
                 "implicits": {
-                    "block_chance": 36
+                    "chance_to_block": 36
                 }
             },
             "Phantom Targe": {
@@ -1429,65 +3285,65 @@
                 "defenseMax": 138,
                 "minLevel": 88,
                 "implicits": {
-                    "block_chance": 40
+                    "chance_to_block": 40
                 }
             }
         },
         "energy_shield": {
             "Cracked Aegis": {
-                "defenseMin": 2,
-                "defenseMax": 3,
+                "defenseMin": 5,
+                "defenseMax": 8,
                 "minLevel": 1,
                 "implicits": {
-                    "block_chance": 10
+                    "chance_to_block": 10
                 }
             },
             "Glass Aegis": {
-                "defenseMin": 4,
-                "defenseMax": 8,
+                "defenseMin": 8,
+                "defenseMax": 17,
                 "minLevel": 10,
                 "implicits": {
-                    "block_chance": 14
+                    "chance_to_block": 14
                 }
             },
             "Crystal Aegis": {
-                "defenseMin": 8,
-                "defenseMax": 13,
+                "defenseMin": 14,
+                "defenseMax": 23,
                 "minLevel": 20,
                 "implicits": {
-                    "block_chance": 18
+                    "chance_to_block": 18
                 }
             },
             "Sigil-etched Aegis": {
-                "defenseMin": 13,
-                "defenseMax": 21,
+                "defenseMin": 20,
+                "defenseMax": 32,
                 "minLevel": 32,
                 "implicits": {
-                    "block_chance": 22
+                    "chance_to_block": 22
                 }
             },
             "Warded Aegis": {
-                "defenseMin": 20,
-                "defenseMax": 32,
+                "defenseMin": 26,
+                "defenseMax": 42,
                 "minLevel": 45,
                 "implicits": {
-                    "block_chance": 27
+                    "chance_to_block": 27
                 }
             },
             "Runic Aegis": {
-                "defenseMin": 29,
-                "defenseMax": 46,
+                "defenseMin": 33,
+                "defenseMax": 53,
                 "minLevel": 58,
                 "implicits": {
-                    "block_chance": 32
+                    "chance_to_block": 32
                 }
             },
             "Arcane Aegis": {
-                "defenseMin": 40,
-                "defenseMax": 65,
+                "defenseMin": 42,
+                "defenseMax": 68,
                 "minLevel": 72,
                 "implicits": {
-                    "block_chance": 36
+                    "chance_to_block": 36
                 }
             },
             "Ethereal Aegis": {
@@ -1495,8 +3351,78 @@
                 "defenseMax": 90,
                 "minLevel": 88,
                 "implicits": {
-                    "block_chance": 40
+                    "chance_to_block": 40
                 }
+            },
+            "Bulwark Aegis": {
+                "implicits": {
+                    "chance_to_block": 8,
+                    "energy_shield": 7
+                },
+                "defenseMin": 26,
+                "defenseMax": 48,
+                "minLevel": 45,
+                "weight": 15
+            },
+            "Sanctified Ward": {
+                "implicits": {
+                    "favour_defensive_effect_increased": 10
+                },
+                "defenseMin": 12,
+                "defenseMax": 20,
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Sanctified Barrier": {
+                "implicits": {
+                    "favour_defensive_effect_increased": 15
+                },
+                "defenseMin": 17,
+                "defenseMax": 27,
+                "minLevel": 32,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Sanctified Aegis": {
+                "implicits": {
+                    "favour_defensive_effect_increased": 20
+                },
+                "defenseMin": 22,
+                "defenseMax": 36,
+                "minLevel": 45,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Sanctified Bulwark": {
+                "implicits": {
+                    "favour_defensive_effect_increased": 25
+                },
+                "defenseMin": 28,
+                "defenseMax": 45,
+                "minLevel": 58,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Sanctified Rampart": {
+                "implicits": {
+                    "favour_defensive_effect_increased": 30
+                },
+                "defenseMin": 36,
+                "defenseMax": 58,
+                "minLevel": 72,
+                "weight": 15,
+                "requiredClass": "Paladin"
+            },
+            "Sanctified Absolution": {
+                "implicits": {
+                    "favour_defensive_effect_increased": 35
+                },
+                "defenseMin": 47,
+                "defenseMax": 77,
+                "minLevel": 88,
+                "weight": 15,
+                "requiredClass": "Paladin"
             }
         }
     },
@@ -1608,6 +3534,204 @@
                 }
             },
             "minLevel": 70
+        },
+        "Warded Loop of Iron": {
+            "implicits": {
+                "max_physical_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Flame": {
+            "implicits": {
+                "max_fire_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Frost": {
+            "implicits": {
+                "max_cold_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Storms": {
+            "implicits": {
+                "max_lightning_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Stone": {
+            "implicits": {
+                "max_earth_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Shadow": {
+            "implicits": {
+                "max_dark_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Radiance": {
+            "implicits": {
+                "max_holy_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Arcana": {
+            "implicits": {
+                "max_arcane_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Ruin": {
+            "implicits": {
+                "max_chaos_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Wraiths": {
+            "implicits": {
+                "max_ethereal_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Warded Loop of Whispers": {
+            "implicits": {
+                "max_psychic_resistance": {
+                    "min": 3,
+                    "max": 5
+                }
+            },
+            "extraImplicits": {
+                "health": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Hollow Band": {
+            "implicits": {
+                "hopeless_gain_flat": {
+                    "min": 1,
+                    "max": 2
+                }
+            },
+            "minLevel": 35,
+            "weight": 15,
+            "requiredClass": "Wanderer"
+        },
+        "Bloodpact Band": {
+            "implicits": {
+                "buff_effect_increased_low_hp": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15,
+            "requiredClass": "Wretch"
         }
     },
     "amulet": {
@@ -1925,6 +4049,71 @@
                 }
             },
             "minLevel": 80
+        },
+        "Bloodbound Amulet": {
+            "implicits": {
+                "lifesteal": {
+                    "min": 3,
+                    "max": 6
+                }
+            },
+            "extraImplicits": {
+                "hp_regen": {
+                    "min": 2,
+                    "max": 4
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Oracle's Eye": {
+            "implicits": {
+                "crit_chance": {
+                    "min": 3,
+                    "max": 6
+                }
+            },
+            "extraImplicits": {
+                "crit_multi": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15
+        },
+        "Unstable Idol": {
+            "implicits": {
+                "insanity_extreme_effect_increased": {
+                    "min": 15,
+                    "max": 25
+                }
+            },
+            "minLevel": 35,
+            "weight": 15,
+            "requiredClass": "Cultist"
+        },
+        "Hopeful Locket": {
+            "implicits": {
+                "hope_gain_flat": {
+                    "min": 1,
+                    "max": 2
+                }
+            },
+            "minLevel": 35,
+            "weight": 15,
+            "requiredClass": "Wanderer"
+        },
+        "Ghostlight Amulet": {
+            "implicits": {
+                "ghostly_heal_increased": {
+                    "min": 15,
+                    "max": 30
+                }
+            },
+            "minLevel": 35,
+            "weight": 15,
+            "requiredClass": "Spectre"
         }
     },
     "sigil": {
@@ -1982,6 +4171,136 @@
                     }
                 },
                 "minLevel": 40
+            },
+            "Fatal Sigil": {
+                "implicits": {
+                    "crit_chance": {
+                        "min": 1,
+                        "max": 2
+                    }
+                },
+                "extraImplicits": {
+                    "crit_multi": {
+                        "min": 8,
+                        "max": 15
+                    }
+                },
+                "minLevel": 1,
+                "weight": 15
+            },
+            "Executioner's Sigil": {
+                "implicits": {
+                    "crit_chance": {
+                        "min": 3,
+                        "max": 6
+                    }
+                },
+                "extraImplicits": {
+                    "crit_multi": {
+                        "min": 25,
+                        "max": 40
+                    }
+                },
+                "minLevel": 40,
+                "weight": 15
+            },
+            "Ruthless Sigil": {
+                "implicits": {
+                    "crit_multi": {
+                        "min": 8,
+                        "max": 15
+                    }
+                },
+                "extraImplicits": {
+                    "crit_chance": {
+                        "min": 1,
+                        "max": 2
+                    }
+                },
+                "minLevel": 1,
+                "weight": 15
+            },
+            "Devastating Sigil": {
+                "implicits": {
+                    "crit_multi": {
+                        "min": 25,
+                        "max": 40
+                    }
+                },
+                "extraImplicits": {
+                    "crit_chance": {
+                        "min": 3,
+                        "max": 6
+                    }
+                },
+                "minLevel": 40,
+                "weight": 15
+            },
+            "Bloodrage Sigil": {
+                "implicits": {
+                    "max_rage": {
+                        "min": 3,
+                        "max": 5
+                    }
+                },
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Greater Bloodrage Sigil": {
+                "implicits": {
+                    "max_rage": {
+                        "min": 8,
+                        "max": 12
+                    }
+                },
+                "minLevel": 60,
+                "weight": 15,
+                "requiredClass": "Warrior"
+            },
+            "Focus Sigil": {
+                "implicits": {
+                    "mastery_gain_flat": {
+                        "min": 1,
+                        "max": 1
+                    }
+                },
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Greater Focus Sigil": {
+                "implicits": {
+                    "mastery_gain_flat": {
+                        "min": 1,
+                        "max": 2
+                    }
+                },
+                "minLevel": 60,
+                "weight": 15,
+                "requiredClass": "Mage"
+            },
+            "Echoing Sigil": {
+                "implicits": {
+                    "echo_damage_increased": {
+                        "min": 10,
+                        "max": 20
+                    }
+                },
+                "minLevel": 20,
+                "weight": 15,
+                "requiredClass": "Marauder"
+            },
+            "Greater Echoing Sigil": {
+                "implicits": {
+                    "echo_damage_increased": {
+                        "min": 25,
+                        "max": 40
+                    }
+                },
+                "minLevel": 60,
+                "weight": 15,
+                "requiredClass": "Marauder"
             }
         },
         "defensive": {
@@ -2056,6 +4375,26 @@
                     }
                 },
                 "minLevel": 40
+            },
+            "All-Ward Sigil": {
+                "implicits": {
+                    "max_all_resistance": {
+                        "min": 1,
+                        "max": 2
+                    }
+                },
+                "minLevel": 45,
+                "weight": 5
+            },
+            "Greater All-Ward Sigil": {
+                "implicits": {
+                    "max_all_resistance": {
+                        "min": 3,
+                        "max": 5
+                    }
+                },
+                "minLevel": 88,
+                "weight": 5
             }
         }
     }

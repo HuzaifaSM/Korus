@@ -185,9 +185,9 @@ class Druid(Player): # balanced damage and speed, earth damage
         if self.form == 'human':
             self.formBonuses['hp_regen'] = round(2 * self.formEffect, 1)
             self.formBonuses['stamina_regen'] = round(2 * self.formEffect, 1)
-            self.formBonuses['increased_defenses'] = 5 * self.formEffect
+            self.formBonuses['increased_defenses'] = 5 * self.formEffect + self._stats['Bonuses'].get('human_form_defenses_flat', 0)
         elif self.form == 'beast':
-            self.formEarthDamage = 10 * self.formEffect
+            self.formEarthDamage = (10 + self._stats['Bonuses'].get('beast_form_damage_flat', 0)) * self.formEffect
             self.formBonuses['speed'] = round(0.02 * self.formEffect, 3)
 
         rootbound = self._ascendancy == 'Heartwood' and self.form == 'human' and (self.root > 0 or self.elderbarkActive)
@@ -218,6 +218,7 @@ class Druid(Player): # balanced damage and speed, earth damage
     def _gainVerdance(self, amount: int) -> int:
         if amount <= 0 or self.verdance >= self.maxVerdance:
             return 0
+        amount += self._stats['Bonuses'].get('verdance_gain_flat', 0)
         if self._ascendancy == 'Confluence' and self.confluenceActive:
             amount = int(amount * 1.5)
         gained = min(amount, self.maxVerdance - self.verdance)
@@ -715,8 +716,8 @@ class Druid(Player): # balanced damage and speed, earth damage
             '_baseHealth': -15,
             '_baseDamage': 4,
             '_baseSpeed': 0.1,
-            '_stats.baseCritMulti': 0.25,
-            '_stats.baseCritChance': 0.05,
+            '_stats.Permanent.crit_multi': 0.25,
+            '_stats.Permanent.crit_chance': 0.05,
         },
         'Confluence': {
             '_baseHealth': 10,

@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import rollAffix, Affix, resolveAffixPoolKey
+from scripts.items.affixes import rollAffix, Affix, resolveAffixPoolKey
 import random
 import json
 from typing import Dict

@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import MAX_TIERS, Affix, AFFIX_POOL, getTierVariants, getTieredAffix, resolveAffixPoolKey
+from scripts.items.affixes import MAX_TIERS, Affix, AFFIX_POOL, getTierVariants, getTieredAffix, resolveAffixPoolKey
 import random
 from typing import Dict, List
 

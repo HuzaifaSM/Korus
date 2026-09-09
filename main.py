@@ -14,6 +14,8 @@ from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoL
 from scripts.debug import Debugger
 from scripts.difficulty import Difficulty
 from scripts.help import Help
+from scripts.items.equipment import peekNextEquipmentId, setNextEquipmentId
+from scripts.korusFeedClient import ensureServerRunning
 
 from scripts.styles import (
     console, printHeader, printSeparator, pause, clearScreen,
@@ -44,7 +46,8 @@ class Game:
             'battlesWon': self.battlesWon,
             'difficulty': self.difficulty.value,
             'hardcoreMode': self.hardcoreMode,
-            'saveNum': self.saveNum
+            'saveNum': self.saveNum,
+            'nextEquipmentID': peekNextEquipmentId()
         }
 
     def deserialise(self, data: Dict):
@@ -55,6 +58,7 @@ class Game:
         self.difficulty = Difficulty(difficulty)
         self.hardcoreMode = data.get('hardcoreMode', False)
         self.saveNum = data.get('saveNum')
+        setNextEquipmentId(data.get('nextEquipmentID', 1))
 
     def titleScreen(self):
         while True:
@@ -69,7 +73,7 @@ class Game:
             choice = console.input("[cyan]Choose an option:\n> [/cyan]").strip()
 
             if choice in ['cheat', 'quick', 'bug', 'skip']:
-                self.difficulty = Difficulty.EASY
+                self.difficulty = Difficulty.NORMAL
                 self.hardcoreMode = False
                 name = "The Hero"
                 self.player = selectClass(name, True)
@@ -153,7 +157,8 @@ class Game:
         if not name:
             name = "The Hero"
 
-        self.selectDifficulty()
+        #self.selectDifficulty() <-- need to rework difficulty
+        self.difficulty = Difficulty.NORMAL
 
         self.player = selectClass(name)
         self.camp = Camp(self.player)
@@ -264,6 +269,9 @@ class Game:
                 defParts.append(f"[evasion]Evasion:[/evasion] {self.player.evasion}")
             if self.player.energyShield > 0:
                 defParts.append(f"[energy_shield]Energy Shield:[/energy_shield] {self.player.energyShield}")
+            blockChance = self.player._stats['Bonuses'].get('chance_to_block', 0)
+            if blockChance > 0:
+                defParts.append(f"[cyan]Chance to Block:[/cyan] {blockChance}%")
             defStr = " | ".join(defParts)
             console.print(f"{defStr}")
 
@@ -625,7 +633,7 @@ class Game:
         quantity = (self.player._stats['Bonuses']["item_quantity"] + self.player._getExtraBonuses('item_quantity') + lootBonus) / 100
 
         for _ in range(numEnemies):
-            enemies.append(createEnemy(enemyLevel, difficulty, rarity, quantity))
+            enemies.append(createEnemy(enemyLevel, difficulty, rarity, quantity, self.player.className, self.player._name))
 
         return enemies
 
@@ -904,6 +912,10 @@ class Game:
 
 def main():
     try:
+        try:
+            ensureServerRunning()
+        except Exception:
+            pass
         subprocess.Popen([ # create a korus watcher to silently track save file changes
             r"tools\korus_watch.exe",
             "data/saves",
@@ -935,7 +947,7 @@ def main():
             printInfo(f"  - {jsonPath}")
             
         if game and hasattr(game, 'player') and game.player:
-            saveCrash = console.input("[green]Would you like to save your file before the game exits? (Y/N)[/green]").lower().strip()
+            saveCrash = console.input("[green]Would you like to save your file before the game exits? (Y/N)[/green]\n[cyan]> [/cyan]").lower().strip()
             if saveCrash == 'y':
                 printInfo("\nYour game state has been saved and can be recovered/loaded at any time. The crash save is save file 999")
                 save(game, 999)

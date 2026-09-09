@@ -17,21 +17,23 @@ OTHER STUFF:
   - playtime per save file
 
 CURRENTLY WORKING ON: (main order of implementation)
-  - item rework
-    > all entities get a base of 5% crit chance and 150% crit multi, overwritten if equipped weapons change it
-      - main hand weapon always used as overwrite tool
-        > offhand weapon grants 50% of crit chane/multi differential
-      - player classes instead grant crit chance/multi deltas at spawn rather than set amounts, no real change apart from changing initial setting logic
+  - item REWORK
     > still to do:
-      - class-specific equipment bases
-      - rarer item bases
       - blank and mythic items proper implementation
 
   - add a quick sell option when getting equipment at the end of combat (simple QoL)
 
+  - enemy rework
+
   - market rework
 
   - rethink value of questBoard, potential to remove if no mechanical benefit can be found (game plays completely fine without it)
+
+  - difficulty rework
+    > rather than each difficulty just changing stat numbers, they should alter enemy behaviour, potentially alter loot drops
+    > could convert difficulty format into 'challenges' instead, toggleable at any point from options menu
+      - each challenge is purely for fun, no actual benefits.
+      - e.g. 'smarter enemies' = enemy ai difficulty += 0.5, 'less loot' = -item quantity, etc.
 
   - completely rewrite help.py and all sections of Help to better explain everything
     > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.
@@ -54,7 +56,6 @@ CURRENTLY WORKING ON: (main order of implementation)
     > should predefine entire encounter list, then iterate through it
     > dungeons should be able to drop from level 10+
       - at low levels, should feel like 'a quick challenge' - still difficult but doable, without needing bosses at the end
-    > dungeons would be easier to design once enemy rework is done
 
   - ascendancy levels
 
@@ -107,37 +108,55 @@ MARKET REWORK
     > number of runes could be dictated by item level, number of affix slots, total tiers of items, total rarity of item affixes + item
 
 EQUIPMENT REWORK/IMPROVEMENTS
-  - introduce item bases + base types
-    > small chance for items dropped to be class specific
-      - should only be for the player's class until the account stash is added
-      - class items should have unique affixes/base buffs that target class mechanics
-    - UNIQUE ITEM REWORK
-      > delete unique items, replace with the two following:
-        - mythic items
-          > 1 tier higher than legendary, extremely rare
-          > only drop after level 60 (endgame items)
-          > [3, 4]p/[3, 4]s base affix slots
-          > base entropy is 1.5, base resistance is 20%
-          > have 1-2 unique 'mythic affix' slots
-            - new affixes that are allowed to completely overwrite rules
-        - blank items
-          > crafters dream item
-          > should be similar rarity to strong legendary or mythic items
-          > 4p/4s base affix slots
-          > blank items have no entropy and no entropy resistance (entropy = float('inf'))
-          > upon interacting with a blank item:
-            - a new menu opens up
-            - a random selection of powerful runes are shown to the player
-            - the player can continue crafting on the item, using only the given selection of runes until they are happy with the item
-            - a destabilisation rune is always given in the selection
-            - once the player confirms their item, it is 'destabilised'
-              > not a true destabilisation unless player used the rune
-              > only in name to prevent further modification to the item
-              > can also hard-set entropy locked instead
-          > before being revealed, name should be just the name of the item e.g. "Axe" with ethereal theme tint
-          > blank items should probably have their own inventory storage/way to begin crafting, e.g. "Reveal Blank Items" option if player has any blank items, all displayed items are unrevealed blank items
+  - UNIQUE ITEM REWORK
+    > delete unique items, replace with the two following:
+      - mythic items
+        > 1 tier higher than legendary, extremely rare
+        > only drop after level 60 (endgame items)
+        > [3, 4]p/[3, 4]s base affix slots
+        > base entropy is 1.5, base resistance is 20%
+        > have 1-2 unique 'mythic affix' slots
+          - new affixes that are allowed to completely overwrite rules
+      - blank items
+        > crafters dream item
+        > should be similar rarity to strong legendary or mythic items
+        > 4p/4s base affix slots
+        > blank items have no entropy and no entropy resistance (entropy = float('inf'))
+        > upon interacting with a blank item:
+          - a new menu opens up
+          - a random selection of powerful runes are shown to the player
+          - the player can continue crafting on the item, using only the given selection of runes until they are happy with the item
+          - a destabilisation rune is always given in the selection
+          - once the player confirms their item, it is 'destabilised'
+            > not a true destabilisation unless player used the rune
+            > only in name to prevent further modification to the item
+            > can also hard-set entropy locked instead
+        > before being revealed, name should be just the name of the item e.g. "Axe" with ethereal theme tint
+        > blank items should probably have their own inventory storage/way to begin crafting, e.g. "Reveal Blank Items" option if player has any blank items, all displayed items are unrevealed blank items
 
 - ENEMY REWORK
+  - enemies need stamina system implemented into abilities
+  - enemy class system
+    > enemies have a simpler range of classes than players, split between attacker and support
+      - support basic attack is replaced by a basic heal: 'heal one random ally, lose health equal to 50% of healing'
+      - supports are more likely to roll utility/defensive abilities and less likely to roll offensive
+        > self-buff abilities cast by supports are instead applied to a random living ally
+      - if no more allies are alive, support's basic heal is turned into basic attack
+      - attackers are more likely to have offensive abilities, and can only roll self-buff type utility abilities
+      - all fights roll a minimum of 2 enemies now, with a range of max(1, totalEnemies // 2 - 1) enemies forced to be supports, i.e. more attackers in a >2 enemy fight.
+        > overall effect should be longer fights without becoming immediately more difficult
+      - rarer enemies could potentially be given new/stronger classes
+        > either stronger versions of attacker/support, meaning their abilities are stronger
+        > or 'ascendancy' versions which prioritise specific things
+          - e.g. attacker split into:
+            > bruiser: mostly basic attacks, given to high base-damage enemies
+            > debilitator: focuses on using abilities that apply status effects
+            > champion (rare): more intelligent AI, generally would self-buff before using strong abilities, might self-stun to balance
+            > ?: ability-spam focused, never basic attacks 
+          - support split into:
+            > healer: focuses on healing allies
+            > standard-bearer: focuses on buffing allies
+            > tank: new ability type which taunts player into making single-target abilities force-attack them
   - enemy rarity system
     > similar to item rarity. rarity dictates level of challenge for any given enemy. rarities: common, rare, epic, legendary
       - common enemies are standard, rares have a higher AI difficulty + better stats and rewards, more space for affixes, epics have more than rare
@@ -153,6 +172,11 @@ EQUIPMENT REWORK/IMPROVEMENTS
       - enemy affixes should also affect their own item quantity + rarity
         > not abundant levels of rarity/quantity but a noticeable amount still
         > affixes are made/applied before loot table is made so item buffs can be applied correctly
+  - enemy abilities
+    > stamina costs for enemy abilities
+    > more
+    > grant enemy abilities tags so that rarity/affixes on enemies can focus specific things
+    > could even split abilities between enemy classes
 
 - TEXTUAL OVERHAUL (would require a very large rework for a lot of things) (or just use pygame instead!!!)
   > overhaul all rich with textual integration slowly

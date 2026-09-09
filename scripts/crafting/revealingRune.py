@@ -1,5 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.affixes import rollAffix, Affix, resolveAffixPoolKey
+from scripts.items.affixes import rollAffix, Affix, resolveAffixPoolKey
 import random
 from typing import Dict
 from scripts.styles import console
@@ -118,7 +118,7 @@ class BaseRevealingRune(CraftingItem):
 
         return CraftResult(
                 outcome=CraftOutcome.SUCCESS,
-                message=f'Revealing rune successfully used. Added chosen affix: {chosenAffix.name}',
+                message=f'{self.name} [green]rune successfully used. Added chosen affix:[/green]\n{chosenAffix}',
                 entropyAdded=self.successEntropy
             )
 

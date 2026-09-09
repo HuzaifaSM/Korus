@@ -1,6 +1,5 @@
 from .base import Player
 from scripts.styles import console
-import random
 
 TEMPEST_DESCRIPTIONS = {
     "Tempest": "[class_tempest]A flurry of energy, striking before its prey can react.[/class_tempest]\n"
@@ -11,7 +10,7 @@ TEMPEST_DESCRIPTIONS = {
         "- Static: +2 Damage Reduction, -0.02 Speed. Max 10 Static stacks. Flow: +5% Increased Damage, +0.02 Speed. Max 10 Flow stacks.\n"
         "- If you have 10 or more combined Static and Flow stacks, your next attack Unleashes: 100% Increased Lightning Damage, +5% Lifesteal, and evenly consumes a total of 10 Static and Flow stacks.\n"
         "- At the end of combat, heal 1% Max HP for every critical hit you dealt, to a maximum heal of 30%.\n"
-        "[boldStarting Stats:[/bold] 40 HP | 5 Damage | 8% Crit Chance | 140% Crit Damage | Lightning Damage | 1 Speed.",
+        "[bold]Starting Stats:[/bold] 40 HP | 5 Damage | 8% Crit Chance | 140% Crit Damage | Lightning Damage | 1 Speed.",
     # ascendancies
     "Alternator": "[lore]Everything changes. The storm has no favourites. Lethal or devastating, it matters not.[/lore]"
         "- At the start of your turn, the bonuses for speed differences are flipped.\n"
@@ -57,7 +56,6 @@ class Tempest(Player):
         self.staticBuffs = {'damage_reduction': 2, 'speed': -0.02}
         self.flow = 0
         self.flowBuffs = {'increased_damage': 0.05, 'speed': 0.02}
-        self.unleashStacksNeeded = 0
         self.unleashActivatedLastTurn = False
         self.critHits = 0
         self._tempestCritBuff = None
@@ -78,14 +76,22 @@ class Tempest(Player):
         self.mirageDamage = 0
         self.mirageEsLastTurn = False
 
-    def gainStatic(self):
-        if self.static < 10:
-            self.static += 1
-            for k, v in self.staticBuffs.items():
-                if k in self._stats['Temporary']:
-                    self._stats['Temporary'][k] += v
-            if self._ascendancy == 'Archon':
-                self.gainArchonCurrent()
+    @property
+    def unleashStacksNeeded(self) -> int:
+        base = 3 if self._ascendancy == 'Ravager' else (5 if self._ascendancy == 'Dervish' else 10)
+        reduction = self._stats['Bonuses'].get('unleash_cost_reduced', 0)
+        return max(1, round(base * (1 - reduction / 100)))
+
+    def gainStatic(self, amount: int = 1):
+        amount += self._stats['Bonuses'].get('static_flow_gain_flat', 0)
+        for _ in range(amount):
+            if self.static < 10:
+                self.static += 1
+                for k, v in self.staticBuffs.items():
+                    if k in self._stats['Temporary']:
+                        self._stats['Temporary'][k] += v
+                if self._ascendancy == 'Archon':
+                    self.gainArchonCurrent()
 
     def loseStatic(self):
         if self.static > 0:
@@ -94,14 +100,16 @@ class Tempest(Player):
                 if k in self._stats['Temporary']:
                     self._stats['Temporary'][k] -= v
 
-    def gainFlow(self):
-        if self.flow < 10:
-            self.flow += 1
-            for k, v in self.flowBuffs.items():
-                if k in self._stats['Temporary']:
-                    self._stats['Temporary'][k] += v
-            if self._ascendancy == 'Archon':
-                self.gainArchonCurrent()
+    def gainFlow(self, amount: int = 1):
+        amount += self._stats['Bonuses'].get('static_flow_gain_flat', 0)
+        for _ in range(amount):
+            if self.flow < 10:
+                self.flow += 1
+                for k, v in self.flowBuffs.items():
+                    if k in self._stats['Temporary']:
+                        self._stats['Temporary'][k] += v
+                if self._ascendancy == 'Archon':
+                    self.gainArchonCurrent()
 
     def loseFlow(self):
         if self.flow > 0:
@@ -249,7 +257,7 @@ class Tempest(Player):
         self._tempestCritBuff = None
         if targets and self._speed > targets[0]._speed and not self.alternatorFlip:
             difference = self._speed - targets[0]._speed
-            buffChance = round(0.25 * difference, 4)
+            buffChance = round(0.25 * difference, 4) + self._stats['Bonuses'].get('crit_chance_when_faster', 0) / 100
             buffMulti = round(difference, 4)
             if self._ascendancy == 'Ravager':
                 buffChance *= 2
@@ -278,6 +286,8 @@ class Tempest(Player):
             self._stats['Temporary']['crit_chance'] -= self.dervishCritGained
 
     def onCrit(self, targets, combatManager, critDamage):
+        self.critHits += 1
+
         if self._ascendancy == 'Alternator':
             if self.alternatorCrits > 0:
                 self.gainAlternatorPositive()
@@ -565,7 +575,6 @@ class Tempest(Player):
 
         self.static = 0
         self.flow = 0
-        self.unleashStacksNeeded = 0
         self.unleashActivatedLastTurn = False
         self.critHits = 0
         self._tempestCritBuff = None
@@ -592,7 +601,7 @@ class Tempest(Player):
         'Alternator': {
             '_baseHealth': 20,
             '_baseDamage': 6,
-            '_stats.baseCritMulti': 0.5,
+            '_stats.Permanent.crit_multi': 0.5,
             '_stats.Permanent.lightning': 20,
             '_stats.Permanent.earth': -10,
         },
@@ -607,15 +616,15 @@ class Tempest(Player):
             '_baseHealth': -5,
             '_baseDamage': 3,
             '_baseSpeed': 0.2,
-            '_stats.baseCritChance': 0.1,
-            '_stats.baseCritMulti': 0.5,
+            '_stats.Permanent.crit_chance': 0.1,
+            '_stats.Permanent.crit_multi': 0.5,
         },
         'Archon': {
             '_baseHealth': 25,
             '_baseDamage': 4,
             '_baseSpeed': -0.05,
             '_stats.Permanent.lightning': 20,
-            '_stats.baseCritMulti': 0.3,
+            '_stats.Permanent.crit_multi': 0.3,
         },
         'Mirage': {
             '_baseHealth': -20,

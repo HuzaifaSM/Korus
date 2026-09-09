@@ -9,6 +9,7 @@ from scripts.styles import (
     Panel, checkGlobalCommand, createEquipmentStoragePages, stepPage
 )
 from scripts.runeDrops import getRuneObject
+from scripts.korusFeedClient import reportItem
 from scripts.crafting.base import CraftOutcome, CraftResult, CraftingItem
 from rich.columns import Columns
 from rich.table import Table
@@ -75,7 +76,7 @@ class Forge(Station):
         if eq.allSlotsEmpty and any(k in runeName for k in self._EMPTY_BLOCKED_RUNES):
             return False
 
-        if eq.mastery == 20 and 'mastery' in runeName:
+        if eq.mastery >= 20 and 'mastery' in runeName:
             return False
 
         if eq.level < runeLevel:
@@ -221,7 +222,7 @@ class Forge(Station):
                 rarity = r
                 break
         # generate equipment
-        equipment = Equipment._generateEquipmentPiece(self.player._level, slot, rarity)
+        equipment = Equipment._generateEquipmentPiece(self.player._level, slot, rarity, self.player.className, self.player._name)
         self.blueprints -= blueprintCost
         console.print(f"\n[success]Crafted:[/success] {formatRarity(equipment.name, equipment.rarity.value)}")
         console.print(f"    [dim]{equipment}[/dim]")
@@ -361,6 +362,7 @@ class Forge(Station):
                     result = rune.apply(self.currentItem, self.player)
                     outcome = result.outcome
                     self._invalidateRunePages()
+                    reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name}:\n{result.message}")
 
                     self.player._recalculateStats(False)
 
@@ -544,7 +546,7 @@ class Forge(Station):
 
         level = self.player._level + totalLevel // len(chosenToFuse)
 
-        newEquipment = Equipment._generateEquipmentPiece(level, slot, newRarity)
+        newEquipment = Equipment._generateEquipmentPiece(level, slot, newRarity, self.player.className, self.player._name)
         self.player.addEquipmentToStorage(newEquipment)
         printSuccess(f"Successfully fused {neededToFuse} {fusedRarity.value.title()} pieces of Equipment to create {newEquipment.name}")
         pause()

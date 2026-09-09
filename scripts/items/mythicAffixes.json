@@ -1,0 +1,1598 @@
+{
+  "weapon": {
+    "overpower": {
+      "name": "Overpower",
+      "levelReq": 60,
+      "categories": ["offensive", "ability"],
+      "lines": [
+        {
+          "effect": "grant_ability",
+          "ability": "overpower",
+          "text": "Grants Overpower: Spend all your Stamina. Gain [x]% Execute Threshold per 10 Stamina spent, and [y]% increased Damage per 5 Stamina spent. Once per combat.",
+          "rolls": [
+            {"key": "x", "min": 0.8, "max": 1.2, "isPercent": true},
+            {"key": "y", "min": 0.8, "max": 1.2, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "weapon_scaling_damage": {
+      "name": "Weapon of Ascension (Ruin)",
+      "levelReq": 60,
+      "categories": ["offensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "damage",
+          "isPercent": false,
+          "perLevel": {"min": 1.6, "max": 2.4},
+          "cap": 120,
+          "text": "This weapon gains [x] Damage per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "weapon_scaling_crit_chance": {
+      "name": "Weapon of Ascension (Fortune)",
+      "levelReq": 60,
+      "categories": ["critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_chance",
+          "isPercent": true,
+          "perLevel": {"min": 0.12, "max": 0.18},
+          "cap": 120,
+          "text": "This weapon gains [x]% Crit Chance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "weapon_scaling_crit_multi": {
+      "name": "Weapon of Ascension (Ferocity)",
+      "levelReq": 60,
+      "categories": ["critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_multi",
+          "isPercent": true,
+          "perLevel": {"min": 0.6, "max": 0.9},
+          "cap": 120,
+          "text": "This weapon gains [x]% Crit Multiplier per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "weapon_scaling_resistance_penetration": {
+      "name": "Weapon of Ascension (Ruination)",
+      "levelReq": 60,
+      "categories": ["offensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "resistance_penetration",
+          "isPercent": true,
+          "perLevel": {"min": 0.6, "max": 0.9},
+          "cap": 120,
+          "text": "This weapon gains [x]% Resistance Penetration per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "sunder_physical_resistance": {
+      "name": "Sunderer of Flesh",
+      "levelReq": 60,
+      "categories": ["offensive", "resistance"],
+      "lines": [
+        {
+          "effect": "negate_resistance_group",
+          "group": "physical",
+          "text": "Your attacks treat the target's Physical Resistance as negative, equal to [x]x its magnitude.",
+          "rolls": [{"key": "x", "min": 0.9, "max": 1.15, "isPercent": false}]
+        }
+      ]
+    },
+    "sunder_elemental_resistance": {
+      "name": "Sunderer of Storms",
+      "levelReq": 60,
+      "categories": ["offensive", "resistance"],
+      "lines": [
+        {
+          "effect": "negate_resistance_group",
+          "group": "elemental",
+          "text": "Your attacks treat the target's Elemental Resistance as negative, equal to [x]x its magnitude.",
+          "rolls": [{"key": "x", "min": 0.9, "max": 1.15, "isPercent": false}]
+        }
+      ]
+    },
+    "sunder_otherworld_resistance": {
+      "name": "Sunderer of Veils",
+      "levelReq": 60,
+      "categories": ["offensive", "resistance"],
+      "lines": [
+        {
+          "effect": "negate_resistance_group",
+          "group": "otherworld",
+          "text": "Your attacks treat the target's Otherworld Resistance as negative, equal to [x]x its magnitude.",
+          "rolls": [{"key": "x", "min": 0.9, "max": 1.15, "isPercent": false}]
+        }
+      ]
+    },
+    "sunder_divine_resistance": {
+      "name": "Sunderer of Faith",
+      "levelReq": 60,
+      "categories": ["offensive", "resistance"],
+      "lines": [
+        {
+          "effect": "negate_resistance_group",
+          "group": "divine",
+          "text": "Your attacks treat the target's Divine Resistance as negative, equal to [x]x its magnitude.",
+          "rolls": [{"key": "x", "min": 0.9, "max": 1.15, "isPercent": false}]
+        }
+      ]
+    },
+    "underworld_strike": {
+      "name": "Underworld Strike",
+      "levelReq": 60,
+      "categories": ["offensive", "ability"],
+      "lines": [
+        {
+          "effect": "grant_ability",
+          "ability": "underworld_strike",
+          "text": "Grants Underworld Strike: deal [x]x weapon damage ([y]x if one-handed), ignoring damage scaling. The enemy's next attack also damages them for [z]% of the damage dealt.",
+          "rolls": [
+            {"key": "x", "min": 1.4, "max": 1.6, "isPercent": false},
+            {"key": "y", "min": 1.1, "max": 1.3, "isPercent": false},
+            {"key": "z", "min": 20, "max": 30, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "glass_cannon": {
+      "name": "Overextended",
+      "levelReq": 60,
+      "categories": ["offensive", "defensive"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "damage_exceeds_max_hp",
+          "text": "While your total Damage exceeds your Max Health: gain [x]% increased Damage, but suffer [y]% reduced Defenses and [z]% reduced Max Health.",
+          "rolls": [
+            {"key": "x", "min": 45, "max": 55, "isPercent": true},
+            {"key": "y", "min": 20, "max": 30, "isPercent": true},
+            {"key": "z", "min": 12, "max": 18, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "head": {
+    "clarity": {
+      "name": "Clarity",
+      "levelReq": 60,
+      "categories": ["defensive", "utility"],
+      "lines": [
+        {
+          "effect": "automatic_trigger",
+          "condition": "first_below_25_percent_hp",
+          "text": "The first time you drop below 25% Max HP each combat, cleanse all negative Status Effects and become immune to new negative Status Effects for [x] turn(s).",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "head_scaling_crit_chance": {
+      "name": "Crown of Ascension (Fortune)",
+      "levelReq": 60,
+      "categories": ["critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_chance",
+          "isPercent": true,
+          "perLevel": {"min": 0.1, "max": 0.15},
+          "cap": 120,
+          "text": "This helm gains [x]% Crit Chance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "head_scaling_ailment_avoidance": {
+      "name": "Crown of Ascension (Clarity)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "ailment_avoidance",
+          "isPercent": true,
+          "perLevel": {"min": 0.15, "max": 0.22},
+          "cap": 120,
+          "text": "This helm gains [x]% Ailment Avoidance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "head_scaling_stun_avoidance": {
+      "name": "Crown of Ascension (Resolve)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "stun_avoidance",
+          "isPercent": true,
+          "perLevel": {"min": 0.15, "max": 0.22},
+          "cap": 120,
+          "text": "This helm gains [x]% Stun Avoidance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "head_scaling_crit_resistance": {
+      "name": "Crown of Ascension (Wariness)",
+      "levelReq": 60,
+      "categories": ["defensive", "critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_resistance",
+          "isPercent": true,
+          "perLevel": {"min": 0.12, "max": 0.18},
+          "cap": 120,
+          "text": "This helm gains [x]% Crit Resistance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "ignore_crit_resistance": {
+      "name": "Mindpiercer",
+      "levelReq": 60,
+      "categories": ["offensive", "critical"],
+      "lines": [
+        {
+          "effect": "ignore_stat_defense",
+          "stat": "crit_resistance",
+          "text": "Your Critical Hits ignore [x]% of the target's Crit Resistance.",
+          "rolls": [{"key": "x", "min": 85, "max": 100, "isPercent": true}]
+        }
+      ]
+    },
+    "debuffed_fury": {
+      "name": "Afflicted Mind",
+      "levelReq": 60,
+      "categories": ["offensive", "utility"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "two_or_more_debuffs",
+          "text": "While you have 2 or more negative Status Effects active: gain [x]% increased Damage and [y]% increased Crit Chance, but take [z]% increased Damage.",
+          "rolls": [
+            {"key": "x", "min": 15, "max": 25, "isPercent": true},
+            {"key": "y", "min": 15, "max": 25, "isPercent": true},
+            {"key": "z", "min": 10, "max": 20, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "buff_theft": {
+      "name": "Mindthief's Circlet",
+      "levelReq": 60,
+      "categories": ["utility"],
+      "lines": [
+        {
+          "effect": "grant_ability",
+          "ability": "buff_theft",
+          "text": "Once per combat: [x]% chance per active enemy buff to steal one of them for yourself.",
+          "rolls": [{"key": "x", "min": 60, "max": 85, "isPercent": true}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "chest": {
+    "vital_nova": {
+      "name": "Vital Nova",
+      "levelReq": 60,
+      "categories": ["offensive", "defensive"],
+      "lines": [
+        {
+          "effect": "automatic_trigger",
+          "condition": "first_below_25_percent_hp",
+          "text": "The first time you drop below 25% Max HP in combat, deal damage to all enemies equal to [x]% of your Current HP.",
+          "rolls": [{"key": "x", "min": 90, "max": 120, "isPercent": true}]
+        }
+      ]
+    },
+    "chest_scaling_armour": {
+      "name": "Plate of Ascension (Bulwark)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "armour",
+          "isPercent": false,
+          "perLevel": {"min": 3.2, "max": 4.8},
+          "cap": 120,
+          "text": "This armour gains [x] Armour per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "chest_scaling_evasion": {
+      "name": "Plate of Ascension (Phantom)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "evasion",
+          "isPercent": false,
+          "perLevel": {"min": 3.2, "max": 4.8},
+          "cap": 120,
+          "text": "This armour gains [x] Evasion per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "chest_scaling_energy_shield": {
+      "name": "Plate of Ascension (Aegis)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "energy_shield",
+          "isPercent": false,
+          "perLevel": {"min": 1.6, "max": 2.4},
+          "cap": 120,
+          "text": "This armour gains [x] Energy Shield per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "chest_scaling_max_hp": {
+      "name": "Plate of Ascension (Vigor)",
+      "levelReq": 60,
+      "categories": ["defensive", "health", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "max_hp",
+          "isPercent": false,
+          "perLevel": {"min": 4, "max": 6},
+          "cap": 120,
+          "text": "This armour gains [x] Max HP per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "hybrid_defenses": {
+      "name": "Convergent Plating",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "hybrid_defense_conversion",
+          "text": "All Defenses convert to whichever is currently highest, at a [x]% conversion rate.",
+          "rolls": [{"key": "x", "min": 45, "max": 55, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "defenses",
+          "text": "[x]% reduced Defenses.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    },
+    "perfect_form": {
+      "name": "Untouched Form",
+      "levelReq": 60,
+      "categories": ["defensive", "health"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "above_90_percent_hp",
+          "text": "While above 90% HP, gain [x]% Damage Reduction. Dropping to or below 90% HP removes this effect until you are healed back above it.",
+          "rolls": [{"key": "x", "min": 25, "max": 35, "isPercent": true}]
+        }
+      ]
+    },
+    "scarred_plating": {
+      "name": "Scarred Plating",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "item_tracked_scaling",
+          "track": "heaviest_hit_taken",
+          "text": "This armour remembers the single heaviest hit it has ever absorbed while equipped. Gain Damage Reduction equal to [x]% of that stored value against future hits.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "legs": {
+    "crit_snare": {
+      "name": "Crit Snare",
+      "levelReq": 60,
+      "categories": ["defensive", "critical"],
+      "lines": [
+        {
+          "effect": "crit_punish",
+          "text": "At the start of combat, mark all enemies. The first marked enemy to land a Critical Hit against you is Stunned for [x] turn(s).",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "legs_scaling_crit_resistance": {
+      "name": "Greaves of Ascension (Wariness)",
+      "levelReq": 60,
+      "categories": ["defensive", "critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_resistance",
+          "isPercent": true,
+          "perLevel": {"min": 0.12, "max": 0.18},
+          "cap": 120,
+          "text": "These greaves gain [x]% Crit Resistance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "legs_scaling_speed": {
+      "name": "Greaves of Ascension (Haste)",
+      "levelReq": 60,
+      "categories": ["utility", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "speed",
+          "isPercent": false,
+          "perLevel": {"min": 0.004, "max": 0.006},
+          "cap": 120,
+          "text": "These greaves gain [x] Speed per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "legs_scaling_stun_avoidance": {
+      "name": "Greaves of Ascension (Resolve)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "stun_avoidance",
+          "isPercent": true,
+          "perLevel": {"min": 0.15, "max": 0.22},
+          "cap": 120,
+          "text": "These greaves gain [x]% Stun Avoidance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "legs_scaling_ailment_avoidance": {
+      "name": "Greaves of Ascension (Clarity)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "ailment_avoidance",
+          "isPercent": true,
+          "perLevel": {"min": 0.15, "max": 0.22},
+          "cap": 120,
+          "text": "These greaves gain [x]% Ailment Avoidance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "unerring_step": {
+      "name": "Unerring Step",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "ignore_unavoidable",
+          "text": "[x]% of your Evasion applies even against attacks that cannot normally be evaded.",
+          "rolls": [{"key": "x", "min": 80, "max": 100, "isPercent": true}]
+        }
+      ]
+    },
+    "reckless_stride": {
+      "name": "Reckless Stride",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "hp_above_below_50_percent",
+          "text": "While above 50% HP, your Evasion is multiplied by [x]. At or below 50% HP, it is instead multiplied by [y].",
+          "rolls": [
+            {"key": "x", "min": 1.8, "max": 2.2, "isPercent": false},
+            {"key": "y", "min": 0.4, "max": 0.6, "isPercent": false}
+          ]
+        }
+      ]
+    },
+    "broken_rhythm": {
+      "name": "Broken Rhythm",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "every_3rd_attack_taken",
+          "text": "Every 3rd consecutive attack against you this combat has its damage reduced by [x]%.",
+          "rolls": [{"key": "x", "min": 40, "max": 60, "isPercent": true}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "feet": {
+    "swift_vengeance": {
+      "name": "Swift Vengeance",
+      "levelReq": 60,
+      "categories": ["utility", "health"],
+      "lines": [
+        {
+          "effect": "passive_conversion",
+          "stat": "speed",
+          "text": "+[x] Speed. Whenever you kill an enemy, heal [y]% of Max HP for every 0.2 Speed you have.",
+          "rolls": [
+            {"key": "x", "min": 0.8, "max": 1.2, "isPercent": false},
+            {"key": "y", "min": 0.8, "max": 1.2, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "feet_scaling_speed": {
+      "name": "Boots of Ascension (Haste)",
+      "levelReq": 60,
+      "categories": ["utility", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "speed",
+          "isPercent": false,
+          "perLevel": {"min": 0.004, "max": 0.006},
+          "cap": 120,
+          "text": "These boots gain [x] Speed per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "feet_scaling_crit_chance_when_faster": {
+      "name": "Boots of Ascension (Momentum)",
+      "levelReq": 60,
+      "categories": ["critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_chance_when_faster",
+          "isPercent": true,
+          "perLevel": {"min": 0.12, "max": 0.18},
+          "cap": 120,
+          "text": "These boots gain [x]% Crit Chance When Faster per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "feet_scaling_evasion": {
+      "name": "Boots of Ascension (Phantom)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "evasion",
+          "isPercent": false,
+          "perLevel": {"min": 3.2, "max": 4.8},
+          "cap": 120,
+          "text": "These boots gain [x] Evasion per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "feet_scaling_crit_chance": {
+      "name": "Boots of Ascension (Fortune)",
+      "levelReq": 60,
+      "categories": ["critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_chance",
+          "isPercent": true,
+          "perLevel": {"min": 0.1, "max": 0.15},
+          "cap": 120,
+          "text": "These boots gain [x]% Crit Chance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "momentum": {
+      "name": "Momentum",
+      "levelReq": 60,
+      "categories": ["offensive", "utility"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "enemies_defeated_this_combat",
+          "text": "Gain [x]% increased Speed for each enemy defeated this combat.",
+          "rolls": [{"key": "x", "min": 4, "max": 6, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "speed_to_damage",
+          "text": "Gain [x]% increased Damage for every 0.02 Speed above 1.0 Speed you have.",
+          "rolls": [{"key": "x", "min": 0.8, "max": 1.2, "isPercent": true}]
+        }
+      ]
+    },
+    "voidstep": {
+      "name": "Voidstep",
+      "levelReq": 60,
+      "categories": ["offensive"],
+      "lines": [
+        {
+          "effect": "damage_type_override",
+          "pool": "otherworld",
+          "text": "If your damage type is not Otherworldly, [x]% chance your attacks instead deal a random Otherworld damage type based on whichever the target has the least Resistance to.",
+          "rolls": [{"key": "x", "min": 85, "max": 100, "isPercent": true}]
+        }
+      ]
+    },
+    "all_in": {
+      "name": "All In",
+      "levelReq": 60,
+      "categories": ["offensive", "defensive", "ability"],
+      "lines": [
+        {
+          "effect": "grant_ability",
+          "ability": "all_in",
+          "text": "Once per combat, for the rest of the fight: [w]% reduced Defenses, [x]% increased Crit Chance, [y]% increased Crit Multiplier, +[z] Speed.",
+          "rolls": [
+            {"key": "w", "min": 45, "max": 55, "isPercent": true},
+            {"key": "x", "min": 90, "max": 110, "isPercent": true},
+            {"key": "y", "min": 90, "max": 110, "isPercent": true},
+            {"key": "z", "min": 0.4, "max": 0.6, "isPercent": false}
+          ]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "ring": {
+    "overcharge": {
+      "name": "Overcharge",
+      "levelReq": 60,
+      "categories": ["utility"],
+      "lines": [
+        {
+          "effect": "automatic_trigger",
+          "condition": "stamina_would_hit_zero",
+          "text": "Once per combat: when your Stamina would drop to 0, instead refill it to [x]% of maximum.",
+          "rolls": [{"key": "x", "min": 90, "max": 100, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "max_stamina",
+          "text": "[x]% increased Max Stamina.",
+          "rolls": [{"key": "x", "min": 15, "max": 25, "isPercent": true}]
+        }
+      ]
+    },
+    "ring_scaling_max_stamina": {
+      "name": "Band of Ascension (Endurance)",
+      "levelReq": 60,
+      "categories": ["utility", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "max_stamina",
+          "isPercent": false,
+          "perLevel": {"min": 0.3, "max": 0.45},
+          "cap": 120,
+          "text": "This ring gains [x] Max Stamina per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "ring_scaling_stamina_regen": {
+      "name": "Band of Ascension (Renewal)",
+      "levelReq": 60,
+      "categories": ["utility", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "stamina_regen",
+          "isPercent": false,
+          "perLevel": {"min": 0.08, "max": 0.12},
+          "cap": 120,
+          "text": "This ring gains [x] Stamina Regeneration per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "ring_scaling_max_hp": {
+      "name": "Band of Ascension (Vigor)",
+      "levelReq": 60,
+      "categories": ["health", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "max_hp",
+          "isPercent": false,
+          "perLevel": {"min": 4, "max": 6},
+          "cap": 120,
+          "text": "This ring gains [x] Max HP per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "ring_scaling_hp_regen": {
+      "name": "Band of Ascension (Recovery)",
+      "levelReq": 60,
+      "categories": ["health", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "hp_regen",
+          "isPercent": false,
+          "perLevel": {"min": 0.3, "max": 0.45},
+          "cap": 120,
+          "text": "This ring gains [x] HP Regeneration per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "reckless_expenditure": {
+      "name": "Reckless Expenditure",
+      "levelReq": 60,
+      "categories": ["offensive", "utility"],
+      "lines": [
+        {
+          "effect": "resource_conversion",
+          "text": "Abilities can be used without enough Stamina. Overspending deals [x]% of the deficit as damage to you, and the same amount of damage to all enemies.",
+          "rolls": [{"key": "x", "min": 45, "max": 55, "isPercent": true}]
+        }
+      ]
+    },
+    "tempo": {
+      "name": "Tempo",
+      "levelReq": 60,
+      "categories": ["utility"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "stamina_full_or_below_50",
+          "text": "At full Stamina, your next ability's Stamina cost is reduced by [x]%. Below 50% Stamina, ability costs are instead increased by [y]%.",
+          "rolls": [
+            {"key": "x", "min": 85, "max": 100, "isPercent": true},
+            {"key": "y", "min": 20, "max": 30, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "boundless_reserves": {
+      "name": "Boundless Reserves",
+      "levelReq": 60,
+      "categories": ["offensive", "health", "utility"],
+      "lines": [
+        {
+          "effect": "resource_conversion",
+          "text": "All abilities cost 0 Stamina, but deal [x]% reduced Damage.",
+          "rolls": [{"key": "x", "min": 15, "max": 25, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "stamina_to_hp",
+          "text": "Gain [y] Max HP per Max Stamina.",
+          "rolls": [{"key": "y", "min": 0.4, "max": 0.6, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "amulet": {
+    "bloodlust": {
+      "name": "Bloodlust",
+      "levelReq": 60,
+      "categories": ["offensive", "ability"],
+      "lines": [
+        {
+          "effect": "grant_ability",
+          "ability": "bloodlust",
+          "text": "Once per combat: until you kill an enemy, gain [x]% increased Damage and [y]% Lifesteal.",
+          "rolls": [
+            {"key": "x", "min": 45, "max": 55, "isPercent": true},
+            {"key": "y", "min": 4, "max": 6, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "amulet_resistance_physical": {
+      "name": "Talisman of Ascension (Flesh)",
+      "levelReq": 60,
+      "categories": ["defensive", "resistance", "scaling"],
+      "lines": [
+        {
+          "effect": "passive_conversion",
+          "stat": "max_physical_resistance",
+          "text": "+[x] Max Physical Resistance.",
+          "rolls": [{"key": "x", "min": 6, "max": 10, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "physical_resistance",
+          "text": "+[y] Physical Resistance.",
+          "rolls": [{"key": "y", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    },
+    "amulet_resistance_elemental": {
+      "name": "Talisman of Ascension (Storm)",
+      "levelReq": 60,
+      "categories": ["defensive", "resistance", "scaling"],
+      "lines": [
+        {
+          "effect": "passive_conversion",
+          "stat": "max_elemental_resistance",
+          "text": "+[x] Max Elemental Resistance.",
+          "rolls": [{"key": "x", "min": 6, "max": 10, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "elemental_resistance",
+          "text": "+[y] Elemental Resistance.",
+          "rolls": [{"key": "y", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    },
+    "amulet_resistance_otherworld": {
+      "name": "Talisman of Ascension (Veil)",
+      "levelReq": 60,
+      "categories": ["defensive", "resistance", "scaling"],
+      "lines": [
+        {
+          "effect": "passive_conversion",
+          "stat": "max_otherworld_resistance",
+          "text": "+[x] Max Otherworld Resistance.",
+          "rolls": [{"key": "x", "min": 6, "max": 10, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "otherworld_resistance",
+          "text": "+[y] Otherworld Resistance.",
+          "rolls": [{"key": "y", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    },
+    "amulet_resistance_divine": {
+      "name": "Talisman of Ascension (Faith)",
+      "levelReq": 60,
+      "categories": ["defensive", "resistance", "scaling"],
+      "lines": [
+        {
+          "effect": "passive_conversion",
+          "stat": "max_divine_resistance",
+          "text": "+[x] Max Divine Resistance.",
+          "rolls": [{"key": "x", "min": 6, "max": 10, "isPercent": true}]
+        },
+        {
+          "effect": "passive_conversion",
+          "stat": "divine_resistance",
+          "text": "+[y] Divine Resistance.",
+          "rolls": [{"key": "y", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    },
+    "exploit_weakness": {
+      "name": "Exploit Weakness",
+      "levelReq": 60,
+      "categories": ["offensive"],
+      "lines": [
+        {
+          "effect": "damage_type_override",
+          "pool": "all",
+          "text": "[x]% chance your damage type switches to whichever Resistance the target currently has the least of.",
+          "rolls": [{"key": "x", "min": 90, "max": 100, "isPercent": true}]
+        }
+      ]
+    },
+    "self_reliance": {
+      "name": "Self Reliance",
+      "levelReq": 60,
+      "categories": ["offensive", "defensive"],
+      "lines": [
+        {
+          "effect": "conditional_modifier",
+          "condition": "no_status_buffs",
+          "text": "You cannot gain Status Effect buffs and have no Health Regeneration. In exchange, gain [x]% increased Damage, [y]% increased Defenses, and +[z]% All Resistance.",
+          "rolls": [
+            {"key": "x", "min": 25, "max": 35, "isPercent": true},
+            {"key": "y", "min": 8, "max": 12, "isPercent": true},
+            {"key": "z", "min": 4, "max": 6, "isPercent": true}
+          ]
+        }
+      ]
+    },
+    "battle_scarred": {
+      "name": "Battle Scarred",
+      "levelReq": 60,
+      "categories": ["utility"],
+      "lines": [
+        {
+          "effect": "item_tracked_scaling",
+          "track": "damage_taken_single_hit",
+          "text": "For every 100 Damage taken from a single hit while wearing this amulet, permanently gain [x]% Mastery on this item, to a maximum of 50% Mastery.",
+          "rolls": [{"key": "x", "min": 0.8, "max": 1.2, "isPercent": true}]
+        }
+      ]
+    },
+    "iron_will": {
+      "name": "Iron Will",
+      "levelReq": 60,
+      "categories": ["health", "utility"],
+      "lines": [
+        {
+          "effect": "resource_conversion",
+          "text": "[x]% of Damage taken is deducted from Stamina before Health. Health Regeneration instead applies to Stamina Regeneration.",
+          "rolls": [{"key": "x", "min": 85, "max": 100, "isPercent": true}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "shield": {
+    "unyielding": {
+      "name": "Unyielding",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "automatic_trigger",
+          "condition": "single_hit_damage_cap",
+          "text": "Hits that would deal [x]% or more of your Max Health in a single instance deal no damage instead.",
+          "rolls": [{"key": "x", "min": 22, "max": 28, "isPercent": true}]
+        }
+      ]
+    },
+    "shield_scaling_chance_to_block": {
+      "name": "Shield of Ascension (Guard)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "chance_to_block",
+          "isPercent": true,
+          "perLevel": {"min": 0.1, "max": 0.15},
+          "cap": 120,
+          "text": "This shield gains [x]% Chance to Block per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "shield_scaling_armour": {
+      "name": "Shield of Ascension (Bulwark)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "armour",
+          "isPercent": false,
+          "perLevel": {"min": 3.2, "max": 4.8},
+          "cap": 120,
+          "text": "This shield gains [x] Armour per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "shield_scaling_max_hp": {
+      "name": "Shield of Ascension (Vigor)",
+      "levelReq": 60,
+      "categories": ["defensive", "health", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "max_hp",
+          "isPercent": false,
+          "perLevel": {"min": 4, "max": 6},
+          "cap": 120,
+          "text": "This shield gains [x] Max HP per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "shield_scaling_damage_reduction": {
+      "name": "Shield of Ascension (Resilience)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "damage_reduction",
+          "isPercent": true,
+          "perLevel": {"min": 0.1, "max": 0.15},
+          "cap": 120,
+          "text": "This shield gains [x]% Damage Reduction per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "chain_ward": {
+      "name": "Chain Ward",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "block_chain",
+          "text": "Successfully Blocking an attack also blocks [x]% of all other damage against you that turn.",
+          "rolls": [{"key": "x", "min": 85, "max": 100, "isPercent": true}]
+        }
+      ]
+    },
+    "desperate_guard": {
+      "name": "Desperate Guard",
+      "levelReq": 60,
+      "categories": ["defensive"],
+      "lines": [
+        {
+          "effect": "passive_conversion",
+          "stat": "missing_hp_to_block",
+          "text": "Gain [x]% Chance to Block for every 2% Missing HP you have.",
+          "rolls": [{"key": "x", "min": 0.4, "max": 0.6, "isPercent": true}]
+        }
+      ]
+    },
+    "retaliation": {
+      "name": "Retaliation",
+      "levelReq": 60,
+      "categories": ["offensive", "defensive"],
+      "lines": [
+        {
+          "effect": "damage_reflect",
+          "text": "When you Block an attack, reflect [x]% of the blocked damage back at the attacker.",
+          "rolls": [{"key": "x", "min": 90, "max": 110, "isPercent": true}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "sigil_offensive": {
+    "detonate": {
+      "name": "Detonate",
+      "levelReq": 60,
+      "categories": ["offensive", "ability"],
+      "lines": [
+        {
+          "effect": "grant_ability",
+          "ability": "detonate",
+          "text": "Once per combat: deal damage to one enemy equal to [x]% of your total Damage dealt so far this combat.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    },
+    "sigil_off_scaling_crit_chance": {
+      "name": "Sigil of Ascension (Fortune)",
+      "levelReq": 60,
+      "categories": ["critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_chance",
+          "isPercent": true,
+          "perLevel": {"min": 0.12, "max": 0.18},
+          "cap": 120,
+          "text": "This sigil gains [x]% Crit Chance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "sigil_off_scaling_crit_multi": {
+      "name": "Sigil of Ascension (Ferocity)",
+      "levelReq": 60,
+      "categories": ["critical", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "crit_multi",
+          "isPercent": true,
+          "perLevel": {"min": 0.6, "max": 0.9},
+          "cap": 120,
+          "text": "This sigil gains [x]% Crit Multiplier per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "sigil_off_scaling_resistance_penetration": {
+      "name": "Sigil of Ascension (Ruination)",
+      "levelReq": 60,
+      "categories": ["offensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "resistance_penetration",
+          "isPercent": true,
+          "perLevel": {"min": 0.6, "max": 0.9},
+          "cap": 120,
+          "text": "This sigil gains [x]% Resistance Penetration per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "sigil_off_scaling_damage": {
+      "name": "Sigil of Ascension (Ruin)",
+      "levelReq": 60,
+      "categories": ["offensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "damage",
+          "isPercent": false,
+          "perLevel": {"min": 1.6, "max": 2.4},
+          "cap": 120,
+          "text": "This sigil gains [x] Damage per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "amplified_sigil": {
+      "name": "Amplified Sigil",
+      "levelReq": 60,
+      "categories": ["utility"],
+      "lines": [
+        {
+          "effect": "implicit_multiplier",
+          "text": "This Sigil's Implicit effect is multiplied by [x].",
+          "rolls": [{"key": "x", "min": 1.8, "max": 2.2, "isPercent": false}]
+        },
+        {
+          "effect": "mastery_bonus",
+          "text": "+[y]% Max Mastery on this item.",
+          "rolls": [{"key": "y", "min": 15, "max": 25, "isPercent": true}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  },
+  "sigil_defensive": {
+    "aegis": {
+      "name": "Aegis",
+      "levelReq": 60,
+      "categories": ["defensive", "ability"],
+      "lines": [
+        {
+          "effect": "grant_ability",
+          "ability": "aegis",
+          "text": "Once per combat: grant yourself a Shield equal to [x]% of Max HP.",
+          "rolls": [{"key": "x", "min": 20, "max": 30, "isPercent": true}]
+        }
+      ]
+    },
+    "sigil_def_scaling_max_hp": {
+      "name": "Sigil of Ascension (Vigor)",
+      "levelReq": 60,
+      "categories": ["health", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "max_hp",
+          "isPercent": false,
+          "perLevel": {"min": 4, "max": 6},
+          "cap": 120,
+          "text": "This sigil gains [x] Max HP per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "sigil_def_scaling_all_resistance": {
+      "name": "Sigil of Ascension (Warding)",
+      "levelReq": 60,
+      "categories": ["defensive", "resistance", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "all_resistance",
+          "isPercent": true,
+          "perLevel": {"min": 0.15, "max": 0.22},
+          "cap": 120,
+          "text": "This sigil gains [x]% All Resistance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "sigil_def_scaling_damage_reduction": {
+      "name": "Sigil of Ascension (Resilience)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "damage_reduction",
+          "isPercent": true,
+          "perLevel": {"min": 0.12, "max": 0.18},
+          "cap": 120,
+          "text": "This sigil gains [x]% Damage Reduction per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "sigil_def_scaling_ailment_avoidance": {
+      "name": "Sigil of Ascension (Clarity)",
+      "levelReq": 60,
+      "categories": ["defensive", "scaling"],
+      "lines": [
+        {
+          "effect": "scale_with_item_level",
+          "stat": "ailment_avoidance",
+          "isPercent": true,
+          "perLevel": {"min": 0.15, "max": 0.22},
+          "cap": 120,
+          "text": "This sigil gains [x]% Ailment Avoidance per Item Level, capping at Level 120."
+        }
+      ]
+    },
+    "amplified_sigil": {
+      "name": "Amplified Sigil",
+      "levelReq": 60,
+      "categories": ["utility"],
+      "lines": [
+        {
+          "effect": "implicit_multiplier",
+          "text": "This Sigil's Implicit effect is multiplied by [x].",
+          "rolls": [{"key": "x", "min": 1.8, "max": 2.2, "isPercent": false}]
+        },
+        {
+          "effect": "mastery_bonus",
+          "text": "+[y]% Max Mastery on this item.",
+          "rolls": [{"key": "y", "min": 15, "max": 25, "isPercent": true}]
+        }
+      ]
+    },
+    "bonus_prefix_slot": {
+      "name": "Overflowing Prefix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "prefix",
+          "text": "Gain [x] additional Prefix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_suffix_slot": {
+      "name": "Overflowing Suffix",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "affix_slot_bonus",
+          "kind": "suffix",
+          "text": "Gain [x] additional Suffix affix slot(s) on this item.",
+          "rolls": [{"key": "x", "min": 1, "max": 2, "isPercent": false}]
+        }
+      ]
+    },
+    "bonus_max_mastery": {
+      "name": "Overcharged Mastery",
+      "levelReq": 60,
+      "categories": ["utility", "crafting"],
+      "lines": [
+        {
+          "effect": "mastery_bonus",
+          "text": "+[x]% Max Mastery on this item.",
+          "rolls": [{"key": "x", "min": 8, "max": 12, "isPercent": true}]
+        }
+      ]
+    }
+  }
+}

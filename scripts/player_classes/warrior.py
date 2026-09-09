@@ -48,7 +48,7 @@ class Warrior(Player):
     def __init__(self, name, health = 50, damage = 4, damageType = "fire", speed = 0.85):
         super().__init__(name, health, damage, 0.05, 2.0, damageType, speed, className="Warrior", classDescription=WARRIOR_DESCRIPTIONS['Warrior'])
         self._rage = 0 # build rage during combat, 1 rage = +3 damage
-        self._maxRage = 50
+        self._baseMaxRage = 50
 
         self._fury = 0
         self._maxFury = 10
@@ -77,15 +77,19 @@ class Warrior(Player):
 
         return baseStr
 
+    @property
+    def maxRage(self) -> int:
+        return self._baseMaxRage + self._stats['Bonuses'].get('max_rage', 0)
+
     def serialise(self):
         temp = super().serialise()
-        temp['maxRage'] = self._maxRage
+        temp['maxRage'] = self._baseMaxRage
         temp['rageGeneration'] = self.rageGeneration
         return temp
 
     def deserialise(self, data):
         super().deserialise(data)
-        self._maxRage = data.get('maxRage', 30)
+        self._baseMaxRage = data.get('maxRage', 30)
         self.rageGeneration = data.get('rageGeneration', 0)
 
     def _recalculateStats(self, doPrint = True, inCombat = False):
@@ -193,7 +197,7 @@ class Warrior(Player):
     def onDamaged(self, attacker, damageReductionValue, armourDamagePrevented, combatManager):
         if self._ascendancy == 'Tyrant':
             rageGain = int((armourDamagePrevented + damageReductionValue) * 0.25)
-            self._rage = min(self._maxRage, self._rage + rageGain)
+            self._rage = min(self.maxRage, self._rage + rageGain)
 
         if self._ascendancy == 'Warlord':
             if self._warlordShieldWasUp and self._shield <= 0: # shield was broken on hit
@@ -206,7 +210,7 @@ class Warrior(Player):
 
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
-        rageGain = damageDealt // (6 * (1 + self._level // 10))
+        rageGain = damageDealt // (6 * (1 + self._level // 10)) + self._stats['Bonuses'].get('rage_gain_on_attack', 0)
 
         if self._ascendancy == 'Warlord':
             rageGain = int(rageGain * 1.2)
@@ -217,10 +221,10 @@ class Warrior(Player):
         if damageType == 'fire' and damageDealt > 0:
             rageGain += 1
 
-        self._rage = min(self._maxRage, self._rage + rageGain)
+        self._rage = min(self.maxRage, self._rage + rageGain)
         self.annihilationRage += rageGain
         if rageGain > 0:
-            console.print(f"\n[class_warrior]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/class_warrior]")
+            console.print(f"\n[class_warrior]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self.maxRage}[/class_warrior]")
 
         if self._ascendancy == 'Annihilist':
             while self.annihilationRage >= 50:
@@ -270,7 +274,7 @@ class Warrior(Player):
 
     def onHit(self, damageTaken, damageType, isCrit, attacker, combatManager):
         damageTaken, damageType = super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
-        rageGain = max(0, damageTaken // (10 * (1 + self._level // 12)))
+        rageGain = max(0, damageTaken // (10 * (1 + self._level // 12))) + self._stats['Bonuses'].get('rage_gain_on_hit', 0)
         if damageType == 'fire':
             rageGain = int(rageGain * 1.1)
 
@@ -297,9 +301,9 @@ class Warrior(Player):
                 damageTaken = int(damageTaken * (1 - (0.05 * self.conquerorEnemies)))
             rageGain = int(rageGain * 0.8)
 
-        self._rage = min(self._maxRage, self._rage + rageGain)
+        self._rage = min(self.maxRage, self._rage + rageGain)
         if rageGain > 0:
-            console.print(f"\n[class_warrior]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self._maxRage}[/class_warrior]")
+            console.print(f"\n[class_warrior]Your Rage grows! +{rageGain} Rage. Current Rage: {self._rage} / {self.maxRage}[/class_warrior]")
 
         return damageTaken, damageType
 
@@ -342,7 +346,7 @@ class Warrior(Player):
 
     def onTurnStart(self, combatManager):
         if self.rageGeneration > 0:
-            self._rage = min(self._maxRage, self._rage + self.rageGeneration)
+            self._rage = min(self.maxRage, self._rage + self.rageGeneration)
             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
 
         if self._ascendancy == 'Juggernaut':
@@ -378,7 +382,7 @@ class Warrior(Player):
 
     def _levelUp(self):
         super()._levelUp()
-        self._maxRage += 1
+        self._baseMaxRage += 1
 
     ASCENDANCY_DELTAS = {
         'Warlord': {
@@ -400,14 +404,14 @@ class Warrior(Player):
             '_baseHealth': +15,
             '_baseDamage': 8,
             '_baseSpeed': +0.05,
-            '_stats.baseCritChance': 0.05,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_chance': 0.05,
+            '_stats.Permanent.crit_multi': 0.25,
         },
         'Tyrant': {
             '_baseHealth': -25,
             '_baseDamage': 6,
             '_baseSpeed': 0.05,
-            '_stats.baseCritMulti': -0.5,
+            '_stats.Permanent.crit_multi': -0.5,
             '_stats.Permanent.added_armour': 50,
         },
         'Conqueror': {

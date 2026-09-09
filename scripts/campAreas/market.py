@@ -101,7 +101,7 @@ class Market(Station):
             }
             possibleRarities = rarityChances.get(self.level, [ItemRarity.COMMON, ItemRarity.UNCOMMON])
             rarity = random.choice(possibleRarities)
-            equipment = Equipment._generateEquipmentPiece(equipLevel, slot, rarity, className=self.player.className)
+            equipment = Equipment._generateEquipmentPiece(equipLevel, slot, rarity, self.player.className, self.player._name)
             price = int((random.uniform(1, 5) * equipment.value) * (1 + equipLevel // 10) + 1000)
             self.stock[equipment.name] = (1, price, equipment)
 

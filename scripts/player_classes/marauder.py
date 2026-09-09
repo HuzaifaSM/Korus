@@ -78,7 +78,7 @@ class Marauder(Player):
 
     @property
     def maxSiphon(self):
-        return round(self._level * 1.5)
+        return round(self._level * 1.5) + self._stats['Bonuses'].get('siphon_cap_flat', 0)
 
     def gainDamageReduction(self):
         if self._stats['Temporary']['damage_reduction'] < self._level * 2:
@@ -209,7 +209,7 @@ class Marauder(Player):
                 finalDamage = int(finalDamage * 0.85)
                 self.gainDamageReduction()
             else:
-                if self.siphonedDamage > 0:
+                if self.siphonedDamage > 0 and not self._stats['Bonuses'].get('siphon_immune', 0):
                     self.siphonedDamage -= 1
                     attacker._baseDamage += 1
                     console.print(f"[warning]{attacker._name} stole 1 Siphoned Damage from you![/warning]")
@@ -233,11 +233,12 @@ class Marauder(Player):
         targetHasActed = target in self._recentlyActedEnemies
         self._recentlyActedEnemies.discard(target)
         if targetHasActed:
+            echoBonus = 1 + self._stats['Bonuses'].get('echo_damage_increased', 0) / 100
             if self._ascendancy == 'Colossus':
                 target.applyCrush()
-                self.echoDamage[target] = max(1, int(finalDamage * 0.15))
+                self.echoDamage[target] = max(1, int(finalDamage * 0.15 * echoBonus))
             else:
-                self.echoDamage[target] = max(1, int(finalDamage * 0.35))
+                self.echoDamage[target] = max(1, int(finalDamage * 0.35 * echoBonus))
 
             if self._ascendancy == 'Butcher':
                 target.applyCarved()
@@ -583,15 +584,15 @@ class Marauder(Player):
             '_baseHealth': -10,
             '_baseDamage': 10,
             '_baseSpeed': 0.1,
-            '_stats.baseCritChance': 0.05,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_chance': 0.05,
+            '_stats.Permanent.crit_multi': 0.25,
         },
         'Butcher': {
             '_baseHealth': 10,
             '_baseDamage': 6,
             '_baseSpeed': 0.1,
-            '_stats.baseCritChance': 0.05,
-            '_stats.baseCritMulti': -0.25,
+            '_stats.Permanent.crit_chance': 0.05,
+            '_stats.Permanent.crit_multi': -0.25,
             '_stats.Permanent.fire': -10,
         },
     }

@@ -72,15 +72,16 @@ class Wanderer(Player):
     def __init__(self, name, health = 45, damage = 6, damageType = "psychic", speed = 1.1):
         super().__init__(name, health, damage, 0.1, 1.6, damageType, speed, className='Wanderer', classDescription=WANDERER_DESCRIPTIONS['Wanderer'])
         self.lostTrigger = False
+        self._lostAttackActive = False  # stays true across every target of a Lost-triggered attack (set once in onBeforeDamage, read per-target in onAttack/onPrepareHit)
         self.lostPercent = 0.1
         self.hope = 0
         self.maxHope = 5
         self.hopeless = 0
         self.maxHopeless = 5
-        self.radiance = True
+        self.radiance = False
         self.devastation = False
         self.devastationDamage = 0
-        
+
         self.fracture = 0
         self.fractureNoCritLastTurn = False
         self.lostHitChance = 1.0
@@ -130,13 +131,14 @@ class Wanderer(Player):
                 if self._ascendancy == 'Manifestation':
                     self.gainHopeless()
 
-    def gainHope(self):
+    def gainHope(self, amount: int = 1):
+        amount += self._stats['Bonuses'].get('hope_gain_flat', 0)
         mult = 1
         if self._ascendancy == 'Fractured':
             mult = 0.5
         if self.hope < self.maxHope:
-            self.hope += 1
-            self._stats['Temporary']['crit_chance'] += 0.02 * mult
+            self.hope = min(self.maxHope, self.hope + amount)
+            self._stats['Temporary']['crit_chance'] += 0.02 * mult * amount
             self.gainRadiance()
 
     def loseHope(self):
@@ -173,14 +175,15 @@ class Wanderer(Player):
             shieldStr = f" and gained {excess} Shield" if excess > 0 else ""
             console.print(f"[class_wanderer]Wanderer: Radiance! Healed for {heal} HP{shieldStr}.[/class_wanderer]")
 
-    def gainHopeless(self):
+    def gainHopeless(self, amount: int = 1):
+        amount += self._stats['Bonuses'].get('hopeless_gain_flat', 0)
         mult = 1
         if self._ascendancy == 'Fractured':
             mult = 0.5
         if self.hopeless < self.maxHopeless:
-            self.hopeless += 1
-            self._stats['Temporary']['damage_reduction'] += 2 * mult
-            self._stats['Temporary']['crit_multi'] += 0.1 * mult
+            self.hopeless = min(self.maxHopeless, self.hopeless + amount)
+            self._stats['Temporary']['damage_reduction'] += 2 * mult * amount
+            self._stats['Temporary']['crit_multi'] += 0.1 * mult * amount
             self.gainDevastation()
 
     def loseHopeless(self):
@@ -266,6 +269,10 @@ class Wanderer(Player):
             self._stats['Temporary']['crit_chance'] += 0.1
 
     def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
+        # _lostAttackActive stays true across every target of this attack (unlike lostTrigger,
+        # which is consumed once here rather than per-target) so the Lost damage bonus, Fracture
+        # gain, and Hope/Hopeless gain all correctly apply to every enemy hit, not just the first.
+        self._lostAttackActive = False
         if self._ascendancy == 'Manifestation' and self.lostTrigger and damageType != 'heal':
             if random.random() >= self.lostHitChance:
                 console.print('  [warning]- Manifestation: Lost attack missed! Applied Otherworld Exposure to all enemies.[/warning]')
@@ -279,6 +286,9 @@ class Wanderer(Player):
         if self.lostTrigger and damageType != 'heal':
             console.print('  [buff]- Wanderer: Lost triggered. Attacking all enemies for 150% damage.[/buff]')
             targets = combatManager.allAlive
+            self._lostAttackActive = True
+            if self._ascendancy != 'Abyssal':  # Abyssal is always Lost and never consumes the charge
+                self.lostTrigger = False
 
             if self._ascendancy == 'Weaver':
                 self.wovenDamage += 10
@@ -302,7 +312,7 @@ class Wanderer(Player):
                 if self.radiance or self.devastation:
                     target.tortureStacks += 1
             doubleDamageChance = target.tortureStacks / (100 if not self.devastation else 50)
-            if self.lostTrigger and random.random() <= doubleDamageChance:
+            if self._lostAttackActive and random.random() <= doubleDamageChance:
                 self._logDamage(f"Torture Proc ({target.tortureStacks} Torture, Mindbreaker)", percent=1.0)
                 finalDamage *= 2
                 self._queueEffect(Effects.createOtherworldExposure())
@@ -500,20 +510,20 @@ class Wanderer(Player):
                     console.print(f"[asc_mindbreaker]Mindbreaker: {ability.name} breaks {stacksConsumed} Torture for +{bonus} Damage.[/asc_mindbreaker]")
 
         if self._ascendancy == 'Fractured':
-            if self.lostTrigger and self.fracture == 5:
+            if self._lostAttackActive and self.fracture == 5:
                 for _ in range(self.hope):
                     self.gainHope()
                 for _ in range(self.hopeless):
                     self.gainHopeless()
 
-        if self.lostTrigger:
+        if self._lostAttackActive:
             if self.devastation:
                 self.devastationDamage += int(self._maxHealth * 0.03 * (1.5 if self._ascendancy == 'Abyssal' else 1))
 
             if self._ascendancy != 'Abyssal':
-                self._logDamage("Lost", percent=0.5)
-                damageDealt = int(damageDealt * 1.5)
-                self.lostTrigger = False
+                lostMulti = 1.5 + self._stats['Bonuses'].get('lost_damage_increased', 0) / 100
+                self._logDamage("Lost", percent=lostMulti - 1)
+                damageDealt = int(damageDealt * lostMulti)
             if self._ascendancy == 'Fractured':
                 self.gainFracture()
                 if self.radiance:
@@ -739,10 +749,10 @@ class Wanderer(Player):
         self.maxHope = 5
         self.hopeless = 0
         self.maxHopeless = 5
-        self.radiance = True
+        self.radiance = False
         self.devastation = False
         self.devastationDamage = 0
-        
+
         self.fracture = 0
         self.fractureNoCritLastTurn = False
         self.lostHitChance = 1.0
@@ -764,28 +774,28 @@ class Wanderer(Player):
             '_baseHealth': -5,
             '_baseDamage': 10,
             '_baseSpeed': 0.05,
-            '_stats.baseCritChance': 0.02,
-            '_stats.baseCritMulti': 0.2,
+            '_stats.Permanent.crit_chance': 0.02,
+            '_stats.Permanent.crit_multi': 0.2,
         },
         'Manifestation': {
             '_baseHealth': 40,
             '_baseDamage': 0,
             '_baseSpeed': -0.05,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_multi': 0.25,
         },
         'Weaver': {
             '_baseHealth': 25,
             '_baseDamage': 0,
             '_baseSpeed': 0.05,
-            '_stats.baseCritMulti': 0.2,
+            '_stats.Permanent.crit_multi': 0.2,
             '_stats.Permanent.psychic': 10,
         },
         'Abyssal': {
             '_baseHealth': 30,
             '_baseDamage': -4,
             '_baseSpeed': 0.1,
-            '_stats.baseCritChance': -0.03,
-            '_stats.baseCritMulti': -0.1,
+            '_stats.Permanent.crit_chance': -0.03,
+            '_stats.Permanent.crit_multi': -0.1,
             '_stats.Permanent.otherworld': 10,
         },
         'Warper': {
@@ -793,13 +803,13 @@ class Wanderer(Player):
             '_baseDamage': 10,
             '_baseSpeed': -0.1,
             '_stats.Permanent.physical': 10,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_multi': 0.25,
         },
         'Mindbreaker': {
             '_baseHealth': 5,
             '_baseDamage': 10,
-            '_stats.baseCritChance': 0.02,
-            '_stats.baseCritMulti': 0.2,
+            '_stats.Permanent.crit_chance': 0.02,
+            '_stats.Permanent.crit_multi': 0.2,
             '_stats.Permanent.psychic': 10,
         },
     }

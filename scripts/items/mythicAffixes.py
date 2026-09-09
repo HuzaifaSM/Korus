@@ -1,7 +1,7 @@
 import json
 from typing import Optional, Dict, Any, List, Set
 import random
-from .styles import console, printError
+from ..styles import console, printError
 from copy import deepcopy
 from os.path import exists
 from .affixes import Affix
@@ -105,7 +105,7 @@ def rollMythicAffix(equipType: str, affixType: str, itemLevel: int, rarity: obje
                     excludeIds: Set[str], defenseType: str = None,
                     minAffixLevel: int | None = None) -> Optional[Affix]:
     """rarity = ItemRarity"""
-    from .items.items import ItemRarity
+    from .items import ItemRarity
     if rarity != ItemRarity.MYTHIC:
         return None
 

@@ -10,14 +10,17 @@ class Threshold(Enum):
     DEDICATED = "dedicated"
     ALL_IN = "all-in"
 
-def getThresholdFromValue(value: int) -> Threshold:
+def getThresholdFromValue(value: int, trainedReduction: int = 0, dedicatedReduction: int = 0, allInReduction: int = 0) -> Threshold:
+    trainedCutoff = max(1, 35 - trainedReduction)
+    dedicatedCutoff = max(trainedCutoff + 1, 70 - dedicatedReduction)
+    allInCutoff = max(dedicatedCutoff + 1, 110 - allInReduction)
     if value < 0:
         return Threshold.COMPLACENT
-    elif value < 35:
+    elif value < trainedCutoff:
         return Threshold.NEUTRAL
-    elif value < 70:
+    elif value < dedicatedCutoff:
         return Threshold.TRAINED
-    elif value < 110:
+    elif value < allInCutoff:
         return Threshold.DEDICATED
     else:
         return Threshold.ALL_IN
@@ -163,11 +166,8 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.checkAggressionChange()
         self.checkDisciplineChange()
 
-    def loseAggression(self, amount: int, floorBreak: bool = False):
-        if floorBreak:
-            self.aggression = max(-30, self.aggression - amount)
-        else:
-            self.aggression = max(0, self.aggression - amount)
+    def loseAggression(self, amount: int):
+        self.aggression = max(-30, self.aggression - amount)
         self.checkAggressionChange()
 
     def gainDiscipline(self, amount):
@@ -184,11 +184,8 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         self.checkDisciplineChange()
         self.checkAggressionChange()
 
-    def loseDiscipline(self, amount: int, floorBreak: bool = False):
-        if floorBreak:
-            self.discipline = max(-30, self.discipline - amount)
-        else:
-            self.discipline = max(0, self.discipline - amount)
+    def loseDiscipline(self, amount: int):
+        self.discipline = max(-30, self.discipline - amount)
         self.checkDisciplineChange()
 
     def _thresholdEffects(self, stance: str, threshold: Threshold) -> dict:
@@ -270,13 +267,18 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             self._stats['Temporary'][stat] += amount * sign
 
     def _checkStanceChange(self, stance: str):
+        thresholdKwargs = {
+            'trainedReduction': self._stats['Bonuses'].get('trained_threshold_reduction', 0),
+            'dedicatedReduction': self._stats['Bonuses'].get('dedicated_threshold_reduction', 0),
+            'allInReduction': self._stats['Bonuses'].get('allin_threshold_reduction', 0),
+        }
         if stance == 'aggression':
             oldThreshold = self.currentAggressionTreshold
-            newThreshold = getThresholdFromValue(self.aggression)
+            newThreshold = getThresholdFromValue(self.aggression, **thresholdKwargs)
             appliedAttr = '_appliedAggressionDelta'
         else:
             oldThreshold = self.currentDisciplineThreshold
-            newThreshold = getThresholdFromValue(self.discipline)
+            newThreshold = getThresholdFromValue(self.discipline, **thresholdKwargs)
             appliedAttr = '_appliedDisciplineDelta'
 
         if oldThreshold == newThreshold:
@@ -489,13 +491,13 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             gain = fx.get('gain_amount', 0)
             dominant = self._higherStance()
             if dominant == 'aggression':
-                self.loseDiscipline(sacrifice, floorBreak=True)
+                self.loseDiscipline(sacrifice)
                 self.gainAggression(gain)
-                console.print(f"[class_fighter]{ability.name}: Sacrificed {sacrifice} Discipline (can go negative) to gain {gain} Aggression.[/class_fighter]")
+                console.print(f"[class_fighter]{ability.name}: Sacrificed {sacrifice} Discipline to gain {gain} Aggression.[/class_fighter]")
             else:
-                self.loseAggression(sacrifice, floorBreak=True)
+                self.loseAggression(sacrifice)
                 self.gainDiscipline(gain)
-                console.print(f"[class_fighter]{ability.name}: Sacrificed {sacrifice} Aggression (can go negative) to gain {gain} Discipline.[/class_fighter]")
+                console.print(f"[class_fighter]{ability.name}: Sacrificed {sacrifice} Aggression to gain {gain} Discipline.[/class_fighter]")
 
         # -- Dissenter -- #
         if 'grants_impatience_on_cast' in tags:
@@ -596,7 +598,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
                 self._logDamage(f"{ability.name} (Pact of {self.autarchPact.title()}, Autarch)", percent=bonus / 100)
                 damageDealt = int(damageDealt * (1 + (bonus / 100)))
 
-        aggGain = 3 + (damageDealt // (10 * (1 + self._level // 10)))
+        aggGain = 3 + (damageDealt // (10 * (1 + self._level // 10))) + self._stats['Bonuses'].get('aggression_gain_flat', 0)
         self.gainAggression(aggGain)
 
         if self.currentAggressionTreshold != Threshold.NEUTRAL and damageType == 'physical':
@@ -645,7 +647,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
     def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
         damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
-        disGain = damageTaken // (8 * (1 + self._level // 11))
+        disGain = damageTaken // (8 * (1 + self._level // 11)) + self._stats['Bonuses'].get('discipline_gain_flat', 0)
         self.gainDiscipline(disGain)
 
         if self.currentDisciplineThreshold != Threshold.NEUTRAL:
@@ -846,7 +848,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             '_baseHealth': -5,
             '_baseDamage': 10,
             '_baseSpeed': 0.05,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_multi': 0.25,
             '_stats.Permanent.increased_defenses': 5,
         },
         'Arbiter': {
@@ -859,7 +861,7 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             '_baseHealth': 5,
             '_baseDamage': 2,
             '_baseSpeed': 0.15,
-            '_stats.baseCritChance': 0.05,
+            '_stats.Permanent.crit_chance': 0.05,
             '_stats.Permanent.ailment_avoidance': 25,
         },
         'Triarch': {

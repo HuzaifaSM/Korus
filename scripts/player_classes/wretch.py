@@ -225,9 +225,10 @@ class Wretch(Player):
     def onPrepareHit(self, target, targetUnit, finalDamage, damageType, combatManager):
         finalDamage = super().onPrepareHit(target, targetUnit, finalDamage, damageType, combatManager)
         if target.bloodSpike < self.maxBloodSpikeStacks:
-            target.bloodSpike += 1
+            gain = 1 + self._stats['Bonuses'].get('blood_spike_gain_flat', 0)
+            target.bloodSpike = min(self.maxBloodSpikeStacks, target.bloodSpike + gain)
             if self._ascendancy == 'Necrose':
-                self.bloodSpikeApplied += 1
+                self.bloodSpikeApplied += gain
         return finalDamage
 
     def onAfterMitigation(self, attacker, finalDamage, damageType, evaded, armourDamagePrevented, esDamagePrevented, preMitigationDamage, combatManager):
@@ -539,8 +540,8 @@ class Wretch(Player):
         'Exsanguinator': {
             '_baseHealth': 10,
             '_baseDamage': 1,
-            '_stats.baseCritChance': 0.05,
-            '_stats.baseCritMulti': -0.25,
+            '_stats.Permanent.crit_chance': 0.05,
+            '_stats.Permanent.crit_multi': -0.25,
             '_stats.Permanent.added_energy_shield': 25,
             'maxBloodSpikeStacks': 5,
         },
@@ -555,7 +556,7 @@ class Wretch(Player):
             '_baseHealth': 5,
             '_baseDamage': 4,
             '_baseSpeed': 0.1,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_multi': 0.25,
             'maxBloodSpikeStacks': -3,
         },
         'Necrose': {

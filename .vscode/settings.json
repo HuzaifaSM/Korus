@@ -1,0 +1,7 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "native/korus_enemy_ai/Cargo.toml",
+        "native/korus_save/Cargo.toml",
+        "native/korus_watch/Cargo.toml"
+    ]
+}

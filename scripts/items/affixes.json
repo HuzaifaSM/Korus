@@ -268,7 +268,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "health_on_hit": {
@@ -648,7 +648,7 @@
                     "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -770,7 +770,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "hp_regen": {
@@ -1177,7 +1177,7 @@
                     "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -1454,7 +1454,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "hp_regen": {
@@ -1846,7 +1846,7 @@
                     "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -1955,7 +1955,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "hp_regen": {
@@ -2329,7 +2329,7 @@
                     "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -2438,7 +2438,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "hp_regen": {
@@ -3018,7 +3018,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "health_on_hit": {
@@ -3407,7 +3407,7 @@
                     "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -3684,7 +3684,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "physical_resistance": {
@@ -4003,7 +4003,7 @@
                     "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -4280,7 +4280,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "hp_regen": {
@@ -4620,7 +4620,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "health_on_hit": {
@@ -4886,7 +4886,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "fire_resistance": {
@@ -4969,7 +4969,7 @@
                     "1": { "levelReq": 1, "min": 2, "max": 5, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 5, "max": 9, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 9, "max": 13, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 13, "max": 16, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 13, "max": 16, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 16, "max": 20, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -5372,7 +5372,7 @@
                     "1": { "levelReq": 1, "min": 2, "max": 5, "weight": 900, "name": "of Stone" },
                     "2": { "levelReq": 18, "min": 5, "max": 9, "weight": 750, "name": "of the Mountain" },
                     "3": { "levelReq": 33, "min": 9, "max": 13, "weight": 550, "name": "of the Earth" },
-                    "4": { "levelReq": 50, "min": 13, "max": 16, "weight": 370, "name": "of the Gaia" },
+                    "4": { "levelReq": 50, "min": 13, "max": 16, "weight": 370, "name": "of Gaia" },
                     "5": { "levelReq": 68, "min": 16, "max": 20, "weight": 200, "name": "of the Worldshaper" }
                 }
             },
@@ -5679,7 +5679,7 @@
                     "2": { "levelReq": 22, "min": 13, "max": 22, "weight": 640, "name": "of Anchoring" },
                     "3": { "levelReq": 40, "min": 23, "max": 35, "weight": 420, "name": "of Equilibrium" },
                     "4": { "levelReq": 60, "min": 36, "max": 50, "weight": 220, "name": "of Immutability" },
-                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of the Shifting" }
+                    "5": { "levelReq": 82, "min": 51, "max": 68, "weight": 100, "name": "of Shifting" }
                 }
             },
             "physical_resistance": {

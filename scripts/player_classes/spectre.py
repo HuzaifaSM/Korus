@@ -81,6 +81,7 @@ class Spectre(Player):
             mult = 2 if len(combatManager.allAlive) > 1 else 1
         else:
             mult = 1
+        mult += self._stats['Bonuses'].get('vengeance_gain_flat', 0)
         for _ in range(mult):
             if self.vengeance < self.maxVengeance:
                 self.vengeance += 1
@@ -165,9 +166,10 @@ class Spectre(Player):
 
     def onCrit(self, targets, combatManager, critDamage):
         if self._ascendancy != 'Phantasm':
+            perStackCritDamage = 0.15 + self._stats['Bonuses'].get('vengeance_consume_crit_damage_increased', 0) / 100
             if self.vengeance:
-                console.print(f"[class_spectre]Vengeance: Consumed {self.vengeance} stack(s) for +{int(0.15 * self.vengeance * 100)}% Critical Damage![/class_spectre]")
-            critDamage = int(critDamage * (1 + (0.15 * self.vengeance)))
+                console.print(f"[class_spectre]Vengeance: Consumed {self.vengeance} stack(s) for +{int(perStackCritDamage * self.vengeance * 100)}% Critical Damage![/class_spectre]")
+            critDamage = int(critDamage * (1 + (perStackCritDamage * self.vengeance)))
 
         if self._ascendancy == 'Wraith':
             self.heal(self.wraithFading, reason="Fading (Wraith)")
@@ -306,7 +308,8 @@ class Spectre(Player):
                 self._logDamage(f"Vengeance ({self.vengeance} stacks)", percent=0.1 * self.vengeance)
             damageDealt = int(damageDealt * (1 + (0.1 * self.vengeance)))
             ignoredArmour = target._stats['armour']
-            healAmount = int(ignoredArmour * self.ghostlyAmount)
+            ghostlyAmount = self.ghostlyAmount * (1 + self._stats['Bonuses'].get('ghostly_heal_increased', 0) / 100)
+            healAmount = int(ignoredArmour * ghostlyAmount)
 
             if healAmount > 0:
                 self.heal(healAmount, reason="Ghostly (Ignored Armour)")
@@ -546,7 +549,7 @@ class Spectre(Player):
             '_baseHealth': -5,
             '_baseDamage': -2,
             '_baseSpeed': 0.05,
-            '_stats.baseCritChance': 0.02,
+            '_stats.Permanent.crit_chance': 0.02,
             '_stats.Permanent.added_armour': 100,
         },
         'Phantasm': {
@@ -554,7 +557,7 @@ class Spectre(Player):
             '_baseDamage': 8,
             '_baseSpeed': -0.1,
             '_stats.Permanent.stun_avoidance': -10,
-            '_stats.baseCritMulti': 0.25,
+            '_stats.Permanent.crit_multi': 0.25,
         },
         'Revenant': {
             '_baseHealth': -5,
@@ -567,7 +570,7 @@ class Spectre(Player):
             '_baseHealth': -25,
             '_baseDamage': -4,
             '_baseSpeed': 0.1,
-            '_stats.baseCritChance': 0.05,
+            '_stats.Permanent.crit_chance': 0.05,
             '_stats.Permanent.added_energy_shield': 50,
             '_stats.Permanent.increased_energy_shield': 10,
         },
