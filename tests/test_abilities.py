@@ -18,7 +18,7 @@ import pytest
 from scripts.styles import console
 from scripts.abilities import CLASS_ABILITIES
 from scripts.combat import CombatManager
-from scripts.enemy import Enemy
+from scripts.enemies.enemy import Enemy
 from scripts.player_classes.classes import CLASSES, ASCENDANCIES
 
 DUMMY_HEALTH = 10_000_000

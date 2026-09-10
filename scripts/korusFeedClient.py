@@ -4,6 +4,7 @@ import threading
 import urllib.request
 import os
 import subprocess
+from .styles import printError, printSuccess
 
 KORUS_FEED_URL = "http://localhost:8080/items"
 TIMEOUT_SECONDS = 2
@@ -106,24 +107,27 @@ def reportItem(equipment, playerName: str, event: str = "Created"):
 def ensureServerRunning():
     try:
         urllib.request.urlopen("http://localhost:8080/health", timeout=0.5)
+        printSuccess('[dim]Korus Feed running[/dim]')
         return
     except Exception:
         pass
 
     try:
         feedDir = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'Korus_Feed'))
-        if not os.path.isdir(feedDir):
+        exePath = os.path.join(feedDir, 'korusfeed.exe')
+        if not os.path.isfile(exePath):
             return
 
-        flags = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0
+        flags = subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP if os.name == 'nt' else 0
         subprocess.Popen(
-            {'go', 'run', '.cmd/server'},
+            [exePath],
             cwd=feedDir,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             creationflags=flags
         )
-    except Exception:
-        pass
+        printSuccess('[dim]Korus Feed running[/dim]')
+    except Exception as e:
+        printError(f'[dim]Error opening Korus Feed: {e}[/dim]')
 
 ...

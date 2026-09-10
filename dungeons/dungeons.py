@@ -1,6 +1,6 @@
 import random
 from typing import List, Dict
-from scripts.enemy import createEnemy
+from scripts.enemies.enemy import createEnemy
 
 from scripts.styles import console, printSuccess, printWarning, pause, clearScreen, printSeparator
 from scripts.items.items import ItemRarity, DungeonMap

@@ -1,9 +1,6 @@
 from typing import Dict
 
-from scripts.styles import (
-    console, pause, printWarning, clearScreen
-)
-
+from scripts.styles import console, pause, printWarning, clearScreen, printHeader
 from .player_classes.classes import CLASSES, DESCRIPTIONS
 from .player_classes.base import Player
 
@@ -12,7 +9,7 @@ def selectClass(name: str, quick: bool = False) -> Player:
         return CLASSES['Warrior'](name)
     while True:
         clearScreen()
-        console.print("\n[bold cyan]=== Class Select ===[/bold cyan]")
+        printHeader("Class Select")
         for i, (classType, _) in enumerate(CLASSES.items(), 1):
             console.print(f"  [cyan]{i}:[/cyan] {classType}")
         console.print("\n[dim]Type a number to see class description, or select to play[/dim]")

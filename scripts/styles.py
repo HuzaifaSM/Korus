@@ -514,8 +514,11 @@ def _formatEffectMagnitude(params: Dict) -> str:
         mult = params['damage']
         pct = int(round((mult - 1) * 100))
         bits.append(f"{'+' if pct >= 0 else ''}{pct}% Damage")
-    if 'chance' in params and params['chance'] < 100:
-        bits.append(f"{params['chance']}% chance")
+    if 'chance' in params:
+        chance = params['chance']
+        chancePct = chance * 100 if isinstance(chance, float) and abs(chance) <= 1 else chance
+        if chancePct < 100:
+            bits.append(f"{chancePct:.0f}% chance")
 
     detail = ', '.join(bits)
     if 'turns' in params:
@@ -632,10 +635,6 @@ def createInventoryTable(inventory: dict) -> Table:
     return table
 
 def createEquipmentStoragePages(equipmentList: list, itemsPerColumn: int = 5, render: Optional[Callable] = None) -> Dict[int, Table]:
-    """Paginates `equipmentList` into a 2-column Rich Table per page, numbered globally
-    across pages. Each item is placed into its cell as-is unless `render` is given, in
-    which case the cell content is `render(item)` instead (e.g. to prefix a location
-    label onto an (label, Equipment) tuple)."""
     itemsPerPage = itemsPerColumn * 2
     pages: Dict[int, Table] = {}
     totalPages = max(1, (len(equipmentList) + itemsPerPage - 1) // itemsPerPage)
@@ -826,8 +825,8 @@ def createEnemyPreview(enemies: List) -> Table:
             col.append("[bold gold]Resources:[/bold gold]")
             resourceParts = []
             for resource, (minAmt, maxAmt, chance) in resources.items():
-                resourceParts.append(f"{resource}: {minAmt}-{maxAmt} | Drop Chance = {int(chance*100)}%\n")
-            col.append(f"[gold]" + ", ".join(resourceParts) + "[/gold]")
+                resourceParts.append(f"{resource}: {minAmt}-{maxAmt} | Drop Chance = {int(chance*100)}%")
+            col.append(f"[gold]" + "\n- ".join(resourceParts) + "[/gold]")
 
         equipment = enemy._lootTable.equipmentPool
         if equipment:
@@ -1047,12 +1046,10 @@ def createCombatStatusTable(player, enemies: List) -> Table:
 
     def createEntityColumn(entity, isPlayer=False):
         col = []
-        if isPlayer:
-            col.append(f"[bold green]{entity._name}[/bold green] [dim](Lv.{entity._level})[/dim]")
-        else:
-            col.append(f"[bold red]{entity._name}[/bold red]")
-            col.append(f"[dim](Lv.{entity._level})[/dim]")
-        
+        style = "green" if isPlayer else "red"
+
+        col.append(f"[bold {style}]{entity._name}[/bold {style}] [dim](Lvl. {entity._level})[/dim]")
+
         width = 15 if isPlayer else 10
         healthBar = createHealthBar(entity._health, entity._maxHealth, width)
         col.append(f"[health]Health:[/health]  {healthBar}")
@@ -1081,6 +1078,7 @@ def createCombatStatusTable(player, enemies: List) -> Table:
                 manaBar = createStaminaBar(entity._mana, entity._maxMana, width) # mana uses same colours as stamina
                 col.append(f'[arcane]Mana:[/arcane]    {manaBar}')
         col.append(f"[damage]DMG:[/damage] {entity._damage} | Type: [{entity._damageType}]{entity._damageType.title()}[/{entity._damageType}]")
+        col.append(f"[critical]Crit Chance:[/critical] {entity.critChance*100:.0f}% | [critical]Crit DMG:[/critical] {entity.critMulti*100:.0f}%")
         col.append(f"[speed]SPD:[/speed] {entity._speed if not isPlayer else f'{entity._speed:.2f}'}")
 
         if isPlayer:

@@ -1,0 +1,2338 @@
+{
+    "attacker": {
+        "base": {
+            "Warcry": {
+                "name": "Warcry",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 35,
+                "cooldown": 5,
+                "stamina_cost": 15,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.15,
+                            "damage": 1.15
+                        }
+                    }
+                },
+                "description": "A battle cry that sharpens focus and surges adrenaline.",
+                "weight": 5
+            },
+            "Piercing Thrust": {
+                "name": "Piercing Thrust",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical"
+                ],
+                "tier": 1,
+                "level_req": 4,
+                "cooldown": 2,
+                "stamina_cost": 11,
+                "targets": 1,
+                "damage_base": 10,
+                "damage_scaling": 18,
+                "damage_type": "physical",
+                "effects": {},
+                "description": "A precise thrust aimed at a weak point in the target's guard.",
+                "weight": 9
+            },
+            "Void Scream": {
+                "name": "Void Scream",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "psychic",
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 70,
+                "cooldown": 6,
+                "stamina_cost": 29,
+                "targets": "all",
+                "damage_base": 20,
+                "damage_scaling": 20,
+                "damage_type": "psychic",
+                "effects": {
+                    "target": {
+                        "daze": {
+                            "turns": 3,
+                            "speed": -0.2,
+                            "damage": 0.85
+                        },
+                        "exposed": {
+                            "turns": 2,
+                            "amount": 10
+                        }
+                    }
+                },
+                "description": "An otherworldly shriek that bypasses physical defences and scrambles the senses.",
+                "weight": 3
+            },
+            "Abyssal Surge": {
+                "name": "Abyssal Surge",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "chaos",
+                    "poison",
+                    "curse",
+                    "dot",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 90,
+                "cooldown": 4,
+                "stamina_cost": 30,
+                "targets": "all",
+                "damage_base": 60,
+                "damage_scaling": 75,
+                "damage_type": "chaos",
+                "effects": {
+                    "target": {
+                        "poison": {
+                            "stacks": 2
+                        },
+                        "curse": {
+                            "stacks": 1
+                        }
+                    }
+                },
+                "description": "Releases a wave of abyssal energy that corrupts everything it touches.",
+                "weight": 2
+            },
+            "Chain Lightning": {
+                "name": "Chain Lightning",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "lightning",
+                    "shock",
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 2,
+                "level_req": 38,
+                "cooldown": 4,
+                "stamina_cost": 21,
+                "targets": "all",
+                "damage_base": 22,
+                "damage_scaling": 32,
+                "damage_type": "lightning",
+                "weight": 5,
+                "effects": {
+                    "target": {
+                        "shock": {
+                            "turns": 2,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "description": "Lightning arcs between all targets, leaving each one rattled and exposed."
+            },
+            "Cyclone": {
+                "name": "Cyclone",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 2,
+                "level_req": 42,
+                "cooldown": 4,
+                "stamina_cost": 20,
+                "targets": "all",
+                "damage_base": 18,
+                "damage_scaling": 28,
+                "damage_type": "physical",
+                "weight": 5,
+                "effects": {
+                    "target": {
+                        "slow": {
+                            "turns": 2,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "description": "Spin in a violent cyclone, battering all enemies and distrupting their balance."
+            },
+            "Divine Judgement": {
+                "name": "Divine Judgement",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "holy",
+                    "debuff"
+                ],
+                "tier": 2,
+                "level_req": 48,
+                "cooldown": 5,
+                "stamina_cost": 19,
+                "targets": 1,
+                "damage_base": 35,
+                "damage_scaling": 50,
+                "damage_type": "holy",
+                "weight": 4,
+                "effects": {
+                    "target": {
+                        "divine_exposure": {
+                            "turns": 3,
+                            "amount": 20
+                        },
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Channels divine wrath into a single condemning blow."
+            },
+            "Tempest": {
+                "name": "Tempest",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "lightning",
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 75,
+                "cooldown": 5,
+                "stamina_cost": 30,
+                "targets": "all",
+                "damage_base": 50,
+                "damage_scaling": 65,
+                "damage_type": "lightning",
+                "weight": 3,
+                "effects": {
+                    "target": {
+                        "slow": {
+                            "turns": 3,
+                            "amount": 0.3
+                        },
+                        "blind": {
+                            "turns": 2,
+                            "amount": 0.25
+                        },
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A sustained tempest that overwhelms all opponents with relentless force."
+            },
+            "Overwhelm": {
+                "name": "Overwhelm",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 72,
+                "cooldown": 4,
+                "stamina_cost": 27,
+                "targets": 1,
+                "damage_base": 65,
+                "damage_scaling": 75,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A relentless barrage of blows that breaks down the target's ability to fight back.",
+                "weight": 4
+            }
+        },
+        "bruiser": {
+            "Crushing Blow": {
+                "name": "Crushing Blow",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical"
+                ],
+                "tier": 1,
+                "level_req": 2,
+                "cooldown": 3,
+                "stamina_cost": 11,
+                "targets": 1,
+                "damage_base": 14,
+                "damage_scaling": 22,
+                "damage_type": "physical",
+                "effects": {},
+                "description": "A brutal overhead swing with no regard for finesse.",
+                "weight": 10
+            },
+            "Lunge": {
+                "name": "Lunge",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical"
+                ],
+                "tier": 1,
+                "level_req": 1,
+                "cooldown": 3,
+                "stamina_cost": 11,
+                "targets": 1,
+                "damage_base": 12,
+                "damage_scaling": 20,
+                "damage_type": "physical",
+                "effects": {},
+                "description": "A sudden forward strike with full body weight behind it.",
+                "weight": 10
+            },
+            "Bash": {
+                "name": "Bash",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "stun",
+                    "cc"
+                ],
+                "tier": 1,
+                "level_req": 5,
+                "cooldown": 3,
+                "stamina_cost": 12,
+                "targets": 1,
+                "damage_base": 8,
+                "damage_scaling": 10,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "stun": {
+                            "turns": 1,
+                            "chance": 0.25
+                        }
+                    }
+                },
+                "description": "A heavy blow with a chance to stun.",
+                "weight": 7
+            },
+            "Sunder": {
+                "name": "Sunder",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "stun",
+                    "cc"
+                ],
+                "tier": 2,
+                "level_req": 33,
+                "cooldown": 4,
+                "stamina_cost": 19,
+                "targets": 1,
+                "damage_base": 28,
+                "damage_scaling": 42,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "stun": {
+                            "turns": 1,
+                            "chance": 0.2
+                        }
+                    }
+                },
+                "description": "A two-handed blow aimed at cracking through armour and guard alike.",
+                "weight": 6
+            },
+            "Constrict": {
+                "name": "Constrict",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "stun",
+                    "cc",
+                    "debuff"
+                ],
+                "tier": 2,
+                "level_req": 45,
+                "cooldown": 4,
+                "stamina_cost": 18,
+                "targets": 1,
+                "damage_base": 20,
+                "damage_scaling": 30,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "stun": {
+                            "turns": 1,
+                            "chance": 0.35
+                        },
+                        "slow": {
+                            "turns": 3,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "description": "Grabs and crushes the target, potentially stunning and slowing them.",
+                "weight": 5
+            },
+            "Tear Apart": {
+                "name": "Tear Apart",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "bleed",
+                    "dot",
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 60,
+                "cooldown": 3,
+                "stamina_cost": 27,
+                "targets": 1,
+                "damage_base": 55,
+                "damage_scaling": 70,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "bleed": {
+                            "stacks": 4
+                        },
+                        "weaken": {
+                            "turns": 3,
+                            "amount": 0.2
+                        },
+                        "slow": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A savage, all-out assault that shreds defences and leaves devastation in its wake.",
+                "weight": 5
+            },
+            "Thunderclap": {
+                "name": "Thunderclap",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "lightning",
+                    "stun",
+                    "cc",
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 68,
+                "cooldown": 4,
+                "stamina_cost": 29,
+                "targets": "all",
+                "damage_base": 55,
+                "damage_scaling": 70,
+                "damage_type": "lightning",
+                "weight": 3,
+                "effects": {
+                    "target": {
+                        "stun": {
+                            "turns": 1,
+                            "chance": 0.35
+                        },
+                        "shock": {
+                            "turns": 3,
+                            "amount": 0.25
+                        }
+                    }
+                },
+                "description": "An explosive burst of thunder that shakes the battlefield and stuns the unprepared."
+            },
+            "Colossal Slam": {
+                "name": "Colossal Slam",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 78,
+                "cooldown": 5,
+                "stamina_cost": 30,
+                "targets": "all",
+                "damage_base": 65,
+                "damage_scaling": 80,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "slow": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Slams the ground with enough force to stagger everyone nearby.",
+                "weight": 3
+            }
+        },
+        "debilitator": {
+            "Rend": {
+                "name": "Rend",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "bleed",
+                    "dot"
+                ],
+                "tier": 1,
+                "level_req": 3,
+                "cooldown": 2,
+                "stamina_cost": 10,
+                "targets": 1,
+                "damage_base": 4,
+                "damage_scaling": 15,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "bleed": {
+                            "stacks": 1
+                        }
+                    }
+                },
+                "description": "A vicious slash that opens a bleeding wound.",
+                "weight": 9
+            },
+            "Venomous Bite": {
+                "name": "Venomous Bite",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "chaos",
+                    "poison",
+                    "dot"
+                ],
+                "tier": 1,
+                "level_req": 15,
+                "cooldown": 3,
+                "stamina_cost": 10,
+                "targets": 1,
+                "damage_base": 6,
+                "damage_scaling": 12,
+                "damage_type": "chaos",
+                "effects": {
+                    "target": {
+                        "poison": {
+                            "stacks": 1
+                        }
+                    }
+                },
+                "description": "A bite that injects slow-acting venom into the bloodstream.",
+                "weight": 7
+            },
+            "Smoulder": {
+                "name": "Smoulder",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "fire",
+                    "burn",
+                    "dot"
+                ],
+                "tier": 1,
+                "level_req": 15,
+                "cooldown": 3,
+                "stamina_cost": 10,
+                "targets": 1,
+                "damage_base": 4,
+                "damage_scaling": 10,
+                "damage_type": "fire",
+                "effects": {
+                    "target": {
+                        "burn": {
+                            "stacks": 1
+                        }
+                    }
+                },
+                "description": "Scorching heat applied to a single target, leaving lingering flames.",
+                "weight": 7
+            },
+            "Ravaging Strike": {
+                "name": "Ravaging Strike",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "bleed",
+                    "dot",
+                    "debuff"
+                ],
+                "tier": 2,
+                "level_req": 30,
+                "cooldown": 3,
+                "stamina_cost": 18,
+                "targets": 1,
+                "damage_base": 25,
+                "damage_scaling": 40,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "bleed": {
+                            "stacks": 2
+                        },
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.1
+                        }
+                    }
+                },
+                "description": "A frenzied assault that leaves the target both wounded and faltering.",
+                "weight": 7
+            },
+            "Venom Surge": {
+                "name": "Venom Surge",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "chaos",
+                    "poison",
+                    "dot"
+                ],
+                "tier": 2,
+                "level_req": 30,
+                "cooldown": 4,
+                "stamina_cost": 17,
+                "targets": 1,
+                "damage_base": 18,
+                "damage_scaling": 30,
+                "damage_type": "chaos",
+                "effects": {
+                    "target": {
+                        "poison": {
+                            "stacks": 2
+                        }
+                    }
+                },
+                "description": "An intensified burst of venom that overwhelms natural resistance.",
+                "weight": 6
+            },
+            "Bloodletting": {
+                "name": "Bloodletting",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "bleed",
+                    "dot"
+                ],
+                "tier": 2,
+                "level_req": 35,
+                "cooldown": 4,
+                "stamina_cost": 18,
+                "targets": 1,
+                "damage_base": 20,
+                "damage_scaling": 35,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "bleed": {
+                            "stacks": 3
+                        }
+                    }
+                },
+                "description": "A precise, deep cut designed to maximise blood loss.",
+                "weight": 6
+            },
+            "Frostbite": {
+                "name": "Frostbite",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "cold",
+                    "chill",
+                    "debuff"
+                ],
+                "tier": 2,
+                "level_req": 35,
+                "cooldown": 3,
+                "stamina_cost": 17,
+                "targets": 1,
+                "damage_base": 15,
+                "damage_scaling": 25,
+                "damage_type": "cold",
+                "effects": {
+                    "target": {
+                        "chill": {
+                            "stacks": 1,
+                            "turns": 3,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "description": "A biting cold attack that slows the target's movements.",
+                "weight": 6
+            },
+            "Elemental Surge": {
+                "name": "Elemental Surge",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "arcane",
+                    "burn",
+                    "dot",
+                    "debuff"
+                ],
+                "tier": 2,
+                "level_req": 45,
+                "cooldown": 4,
+                "stamina_cost": 19,
+                "targets": 1,
+                "damage_base": 30,
+                "damage_scaling": 45,
+                "damage_type": "arcane",
+                "effects": {
+                    "target": {
+                        "burn": {
+                            "stacks": 1
+                        },
+                        "elemental_exposure": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Channels raw elemental power into a searing strike, leaving the target exposed.",
+                "weight": 5
+            },
+            "Consuming Darkness": {
+                "name": "Consuming Darkness",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "dark",
+                    "curse",
+                    "poison",
+                    "dot"
+                ],
+                "tier": 3,
+                "level_req": 65,
+                "cooldown": 4,
+                "stamina_cost": 26,
+                "targets": 1,
+                "damage_base": 50,
+                "damage_scaling": 65,
+                "damage_type": "dark",
+                "effects": {
+                    "target": {
+                        "curse": {
+                            "stacks": 1
+                        },
+                        "poison": {
+                            "stacks": 2
+                        }
+                    }
+                },
+                "description": "Wraps the target in suffocating dark energy that poisons body and soul alike.",
+                "weight": 4
+            },
+            "Rupture": {
+                "name": "Rupture",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "earth",
+                    "bleed",
+                    "dot",
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 70,
+                "cooldown": 4,
+                "stamina_cost": 27,
+                "targets": 1,
+                "damage_base": 60,
+                "damage_scaling": 80,
+                "damage_type": "earth",
+                "effects": {
+                    "target": {
+                        "bleed": {
+                            "stacks": 5
+                        },
+                        "elemental_exposure": {
+                            "turns": 3,
+                            "amount": 0.25
+                        }
+                    }
+                },
+                "description": "Tears through armour and flesh — the wound simply refuses to close.",
+                "weight": 4
+            },
+            "Soul Leech": {
+                "name": "Soul Leech",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "ethereal",
+                    "curse",
+                    "dot",
+                    "debuff",
+                    "sustain"
+                ],
+                "tier": 3,
+                "level_req": 80,
+                "cooldown": 5,
+                "stamina_cost": 27,
+                "targets": 1,
+                "damage_base": 70,
+                "damage_scaling": 85,
+                "damage_type": "ethereal",
+                "effects": {
+                    "target": {
+                        "curse": {
+                            "stacks": 2
+                        }
+                    },
+                    "self": {
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 20,
+                            "amount_percent": 3
+                        }
+                    }
+                },
+                "description": "Drains life essence from the target, feeding its own recovery.",
+                "weight": 3
+            }
+        },
+        "champion": {
+            "Adrenaline Surge": {
+                "name": "Adrenaline Surge",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 32,
+                "cooldown": 4,
+                "stamina_cost": 16,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.1,
+                            "damage": 1.1
+                        },
+                        "stoneskin": {
+                            "turns": 2,
+                            "amount": 0.15
+                        },
+                        "stun": {
+                            "turns": 1,
+                            "chance": 1.0
+                        }
+                    }
+                },
+                "description": "A short, sharp rush of focus before committing to something dangerous — the surge locks the body up for a moment, though hardened reflexes soften the risk.",
+                "weight": 6
+            },
+            "Overwhelming Presence": {
+                "name": "Overwhelming Presence",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 66,
+                "cooldown": 5,
+                "stamina_cost": 26,
+                "targets": "all",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.15,
+                            "damage": 1.15
+                        }
+                    },
+                    "target": {
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A commanding show of dominance that unnerves opponents and sharpens the mind for what's next.",
+                "weight": 3
+            },
+            "Death Knell": {
+                "name": "Death Knell",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "dark",
+                    "curse",
+                    "dot",
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 60,
+                "cooldown": 5,
+                "stamina_cost": 28,
+                "targets": 1,
+                "damage_base": 80,
+                "damage_scaling": 90,
+                "damage_type": "dark",
+                "effects": {
+                    "target": {
+                        "curse": {
+                            "stacks": 2
+                        },
+                        "exposed": {
+                            "turns": 3,
+                            "amount": 20
+                        }
+                    }
+                },
+                "description": "A strike laced with dark energy — it feels like a death sentence.",
+                "weight": 4
+            },
+            "Reckoning Strike": {
+                "name": "Reckoning Strike",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 82,
+                "cooldown": 4,
+                "stamina_cost": 29,
+                "targets": 1,
+                "damage_base": 95,
+                "damage_scaling": 105,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "exposed": {
+                            "turns": 3,
+                            "amount": 20
+                        }
+                    }
+                },
+                "description": "A calculated, decisive blow delivered the instant an opening appears.",
+                "weight": 2
+            },
+            "Annihilating Blow": {
+                "name": "Annihilating Blow",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical",
+                    "stun",
+                    "cc",
+                    "bleed",
+                    "dot",
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 80,
+                "cooldown": 5,
+                "stamina_cost": 30,
+                "targets": 1,
+                "damage_base": 100,
+                "damage_scaling": 110,
+                "damage_type": "physical",
+                "effects": {
+                    "target": {
+                        "stun": {
+                            "turns": 1,
+                            "chance": 0.5
+                        },
+                        "exposed": {
+                            "turns": 3,
+                            "amount": 25
+                        },
+                        "bleed": {
+                            "stacks": 3
+                        }
+                    }
+                },
+                "description": "A single, devastating strike with everything behind it. The ground shakes.",
+                "weight": 2
+            },
+            "Battle Trance": {
+                "name": "Battle Trance",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 76,
+                "cooldown": 6,
+                "stamina_cost": 26,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.25,
+                            "damage": 1.4
+                        },
+                        "stun": {
+                            "turns": 1,
+                            "chance": 1.0
+                        }
+                    }
+                },
+                "description": "Enters a battle trance, gathering overwhelming power for two turns — but the intensity leaves it stunned and unable to act for the first of them, only unleashing the power on the second.",
+                "weight": 1
+            },
+            "Undying Fury": {
+                "name": "Undying Fury",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 90,
+                "cooldown": 7,
+                "stamina_cost": 34,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 3,
+                            "speed": 0.3,
+                            "damage": 1.3
+                        },
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.2
+                        },
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 40,
+                            "amount_percent": 5
+                        },
+                        "spawn_consumable": {
+                            "heal": 80
+                        },
+                        "stun": {
+                            "turns": 1,
+                            "chance": 1.0
+                        }
+                    }
+                },
+                "description": "Refuses to fall. A burst of raw survival instinct that heals, hardens, and enrages simultaneously — the sheer overload leaves it locked rigid for a moment before it can act on the power surging through it.",
+                "weight": 1
+            },
+            "Holy Annihilation": {
+                "name": "Holy Annihilation",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "holy",
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 85,
+                "cooldown": 5,
+                "stamina_cost": 31,
+                "targets": 1,
+                "damage_base": 90,
+                "damage_scaling": 100,
+                "damage_type": "holy",
+                "weight": 2,
+                "effects": {
+                    "target": {
+                        "divine_exposure": {
+                            "turns": 4,
+                            "amount": 30
+                        },
+                        "exposed": {
+                            "turns": 3,
+                            "amount": 20
+                        },
+                        "weaken": {
+                            "turns": 3,
+                            "amount": 0.25
+                        }
+                    }
+                },
+                "description": "An act of pure divine wrath. Those who survive rarely recover."
+            }
+        },
+        "fanatic": {
+            "Quick Jab": {
+                "name": "Quick Jab",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical"
+                ],
+                "tier": 1,
+                "level_req": 1,
+                "cooldown": 1,
+                "stamina_cost": 6,
+                "targets": 1,
+                "damage_base": 5,
+                "damage_scaling": 8,
+                "damage_type": "physical",
+                "effects": {},
+                "description": "A fast, low-commitment strike thrown just to keep something in the air.",
+                "weight": 10
+            },
+            "Ember Flick": {
+                "name": "Ember Flick",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "fire",
+                    "burn",
+                    "dot"
+                ],
+                "tier": 1,
+                "level_req": 7,
+                "cooldown": 2,
+                "stamina_cost": 8,
+                "targets": 1,
+                "damage_base": 5,
+                "damage_scaling": 9,
+                "damage_type": "fire",
+                "effects": {
+                    "target": {
+                        "burn": {
+                            "stacks": 1
+                        }
+                    }
+                },
+                "description": "A quick flick of flame, more annoying than dangerous on its own.",
+                "weight": 8
+            },
+            "Frost Nip": {
+                "name": "Frost Nip",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "cold",
+                    "chill",
+                    "debuff"
+                ],
+                "tier": 1,
+                "level_req": 9,
+                "cooldown": 2,
+                "stamina_cost": 8,
+                "targets": 1,
+                "damage_base": 5,
+                "damage_scaling": 9,
+                "damage_type": "cold",
+                "effects": {
+                    "target": {
+                        "chill": {
+                            "stacks": 1,
+                            "turns": 2,
+                            "amount": 0.1
+                        }
+                    }
+                },
+                "description": "A biting nip of cold, thrown out almost reflexively.",
+                "weight": 8
+            },
+            "Static Shock": {
+                "name": "Static Shock",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "lightning",
+                    "shock",
+                    "debuff"
+                ],
+                "tier": 1,
+                "level_req": 6,
+                "cooldown": 3,
+                "stamina_cost": 11,
+                "targets": 1,
+                "damage_base": 7,
+                "damage_scaling": 12,
+                "damage_type": "lightning",
+                "weight": 8,
+                "effects": {
+                    "target": {
+                        "shock": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A crackling discharge that leaves the target vulnerable to further damage."
+            },
+            "Fire and Smoke": {
+                "name": "Fire and Smoke",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "fire",
+                    "blind",
+                    "debuff"
+                ],
+                "tier": 1,
+                "level_req": 8,
+                "cooldown": 3,
+                "stamina_cost": 11,
+                "targets": 1,
+                "damage_base": 6,
+                "damage_scaling": 14,
+                "damage_type": "fire",
+                "weight": 8,
+                "effects": {
+                    "target": {
+                        "blind": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A flash of flames, spewing smoke and obscuring the target's vision."
+            },
+            "Sacred Smite": {
+                "name": "Sacred Smite",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "holy",
+                    "debuff"
+                ],
+                "tier": 1,
+                "level_req": 10,
+                "cooldown": 3,
+                "stamina_cost": 11,
+                "targets": 1,
+                "damage_base": 9,
+                "damage_scaling": 16,
+                "damage_type": "holy",
+                "weight": 7,
+                "effects": {
+                    "target": {
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.1
+                        }
+                    }
+                },
+                "description": "A strike carrying divine condemnation, sapping the target's strength."
+            },
+            "Shock Dart": {
+                "name": "Shock Dart",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "lightning",
+                    "shock",
+                    "debuff"
+                ],
+                "tier": 2,
+                "level_req": 36,
+                "cooldown": 2,
+                "stamina_cost": 13,
+                "targets": 1,
+                "damage_base": 16,
+                "damage_scaling": 24,
+                "damage_type": "lightning",
+                "effects": {
+                    "target": {
+                        "shock": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A rapid dart of lightning, cheap enough to throw out again and again.",
+                "weight": 7
+            },
+            "Manic Flurry": {
+                "name": "Manic Flurry",
+                "category": "ability",
+                "tags": [
+                    "offensive",
+                    "physical"
+                ],
+                "tier": 3,
+                "level_req": 73,
+                "cooldown": 2,
+                "stamina_cost": 18,
+                "targets": 1,
+                "damage_base": 40,
+                "damage_scaling": 55,
+                "damage_type": "physical",
+                "effects": {},
+                "description": "An unrelenting flurry of strikes thrown with no thought for restraint.",
+                "weight": 5
+            }
+        }
+    },
+    "support": {
+        "base": {
+            "Enfeeble": {
+                "name": "Enfeeble",
+                "category": "ability",
+                "tags": [
+                    "debuff"
+                ],
+                "tier": 1,
+                "level_req": 5,
+                "cooldown": 4,
+                "stamina_cost": 9,
+                "targets": 1,
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Sap the target's strength, reducing their damage output.",
+                "weight": 6
+            },
+            "Snarl": {
+                "name": "Snarl",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 1,
+                "level_req": 8,
+                "cooldown": 4,
+                "stamina_cost": 13,
+                "targets": "all",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "slow": {
+                            "turns": 2,
+                            "amount": 0.1
+                        }
+                    }
+                },
+                "description": "An aggressive snarl that momentarily unsettles all enemies.",
+                "weight": 6
+            },
+            "Hex": {
+                "name": "Hex",
+                "category": "ability",
+                "tags": [
+                    "debuff"
+                ],
+                "tier": 1,
+                "level_req": 6,
+                "cooldown": 3,
+                "stamina_cost": 9,
+                "targets": 1,
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.1
+                        }
+                    }
+                },
+                "description": "A muttered ill-wish that saps the target's edge.",
+                "weight": 7
+            },
+            "Expose Weakness": {
+                "name": "Expose Weakness",
+                "category": "ability",
+                "tags": [
+                    "debuff"
+                ],
+                "tier": 2,
+                "level_req": 30,
+                "cooldown": 5,
+                "stamina_cost": 15,
+                "targets": 1,
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "exposed": {
+                            "turns": 3,
+                            "amount": 15
+                        }
+                    }
+                },
+                "description": "Identifies and exploits a gap in the target's defences.",
+                "weight": 5
+            },
+            "Intimidate": {
+                "name": "Intimidate",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 2,
+                "level_req": 40,
+                "cooldown": 5,
+                "stamina_cost": 20,
+                "targets": "all",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "weaken": {
+                            "turns": 3,
+                            "amount": 0.2
+                        },
+                        "blind": {
+                            "turns": 2,
+                            "amount": 0.1
+                        }
+                    }
+                },
+                "description": "An overwhelming display of ferocity that rattles all opponents.",
+                "weight": 4
+            },
+            "Unsettling Gaze": {
+                "name": "Unsettling Gaze",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 2,
+                "level_req": 37,
+                "cooldown": 4,
+                "stamina_cost": 18,
+                "targets": "all",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "blind": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A fixed, unnerving stare that leaves onlookers second-guessing their footing.",
+                "weight": 5
+            },
+            "Chains of Binding": {
+                "name": "Chains of Binding",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 63,
+                "cooldown": 5,
+                "stamina_cost": 24,
+                "targets": "all",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "slow": {
+                            "turns": 3,
+                            "amount": 0.2
+                        },
+                        "weaken": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Unseen chains coil around every opponent, sapping strength and stride alike.",
+                "weight": 3
+            },
+            "Curse of Frailty": {
+                "name": "Curse of Frailty",
+                "category": "ability",
+                "tags": [
+                    "debuff"
+                ],
+                "tier": 3,
+                "level_req": 77,
+                "cooldown": 5,
+                "stamina_cost": 22,
+                "targets": 1,
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "exposed": {
+                            "turns": 3,
+                            "amount": 25
+                        }
+                    }
+                },
+                "description": "A withering curse that strips away the target's ability to resist harm.",
+                "weight": 3
+            }
+        },
+        "healer": {
+            "Scavenge": {
+                "name": "Scavenge",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 1,
+                "level_req": 10,
+                "cooldown": 5,
+                "stamina_cost": 10,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "spawn_consumable": {
+                            "heal": 25
+                        }
+                    }
+                },
+                "description": "Frantically scavenges the environment, producing a crude healing salve.",
+                "weight": 5
+            },
+            "Mend": {
+                "name": "Mend",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 1,
+                "level_req": 12,
+                "cooldown": 5,
+                "stamina_cost": 10,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 15,
+                            "amount_percent": 0
+                        }
+                    }
+                },
+                "description": "A brief moment of recovery, healing minor wounds.",
+                "weight": 6
+            },
+            "Rejuvenate": {
+                "name": "Rejuvenate",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 1,
+                "level_req": 9,
+                "cooldown": 4,
+                "stamina_cost": 9,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 10,
+                            "amount_percent": 1
+                        }
+                    }
+                },
+                "description": "A small, steady trickle of restored vitality.",
+                "weight": 7
+            },
+            "Blood Ritual": {
+                "name": "Blood Ritual",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 50,
+                "cooldown": 6,
+                "stamina_cost": 19,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "spawn_consumable": {
+                            "heal": 60
+                        },
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 10,
+                            "amount_percent": 2
+                        }
+                    }
+                },
+                "description": "Performs a dark ritual, conjuring a blood potion and beginning to regenerate.",
+                "weight": 4
+            },
+            "Restorative Chant": {
+                "name": "Restorative Chant",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 33,
+                "cooldown": 5,
+                "stamina_cost": 16,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 18,
+                            "amount_percent": 2
+                        }
+                    }
+                },
+                "description": "A murmured chant that knits wounds shut over a few moments.",
+                "weight": 5
+            },
+            "Dark Mending": {
+                "name": "Dark Mending",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 70,
+                "cooldown": 6,
+                "stamina_cost": 24,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 4,
+                            "amount_flat": 30,
+                            "amount_percent": 4
+                        },
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.25
+                        }
+                    }
+                },
+                "description": "Draws on dark reserves to rapidly knit wounds and harden the body.",
+                "weight": 4
+            },
+            "Sanctuary": {
+                "name": "Sanctuary",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 68,
+                "cooldown": 6,
+                "stamina_cost": 25,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 25,
+                            "amount_percent": 3
+                        },
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "Wards off harm while steadily restoring what was lost.",
+                "weight": 3
+            },
+            "Miracle": {
+                "name": "Miracle",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 86,
+                "cooldown": 7,
+                "stamina_cost": 30,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "spawn_consumable": {
+                            "heal": 70
+                        },
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 20,
+                            "amount_percent": 3
+                        }
+                    }
+                },
+                "description": "An almost impossible recovery, as if fate itself intervened.",
+                "weight": 1
+            },
+            "Emergency Renewal": {
+                "name": "Emergency Renewal",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 20,
+                "cooldown": 8,
+                "stamina_cost": 20,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "spawn_consumable": {
+                            "heal": 45
+                        },
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 15,
+                            "amount_percent": 2
+                        }
+                    }
+                },
+                "description": "A last-resort self-cast, drawing on reserves normally saved for others. Long recovery before it can be used again.",
+                "weight": 3
+            },
+            "Circle of Renewal": {
+                "name": "Circle of Renewal",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain"
+                ],
+                "tier": 2,
+                "level_req": 40,
+                "cooldown": 5,
+                "stamina_cost": 20,
+                "targets": "all_allies",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 12,
+                            "amount_percent": 1
+                        }
+                    }
+                },
+                "description": "A wave of restorative energy that washes over the caster and every ally alike.",
+                "weight": 4
+            },
+            "Wellspring of Life": {
+                "name": "Wellspring of Life",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain"
+                ],
+                "tier": 3,
+                "level_req": 75,
+                "cooldown": 7,
+                "stamina_cost": 28,
+                "targets": "all_allies",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "spawn_consumable": {
+                            "heal": 30
+                        },
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 22,
+                            "amount_percent": 2
+                        }
+                    }
+                },
+                "description": "Calls forth a font of vitality that pours renewed life into the whole party at once.",
+                "weight": 2
+            }
+        },
+        "standard_bearer": {
+            "Rallying Cry": {
+                "name": "Rallying Cry",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "self"
+                ],
+                "tier": 1,
+                "level_req": 8,
+                "cooldown": 4,
+                "stamina_cost": 10,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.1,
+                            "damage": 1.1
+                        }
+                    }
+                },
+                "description": "A rousing shout that steels resolve and quickens the pace.",
+                "weight": 7
+            },
+            "Banner of Wrath": {
+                "name": "Banner of Wrath",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 34,
+                "cooldown": 5,
+                "stamina_cost": 17,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 2,
+                            "speed": 0.15,
+                            "damage": 1.2
+                        }
+                    }
+                },
+                "description": "Raises a banner that stirs a burning need to fight harder.",
+                "weight": 5
+            },
+            "Guiding Light": {
+                "name": "Guiding Light",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 39,
+                "cooldown": 5,
+                "stamina_cost": 16,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A steadying aura that turns aside the worst of incoming harm.",
+                "weight": 5
+            },
+            "Inspire": {
+                "name": "Inspire",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 41,
+                "cooldown": 4,
+                "stamina_cost": 15,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 12,
+                            "amount_percent": 1
+                        }
+                    }
+                },
+                "description": "A word of encouragement that somehow eases the sting of old wounds.",
+                "weight": 5
+            },
+            "Harrowing Roar": {
+                "name": "Harrowing Roar",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "buff",
+                    "aoe"
+                ],
+                "tier": 3,
+                "level_req": 65,
+                "cooldown": 5,
+                "stamina_cost": 28,
+                "targets": "all",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 3,
+                            "speed": 0.2,
+                            "damage": 1.2
+                        }
+                    },
+                    "target": {
+                        "weaken": {
+                            "turns": 3,
+                            "amount": 0.25
+                        },
+                        "blind": {
+                            "turns": 2,
+                            "amount": 0.2
+                        }
+                    }
+                },
+                "description": "A soul-shaking roar that empowers the creature while demoralising all who hear it.",
+                "weight": 3
+            },
+            "Battle Hymn": {
+                "name": "Battle Hymn",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 64,
+                "cooldown": 5,
+                "stamina_cost": 24,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 3,
+                            "speed": 0.2,
+                            "damage": 1.25
+                        }
+                    }
+                },
+                "description": "A powerful hymn sung mid-battle, driving everyone within earshot onward.",
+                "weight": 3
+            },
+            "Unbreakable Resolve": {
+                "name": "Unbreakable Resolve",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 71,
+                "cooldown": 6,
+                "stamina_cost": 27,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.25
+                        },
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 20,
+                            "amount_percent": 2
+                        }
+                    }
+                },
+                "description": "A grim determination that refuses to let the body give out.",
+                "weight": 2
+            },
+            "War Anthem": {
+                "name": "War Anthem",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 89,
+                "cooldown": 7,
+                "stamina_cost": 31,
+                "targets": "ally",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "haste": {
+                            "turns": 3,
+                            "speed": 0.25,
+                            "damage": 1.3
+                        },
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 15,
+                            "amount_percent": 2
+                        }
+                    }
+                },
+                "description": "A final, defiant anthem that pushes body and spirit past their limits.",
+                "weight": 1
+            }
+        },
+        "tank": {
+            "Guard Stance": {
+                "name": "Guard Stance",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "self"
+                ],
+                "tier": 1,
+                "level_req": 3,
+                "cooldown": 3,
+                "stamina_cost": 9,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "stoneskin": {
+                            "turns": 2,
+                            "amount": 0.12
+                        }
+                    }
+                },
+                "description": "Sets a firm, defensive footing, ready to absorb the next blow.",
+                "weight": 8
+            },
+            "Brace": {
+                "name": "Brace",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "self"
+                ],
+                "tier": 1,
+                "level_req": 10,
+                "cooldown": 4,
+                "stamina_cost": 9,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "stoneskin": {
+                            "turns": 2,
+                            "amount": 0.1
+                        }
+                    }
+                },
+                "description": "Hardens resolve and stance, reducing incoming damage briefly.",
+                "weight": 6
+            },
+            "Taunt": {
+                "name": "Taunt",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "taunt"
+                ],
+                "tier": 1,
+                "level_req": 5,
+                "cooldown": 3,
+                "stamina_cost": 10,
+                "targets": 1,
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "taunt": {
+                            "turns": 1
+                        }
+                    }
+                },
+                "description": "A goading challenge that demands to be answered. NOTE: 'taunt' is a new mechanic not yet implemented in combat.py — this entry defines the intended data shape, forcing single-target player abilities onto this enemy while it's active.",
+                "weight": 8
+            },
+            "Fortify": {
+                "name": "Fortify",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 41,
+                "cooldown": 4,
+                "stamina_cost": 15,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 15,
+                            "amount_percent": 1
+                        }
+                    }
+                },
+                "description": "A moment spent shoring up defences and catching its breath.",
+                "weight": 6
+            },
+            "Iron Bulwark": {
+                "name": "Iron Bulwark",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "sustain",
+                    "self"
+                ],
+                "tier": 2,
+                "level_req": 40,
+                "cooldown": 5,
+                "stamina_cost": 18,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.2
+                        },
+                        "regeneration": {
+                            "turns": 2,
+                            "amount_flat": 20,
+                            "amount_percent": 1
+                        }
+                    }
+                },
+                "description": "Becomes a living fortress, shrugging off damage and recovering steadily.",
+                "weight": 5
+            },
+            "Provoke": {
+                "name": "Provoke",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "taunt",
+                    "buff",
+                    "defensive"
+                ],
+                "tier": 2,
+                "level_req": 35,
+                "cooldown": 5,
+                "stamina_cost": 18,
+                "targets": 1,
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "taunt": {
+                            "turns": 2
+                        }
+                    },
+                    "self": {
+                        "stoneskin": {
+                            "turns": 2,
+                            "amount": 0.15
+                        }
+                    }
+                },
+                "description": "A forceful challenge backed by a hardened stance, daring the target to try its luck. NOTE: relies on the same not-yet-implemented 'taunt' mechanic as Taunt.",
+                "weight": 5
+            },
+            "Bulwark Wall": {
+                "name": "Bulwark Wall",
+                "category": "ability",
+                "tags": [
+                    "buff",
+                    "defensive",
+                    "self"
+                ],
+                "tier": 3,
+                "level_req": 69,
+                "cooldown": 6,
+                "stamina_cost": 26,
+                "targets": "self",
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "self": {
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.3
+                        }
+                    }
+                },
+                "description": "Becomes nearly immovable, shrugging off all but the heaviest blows.",
+                "weight": 3
+            },
+            "Last Stand": {
+                "name": "Last Stand",
+                "category": "ability",
+                "tags": [
+                    "debuff",
+                    "taunt",
+                    "buff",
+                    "defensive",
+                    "sustain"
+                ],
+                "tier": 3,
+                "level_req": 91,
+                "cooldown": 7,
+                "stamina_cost": 33,
+                "targets": 1,
+                "damage_base": 0,
+                "damage_scaling": 0,
+                "damage_type": null,
+                "effects": {
+                    "target": {
+                        "taunt": {
+                            "turns": 3
+                        }
+                    },
+                    "self": {
+                        "regeneration": {
+                            "turns": 3,
+                            "amount_flat": 30,
+                            "amount_percent": 3
+                        },
+                        "stoneskin": {
+                            "turns": 3,
+                            "amount": 0.25
+                        }
+                    }
+                },
+                "description": "Plants itself between the target and everyone else, daring them to get through. NOTE: relies on the same not-yet-implemented 'taunt' mechanic as Taunt.",
+                "weight": 1
+            }
+        }
+    }
+}

@@ -1,9 +1,10 @@
 __pycache__/
+.pytest_cache/
 *.pyc
-data/saves/*.korus
-data/saves/Death Log.json
-data/saves/.backup/
+data/saves/
 data/logs/
 native/*/target/
 data/everything old/
 data/watch/
+tests/save/
+.claude/

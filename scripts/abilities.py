@@ -604,12 +604,14 @@ def resolveEffects(effectsDict: Dict) -> List[StatusEffect]:
 # -- enemy abilities -- #
 
 class EnemyAbility:
-    def __init__(self, name: str, category: str, tier: int, levelReq: int,
+    def __init__(self, name: str, category: str, tags: List[str], staminaCost: int, tier: int, levelReq: int,
                  cooldown: int, targets: int | str,
                  damageBase: int, damageScaling: float, damageType: Optional[str],
                  weight: int, effects: Dict, description: str):
         self.name = name
         self.category = category
+        self.tags = tags
+        self.staminaCost = staminaCost
         self.tier = tier
         self.levelReq = levelReq
         self.maxCooldown = cooldown
@@ -621,14 +623,17 @@ class EnemyAbility:
         self.weight = weight
         self.effects = effects
         self.description = description
-        self.tags = []
 
     def calculateDamage(self, enemyBaseDamage: int) -> int:
         return int(self.baseDamage + (enemyBaseDamage * self.damageScaling))
 
-    def canUse(self) -> Tuple[bool, str]:
+    def canUse(self, enemy=None) -> Tuple[bool, str]:
         if self.cooldown > 0:
             return False, f"On cooldown for {self.cooldown} more turns."
+        # stamina isn't wired up on Enemy yet (separate TODO item) - no-ops until it is
+        if enemy is not None and self.staminaCost > 0 and getattr(enemy, '_stamina', None) is not None:
+            if enemy._stamina < self.staminaCost:
+                return False, "Not enough stamina."
         return True, ""
 
     @property
@@ -651,16 +656,26 @@ def _buildEnemyAbility(data: Dict) -> EnemyAbility:
     scaling = rawScaling / 100 if rawScaling > 1 else rawScaling
 
     return EnemyAbility(
-        data['name'], data['category'], data['tier'], data['level_req'], data['cooldown'],
+        data['name'], data['category'], data.get('tags', []), data.get('stamina_cost', 0), data['tier'], data['level_req'], data['cooldown'],
         data['targets'], data.get('damage_base', 0), scaling, data.get('damage_type'),
         data['weight'], data.get('effects', {}), data['description']
     )
 
-def loadEnemyAbilities() -> Dict[str, EnemyAbility]:
-    with open('data/enemyAbilities.json', 'r') as f:
+def loadEnemyAbilities() -> Dict[str, Dict[str, Dict[str, EnemyAbility]]]:
+    """Returns {className: {'base'|subclassName: {abilityName: EnemyAbility}}}"""
+    with open('scripts/enemies/enemyAbilities.json', 'r') as f:
         data = load(f)
-    return {name: _buildEnemyAbility(ability) for name, ability in data.items()}
+    return {
+        className: {
+            poolName: {
+                abilityName: _buildEnemyAbility(abilityData)
+                for abilityName, abilityData in pool.items()
+            }
+            for poolName, pool in pools.items()
+        }
+        for className, pools in data.items()
+    }
 
-ENEMY_ABILITIES: Dict[str, EnemyAbility] = loadEnemyAbilities()
+ENEMY_ABILITIES: Dict[str, Dict[str, Dict[str, EnemyAbility]]] = loadEnemyAbilities()
 
 ...

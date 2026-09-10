@@ -126,7 +126,7 @@ class Tempest(Player):
 
     def consumeUnleashStacks(self):
         consumed = 0
-        while consumed < self.unleashStacksNeeded:
+        while consumed < self.unleashStacksNeeded and self.flow > 0 and self.static > 0:
             if self.static > 0 and not self._ascendancy == 'Ravager':
                 self.static -= 1
                 self.loseStatic()
@@ -465,8 +465,6 @@ class Tempest(Player):
                     self.mirageDamage = 0
 
         if self._ascendancy == 'Alternator':
-            # records this hit's outcome for onCrit (which fires earlier, before this per-target
-            # loop) to read on the *next* attack, so it can tell a consecutive streak from a fresh one
             if crit:
                 self.alternatorCrits += 1
                 self.alternatorNonCrits = 0

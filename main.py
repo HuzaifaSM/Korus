@@ -6,7 +6,7 @@ import random
 import subprocess
 
 from scripts.player import Player, selectClass, deserialisePlayer
-from scripts.enemy import Enemy, createEnemy
+from scripts.enemies.enemy import Enemy, createEnemy
 from scripts.combat import CombatManager
 from scripts.runeDrops import rollGuaranteedRunes
 from scripts.camp import Camp
@@ -260,6 +260,7 @@ class Game:
             dType = f"[{self.player._damageType}]{self.player._damageType.title()}[/{self.player._damageType}]"
             console.print(f"[health]HP:[/health] {self.player._health}/{self.player._maxHealth} | "
                           f"[damage]DMG:[/damage] {self.player._damage} | Type: {dType} | "
+                          f"[critical]Crit Chance:[/critical] {self.player.critChance*100:.0f}% | [critical]Crit Damage:[/critical] {self.player.critMulti*100:.0f}% | "
                           f"[speed]SPD:[/speed] {self.player._speed:.2f}")
 
             defParts = []
@@ -293,6 +294,9 @@ class Game:
             console.print("[dim]5.[/dim] [gold3]View Class Details[/gold3]")
             if self.areaLevel > 1:
                 console.print("[dim]6.[/dim] [dark_red]Reduce Area Level by 1[/dark_red] [dim](Costs 3 Souls)[/dim]")
+            console.print("[dim]Save:[/dim] [purple3]Enter 'save' for the Save Menu[/purple3]")
+            if self.camp.campfire.level > 0:
+                console.print(f"[dim]Heal[/dim] [red]Enter 'heal' to use Campfire heal[/red] [dim](Current Supplies: {self.camp.campfire.supplies})")
 
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
 
@@ -312,7 +316,7 @@ class Game:
                     self.debugger.mainMenu(autoCommand=auto)
                     continue
                 else:
-                    printWarning("Debugging is currently disabled!")
+                    continue
             elif choice.lower() == "data":
                 console.print("\n[bold cyan]=== ALL GAME DATA ===[/bold cyan]")
                 console.print(f"[red]{self._serialise()}[/red]")
@@ -320,6 +324,11 @@ class Game:
                 console.print(f"[gold1]{self.camp._serialiseAll()}[/gold1]")
                 pause()
                 continue
+            elif choice.lower() in 'heal':
+                if self.camp.campfire.level > 0:
+                    self.camp.campfire.rest()
+                    pause()
+                    continue
             try:
                 choice = int(choice)
                 match choice:
@@ -387,17 +396,19 @@ class Game:
                         return
                     case 1:
                         self.player.showInventory()
+                        pause()
                     case 2:
                         self.player.showCraftingInventory()
+                        pause()
                     case 3:
                         self.player.equipmentMenu()
                     case 4:
                         self.player.showAbilities()
+                        pause()
                     case _:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
                 printError(f'[ERROR] {e}')
-            pause()
 
     def optionsMenu(self):
         while True:
@@ -406,7 +417,7 @@ class Game:
 
             printSeparator()
             console.print("[dim]0.[/dim] [red]Exit[/red]")
-            console.print("[dim]1.[/dim] [gold1]Change Difficulty[/gold1]")
+            #console.print("[dim]1.[/dim] [gold1]Change Difficulty[/gold1]")
             console.print("[dim]2.[/dim] [green]Help Menu[/green]")
             console.print("[dim]3.[/dim] [orange1]Save Menu[/orange1]")
             debugStr = "Enable" if not self.debugAllowed else "Disable"
@@ -421,6 +432,7 @@ class Game:
                     case 0:
                         return
                     case 1:
+                        continue
                         self.changeDifficulty()
                     case 2:
                         self.help.helpMenu()
@@ -434,7 +446,6 @@ class Game:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
                 printError(f'[ERROR] {e}')
-            pause()
 
     def saveMenu(self):
         while True:
@@ -766,6 +777,10 @@ class Game:
         self.combatManager.nextTurn()
 
     def chooseTarget(self, enemies: List[Enemy]) -> Optional[Enemy]:
+        for enemy in enemies:
+            if getattr(enemy, 'taunting', False):
+                return enemy
+
         if len(enemies) == 1:
             return enemies[0]
         
@@ -878,7 +893,7 @@ class Game:
 
         if allLoot:
             console.print("\n[cyan bold]=== Resources Accquired ===[/cyan bold]")
-            for item, quantity in sorted(allLoot.items()):
+            for item, quantity in allLoot.items():
                 self.player.addItem(item, quantity)
 
         if allEquipment:

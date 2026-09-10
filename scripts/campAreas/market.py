@@ -8,6 +8,7 @@ from scripts.styles import (
     console, clearScreen, printHeader, printSeparator,
     pause, printWarning, printError, printSuccess, printInfo, checkGlobalCommand
 )
+from scripts.runeDrops import rollGuaranteedRunes, getRuneObject, getRuneDetails
 
 class Market(Station):
     # Buy/sell items and equipment
@@ -21,20 +22,20 @@ class Market(Station):
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
-            1: {"wood": 50, "stone": 50, "iron_ore": 10, "leather": 20,
-                'description': "Enemies will begin to drop [resource]Trade Vouchers[/resource].\n[resource]Trade Vouchers[/resource] are used to restock the Market's inventory.\nThe market can stock Common and Uncommon equipment."
+            1: {"leather": 10, "cloth": 5,
+                'description': "Enemies will begin to drop [resource]Trade Vouchers[/resource].\n[resource]Trade Vouchers[/resource] are used to restock the Market's inventory.\nThe market can stock Common and Uncommon equipment.\nThe market can stock [resource]crafting runes[/resource] up to the player's current level."
                 },
-            2: {"iron_ore": 50, "leather": 50, "cloth": 50, "bone": 25,
-                'description': "The market can now stock Rare resources. The market stocks an additional 2 pieces of Equipment. The market can stock Rare equipment."
+            2: {"leather": 15, "cloth": 10,
+                'description': "The market stocks more resources. The market stocks an additional 2 pieces of Equipment. The market can stock Rare equipment. The market stocks more crafting runes."
                 },
-            3: {"crystal": 25, "bone": 50, "soul": 25,
-                'description': "The market stocks an additional 2 pieces of Equipment. The market can stock Epic equipment. The market no longer stocks Common equipment."
+            3: {"leather": 30, "cloth": 20,
+                'description': "The market stocks more resources The market stocks an additional 2 pieces of Equipment. The market can stock Epic equipment. The market no longer stocks Common equipment. The market cannot stock crafting runes below level 15."
                 },
-            4: {"mana_essence": 40, "diamond": 20, "soul": 50,
-                'description': "The market can now stock Epic resources. The market stocks an additional 2 pieces of Equipment. The market can stock Legendary equipment. The market no longer stocks Uncommon equipment."
+            4: {"leather": 50, "cloth": 30,
+                'description': "The market stocks more resources. The market stocks an additional 2 pieces of Equipment. The market can stock Legendary equipment. The market no longer stocks Uncommon equipment. The market stocks more crafting runes."
                 },
-            5: {"dragon_scale": 15, "ascended_essence": 10, "diamond": 25,
-                'description': "The market stocks an additional 2 pieces of Equipment. The market is less likely to stock Rare equipment."
+            5: {"leather": 75, "cloth": 50,
+                'description': "The market stocks more resources The market stocks an additional 2 pieces of Equipment. The market is less likely to stock Rare equipment. The market cannot stock crafting runes below level 30. The market stocks more crafting runes"
                 }
         }
 
@@ -73,20 +74,12 @@ class Market(Station):
         # resources
         resourceCount = 3 + self.level
         availableResources = list(RESOURCES.keys())
-        if self.level < 2:
-            availableResources = [r for r in availableResources
-                                  if RESOURCES[r].rarity.value in ['common', 'uncommon']]
-        elif self.level < 4:
-            availableResources = [r for r in availableResources
-                                  if RESOURCES[r].rarity.value in ['common', 'uncommon', 'rare']]
-        else: # level 4/5
-            availableResources = [r for r in availableResources
-                                  if RESOURCES[r].rarity.value in ['common', 'uncommon', 'rare', 'epic']]
         selectedResources = random.sample(availableResources, min(len(availableResources), resourceCount))
         for resource in selectedResources:
             quantity = random.randint(10 + self.level * 4, 30 + self.level * 10)
-            basePrice = RESOURCES[resource].value * 8
-            self.stock[resource] = (quantity, basePrice)
+            price = RESOURCES[resource].value
+            self.stock[resource] = (quantity, price)
+
         # equipment
         equipmentCount = 2 * self.level + random.randint(1, 3)
         for _ in range(equipmentCount):
@@ -104,6 +97,19 @@ class Market(Station):
             equipment = Equipment._generateEquipmentPiece(equipLevel, slot, rarity, self.player.className, self.player._name)
             price = int((random.uniform(1, 5) * equipment.value) * (1 + equipLevel // 10) + 1000)
             self.stock[equipment.name] = (1, price, equipment)
+
+        # runes
+        if self.level > 0:
+            runesStock = {}
+            runeCount = 3 * self.level + random.randint(1, 4)
+            runeMinLevel = 0 if self.level < 3 else (15 if self.level < 5 else 30)
+            runes = rollGuaranteedRunes(self.player._level, runeCount, runeMinLevel, market=True)
+            for runeCat, runeType in runes:
+                rune = getRuneObject(runeCat, runeType)
+                runesStock[rune] = runesStock.get(rune, 0) + 1
+            for rune, quantity in runesStock.items():
+                price = max(10, rune.minItemLevel or 10) * 20
+                self.stock[rune] = (quantity, price)
 
         self.lastRestock = datetime.datetime.now()
 
@@ -182,16 +188,19 @@ class Market(Station):
                 printWarning("Market is empty!")
                 pause()
                 return
-            
+
             console.print("[gold]Available items:[/gold]")
             stockList = list(self.stock.items())
-            for i, (itemName, itemData) in enumerate(stockList, 1):
+            for i, (item, itemData) in enumerate(stockList, 1):
                 if len(itemData) == 3:  # equipment
                     quantity, price, equipment = itemData
                     console.print(f"  [cyan]{i}.[/cyan] [dim]{price}g\n{equipment}")
-                else:  # resources
+                else:
                     quantity, price = itemData
-                    console.print(f"  [cyan]{i}.[/cyan] {itemName} x{quantity} - [dim]{price}g/each[/dim]")
+                    if type(item) is str: # resources
+                        console.print(f"  [cyan]{i}.[/cyan] {item.title()} x{quantity} - [dim]{price}g/each[/dim]")
+                    else: # runes
+                        console.print(f"  [cyan]{i}.[/cyan] {item.name} x{quantity} - [dim]{price}g/each[/dim]")
 
             choice = console.input("\n[cyan]Choose item to buy (0 to cancel):\n> [/cyan]").strip()
             try:
@@ -199,7 +208,7 @@ class Market(Station):
                     return
                 index = int(choice) - 1
                 if 0 <= index < len(stockList):
-                    itemName, itemData = stockList[index]
+                    item, itemData = stockList[index]
                     
                     if len(itemData) == 3:
                         quantity, price, equipment = itemData
@@ -226,22 +235,26 @@ class Market(Station):
                             for _ in range(amount):
                                 self.player.addEquipmentToStorage(itemData[2])
                         else:
-                            self.player.addItem(itemName, amount)
+                            self.player.addItem(item, amount)
 
                         if len(itemData) == 3:
                             new_quantity = quantity - amount
                             if new_quantity > 0:
-                                self.stock[itemName] = (new_quantity, price, equipment)
+                                self.stock[item] = (new_quantity, price, equipment)
                             else:
-                                del self.stock[itemName]
+                                del self.stock[item]
                         else:
-                            new_quantity = quantity - amount
-                            if new_quantity > 0:
-                                self.stock[itemName] = (new_quantity, price)
+                            if type(item) is str:
+                                new_quantity = quantity - amount
+                                if new_quantity > 0:
+                                    self.stock[item] = (new_quantity, price)
+                                else:
+                                    del self.stock[item]
                             else:
-                                del self.stock[itemName]
+                                runeCat, runeType = getRuneDetails(item)
+                                self.player.addRune(runeCat, runeType, doPrint=False)
                         
-                        printSuccess(f"\nPurchased {amount}x {itemName} for {cost}g!")
+                        printSuccess(f"\nPurchased {amount}x {item} for {cost}g!")
                     else:
                         printWarning(f"\nNeed {cost}g! (Current: {self.player._gold}g)")
             except ValueError:

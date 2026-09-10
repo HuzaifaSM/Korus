@@ -13,7 +13,7 @@ CULTIST_DESCRIPTIONS = {
         "- At maximum Insanity: 75% Increased Damage, take 10% of damage dealt as Chaos damage. Insanity is randomly set between -1 and your minimum.\n"
         "- At minimum Insanity: 25% of the damage taken from the next hit is gained as damage. Take no damage from the next hit. Insanity is randomly set between 1 and your maximum.\n"
         "- At the start of every turn, Insanity is randomly: Halved, Doubled, Inverted, or shifted by ±10.\n"
-        "[bold]Starting Stats:[/bold] 35 Health | 7 Damage | 5% Crit Chance | 160% Crit Damage | Chaos Damage | 0.9 Speed.",
+        "[bold]Starting Stats:[/bold] 40 Health | 7 Damage | 5% Crit Chance | 160% Crit Damage | Chaos Damage | 0.9 Speed.",
     #ascendancies
     "Umbralist": "[lore]Embrace the darkness. Let it swallow you whole. Once the shadows fall, consume them. Only you will remain.[/lore]"
         "- Minimum Insanity is lowered by 20. Maximum Insanity lowered by 15. At the start of your turn, if you have negative Insanity, gain 1 Shadow per 10 negative Insanity.\n"
@@ -69,7 +69,7 @@ INSANITY_EFFECTS = {
 }
 
 class Cultist(Player):
-    def __init__(self, name, health = 35, damage = 7, baseCritChance = 0.05, baseCritMulti = 1.6, damageType = "chaos", speed = 0.9):
+    def __init__(self, name, health = 40, damage = 7, baseCritChance = 0.05, baseCritMulti = 1.6, damageType = "chaos", speed = 0.9):
         super().__init__(name, health, damage, baseCritChance, baseCritMulti, damageType, speed, className='Cultist', classDescription=CULTIST_DESCRIPTIONS["Cultist"])
         self.combatStart = True
         self.insanity = 0

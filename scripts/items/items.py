@@ -13,6 +13,142 @@ class ItemRarity(Enum):
     BLANK = "blank"
     QUEST = "quest"
 
+    def __lt__(self, other: ItemRarity) -> bool:
+        if self.value == 'common' and other.value != 'common':
+            return True
+        elif self.value ==  'uncommon':
+            if other.value in ['common', 'uncommon']:
+                return False
+            return True
+        elif self.value == 'rare':
+            if other.value in ['common', 'uncommon', 'rare']:
+                return False
+            return True
+        elif self.value == 'epic':
+            if other.value in ['common', 'uncommon', 'rare', 'epic']:
+                return False
+            return True
+        elif self.value == 'legendary':
+            if other.value not in ['mythic', 'blank']:
+                return False
+            return True
+        elif self.value in ['mythic', 'blank']: # nothing greater than mythic/blank
+            return False
+        elif self.value == 'quest': # quest, all greater
+            return True
+
+    def __le__(self, other: ItemRarity) -> bool:
+        if self.value == other.value:
+            return True
+        return self < other
+
+    def __gt__(self, other: ItemRarity) -> bool:
+        if self.value == 'common' and other.value != 'common':
+            return False
+        elif self.value ==  'uncommon':
+            if other.value in ['common', 'uncommon']:
+                return True
+            return False
+        elif self.value == 'rare':
+            if other.value in ['common', 'uncommon', 'rare']:
+                return True
+            return False
+        elif self.value == 'epic':
+            if other.value in ['common', 'uncommon', 'rare', 'epic']:
+                return True
+            return False
+        elif self.value in ['legendary', 'mythic', 'blank']: # legendary, mythic, blank > all but mythic/blank
+            if other.value not in ['mythic', 'blank']:
+                return True
+            return False
+        elif self.value == 'quest': # quest, all greater
+            return False
+
+    def __ge__(self, other: ItemRarity) -> bool:
+        if self.value == other.value:
+            return True
+        return self > other
+
+    def __add__(self, value: int) -> ItemRarity:
+        if value < 0:
+            return self - value
+        if self.value == 'quest':
+            return [ItemRarity.QUEST]
+        if value == 0:
+            return RARITY_SERIALS[self.value]
+        if self.value in ['mythic', 'blank']:
+            return RARITY_SERIALS[self.value]
+
+        if self.value == 'common':
+            if value == 1:
+                return ItemRarity.UNCOMMON
+            elif value == 2:
+                return ItemRarity.RARE
+            elif value == 3:
+                return ItemRarity.EPIC
+            elif value == 4:
+                return ItemRarity.LEGENDARY
+        
+        elif self.value == 'uncommon':
+            if value == 1:
+                return ItemRarity.RARE
+            elif value == 2:
+                return ItemRarity.EPIC
+            elif value == 3:
+                return ItemRarity.LEGENDARY
+
+        elif self.value == 'rare':
+            if value == 1:
+                return ItemRarity.EPIC
+            elif value == 2:
+                return ItemRarity.LEGENDARY
+
+        elif self.value == 'epic':
+            if value == 1:
+                return ItemRarity.LEGENDARY
+
+        return ItemRarity.MYTHIC
+
+    def __sub__(self, value: int) -> ItemRarity:
+        if value < 0:
+            return self + value
+        if self.value == 'quest':
+            return [ItemRarity.QUEST]
+        elif self.value == 'common':
+            return RARITY_SERIALS[self.value]
+        if value == 0:
+            return RARITY_SERIALS[self.value]
+
+        if self.value == 'rare':
+            if value == 1:
+                return ItemRarity.UNCOMMON
+
+        elif self.value == 'epic':
+            if value == 1:
+                return ItemRarity.RARE
+            elif value == 2:
+                return ItemRarity.UNCOMMON
+
+        elif self.value == 'legendary':
+            if value == 1:
+                return ItemRarity.EPIC
+            elif value == 2:
+                return ItemRarity.RARE
+            elif value == 3:
+                return ItemRarity.UNCOMMON
+
+        elif self.value in ['mythic', 'blank']:
+            if value == 1:
+                return ItemRarity.LEGENDARY
+            elif value == 2:
+                return ItemRarity.EPIC
+            elif value == 3:
+                return ItemRarity.RARE
+            elif value == 4:
+                return ItemRarity.UNCOMMON
+
+        return ItemRarity.COMMON
+
 RARITY_VALUES = {
     "common": 1,
     "uncommon": 2,
@@ -96,8 +232,10 @@ class Item:
         return cls
 
 class Resource(Item):
-    def __init__(self, name: str, rarity: ItemRarity = ItemRarity.COMMON, value: int = 1):
-        super().__init__(name, ItemType.RESOURCE, rarity, value, stackable=True, maxStack=999)
+    def __init__(self, name: str, use: str):
+        super().__init__(name, ItemType.RESOURCE, ItemRarity.QUEST, value=10, stackable=True, maxStack=999)
+        self.use = use
+        """the location this item is used in, i.e. 'campfire', 'forge', 'market', 'player'"""
 
 class Consumable(Item):
     def __init__(self):
@@ -222,20 +360,10 @@ class DungeonMap(Item):
         return DUNGEON_RARITY_MULTIPLIERS[self.rarity]['rewards']
 
 RESOURCES = {
-    "wood": Resource("Wood", ItemRarity.COMMON, 1),
-    "stone": Resource("Stone", ItemRarity.COMMON, 1),
-    "cloth": Resource("Cloth", ItemRarity.COMMON, 2),
-    "herbs": Resource("Herbs", ItemRarity.COMMON, 2),
-    "leather": Resource("Leather", ItemRarity.UNCOMMON, 2),
-    "iron_ore": Resource("Iron Ore", ItemRarity.UNCOMMON, 3),
-    "bone": Resource("Bone", ItemRarity.UNCOMMON, 5),
-    "crystal": Resource("Crystal", ItemRarity.RARE, 10),
-    "soul": Resource("Soul", ItemRarity.RARE, 10),
-    "mana_essence": Resource("Mana Essence", ItemRarity.EPIC, 15),
-    "ancient_wood" : Resource("Ancient Wood", ItemRarity.EPIC, 30),
-    "diamond": Resource("Diamond", ItemRarity.EPIC, 30),
-    "dragon_scale": Resource("Dragon Scale", ItemRarity.LEGENDARY, 50),
-    "ascended_essence": Resource("Ascended Essence", ItemRarity.LEGENDARY, 75)
+    "wood": Resource("Wood", 'Campfire'), "stone": Resource("Stone", 'Campfire'),
+    "brick": Resource("Brick", "Forge"), "metal": Resource("Metal", "Forge"),
+    "leather": Resource("Leather", "Market"), "cloth": Resource("Cloth", "Market"),
+    "soul": Resource("Soul", "Player"), "ascended_essence": Resource("Ascended Essence", "Player"),
 }
 
 RARITY_WEIGHTS = {

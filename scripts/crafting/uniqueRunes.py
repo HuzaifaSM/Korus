@@ -348,6 +348,4 @@ IDEAS:
 - foresight rune:
     - lets you see the outcome of the next rune used before it is actually used
     - displays item after craft would be complete, asked for confirmation y/n whether to actually apply item
-- parallel rune:
-    - duplicates an item, copying it 1 for 1 and making both versions unmodifiable
 """

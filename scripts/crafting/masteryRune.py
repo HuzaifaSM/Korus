@@ -1,5 +1,4 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-import random
 from typing import Dict
 
 class BaseMasteryRune(CraftingItem):
@@ -39,7 +38,7 @@ class BaseMasteryRune(CraftingItem):
             )
 
 class MasteryRune(BaseMasteryRune):
-    name = '[gold1 bold]Greater Mastery Rune[/gold1 bold]'
+    name = '[gold1 bold]Mastery Rune[/gold1 bold]'
     description = 'Increases the mastery of an item by 5%, enhancing its affix values. Maximum 20% mastery.'
     masteryToAdd = 5
     successEntropy = 0.06
@@ -47,7 +46,7 @@ class MasteryRune(BaseMasteryRune):
     dropWeight = 150
 
 class GreaterMasteryRune(BaseMasteryRune):
-    name = '[yellow1 bold underline]Perfect Mastery Rune[/yellow1 bold underline]'
+    name = '[yellow1 bold underline]Greater Mastery Rune[/yellow1 bold underline]'
     description = 'Increases the mastery of an item by 10%, enhancing its affix values. Maximum 20% mastery.'
     masteryToAdd = 10
     successEntropy = 0.11
@@ -55,7 +54,7 @@ class GreaterMasteryRune(BaseMasteryRune):
     dropWeight = 90
 
 class PerfectMasteryRune(BaseMasteryRune):
-    name = '[light_goldenrod1 bold underline]Divine Mastery Rune[/light_goldenrod1 bold underline]'
+    name = '[light_goldenrod1 bold underline]Perfect Mastery Rune[/light_goldenrod1 bold underline]'
     description = 'Increases the mastery of an item by 15%, enhancing its affix values. Maximum 20% mastery.'
     masteryToAdd = 15
     minItemLevel = 50

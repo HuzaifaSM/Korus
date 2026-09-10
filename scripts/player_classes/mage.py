@@ -1,6 +1,5 @@
 from .base import Player, ELEMENTAL_RES, DIVINE_RES
 from scripts.styles import console
-from scripts.abilities import Effects
 import random
 
 MAGE_DESCRIPTIONS = {
@@ -8,7 +7,7 @@ MAGE_DESCRIPTIONS = {
         "- Mana: You have Mana instead of Stamina. Regenerate a base of 5 Mana per turn. Max Mana is affected by changes to Max Stamina.\n"
         "- Upon attacking with Elemental or Arcane Damage, spend Mana equal to 20% of Damage Dealt. Gain Added Damage equal to Mana spent on attacks.\n"
         "- Whenever you deal Arcane Damage, gain 1 Mastery, to a maximum of 10. Mastery: +1% Crit Chance, +5% Crit Damage.\n"
-        "- Whenever you take Elemental Damage, gain Adaptation for that damage type for the rest of combat.\n"
+        "- Whenever you take damage, gain a random Adaptation for the rest of combat.\n"
         "- Fire Adaptation: +25% Crit Damage.\n"
         "- Cold Adaptation: +0.2 Speed.\n"
         "- Earth Adaptation: +10% Elemental Resistance.\n"
@@ -25,7 +24,7 @@ MAGE_DESCRIPTIONS = {
         "- Relinquish Earth: 20% Increased Defenses, 25% Increased Elemental Damage Taken.\n"
         "- Relinquish Lightning: 50% Increased Effect of Mana, -25% Crit Damage.\n"
         "- If you have Relinquished all Adaptations, gain Calamity: 100% Increased Damage Dealt, 20% Less Damage Taken, +50% Crit Chance, +100% Crit Damage.\n"
-        "[bold]Stat Changes:[/bold] -15 HP. +10 Damage. +0.15 Speed. +10 Mana Regeneration.",
+        "[bold]Stat Changes:[/bold] -15 HP. +7 Damage. +0.15 Speed. +3% Crit Chance. +10 Mana Regeneration.",
     "Arcanist": "[lore]Each spell contains another secret. Each secret requires another spell. Learn. Accumulate. Improve. Let the Arcane flow through you, until all knowledge is yours.[/lore]"
         "- Mastery also grants +2 Mana Regeneration per stack. At the start of your turn, gain 2% Max Mana Regeneration for the rest of combat, to a maximum of +20%.\n"
         "- If an attack has a Mana Cost equal to or more than 40% of your Max Mana, it is used for free, and you gain 50% of the Mana that would have been used as Mana and Health.\n"
@@ -34,8 +33,8 @@ MAGE_DESCRIPTIONS = {
         "- Archmage grants 50% Increased Mana Regeneration and an additional 20% Increased Mana Cost. If an attack uses more than 60% of your Current Mana, it deals 40% Increased Arcane Damage.\n"
         "[bold]Stat Changes:[/bold] +40 HP. -0.05 Speed. 10% Increased Max Mana. 10% Increased Mana Cost.",
     "Hierophant": "[lore]Fire scorches. Cold chills. Earth protects. Lightning sunders. But now... The light blesses. The darkness consumes. The arcane transcends. They have always been there, but now, you are not of the ignorant.[/lore]"
-        "- For each Elemental Adaptation you have, gain 15% Increased Arcane Damage. If you are attacked by an Elemental Damage Type you are already Adapted to, gain a random Elemental Adaptation.\n"
-        "- Whenever you take Divine Damage, gain Adaptation for that damage type for the rest of combat.\n"
+        "- For each Elemental Adaptation you have, gain 15% Increased Arcane Damage.\n"
+        "- Taking damage can also grant Divine Adaptations for the rest of combat.\n"
         "- Holy Adaptation: Healing is applied to Shield as well, 10% Increased Arcane Damage.\n"
         "- Dark Adaptation: +15% Lifesteal, 10% Increased Arcane Damage.\n"
         "- Arcane Adaptation: Attacks deal extra damage equal to 10% of your Max Mana, 10% Increased Arcane Damage.\n"
@@ -145,8 +144,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 self._stats['Temporary']['crit_chance'] += 0.03
                 self._stats['Temporary']['crit_multi'] += 0.1
                 self._stats['Temporary']['increased_defenses'] -= 5
-            return True
-        return False
 
     def relinquishFire(self):
         if self.fireAdaptation:
@@ -165,8 +162,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 self._stats['Temporary']['crit_chance'] += 0.03
                 self._stats['Temporary']['crit_multi'] += 0.1
                 self._stats['Temporary']['increased_defenses'] -= 5
-            return True
-        return False
 
     def relinquishCold(self):
         if self.coldAdaptation:
@@ -185,8 +180,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 self._stats['Temporary']['crit_chance'] += 0.03
                 self._stats['Temporary']['crit_multi'] += 0.1
                 self._stats['Temporary']['increased_defenses'] -= 5
-            return True
-        return False
 
     def relinquishEarth(self):
         if self.earthAdaptation:
@@ -204,8 +197,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 self._stats['Temporary']['crit_chance'] += 0.03
                 self._stats['Temporary']['crit_multi'] += 0.1
                 self._stats['Temporary']['increased_defenses'] -= 5
-            return True
-        return False
 
     def relinquishLightning(self):
         if self.lightningAdaptation:
@@ -270,33 +261,37 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 self._stats['Temporary']['crit_multi'] += 1
                 self._stats['Temporary']['resistance_penetration'] += 25
 
-    def gainAdaptation(self, damageType):
-        if damageType in ELEMENTAL_RES:
-            adaptGained = False
-            if damageType == 'fire':
-                adaptGained = self.gainFireAdaptation()
-            elif damageType == 'cold':
-                adaptGained = self.gainColdAdaptation()
-            elif damageType == 'earth':
-                adaptGained = self.gainEarthAdaptation()
-            elif damageType == 'lightning':
-                adaptGained = self.gainLightningAdaptation()
-            self.checkArchmage()
+    def gainAdaptation(self):
+        possible = []
+        if not self.fireAdaptation:
+            possible.append('fire')
+        if not self.coldAdaptation:
+            possible.append('cold')
+        if not self.earthAdaptation:
+            possible.append('earth')
+        if not self.lightningAdaptation:
+            possible.append('lightning')
+        if self._ascendancy == 'Hierophant':
+            if not self.holyAdaptation:
+                possible.append('holy')
+            if not self.darkAdaptation:
+                possible.append('dark')
+            if not self.arcaneAdaptation:
+                possible.append('arcane')
 
-            if self._ascendancy == 'Hierophant' and not adaptGained and not self.archmage:
-                available = []
-                if not self.fireAdaptation:
-                    available.append('fire')
-                if not self.coldAdaptation:
-                    available.append('cold')
-                if not self.earthAdaptation:
-                    available.append('earth')
-                if not self.lightningAdaptation:
-                    available.append('lightning')
-                dType = random.choice(available)
-                self.gainAdaptation(dType)
+        damageType = random.choice(possible)
         
-        elif damageType in DIVINE_RES and self._ascendancy == 'Hierophant':
+        if damageType == 'fire':
+            self.gainFireAdaptation()
+        elif damageType == 'cold':
+            self.gainColdAdaptation()
+        elif damageType == 'earth':
+            self.gainEarthAdaptation()
+        elif damageType == 'lightning':
+            self.gainLightningAdaptation()
+        self.checkArchmage()
+
+        if self._ascendancy == 'Hierophant':
             if damageType == 'holy':
                 self.gainHolyAdaptation()
             elif damageType == 'dark':
@@ -585,8 +580,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
     def onHit(self, damageTaken, damageType, crit=False, attacker=None, combatManager=None):
         damageTaken, damageType = super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
-        if damageType in ELEMENTAL_RES:
-            self.gainAdaptation(damageType)
+        self.gainAdaptation()
 
         if self._ascendancy == 'Calamity':
             if damageType in ELEMENTAL_RES or damageType == 'arcane':
@@ -707,8 +701,9 @@ class Mage(Player): # higher damage, lower health, arcane damage
     ASCENDANCY_DELTAS = {
         'Calamity': {
             '_baseHealth': -15,
-            '_baseDamage': 10,
+            '_baseDamage': 7,
             '_baseSpeed': 0.15,
+            '_stats.Permanent.crit_chance': 0.03,
             'manaRegen': 10,
         },
         'Arcanist': {

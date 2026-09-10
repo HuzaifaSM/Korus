@@ -2,13 +2,14 @@ from typing import List, Optional, Tuple
 from enum import Enum
 from copy import deepcopy
 import random
+from rich.text import Text
 from .entities import Entity
-from .enemy import Enemy
+from .enemies.enemy import Enemy
 from .abilities import StatusEffect, resolveEffects
 from .styles import (
     console, printWarning, formatDamageBreakdown, pause
 )
-from .enemyAi import EnemyAI
+from .enemies.enemyAi import EnemyAI
 
 class TurnPhase(Enum):
     PLAYER_TURN = "player"
@@ -205,6 +206,7 @@ class CombatManager:
         self.battleActive = False
         self._enemyDecisions = {}
         self._enemyIndexMap = {}
+        self.battleLog: list[str] = []
 
     def registerUnit(self, entity: Entity, team: str = "player") -> CombatUnit:
         initiative = int(entity._speed * 10) + random.randint(0, 5)
@@ -224,6 +226,10 @@ class CombatManager:
         self.turnNumber = 1
         self.currentTurnIndex = 0
         self.units = []
+        self.battleLog = []
+        self.combatLog: List[str] = []
+        self._originalPrint = console.print
+        console.print = self._capturePrint
 
         self.player = self.registerUnit(player, "player")
         enemyUnits = [self.registerUnit(enemy, "enemy") for enemy in enemies]
@@ -310,15 +316,31 @@ class CombatManager:
     def isTeamDefeated(self, team: str) -> bool:
         teamUnits = self.getUnitsInTeam(team)
         return len(teamUnits) == 0 or all(u.entity._isDead for u in teamUnits)
-    
+
     def checkBattleEnd(self) -> Optional[str]:
         if self.isTeamDefeated("player"):
-            self.battleActive = False
+            self.endBattle()
             return "enemy"
         elif self.isTeamDefeated("enemy"):
-            self.battleActive = False
+            self.endBattle()
             return "player"
         return None
+
+    def _capturePrint(self, *args, **kwargs):
+        parts = []
+        for arg in args:
+            plain = Text.from_markup(arg).plain if isinstance(arg, str) else str(arg)
+            if plain.strip():
+                parts.append(plain.strip())
+        if parts:
+            self.combatLog.append(f"[Turn {self.turnNumber}] {' '.join(parts)}")
+        self._originalPrint(*args, **kwargs)
+
+    def endBattle(self):
+        self.battleActive = False
+        if hasattr(self, '_originalPrint'):
+            console.print = self._originalPrint
+            del self._originalPrint
 
     def addStatusEffect(self, target: Entity, statusEffect: StatusEffect, attacker: Entity):
         statusEffect.target = target
@@ -418,9 +440,19 @@ class CombatManager:
                 ability.applyResourceCosts(attacker)
 
             selfEffects = ability.effects.get('self', {})
-            if selfEffects:
-                for effect in resolveEffects(selfEffects):
-                    self.addStatusEffect(attacker, effect, attacker)
+            if ability.targets == 'all_allies':
+                effectRecipients = list(self.allAlive)
+            elif ability.targets == 'ally':
+                effectRecipients = [target]
+            else:
+                effectRecipients = [attacker]
+
+            for recipient in effectRecipients:
+                if 'taunt' in selfEffects and hasattr(recipient, 'applyTaunt'):
+                    recipient.applyTaunt(selfEffects['taunt'].get('turns', 1))
+                if selfEffects:
+                    for effect in resolveEffects(selfEffects):
+                        self.addStatusEffect(recipient, effect, attacker)
 
             attacker.onAbilityCast(ability, self)  # fires once per use regardless of category - the only hook heal/buff abilities reach
 
@@ -433,6 +465,8 @@ class CombatManager:
                     targets = self.allAlive
                 else:
                     targets = [u.entity for u in self.getUnitsInTeam("player")]
+            elif ability.targets == "all_allies":
+                targets = list(self.allAlive)  # 0-damage, no target-side effects on these - just needs a non-empty list
             elif ability.targets == "multiple":
                 numTargets = 2
                 if attackerUnit.team == "player":
@@ -621,7 +655,7 @@ class CombatManager:
             return
 
         if not self._enemyDecisions: # build snapshot for all enemies this round, cache it
-            actionLists = [e.ai.buildActionList() for e in self.allAlive]
+            actionLists = [e.ai.buildActionList(self.allAlive) for e in self.allAlive]
             self._enemyDecisions = EnemyAI.decideTurn(self.allAlive, aliveTargets[0], actionLists)
             self._enemyIndexMap = {e: i for i, e in enumerate(self.allAlive)}
 

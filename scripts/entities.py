@@ -174,6 +174,9 @@ class LockedDict(dict):
             )
         super().__setitem__(key, value)
 
+    def __deepcopy__(self, memo):
+        return LockedDict({k: deepcopy(v, memo) for k, v in self.items()})
+
 def _freeze(obj: T) -> T:
     """recursively replace every dict with a LockedDict.\n
     Typed as T -> T (identity) since result is shaped identically to input\n
@@ -433,8 +436,9 @@ class Entity:
         self._stats: Stats = _freeze(_rawStats)
         self._abilities: Dict[str, Ability] = {"Basic Attack": BasicAttack()}
         self._inventory: Dict[str, int] = {}  # {item_name: quantity}
-        self._craftingInventory: Dict[str, int] = {} # {f'{category}_{runeType}': quantity}
-        self._equipmentStorage: List[Equipment] = [] # store equipment objects
+        self._craftingInventory: Dict[str, int] = {}
+        """{f'{category}_{runeType}': quantity}"""
+        self._equipmentStorage: List[Equipment] = []
         self._equipment: Dict[str, Optional[Equipment]] = {
             'weapon': None,
             'offhand': None,
@@ -501,13 +505,13 @@ class Entity:
     def critChance(self) -> float:
         flat = self._stats['baseCritChance'] + self._stats['Bonuses']['crit_chance'] + self._getExtraBonuses('crit_chance')
         increased = self._stats['critChanceIncreased'] + self._getExtraBonuses('increased_crit_chance')
-        return flat * (1 + increased)
+        return round(flat * round(1 + increased), 2)
 
     @property
     def critMulti(self) -> float:
         flat = self._stats['baseCritMulti'] + self._stats['Bonuses']['crit_multi'] + self._getExtraBonuses('crit_multi')
         increased = self._stats['critMultiIncreased'] + self._getExtraBonuses('increased_crit_multi')
-        return flat * (1 + increased)
+        return round(flat * (1 + increased), 2)
 
     @property
     def numMultihits(self) -> int:
@@ -725,9 +729,13 @@ class Entity:
             if not resolved:
                 return
         else:
-            if ability not in ENEMY_ABILITIES:
+            classPools = ENEMY_ABILITIES.get(self.className.value, {})
+            pool = dict(classPools.get('base', {}))
+            if getattr(self, '_ascendancy', None) is not None:
+                pool.update(classPools.get(self._ascendancy.value, {}))
+            if ability not in pool:
                 return
-            resolved = deepcopy(ENEMY_ABILITIES[ability]) # used to sefate references
+            resolved = deepcopy(pool[ability]) # used to separate references
 
         self._abilities[ability] = resolved
         if doPrint:
@@ -773,7 +781,7 @@ class Entity:
             for line in formatEffectsDetailed(ability.effects):
                 console.print(f"    [buff]- {line}[/buff]")
 
-    def addRune(self, category: str, runeType: str, quantity: int = 1):
+    def addRune(self, category: str, runeType: str, quantity: int = 1, doPrint: bool = True):
         key = f'{category}_{runeType}'
         if key in self._craftingInventory:
             self._craftingInventory[key] += quantity
@@ -781,7 +789,8 @@ class Entity:
             self._craftingInventory[key] = quantity
         rune = getRuneObject(category, runeType)
         runeName = rune.name if rune else runeType
-        console.print(f'[success]  - Gained {quantity}x {runeName}[/success]')
+        if doPrint:
+            console.print(f'[success]  - Gained {quantity}x {runeName}[/success]')
 
     def removeRune(self, category: str, runeType: str, quantity: int = 1) -> bool:
         key = f'{category}_{runeType}'

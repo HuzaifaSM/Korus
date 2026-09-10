@@ -17,7 +17,7 @@ import random
 
 from scripts.styles import console
 from scripts.combat import CombatManager
-from scripts.enemy import createEnemy
+from scripts.enemies.enemy import createEnemy
 from scripts.player_classes.classes import CLASSES
 
 TARGET_LEVEL = 20

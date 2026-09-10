@@ -821,11 +821,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }
@@ -1505,11 +1505,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }
@@ -2006,11 +2006,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }
@@ -2489,11 +2489,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }
@@ -3692,11 +3692,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }
@@ -4342,11 +4342,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }
@@ -5014,11 +5014,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 2, "max": 5, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 5, "max": 9, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 9, "max": 13, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 13, "max": 16, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 16, "max": 20, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }
@@ -5687,11 +5687,11 @@
                 "isPercent": false,
                 "categories": ["resistance", "elemental", "fire", "defensive"],
                 "tiers": {
-                    "1": { "levelReq": 1, "min": 2, "max": 5, "weight": 900, "name": "Hardened" },
-                    "2": { "levelReq": 18, "min": 5, "max": 9, "weight": 750, "name": "Sturdy" },
-                    "3": { "levelReq": 33, "min": 9, "max": 13, "weight": 550, "name": "Resilient" },
-                    "4": { "levelReq": 50, "min": 13, "max": 16, "weight": 370, "name": "Unyielding" },
-                    "5": { "levelReq": 68, "min": 16, "max": 20, "weight": 200, "name": "Adamantine" }
+                    "1": { "levelReq": 1, "min": 5, "max": 12, "weight": 900, "name": "of Hardening" },
+                    "2": { "levelReq": 18, "min": 13, "max": 22, "weight": 750, "name": "of Sturdiness" },
+                    "3": { "levelReq": 33, "min": 23, "max": 32, "weight": 550, "name": "of Resilience" },
+                    "4": { "levelReq": 50, "min": 33, "max": 40, "weight": 370, "name": "of Unyielding" },
+                    "5": { "levelReq": 68, "min": 41, "max": 50, "weight": 200, "name": "of Adamantine" }
                 }
             }
         }

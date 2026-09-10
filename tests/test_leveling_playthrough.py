@@ -21,7 +21,9 @@ import pytest
 
 from scripts.styles import console
 from scripts.player_classes.classes import CLASSES, ASCENDANCIES
-from _playthroughLib import BASE_TARGET_LEVEL, ASCENDANCY_TARGET_LEVEL, _makeImmortal, _levelPlayerTo
+from _playthroughLib import (
+    BASE_TARGET_LEVEL, ASCENDANCY_TARGET_LEVEL, _makeImmortal, _levelPlayerTo, _getLevel20Player,
+)
 
 
 @pytest.fixture(autouse=True)
@@ -42,12 +44,9 @@ def _cases():
 
 @pytest.mark.parametrize("className,ascendancy", list(_cases()))
 def test_leveling_playthrough(className, ascendancy):
-    player = CLASSES[className](f"{className} Playthrough")
-    _makeImmortal(player)
     label = f"{className}/{ascendancy or 'base'}"
-
-    _levelPlayerTo(player, BASE_TARGET_LEVEL, label)
-    assert player._level >= BASE_TARGET_LEVEL, f"{label}: never reached level {BASE_TARGET_LEVEL}"
+    player = _getLevel20Player(className, label)
+    assert player._level >= BASE_TARGET_LEVEL, f"{label}: snapshot restore landed below level {BASE_TARGET_LEVEL}"
 
     if ascendancy:
         assert player.updateAscendancy(ascendancy), f"{label}: failed to ascend into {ascendancy}"

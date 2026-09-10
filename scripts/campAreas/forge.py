@@ -41,19 +41,19 @@ class Forge(Station):
 
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
-            1: {"iron_ore": 5, "stone": 25, "wood": 10,
+            1: {"brick": 10, "metal": 5,
                 'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair and fuse equipment. [resource]Blueprints[/resource] are used to craft and fuse new peices of equipment.\nYou are able to craft Common and Uncommon equipment.\nYou are able to fuse Common Equipment to Uncommon.'
                 },
-            2: {"iron_ore": 50, "crystal": 15, "bone": 10,
+            2: {"brick": 20, "metal": 10,
                 'description': "Repairing items grants 20% more durability recovered. You can now craft Rare equipment. You can fuse Uncommon Equipment to Rare."
                 },
-            3: {"crystal": 40, "mana_essence": 20, "ancient_wood": 10,
+            3: {"brick": 30, "metal": 20,
                 'description': "Repairing items grants 20% more durability recovered. You can now craft Epic equipment. You can fuse Rare Equipment to Epic."
                 },
-            4: {"mana_essence": 50, "diamond": 30, "dragon_scale": 10,
+            4: {"brick": 50, "metal": 35,
                 'description': "Repairing items grants 20% more durability recovered. You can now craft Legendary equipment. Crafted equipment cannot be Common. You can fuse Epic Equipment to Legendary."
                 },
-            5: {"dragon_scale": 30, "ascended_essence": 20, "diamond": 100,
+            5: {"brick": 75, "metal": 50,
                 'description': "Repairing items grants 20% more durability recovered. Crafted equipment cannot be Uncommon. Fusing requires 1 less item per tier."
                 }
         }
