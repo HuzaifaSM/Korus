@@ -79,6 +79,17 @@ KORUS_THEME = Theme({
 
     "lore": "medium_violet_red dim bold",
 
+    # enemy class/subclass colours
+    "attacker": "red1 bold",
+    "bruiser": "hot_pink bold",
+    "debilitator": "indian_red bold",
+    "champion": "tan bold",
+    "fanatic": "salmon1 bold",
+    "support": "spring_green1 bold",
+    "healer": "green_yellow bold",
+    "standard_bearer": "dark_khaki bold",
+    "tank": "light_steel_blue bold",
+
     # class colours
     "class_warrior": "dark_red bold",
     "class_fighter": "white bold",
@@ -798,73 +809,60 @@ def createEnemyPreview(enemies: List) -> Table:
     for i, enemy in enumerate(enemies, 1):
         table.add_column(f"Enemy {i}", style="red", justify="left")
 
-    enemyColumns = []
-    maxRows = 0
+    columns = []
 
     for enemy in enemies:
-        col = []
-        col.append(f"[bold red]{enemy._name}[/bold red]")
-        col.append(f"[dim](Level {enemy._level})[/dim]")
-        col.append("")
+        lines = []
+        lines.append(f"[bold red]{enemy._name}[/bold red]")
+        classStyle = enemy.className.value
+        subStr = ""
+        subStyle = ""
+        if enemy._ascendancy is not None:
+            subStyle = enemy._ascendancy.value
+            subStr = f" | [bold]Subclass:[/bold] [{subStyle}]{subStyle.replace('_', ' ').title()}[/{subStyle}]"
+        lines.append(f"[bold]Class:[/bold] [{classStyle}]{classStyle.replace('_', ' ').title()}[/{classStyle}]{subStr}")
+        lines.append(f"[dim](Level {enemy._level})[/dim]")
+        lines.append("")
 
-        col.append(f"[health]HP:[/health] {enemy._health}/{enemy._maxHealth}")
-        col.append(f"[damage]DMG:[/damage] {enemy._damage} | Type: [{enemy._damageType}]{enemy._damageType.title()}[/{enemy._damageType}]")
-        col.append(f"[speed]SPD:[/speed] {enemy._speed}")
-        col.append("")
+        lines.append(f"[health]HP:[/health] {enemy._health}/{enemy._maxHealth}")
+        lines.append(f"[damage]DMG:[/damage] {enemy._damage} | Type: [{enemy._damageType}]{enemy._damageType.title()}[/{enemy._damageType}]")
+        lines.append(f"[speed]SPD:[/speed] {enemy._speed}")
+        lines.append("")
 
         if enemy._abilities:
-            col.append("[bold cyan]Abilities:[/bold cyan]")
+            lines.append("[bold cyan]Abilities:[/bold cyan]")
             for name, ability in enemy._abilities.items():
                 effectsSummary = formatEffectsSummary(ability.effects)
                 mechText = f" [dim]({effectsSummary})[/dim]" if effectsSummary else ""
-                col.append(f"  [cyan]•[/cyan] {name}{mechText}")
-            col.append("")
+                lines.append(f"  [cyan]•[/cyan] {name}{mechText}")
+            lines.append("")
 
         resources = enemy._lootTable.resources
         if resources:
-            col.append("[bold gold]Resources:[/bold gold]")
-            resourceParts = []
+            lines.append("[bold gold]Resources:[/bold gold]")
             for resource, (minAmt, maxAmt, chance) in resources.items():
-                resourceParts.append(f"{resource}: {minAmt}-{maxAmt} | Drop Chance = {int(chance*100)}%")
-            col.append(f"[gold]" + "\n- ".join(resourceParts) + "[/gold]")
+                lines.append(f"[gold]  - {resource}: {minAmt}-{maxAmt} | Drop Chance = {int(chance*100)}%[/gold]")
+            lines.append("")
 
         equipment = enemy._lootTable.equipmentPool
         if equipment:
-            col.append("[bold yellow]Equipment:[/bold yellow]")
-            equipmentParts = []
+            lines.append("[bold yellow]Equipment:[/bold yellow]")
             for equip, chance in equipment:
-                equipmentParts.append(f"{equip.name} | Drop Chance = {int(chance*100)}%")
-            col.append("[yellow]" + "\n".join(equipmentParts) + "[/yellow]")
+                lines.append(f"[yellow]{equip.name} | Drop Chance = {int(chance*100)}%[/yellow]")
+            lines.append("")
 
         runes = enemy._lootTable.runeDrops
         if runes:
             from .runeDrops import getRuneObject
-            col.append("[bold light_cyan3]Runes:[/bold light_cyan3]")
-            runeParts = []
+            lines.append("[bold light_cyan3]Runes:[/bold light_cyan3]")
             for cat, runeType, dropChance in runes:
                 runeObj = getRuneObject(cat, runeType)
                 runeName = runeObj.name if runeObj else runeType
-                runeParts.append(f"{runeName} | Drop Chance = {int(dropChance*100)}%")
-            col.append("[light_cyan3]" + "\n".join(runeParts) + "[/light_cyan3]")
+                lines.append(f"[light_cyan3]{runeName} | Drop Chance = {int(dropChance*100)}%[/light_cyan3]")
 
-        enemyColumns.append(col)
-        maxRows = max(maxRows, len(col))
-        
-    for col in enemyColumns:
-        while len(col) < maxRows:
-            col.append("")
-    
-    rows = []
-    for i in range(maxRows):
-        row = []
-        for col in enemyColumns:
-            row.append(col[i])
-        rows.append(row)
+        columns.append("\n".join(lines))
 
-    for row in rows:
-        if any(cell.strip() for cell in row):
-            table.add_row(*row)
-
+    table.add_row(*columns)
     return table
 
 def formatPlayerMechanics(player, col: list) -> list:
@@ -1049,6 +1047,18 @@ def createCombatStatusTable(player, enemies: List) -> Table:
         style = "green" if isPlayer else "red"
 
         col.append(f"[bold {style}]{entity._name}[/bold {style}] [dim](Lvl. {entity._level})[/dim]")
+        ascStyle = ""
+        ascStr = ""
+        if entity._ascendancy is not None:
+            ascStyle = entity._ascendancy.lower() if isPlayer else entity._ascendancy.value
+            ascStr = f" | [bold]{'Ascendancy' if isPlayer else 'Subclass'}:[/bold] {ascStyle if isPlayer else ascStyle.replace('_', ' ').title()}"
+        classStyle = f"class_{entity.className.lower()}" if isPlayer else entity.className.value
+        className = entity.className if isPlayer else classStyle.replace('_', ' ').title()
+        if ascStyle and ascStr:
+            classStr = f"[{classStyle}]{className}[/{classStyle}][{ascStyle}]{ascStr}[/{ascStyle}]"
+        else:
+            classStr = f"[{classStyle}]{className}[/{classStyle}]"
+        col.append(f"[bold]Class:[/bold] {classStr}")
 
         width = 15 if isPlayer else 10
         healthBar = createHealthBar(entity._health, entity._maxHealth, width)

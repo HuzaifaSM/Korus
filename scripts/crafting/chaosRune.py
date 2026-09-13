@@ -1,5 +1,6 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.items.affixes import rollAffix, resolveAffixPoolKey
+from ..items.affixes import rollAffix, resolveAffixPoolKey
+from ..items.mythicAffixes import rollMythicAffix
 import random
 from typing import Dict
 
@@ -236,6 +237,63 @@ class SovereignChaosRune(BaseChaosRune):
     partialSuccessEntropy = 0.15
     dropWeight = 6
 
+class MythicChaosRune(BaseChaosRune):
+    name = '[plum4 bold]Mythic Chaos Rune[/plum4 bold]'
+    description = "Rerolls a Mythic item's mythic affix into a new one from the same pool"
+    minItemLevel = 60
+    successEntropy = 0.25
+    dropWeight = 18
+
+    def apply(self, item, player=None) -> CraftResult:
+        if not item.craftable:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message='Item cannot be modified'
+            )
+        if item.level < self.minItemLevel:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message='Item level too low'
+            )
+        if not item.mythicAffix:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT, 
+                message='Item has no mythic affix to reroll'
+            )
+
+        if item.slot == 'offhand':
+            bucket = 'shield'
+        elif item.slot == 'sigil':
+            bucket = f"sigil_{item.sigilType}"
+        else:
+            bucket = item.slot
+
+        oldId = item.mythicAffix.id
+        newAffix = None
+        for _ in range(20):
+            candidate = rollMythicAffix(bucket, item.level, item.rarity)
+            if candidate is None:
+                break
+            newAffix = candidate
+            if candidate.id != oldId:
+                break
+
+        if newAffix is None:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message=f"No alternate mythic affix avilable for this item. Slot type referenced: {bucket}"
+            )
+
+        item.mythicAffix = newAffix
+        item.update()
+        item._generateName()
+        item.addEntropy(self.successEntropy)
+
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message=f"[green]Mythic affix rerolled. New Affix:[/green]\n{newAffix}"
+        )
+
 CHAOS_RUNES: Dict[str, BaseChaosRune] = {
     'chaos': ChaosRune(),
     'greater': GreaterChaosRune(),
@@ -245,7 +303,8 @@ CHAOS_RUNES: Dict[str, BaseChaosRune] = {
     'splitting': SplittingChaosRune(),
     'unstable': UnstableChaosRune(),
     'ascendant': AscendantChaosRune(),
-    'sovereign': SovereignChaosRune()
+    'sovereign': SovereignChaosRune(),
+    'mythic': MythicChaosRune(),
 }
 
 """

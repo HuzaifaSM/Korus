@@ -8,3 +8,5 @@ data/everything old/
 data/watch/
 tests/save/
 .claude/
+tools/korus-build/korus-build
+tools/korus-build/korus-build.exe

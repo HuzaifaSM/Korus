@@ -1,6 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
 from scripts.items.affixes import rollAffix, Affix, AFFIX_POOL, resolveAffixPoolKey
-from scripts.items.mythicAffixes import rollMythicAffix, MythicAffix, MYTHIC_AFFIX_POOL
 import random
 from typing import Dict
 

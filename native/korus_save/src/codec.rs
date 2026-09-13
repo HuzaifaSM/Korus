@@ -43,7 +43,7 @@ pub fn encode(jsonPath: &str, korusPath: &str) -> KorusResult<()> {
 pub fn decode(korusPath: &str, jsonPath: &str) -> KorusResult<()> {
     let mut inFile = fs::File::open(korusPath)?;
     let mut fileBytes = Vec::new();
-    inFile.read_to_end(&mut fileBytes);
+    let _ = inFile.read_to_end(&mut fileBytes);
 
     if fileBytes.len() < 16 {
         return Err(KorusError::InvalidMagic);
@@ -85,7 +85,7 @@ pub fn decode(korusPath: &str, jsonPath: &str) -> KorusResult<()> {
     let jsonStr = std::str::from_utf8(&jsonBytes)
         .map_err(|_| KorusError::InvalidUtf8)?;
 
-    fs::write(jsonPath, jsonStr);
+    let _ = fs::write(jsonPath, jsonStr);
 
     Ok(())
 }

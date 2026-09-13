@@ -24,6 +24,7 @@ class Forge(Station):
     _FILLED_BLOCKED_RUNES = frozenset({'growth', 'conversion', 'revealing', 'soulbound', 'echoing'})
     _EMPTY_BLOCKED_RUNES = frozenset({'erasing', 'fusion', 'equilibrium', 'sacrifice', 'chaos',
                                        'tier randomiser', 'value randomiser', 'affix randomiser', 'immutable'})
+    _IGNORES_FORESIGHT = frozenset({'mastery', 'conversion', 'revealing', 'rarity', 'base type', 'mythic chaos'})
 
     def __init__(self, player):
         super().__init__(player, "Forge")
@@ -76,7 +77,7 @@ class Forge(Station):
         if eq.allSlotsEmpty and any(k in runeName for k in self._EMPTY_BLOCKED_RUNES):
             return False
 
-        if eq.mastery >= 20 and 'mastery' in runeName:
+        if eq.mastery >= eq.maxMastery and 'mastery' in runeName:
             return False
 
         if eq.level < runeLevel:
@@ -256,29 +257,42 @@ class Forge(Station):
             if 0 <= index < len(allEquipment):
                 _, equip = allEquipment[index]
 
-                durabilityNeeded = equip.maxDurability - equip.durability
-                fuelCost = max(1, durabilityNeeded // 10)
+                durabilityNeeded: int = round((equip.maxDurability - equip.durability) / equip.maxDurability) * 100
+                fuelCost = max(1, durabilityNeeded // 10) #1 fuel per 10% durability missing
 
-                resourceCost = {
-                    ItemRarity.COMMON: ("stone", 2),
-                    ItemRarity.UNCOMMON: ("iron_ore", 3),
-                    ItemRarity.RARE: ("crystal", 3),
-                    ItemRarity.EPIC: ("mana_essence", 3),
-                    ItemRarity.LEGENDARY: ("dragon_scale", 2)
+                resourceCost: dict[ItemRarity, dict[str, int]] = {
+                    ItemRarity.COMMON: {"brick": 1, "metal": 1},
+                    ItemRarity.UNCOMMON: {"brick": 2, "metal": 1},
+                    ItemRarity.RARE: {"brick": 2, "metal": 1},
+                    ItemRarity.EPIC: {"brick": 2, "metal": 2},
+                    ItemRarity.LEGENDARY: {"metal": 3, "brick": 3},
+                    ItemRarity.MYTHIC: {"metal": 5, "brick": 5},
+                    ItemRarity.BLANK: {"metal": 5, "brick": 5},
                 }
-                resource, amount = resourceCost.get(equip.rarity, ("iron_ore", 5))
+                resources = resourceCost.get(equip.rarity, {"brick", 3})
                 amount *= equip.level * int(1 + 0.2 * self.level)
+                resStr = ""
+                for res, val in resources.items():
+                    resStr += f"- [resource]{res.title()}:[/resource] {val}\n"
 
-                console.print("\n[yellow]Repair cost:[/yellow]\n"
-                      f"  - [white]Fuel: {fuelCost}[/white]\n"
-                      f"  - [white]{resource}: {amount}[/white]\n")
+                console.print("\n[yellow]Repair cost:[/yellow]")
+                console.print(f"[resource]Fuel: {fuelCost}[/resource]\n")
+                console.print(resStr)
                 confirm = console.input("[cyan]Confirm repair? (y/n)\n> [/cyan]").strip().lower()
                 if confirm == 'y':
-                    if self.fuel >= fuelCost and self.player.hasItem(resource, amount):
-                        self.fuel -= fuelCost
-                        self.player.removeItem(resource, amount)
-                        equip.repair()
-                        printSuccess(f"\n{equip.name} repaired to full durability.")
+                    if self.fuel >= fuelCost:
+                        affordable = True
+                        for res, val in resources.items():
+                            if not self.player.hasItem(res, val):
+                                affordable = False
+                        if affordable:
+                            self.fuel -= fuelCost
+                            for res, val in resources.items():
+                                self.player.removeItem(res, val)
+                            equip.repair()
+                            printSuccess(f"\n{equip.name} repaired to full durability.")
+                        else:
+                            printWarning("Insufficient resources.")
                     else:
                         printWarning("Insufficient resources.")
                 pause()
@@ -359,18 +373,83 @@ class Forge(Station):
                 confirm = console.input("\n[cyan]Confirm? (y/n):\n>[/cyan] ").strip().lower()
 
                 if confirm == 'y':
-                    result = rune.apply(self.currentItem, self.player)
-                    outcome = result.outcome
-                    self._invalidateRunePages()
-                    reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name}:\n{result.message}")
+                    if self.currentItem.foresighted:
+                        if any(n in rune.name.lower() for n in self._IGNORES_FORESIGHT):
+                            printWarning(f"{rune.name} ignores Foresight! Apply? This will not consume foresight. (Y/N)")
+                            conf = console.input("[cyan]>[/cyan] ").strip().lower()
+                            if conf == 'y':
+                                result = rune.apply(self.currentItem, self.player)
+                                outcome = result.outcome
+                                self._invalidateRunePages()
+                                reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name}:\n{result.message}")
 
-                    self.player._recalculateStats(False)
+                                self.player._recalculateStats(False)
+                                clearScreen()
+                                self._showCraftingResult(result, rune.name)
 
-                    self._showCraftingResult(result, rune.name)
-                    clearScreen()
+                                if outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
+                                    self.player.removeRune(category, runeType, 1)
+                        else:
+                            if rune.name in self.currentItem.foresightResults:
+                                console.print(f"[medium_violet_red]This Rune has had its results foretold already. Results:[/medium_violet_red]\n{self.currentItem.foresightResults[rune.name]['message']}")
+                                console.print(f'[cyan]Apply {rune.name}? This will consume your Foresight. (Y/N)[/cyan]')
+                                conf = console.input("[cyan]>/[cyan] ").strip().lower()
 
-                    if outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
-                        self.player.removeRune(category, runeType, 1)
+                                if conf == 'y':
+                                    for kind in ['prefixes', 'suffixes']:
+                                        for data in self.currentItem.foresightResults[kind]:
+                                            if kind == 'prefixes':
+                                                self.currentItem.prefixSlots[data['slot']].affix = data['affix']
+                                            else:
+                                                self.currentItem.suffixSlots[data['slot']].affix = data['affix']
+
+                                    self.currentItem.foresighted = False
+                                    self.currentItem.foresightResults = {}
+                                    self.currentItem.update()
+                                    self.currentItem._generateName()
+                                    realEntropy = round(rune.successEntropy * 1.3, 3)
+                                    self.currentItem.addEntropy(realEntropy)
+                                    self._invalidateRunePages()
+                                    reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name} and consumed Foresight")
+                                    self.player._recalculateStats(False)
+                                    clearScreen()
+                                    result = CraftResult(
+                                        outcome=CraftOutcome.SUCCESS,
+                                        message=self.currentItem.foresightResults[rune.name]['message'],
+                                        entropyAdded=realEntropy
+                                    )
+                                    self._showCraftingResult(result, rune.name)
+                                    self.player.removeRune(category, runeType, 1)
+
+                            else:
+                                fakeItem = deepcopy(self.currentItem)
+                                result = rune.apply(fakeItem, self.player)
+                                if result.outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
+                                    changes = {'prefixes': [], 'suffixes': [], 'message': ''}
+                                    for i in range(len(item.prefixSlots)):
+                                        newAf = fakeItem.prefixSlots[i].affix
+                                        changes['prefixes'].append({'slot': i, 'affix': newAf})
+                                    for i in range(len(item.suffixSlots)):
+                                        newAf = fakeItem.suffixSlots[i].affix
+                                        changes['suffixes'].append({'slot': i, 'affix': newAf})
+                                    changes["message"] = result.message
+                                    self.currentItem.foresightResults[rune.name] = changes
+
+                                    reportItem(fakeItem, self.player._name, event=f"[medium_violet_red]Foresight Rune saw the results of {rune.name}. Results:[medium_violet_red]{result.message}")
+                                else:
+                                    printWarning(f"Attempted to apply {rune.name} to {self.currentItem.name} but failed:\n{result.message}")
+                    else:
+                        result = rune.apply(self.currentItem, self.player)
+                        outcome = result.outcome
+                        self._invalidateRunePages()
+                        reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name}:\n{result.message}")
+
+                        self.player._recalculateStats(False)
+                        clearScreen()
+                        self._showCraftingResult(result, rune.name)
+
+                        if outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
+                            self.player.removeRune(category, runeType, 1)
 
                     pause()
                 else:
@@ -655,10 +734,10 @@ class Forge(Station):
         allEquipment = []
 
         for _, equip in self.player._equipment.items():
-            if equip and not equip.entropyLocked and not equip.destabilised:
+            if equip and not equip.entropyLocked and not equip.destabilised and equip.rarity != ItemRarity.BLANK:
                 allEquipment.append((f'[EQUIPPED] ', equip))
         for i, equip in enumerate(self.player._equipmentStorage):
-            if not equip.entropyLocked and not equip.destabilised:
+            if not equip.entropyLocked and not equip.destabilised and equip.rarity != ItemRarity.BLANK:
                 allEquipment.append((f'[STORAGE] #{i+1}', equip))
 
         if not allEquipment:

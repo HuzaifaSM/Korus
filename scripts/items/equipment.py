@@ -1,8 +1,8 @@
 from .items import Item, ItemRarity, ItemType, RARITY_SERIALS, RARITY_VALUES
-from scripts.items.affixes import Affix, rollAffix
-from scripts.styles import console, printError
-from scripts.korusFeedClient import reportItem
-# from scripts.items.mythicAffixes import rollMythicAffix
+from ..items.affixes import Affix, rollAffix
+from ..styles import console, printError
+from ..korusFeedClient import reportItem
+from ..items.mythicAffixes import rollMythicAffix, MythicAffix
 from typing import Optional, List, Dict, Any, Tuple
 import random
 import json
@@ -68,6 +68,7 @@ ENTROPY_RESISTANCE = {
     ItemRarity.EPIC: 0.20,
     ItemRarity.LEGENDARY: 0.35,
     ItemRarity.MYTHIC: 0.5,
+    ItemRarity.BLANK: 0.0,
 }
 
 MAX_PRESERVATIONS = {
@@ -77,6 +78,7 @@ MAX_PRESERVATIONS = {
     ItemRarity.EPIC: 2,
     ItemRarity.LEGENDARY: 3,
     ItemRarity.MYTHIC: 4,
+    ItemRarity.BLANK: 0,
 }
 
 DAMAGE_TYPES = [
@@ -154,6 +156,7 @@ RARITY_MULTIPLIERS = {
     ItemRarity.EPIC: 1.8,
     ItemRarity.LEGENDARY: 2.2,
     ItemRarity.MYTHIC: 2.5,
+    ItemRarity.BLANK: 2.5,
 }
 
 # implicit stat keys whose value is a percentage rather than a flat amount, for display purposes
@@ -214,8 +217,6 @@ class Equipment(Item):
         self.baseDamage = damages.get('baseDamage', 0)
         self.damageType = damages.get('damageType', None)
         self.twoHanded: bool = bool(damages.get('twoHanded', False))
-        self.weaponType: Optional[str] = None
-        self.sigilType: Optional[str] = None  # 'offensive' or 'defensive', determines which affix pool a sigil rolls/crafts from
 
         self.implicits: Dict[str, float] = dict(implicits or {})
         self.baseTypeName: Optional[str] = baseTypeName
@@ -231,6 +232,14 @@ class Equipment(Item):
         self.destabilised = False
         self.destabilisedAffixes = []
         self.parallel = False
+        self.foresighted = False
+        self.mythicAffix: Optional[MythicAffix] = None
+
+        self.blankCuratedHand: Optional[List[Dict]] = None
+        self.blankTableKey: Optional[str] = None
+
+        self.foresightResults: Dict[object, dict[str, List[str, AffixSlot] | str]] = {}
+        """stores { CraftingItem: { 'pre'/'suf': [ 'slot': <int>, 'affixSlot': <AffixSlot> ], 'message': <str> } } }"""
 
         self.mastery = 0
 
@@ -285,6 +294,25 @@ class Equipment(Item):
         return self._lockedCache
 
     @property
+    def weaponType(self) -> Optional[str]:
+        if self.slot != 'weapon' or not self.baseTypeName:
+            return None
+        handedness = 'two_handed' if self.twoHanded else 'one_handed'
+        for wType, tiers in EQUIPMENT_BASES['weapons'][handedness].items():
+            if self.baseTypeName in tiers:
+                return wType
+        return None
+
+    @property
+    def sigilType(self) -> Optional[str]:
+        if self.slot != 'sigil' or not self.baseTypeName:
+            return None
+        for category, tiers in EQUIPMENT_BASES['sigil'].items():
+            if self.baseTypeName in tiers:
+                return category
+        return None
+
+    @property
     def soulbound(self) -> bool:
         for slot in self.prefixSlots + self.suffixSlots:
             if slot.soulbound:
@@ -330,8 +358,6 @@ class Equipment(Item):
         temp['baseDamage'] = self.baseDamage
         temp['damageType'] = self.damageType
         temp['twoHanded'] = self.twoHanded
-        temp['weaponType'] = self.weaponType
-        temp['sigilType'] = self.sigilType
 
         temp['implicits'] = self.implicits
         temp['baseTypeName'] = self.baseTypeName
@@ -343,6 +369,24 @@ class Equipment(Item):
         temp['entropyResistance'] = self.entropyResistance
         temp['entropyLocked'] = self.entropyLocked
         temp['destabilised'] = self.destabilised
+        temp['foresighted'] = self.foresighted
+        temp['foresightResults'] = {
+            runeName: {
+                'prefixes': [
+                    {
+                        'slot': p['slot'],
+                        'affix': p['affix']._serialise()
+                    } for p in self.foresightResults[runeName]['prefixes']
+                ],
+                'suffixes': [
+                    {
+                        'slot': s['slot'],
+                        'affix': s['affix']._serialise()
+                    } for s in self.foresightResults[runeName]['suffixes']
+                ],
+                'message': self.foresightResults[runeName]['message']
+            } for runeName in self.foresightResults.keys()
+        }
         temp['destabilisedAffixes'] = [
             {
                 'name': da.name,
@@ -351,9 +395,12 @@ class Equipment(Item):
                 'isPercent': da.isPercent
             } for da in getattr(self, 'destabilisedAffixes', [])
         ]
+        temp['mythicAffix'] = self.mythicAffix.serialise() if self.mythicAffix else None
+        temp['blankCuratedHand'] = self.blankCuratedHand
+        temp['blankTableKey'] = self.blankTableKey
 
         return temp
- 
+
     @classmethod
     def deserialise(cls, data):
         prefixes = []
@@ -410,8 +457,6 @@ class Equipment(Item):
         e.rarity = i.rarity
         e.stackable = i.stackable or False
         e.maxStack  = i.maxStack or 1
-        e.weaponType = data.get('weaponType')
-        e.sigilType = data.get('sigilType')
 
         e.mastery = data.get('mastery', 0)
         e.entropy = data.get('entropy', 0)
@@ -419,6 +464,24 @@ class Equipment(Item):
         e.maxEntropy = data.get('maxEntropy', 1.0)
         e.baseEntropyResistance = data.get('baseEntropyResistance', ENTROPY_RESISTANCE[e.rarity])
         e.entropyResistance = data.get('entropyResistance', e.baseEntropyResistance)
+        e.foresighted = data.get('foresighted', False)
+        e.foresightResults = {}
+        for runeName, forData in data.get('foresightResults', {}).items():
+            e.foresightResults[runeName] = {
+                'prefixes': [
+                    {
+                        'slot': p['slot'],
+                        'affix': Affix.deserialise(p['affix'])
+                    } for p in forData['prefixes']
+                ],
+                'suffixes': [
+                    {
+                        'slot': s['slot'],
+                        'affix': Affix.deserialise(s['affix'])
+                    } for s in forData['suffixes']
+                ],
+                'message': forData['message']
+            }
         e.destabilised = data.get('destabilised', False)
         from scripts.crafting.destabilisationRune import DestabilisedAffix
         e.destabilisedAffixes = []
@@ -430,6 +493,11 @@ class Equipment(Item):
                 isPercent=daData['isPercent']
             )
             e.destabilisedAffixes.append(da)
+
+        mythicAffixData = data.get('mythicAffix')
+        e.mythicAffix = MythicAffix.deserialise(mythicAffixData) if mythicAffixData else None
+        e.blankCuratedHand = data.get('blankCuratedHand', None)
+        e.blankTableKey = data.get('blankTableKey', None)
 
         e.update()
         e.baseMaxDurability = data.get('baseMaxDurability', e.maxDurability)
@@ -487,6 +555,10 @@ class Equipment(Item):
                 _formatImplicitLine(stat, value) for stat, value in self.implicits.items()
             )
             implicitString = f"\n[bold dim] === IMPLICITS ===[/bold dim]\n{implicitLines}"
+        mythicAffixString = ""
+        if self.mythicAffix:
+            mythicLines = "\n".join(f"    |-> {line}" for line in self.mythicAffix.description.split("\n"))
+            mythicAffixString = f"\n[mythic] === MYTHIC: {self.mythicAffix.name} ===[/mythic]\n{mythicLines}"
         entropyString = f"\n[red3 bold]Entropy:[/red3 bold] {self.entropy} / {self.maxEntropy} | [hot_pink]Entropy Resistance:[/hot_pink] {round(self.entropyResistance * 100)}%"
         if self.numPreserved > 0:
             if self.preservable:
@@ -504,7 +576,7 @@ class Equipment(Item):
         if self.parallel:
             parStr = " [misty_rose3 bold underline]Parallel Item[/misty_rose3 bold underline] | "
         masteryString = f" | [gold1]Mastery:[/gold1] {self.mastery}%"
-        return f"{destabilisedString}{parStr}{self.name} | [bold]Durability:[/bold] {self.durability} / {self.maxDurability}{masteryString}{entropyString}{damageString}{defenseString}{implicitString}\n{stat_string}{corruptedString}"
+        return f"{destabilisedString}{parStr}{self.name} | [bold]Durability:[/bold] {self.durability} / {self.maxDurability}{masteryString}{entropyString}{damageString}{defenseString}{implicitString}{mythicAffixString}\n{stat_string}{corruptedString}"
 
     def calculateMaxDurability(self):
         if hasattr(self, 'maxDurability') and hasattr(self, 'durability'):
@@ -517,6 +589,7 @@ class Equipment(Item):
             ItemRarity.EPIC: 400,
             ItemRarity.LEGENDARY: 800,
             ItemRarity.MYTHIC: 1100,
+            ItemRarity.BLANK: 1100,
         }
         if not hasattr(self, 'baseMaxDurability'):
             baseDurability = durabilityValues[self.rarity] + (self.level * (random.randint(1, 5)))
@@ -538,22 +611,39 @@ class Equipment(Item):
         if hasattr(self, 'durability'):
             self.durability = min(self.durability, self.maxDurability)
 
+    @property
+    def maxMastery(self) -> float:
+        """Base cap is 20%, extended by a mythic mastery_bonus line if present."""
+        cap = 20
+        if self.mythicAffix:
+            for line in self.mythicAffix.lines:
+                if line.effect == 'mastery_bonus':
+                    cap += line.values.get('x', 0)
+        return cap
+
     def gainMastery(self, amount: int):
-        if self.mastery >= 20: # max mastery is 20
+        cap = self.maxMastery
+        if self.mastery >= cap:
             return
-        maxGain = 20 - self.mastery
+        maxGain = cap - self.mastery
         gained = amount
         if amount > maxGain:
             gained = maxGain
         if gained > 0:
             self.mastery += gained
-            console.print(f"[bold]Gained [gold1]{gained}% Mastery[/gold1] on {self.name}. New Amount: [gold1]{self.mastery} / 20[/gold1][/bold]")
+            console.print(f"[bold][gold1]Gained {gained}% Mastery[/gold1] on {self.name}. New Amount: [gold1]{self.mastery} / {cap}[/gold1][/bold]")
             self.update()
+        else:
+            self.mastery += gained
+            console.print(f"[bold][red1]Lost {abs(gained)}%[/red1] [gold1]Mastery[/gold1] on {self.name}. New Amount: [gold1]{self.mastery} / {cap}[/gold1][/bold]")
 
     def applyMastery(self):
         for slot in self.prefixSlots + self.suffixSlots:
             if slot.affix is not None:
                 slot.affix.mastery  = self.mastery
+        if self.mythicAffix:
+            for line in self.mythicAffix.lines:
+                line.mastery = self.mastery
 
     def getExcludedIds(self) -> List[List]:
         """Returns [excludedPrefixes, excludedSuffixes] as two separate variables"""
@@ -583,6 +673,11 @@ class Equipment(Item):
         for affix in self.suffixes:
             baseId = affix.id.split('_t')[0]
             excludedSuf.add(baseId)
+
+        if self.rarity == ItemRarity.BLANK: # entropy 100% dead stat on blank items
+            for entropyId in ('added_entropy', 'increased_entropy', 'entropy_resistance'):
+                excludedPre.add(entropyId)
+                excludedSuf.add(entropyId)
 
         return excludedPre, excludedSuf
 
@@ -802,6 +897,7 @@ class Equipment(Item):
 
     def update(self):
         self._statsDirty = True
+        self._applyMythicDamageTypeLock()
         self.applyMastery()
         self.recalculateDamage()
         self.recalculateDefenses()
@@ -809,6 +905,25 @@ class Equipment(Item):
         self.calculateEntropyResistance()
         self.calculateTotalEntropy()
         self.calculateValue()
+
+    def _applyMythicDamageTypeLock(self):
+        if not self.mythicAffix or self.slot != 'weapon':
+            return
+        for line in self.mythicAffix.lines:
+            if line.effect == 'damage_type_double':
+                forcedType = line.meta.get('damage_type')
+                if forcedType:
+                    self.damageType = forcedType
+
+    def _mythicScalingBonus(self, stat: str) -> float:
+        if not self.mythicAffix:
+            return 0
+        bonus = 0
+        for line in self.mythicAffix.lines:
+            if line.effect == 'scale_with_item_level' and line.meta.get('stat') == stat:
+                cappedLevel = min(self.level, line.meta.get('cap', self.level))
+                bonus += cappedLevel * line.values.get('x', 0)
+        return bonus
 
     def recalculateDefenses(self):
         flat = 0
@@ -821,6 +936,8 @@ class Equipment(Item):
                     flat += affix.value
                 elif affix.isIncreased:
                     increased += affix.value / 100
+
+        flat += self._mythicScalingBonus(self.defenseType)
 
         self.defenseValue = int(((self.baseDefenseValue + flat) * (1 + increased)) * mastery)
 
@@ -836,9 +953,14 @@ class Equipment(Item):
                 elif affix.isIncreased:
                     increased += affix.value / 100
 
+        flat += self._mythicScalingBonus('damage')
+
         self.damage = int(((self.baseDamage + flat) * (1 + increased)) * mastery)
 
     def calculateTotalEntropy(self):
+        if self.rarity == ItemRarity.BLANK:
+            self.addEntropy(0)
+            return
         flat = 0
         increased = 0
         for affix in self.prefixes + self.suffixes:
@@ -933,7 +1055,6 @@ class Equipment(Item):
             equipment['implicits'] = implicits
             equipment['baseTypeName'] = tierName
             equipment['twoHanded'] = twoHanded
-            equipment['weaponType'] = weaponType
 
         elif slot in ('ring', 'amulet'):
             tierName, implicits = Equipment._pickAccessoryImplicit(slot, level, className)
@@ -953,19 +1074,27 @@ class Equipment(Item):
         excludedPrefixIds = set()
         excludedSuffixIds = set()
 
-        mythicPre = 0
-        mythicSuf = 0
-        # if rarity == ItemRarity.MYTHIC: # CURRENTLY DISABLED - MYTHIC AFFIXES NEED A REWORK, this allows mythic items to still be rolled, just without mythic affixes
-        #     mythicType = random.choice(['prefix', 'suffix'])
-        #     mythicAffix = rollMythicAffix(slot, mythicType, level, rarity, set(), defenseType)
-        #     if mythicType == 'prefix':
-        #         mythicPre = 1
-        #         prefixes.append(mythicAffix)
-        #         excludedPrefixIds.add(mythicAffix.id.split('_t')[0])
-        #     else:
-        #         mythicSuf = 1
-        #         suffixes.append(mythicAffix)
-        #         excludedSuffixIds.add(mythicAffix.id.split('_t')[0])
+        equipment['mythicAffix'] = None
+        if rarity == ItemRarity.MYTHIC:
+            if slot == 'offhand':
+                mythicBucket = 'shield'
+            elif slot == 'sigil':
+                mythicBucket = f"sigil_{equipment['sigilType']}"
+            else:
+                mythicBucket = slot  # weapon/head/chest/legs/feet/ring/amulet all match their mythic bucket directly
+            equipment['mythicAffix'] = rollMythicAffix(mythicBucket, level, rarity)
+            if equipment['mythicAffix']:
+                for line in equipment['mythicAffix'].lines:
+                    if line.effect == 'affix_slot_bonus':
+                        bonus = int(line.values.get('x', 0))
+                        if line.meta.get('kind') == 'prefix':
+                            numPrefixes += bonus
+                        else:
+                            numSuffixes += bonus
+                    elif line.effect == 'damage_type_double':
+                        forcedType = line.meta.get('damage_type')
+                        if forcedType:
+                            equipment['damageType'] = forcedType
 
         tierBias = calculateTierBias(level, rarity)
 
@@ -977,13 +1106,13 @@ class Equipment(Item):
         else:
             affixPoolKey = slot
 
-        for _ in range(numPrefixes - mythicPre):
+        for _ in range(numPrefixes):
             affix = rollAffix(affixPoolKey, 'prefixes', level, rarity, excludedPrefixIds, tierBias, defenseType)
             if affix:
                 prefixes.append(affix)
                 excludedPrefixIds.add(affix.id.split('_t')[0])
 
-        for _ in range(numSuffixes - mythicSuf):
+        for _ in range(numSuffixes):
             affix = rollAffix(affixPoolKey, 'suffix', level, rarity, excludedSuffixIds, tierBias, defenseType)
             if affix:
                 suffixes.append(affix)
@@ -1049,7 +1178,6 @@ class Equipment(Item):
                 equipment['level'],
                 baseTypeName=equipment['baseTypeName']
             )
-            e.weaponType = equipment.get('weaponType')
         else:
             e = Equipment(
                 equipment['slot'],
@@ -1065,7 +1193,9 @@ class Equipment(Item):
                 baseTypeName=equipment['baseTypeName']
             )
 
-        e.sigilType = equipment.get('sigilType')
+        e.mythicAffix = equipment.get('mythicAffix')
+        if e.mythicAffix:
+            e._generateName()  # __init__ generated the name before mythicAffix was assigned
 
         e.update()
         e.durability = e.maxDurability
@@ -1075,7 +1205,53 @@ class Equipment(Item):
 
         return e
 
+    @staticmethod
+    def _generateBlankEquipmentPiece(level: int, slot: str, className: str = None, playerName: str = None) -> 'Equipment':
+        if slot == 'any':
+            slot = random.choice(['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet'])
+
+        baseTypeName = None
+        twoHanded = False
+        defenseType, defenseValue = None, 0
+        damageType, baseDamage = None, 0
+        implicits = {}
+
+        if slot in ARMOUR_SLOTS:
+            defenseType, defenseValue, implicits, baseTypeName = Equipment._calculateDefenseRoll(slot, level, ItemRarity.BLANK, className=className)
+        elif slot == 'weapon':
+            baseDamage, damageType, implicits, twoHanded, _, baseTypeName = Equipment._calculateDamageRoll(slot, level, ItemRarity.BLANK, className=className)
+            baseDamage += implicits.get('damage', 0)  # fold weapon 'damage' implicit into baseDamage once, here only - matches _generateEquipmentPiece
+        elif slot in ('ring', 'amulet'):
+            baseTypeName, implicits = Equipment._pickAccessoryImplicit(slot, level, className)
+        elif slot == 'sigil':
+            baseTypeName, implicits, _ = Equipment._pickSigilImplicit(level, className)
+
+        e = Equipment(
+            slot,
+            ItemRarity.BLANK,
+            {'defenseType': defenseType, 'defenseValue': defenseValue, 'baseDefenseValue': defenseValue},
+            {'damage': baseDamage, 'baseDamage': baseDamage, 'damageType': damageType, 'twoHanded': twoHanded},
+            implicits,
+            [], [],
+            4, 4,
+            level,
+            maxEntropy=float('inf'),
+            baseTypeName=baseTypeName,
+        )
+        e.update()
+        e.durability = e.maxDurability
+
+        if playerName is not None:
+            reportItem(e, playerName)
+
+        return e
+
     def _generateName(self):
+        if self.rarity == ItemRarity.BLANK and getattr(self, 'blankCuratedHand', None) is None:
+            # unrevealed - just the base item name (e.g. "Axe"), no rarity/affix naming yet
+            self.name = f"[blank]{self.baseTypeName or self.slot.title()}[/blank]"
+            return
+
         typePrefixes = {
             'physical': 'Brutal',
             'fire': 'Blazing',
@@ -1101,24 +1277,12 @@ class Equipment(Item):
 
         prefix = ""
         if len(prefixAffixes) > 0:
-            if self.rarity == ItemRarity.MYTHIC:
-                for a in prefixAffixes:
-                    if a.isMythic:
-                        prefix = f"{a.name} "
-                        break
-            if prefix == "":
-                highestPrefixAffix = max(prefixAffixes, key=lambda a: a.tier)
-                prefix = f"{highestPrefixAffix.name} "
+            highestPrefixAffix = max(prefixAffixes, key=lambda a: a.tier)
+            prefix = f"{highestPrefixAffix.name} "
         suffix = ""
         if len(suffixAffixes) > 0:
-            if self.rarity == ItemRarity.MYTHIC:
-                for a in suffixAffixes:
-                    if a.isMythic:
-                        suffix = f" {a.name}"
-                        break
-            if suffix == "":
-                highestSuffixAffix = max(suffixAffixes, key=lambda a: a.tier)
-                suffix = f" {highestSuffixAffix.name}"
+            highestSuffixAffix = max(suffixAffixes, key=lambda a: a.tier)
+            suffix = f" {highestSuffixAffix.name}"
 
         if hasattr(self, 'destabilisedAffixes') and len(self.destabilisedAffixes) > 0:
             affix = random.choice(self.destabilisedAffixes)
@@ -1135,6 +1299,13 @@ class Equipment(Item):
                 prefix = f'{afName} '
             else:
                 suffix = afName
+
+        if getattr(self, 'mythicAffix', None):
+            afName = f'[plum4 bold]{self.mythicAffix.name}[/plum4 bold]'
+            if self.mythicAffix.kind == 'prefix':
+                prefix = f'{afName} '
+            else:
+                suffix = f' {afName}'
 
         damage = ""
         if hasattr(self, 'damageType'):
@@ -1219,7 +1390,7 @@ class Equipment(Item):
     def takeDamage(self, amount: int):
         durabilityLoss = max(1, amount // 10) #1 durability loss per 10 damage
         self.durability = max(0, self.durability - durabilityLoss)
-        if self.durability == 0:
+        if self.durability <= 0:
             console.print(f"  - {self.name} is broken and needs repair.")
 
     def repair(self, amount: int = None):
@@ -1227,6 +1398,8 @@ class Equipment(Item):
             self.durability = self.maxDurability
         else:
             self.durability = min(self.durability + amount, self.maxDurability)
+        self.maxDurability = int(self.maxDurability)
+        self.durability = int(self.durability)
 
     def getStatBonuses(self, stat: str) -> Tuple[int, float, float]:
         totalBonus = self.implicits.get(stat, 0)
@@ -1241,6 +1414,11 @@ class Equipment(Item):
                     totalBonus += affix.value
                 elif affix.stat and affix.isPercent:
                     totalIncrease += affix.value / 100
+
+        # damage/defenseType are handled in recalculateDamage/recalculateDefenses instead,
+        # since those stats aren't read back out through getStatBonuses by the aggregation loop
+        if stat not in ('damage', self.defenseType):
+            totalBonus += self._mythicScalingBonus(stat)
 
         return totalBonus, totalIncrease, globalIncrease
 

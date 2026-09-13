@@ -169,19 +169,19 @@ class DivineRevealingRune(BaseRevealingRune):
 
 class FocusedRevealingRune(BaseRevealingRune):
     name = '[steel_blue1 bold]Focused Revealing Rune[/steel_blue1 bold]'
-    description = 'Reveals 2 affixes above level 55.'
+    description = 'Reveals 2 affixes above level 65.'
     numChoices = 2
-    minAffixLevel = 55
+    minAffixLevel = 65
     minItemLevel = 70
     successEntropy = 0.45
     dropWeight = 6
 
 class PinpointRevealingRune(BaseRevealingRune):
     name = '[cyan bold underline]Pinpoint Revealing Rune[/cyan bold underline]'
-    description = 'Reveals 2 random affixes above level 75.'
+    description = 'Reveals 2 random affixes above level 80.'
     numChoices = 2
-    minAffixLevel = 75
-    minItemLevel = 80
+    minAffixLevel = 80
+    minItemLevel = 85
     successEntropy = 0.6
     dropWeight = 2
 

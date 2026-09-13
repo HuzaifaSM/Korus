@@ -1,12 +1,14 @@
 import random
+from copy import deepcopy
 from typing import Dict, Optional
 from ..entities import Entity, SIGIL_SLOTS
 from ..items.items import ItemRarity, LootTable, RESOURCES, rollRarity
 from ..items.equipment import Equipment
 from ..runeDrops import rollRuneDrops
-from ..abilities import ENEMY_ABILITIES, EnemyAbility, BasicAttack
+from ..abilities import ENEMY_ABILITIES, ENEMY_AFFIX_ABILITIES, EnemyAbility, BasicAttack
 from ..styles import console
 from .enemyAi import EnemyAI
+from .enemyAffixes import EnemyAffix, rollAffix
 from enum import Enum
 
 class EnemyRarity(Enum):
@@ -14,6 +16,18 @@ class EnemyRarity(Enum):
     RARE = "rare"
     EPIC = "epic"
     LEGENDARY = "legendary"
+
+    @property
+    def num(self) -> int:
+        if self.value == 'common':
+            return 1
+        elif self.value == 'rare':
+            return 2
+        elif self.value == 'epic':
+            return 3
+        elif self.value == 'legendary':
+            return 4
+        return 1 
 
 class EnemyClass(Enum):
     ATTACKER = "attacker"
@@ -41,6 +55,14 @@ SUBCLASS_WEIGHTS = {
 def rollEnemyClass() -> EnemyClass:
     return EnemyClass.SUPPORT if random.random() < 0.3 else EnemyClass.ATTACKER
 
+def rollEncounterClasses(numEnemies: int) -> list[EnemyClass]:
+    if numEnemies <= 1:
+        return [EnemyClass.ATTACKER] * numEnemies
+    numSupports = min(4, max(1, numEnemies // 2 - 1))
+    classes = [EnemyClass.SUPPORT] * numSupports + [EnemyClass.ATTACKER] * (numEnemies - numSupports)
+    random.shuffle(classes)
+    return classes
+
 def rollEnemySubclass(enemyClass: EnemyClass, rarity: EnemyRarity) -> Optional[EnemySubclass]:
     if rarity == EnemyRarity.COMMON:
         return None
@@ -49,6 +71,29 @@ def rollEnemySubclass(enemyClass: EnemyClass, rarity: EnemyRarity) -> Optional[E
     pool = ATTACKER_SUBCLASSES if enemyClass == EnemyClass.ATTACKER else SUPPORT_SUBCLASSES
     weights = [SUBCLASS_WEIGHTS[s] for s in pool]
     return random.choices(pool, weights, k=1)[0]
+
+BASE_AGGRESSION = {EnemyClass.ATTACKER: 0.5, EnemyClass.SUPPORT: 0.2}
+BASE_CAUTIOUS = {EnemyClass.ATTACKER: 0.2, EnemyClass.SUPPORT: 0.5}
+
+SUBCLASS_AGGRESSION_SHIFT = {
+    EnemySubclass.BRUISER: 0.15,
+    EnemySubclass.DEBILITATOR: 0.05,
+    EnemySubclass.CHAMPION: -0.1,
+    EnemySubclass.FANATIC: 0.3,
+    EnemySubclass.TANK: -0.05,
+}
+SUBCLASS_CAUTIOUS_SHIFT = {
+    EnemySubclass.CHAMPION: 0.1,
+    EnemySubclass.FANATIC: -0.1,
+    EnemySubclass.HEALER: 0.2,
+    EnemySubclass.STANDARD_BEARER: 0.1,
+    EnemySubclass.TANK: 0.15,
+}
+
+def rollAggressionAndCautious(enemyClass: EnemyClass, subclass: Optional[EnemySubclass]) -> tuple[float, float]:
+    aggression = BASE_AGGRESSION[enemyClass] + SUBCLASS_AGGRESSION_SHIFT.get(subclass, 0.0)
+    cautious = BASE_CAUTIOUS[enemyClass] + SUBCLASS_CAUTIOUS_SHIFT.get(subclass, 0.0)
+    return min(1.0, max(0.0, aggression)), min(1.0, max(0.0, cautious))
 
 ENEMY_RARITY_WEIGHTS = {
     EnemyRarity.COMMON: 70,
@@ -71,11 +116,27 @@ ENEMY_RARITY_STAT_MULT = {
     EnemyRarity.LEGENDARY: 2.2,
 }
 
-def rollEnemyRarity() -> EnemyRarity:
-    totalWeight = sum(ENEMY_RARITY_WEIGHTS.values())
+ENEMY_AFFIXES_PER_RARITY = {
+    EnemyRarity.COMMON: 1,
+    EnemyRarity.RARE: 2,
+    EnemyRarity.EPIC: 3,
+    EnemyRarity.LEGENDARY: 4
+}
+
+def rollEnemyRarity(level: int = 0) -> EnemyRarity:
+    weights = ENEMY_RARITY_WEIGHTS.copy()
+    if level > 0:
+        shiftAmount = min(1.0, level / 100)
+        commonReduction = weights[EnemyRarity.COMMON] * shiftAmount * 0.7
+        weights[EnemyRarity.COMMON] = max(5, weights[EnemyRarity.COMMON] - commonReduction)
+        weights[EnemyRarity.RARE] += commonReduction * 0.5
+        weights[EnemyRarity.EPIC] += commonReduction * 0.35
+        weights[EnemyRarity.LEGENDARY] += commonReduction * 0.15
+
+    totalWeight = sum(weights.values())
     roll = random.uniform(0, totalWeight)
     currentWeight = 0.0
-    for rarity, weight in ENEMY_RARITY_WEIGHTS.items():
+    for rarity, weight in weights.items():
         currentWeight += weight
         if roll <= currentWeight:
             return rarity
@@ -103,32 +164,39 @@ DAMAGE_TYPES = ['physical', 'fire', 'cold', 'lightning', 'dark', 'holy', 'arcane
 class Enemy(Entity):
     def __init__(self, name: str, level: int = 1, health: int = 20, damage: int = 3, critChance: float = 0.05, critMulti: float = 1.5, damageType: str = "physical",
                  speed: float = 0.8, lootTable: LootTable = None, rarityModifier: float = 1.0, quantityModifier: float = 1.0, playerClass: str = None, playerName: str = None,
-                 rarity: EnemyRarity = None, enemyClass: EnemyClass = None, enemySubclass: EnemySubclass = None):
-        self.rarity = rarity or rollEnemyRarity()
+                 rarity: EnemyRarity = None, enemyClass: EnemyClass = None, enemySubclass: EnemySubclass = None, groupSize: int = 1):
+        self.rarity = rarity or rollEnemyRarity(level)
         self.aiDifficulty = ENEMY_RARITY_AI_DIFFICULTY[self.rarity]
         statMult = ENEMY_RARITY_STAT_MULT[self.rarity]
+        groupMult = groupSizeMultiplier(groupSize)
 
         resolvedClass = enemyClass or rollEnemyClass()
         resolvedSubclass = enemySubclass or rollEnemySubclass(resolvedClass, self.rarity)
+        self.aggression, self.cautious = rollAggressionAndCautious(resolvedClass, resolvedSubclass)
 
-        scaledHealth = round((health + (level - 1) * random.randint(2, 5)) * statMult)
-        scaledDamage = round((damage + ((level - 1) / 2.5) * random.uniform(1, 2.2)) * statMult)
+        scaledHealth = round((health + (level - 1) * random.randint(2, 5)) * statMult * groupMult)
+        scaledDamage = round((damage + ((level - 1) / 2.5) * random.uniform(1, 2.2)) * statMult * groupMult)
         scaledSpeed = round(speed + ((level + random.randint(-10, 10)) / 100), 2)
         scaledCritChance = round(critChance + (random.randint(0, 5) + level / 10) / 100, 2)
         scaledCritMulti = round(critMulti + (random.randint(5, 15) + level / 5) / 100, 2)
 
         super().__init__(scaledHealth, scaledDamage, scaledCritChance, scaledCritMulti, damageType, scaledSpeed, name)
-        # must be set AFTER super().__init__() - Entity.__init__ unconditionally resets
-        # self.className/self._ascendancy (to None, since Enemy doesn't pass them through)
         self.className = resolvedClass
         self._ascendancy = resolvedSubclass
         self._abilities: Dict[str, EnemyAbility] = {"Basic Attack": BasicAttack()}
         self._level = level
-        self._experienceReward = max(level * 10, level * (level // 3 + random.randint(5, 15 + level // 5)))
+        self._experienceReward = round(max(level * 10, level * (level // 3 + random.randint(5, 15 + level // 5))) * groupMult)
+        self._goldReward = round(max(5, level // 2) * random.randint(2, 5) * groupMult)
         self._lootTable = lootTable or LootTable()
 
-        self.rarityModifer = rarityModifier
-        self.quantityModifier = quantityModifier
+        self.prefixes: list[EnemyAffix] = []
+        self.suffixes: list[EnemyAffix] = []
+
+        self.rarityModifer: float = rarityModifier
+        self.quantityModifier: float = quantityModifier
+        self.xpModifier: float = 0.0
+        self.goldModifier: float = 0.0
+        self.groupSize: int = groupSize
 
         self.consumable.updateValue(max(1, min(55, level) - 15)) # cannot have better than healing flasks
 
@@ -151,9 +219,33 @@ class Enemy(Entity):
         self.taunting = False
         self.tauntTurns = 0
 
+        self._generateAffixes()
         self._generateEquipment(playerClass, playerName)
         self._generateInventory()
         self._recalculateStats(False)
+
+    @property
+    def affixes(self) -> list[EnemyAffix]:
+        return self.prefixes + self.suffixes
+
+    @affixes.setter
+    def affixes(self, affixList: list[EnemyAffix]):
+        pre = []
+        suf = []
+        for af in affixList:
+            if af.kind == 'prefixes':
+                pre.append(af)
+            elif af.kind == 'suffixes':
+                suf.append(af)
+        self.prefixes = pre
+        self.suffixes = suf
+
+    @property
+    def excludedAffixes(self) -> str:
+        excluded = []
+        for a in self.affixes:
+            excluded.extend(a.excludes)
+        return excluded
 
     @property
     def tainted(self):
@@ -263,6 +355,8 @@ class Enemy(Entity):
     def onCrit(self, targets, combatManager, critDamage):
         if self.tortureStacks > 0:
             t = targets[0]
+            if isinstance(t, Enemy):
+                return critDamage # crit on ally, meaning no radiance, instant return
             if not t.radiance:
                 devasStr = ""
                 if t.devastation:
@@ -324,10 +418,66 @@ class Enemy(Entity):
             return all(self._equipment[s] is not None for s in SIGIL_SLOTS[:self.unlockedSigilSlots])
         return self._equipment[slot] is not None
 
+    def _applyAffixBonuses(self, affix: EnemyAffix):
+        for stat, value in affix.effects.items():
+            if stat in ('added_difficulty', 'added_aggression', 'added_cautious'):
+                if 'difficulty' in stat:
+                    self.aiDifficulty += value
+                elif 'aggression' in stat:
+                    self.aggression += value
+                elif 'cautious' in stat:
+                    self.cautious += value
+                continue
+
+            if stat == 'grants_ability':
+                grantedAbility = ENEMY_AFFIX_ABILITIES.get(value)
+                if grantedAbility:
+                    self._abilities[value] = deepcopy(grantedAbility)
+                continue
+
+            if stat in ('increased_damage', 'added_damage'):
+                if stat == 'increased_damage':
+                    self._baseDamage = round(self._baseDamage * (1 + value / 100))
+                else:
+                    self._baseDamage += value
+                continue
+
+            if stat == 'all_resistance':
+                stat = 'all'
+            elif stat == 'added_speed':
+                stat = 'speed'
+            elif stat in ('crit_chance', 'crit_multi'):
+                value /= 100
+
+            if stat in self._stats['Permanent']:
+                self._stats['Permanent'][stat] += value
+
+        for lootType, value in affix.lootBonus.items():
+            if lootType == 'rarity':
+                self.rarityModifer += round(value / 100, 2)
+            elif lootType == 'quantity':
+                self.quantityModifier += round(value / 100, 2)
+            elif lootType == 'xp':
+                self.xpModifier += round(value / 100, 2)
+            elif lootType == 'gold':
+                self.goldModifier += round(value / 100, 2)
+
+    def _generateAffixes(self):
+        for afType in ['prefixes', 'suffixes']:
+            for _ in range(ENEMY_AFFIXES_PER_RARITY[self.rarity] + self._level // 20):
+                af = rollAffix(afType, self._level, self.rarity, self.excludedAffixes)
+                if af:
+                    if afType == 'prefixes':
+                        self.prefixes.append(af)
+                    else:
+                        self.suffixes.append(af)
+                    self._applyAffixBonuses(af)
+
     def _generateEquipment(self, playerClass: str = None, playerName: str = None):
         slots = ['head', 'chest', 'legs', 'feet', 'weapon', 'amulet', 'ring', 'offhand', 'sigil']
         maxEquipment = max(1, min(4, self._level // 15)) if self._level < 100 else 5
         maxEquipment = min(len(slots), max(1, round(maxEquipment * self.quantityModifier)))
+        maxEquipment = max(1, maxEquipment - (self.groupSize - 1))
         numEquipped = 0
         dropChance = {
             ItemRarity.COMMON: 0.3 + round(self._level / 500, 4),
@@ -348,7 +498,10 @@ class Enemy(Entity):
 
                 if random.random() < equipChance:
                     rarity = rollRarity(self._level, self.rarityModifer) # rarity bonus based on level
-                    equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity, playerClass, playerName)
+                    if rarity == ItemRarity.BLANK:
+                        equipment = Equipment._generateBlankEquipmentPiece(self._level, slot, playerClass, playerName)
+                    else:
+                        equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity, playerClass, playerName)
                     self.equip(equipment, False)
 
                     finalDropChance = min(0.95, dropChance.get(rarity, 0.3))
@@ -358,12 +511,13 @@ class Enemy(Entity):
         elif self._level > 10: # rules for enemies level 11-20: guaranteed 1-2 equipment pieces, unable to roll legendary equipment
             numEq = random.choices([1, 2], weights=[2, 1], k=1)[0]
             numEq = min(len(slots), max(1, round(numEq * self.quantityModifier)))
+            numEq = max(1, numEq - (self.groupSize - 1))
             for _ in range(numEq):
                 slot = random.choice(slots)
                 while self._slotIsFull(slot):
                     slot = random.choice(slots)
                 rarity = None
-                while rarity in [None, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]:
+                while rarity in [None, ItemRarity.LEGENDARY, ItemRarity.MYTHIC, ItemRarity.BLANK]:
                     rarity = rollRarity(self._level, self.rarityModifer)
                 equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity, playerClass, playerName)
                 self.equip(equipment, False)
@@ -375,12 +529,13 @@ class Enemy(Entity):
             numEq = 1
             if self.quantityModifier > 1.0 and random.random() < min(0.9, self.quantityModifier - 1.0):
                 numEq = 2
+            numEq = max(1, numEq - (self.groupSize - 1))
             for _ in range(numEq):
                 slot = random.choice(slots)
                 while self._slotIsFull(slot):
                     slot = random.choice(slots)
                 rarity = None
-                while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC] or (rarity == ItemRarity.RARE and random.random() < 0.5):
+                while rarity in [None, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC, ItemRarity.BLANK] or (rarity == ItemRarity.RARE and random.random() < 0.5):
                     rarity = rollRarity(self._level, self.rarityModifer)
                 equipment = Equipment._generateEquipmentPiece(self._level, slot, rarity, playerClass, playerName)
                 self.equip(equipment, False)
@@ -416,8 +571,11 @@ class Enemy(Entity):
         return resources, equipment, runes
     
     def getExperienceReward(self) -> int:
-        return self._experienceReward
-    
+        return round(self._experienceReward * (1 + self.xpModifier))
+
+    def getGoldReward(self) -> int:
+        return round(self._goldReward * (1 + self.goldModifier))
+
     def death(self):
         console.print(f"\n[success]{self._name} has been defeated![/success]")
         return True
@@ -429,7 +587,16 @@ class Enemy(Entity):
             return key
         return None
 
-def createEnemy(level: int = 1, difficulty: float = 1.0, rarity: float = 0, quantity: float = 0, playerClassName: str = None, playerName: str = None) -> Enemy:
+GROUP_SIZE_DECAY = 0.65 # how fast the per-enemy reduction shrinks as the group grows - tune by feel
+GROUP_SIZE_FLOOR = 0.45 # asymptotic minimum multiplier - even an 8-enemy fight shouldn't trivialise individuals
+
+def groupSizeMultiplier(numEnemies: int) -> float:
+    if numEnemies <= 1:
+        return 1.0
+    return GROUP_SIZE_FLOOR + (1.0 - GROUP_SIZE_FLOOR) * (GROUP_SIZE_DECAY ** (numEnemies - 1))
+
+def createEnemy(level: int = 1, difficulty: float = 1.0, rarity: float = 0, quantity: float = 0, playerClassName: str = None, playerName: str = None,
+                 enemyClass: EnemyClass = None, groupSize: int = 1) -> Enemy:
     rarity += 1
     quantity += 1
 
@@ -455,7 +622,8 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity: float = 0, quan
         loot.addResource(res, minAmt, maxAmt, dropChance)
 
     name = f"{ELEMENTAL_NAME[element]} {random.choice(NAMES)}"
-    enemy = Enemy(name, level, baseHealth, baseDamage, baseCritChance, baseCritMulti, element, baseSpeed, loot, rarity, quantity, playerClassName, playerName)
+    enemy = Enemy(name, level, baseHealth, baseDamage, baseCritChance, baseCritMulti, element, baseSpeed, loot, rarity, quantity, playerClassName, playerName,
+                  enemyClass=enemyClass, groupSize=groupSize)
     enemy._health = enemy._maxHealth
 
     key = enemy.rollDungeonMap()

@@ -13,23 +13,28 @@ from scripts.crafting.rarityRune import RARITY_RUNES
 from scripts.crafting.destabilisationRune import DESTABILISATION_RUNES
 from scripts.crafting.revealingRune import REVEALING_RUNES
 from scripts.crafting.manipulationRune import MANIPULATION_RUNES
-from scripts.crafting.base import CraftOutcome
+from scripts.crafting.base import CraftOutcome, CraftResult
 from scripts.styles import console, pause, printError
 from scripts.korusFeedClient import reportItem
 from rich.prompt import Prompt, IntPrompt
+from copy import deepcopy
+
+# mirrors Forge._IGNORES_FORESIGHT - runes whose effect isn't captured by a prefix/suffix
+# slot snapshot (mastery/rarity/base type/etc change something Foresight can't preview-and-restore)
+IGNORES_FORESIGHT = frozenset({'mastery', 'conversion', 'revealing', 'rarity', 'base type', 'mythic chaos'})
 
 def createTestItem():
     """Create a test item for crafting"""
     console.print("[cyan bold]=== Create Test Item ===[/cyan bold]")
-    
+
     # Choose slot
-    slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet']
+    slots = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet', 'offhand', 'sigil']
     console.print("\n[bold]Available slots:[/bold]")
     for i, slot in enumerate(slots, 1):
         console.print(f"{i}. {slot.title()}")
     slotChoice = IntPrompt.ask("Choose slot", choices=[str(i) for i in range(1, len(slots)+1)])
     slot = slots[int(slotChoice)-1]
-    
+
     # Choose rarity
     rarities = [ItemRarity.COMMON, ItemRarity.UNCOMMON, ItemRarity.RARE, ItemRarity.EPIC, ItemRarity.LEGENDARY, ItemRarity.MYTHIC]
     console.print("\n[bold]Available rarities:[/bold]")
@@ -47,7 +52,7 @@ def createTestItem():
 
     # Generate item
     item = Equipment._generateEquipmentPiece(level, slot, rarity, playerName='Sandbox')
-    
+
     console.print("\n[green bold]✓ Item created![/green bold]")
     console.print(item)
     
@@ -142,16 +147,72 @@ def craftingSandbox():
         if rune is None:
             continue
         
-        # Apply the rune
+        # Apply the rune (Foresight-aware, mirrors Forge.craftingInterface())
         console.print(f"\n[yellow]Applying {rune.name}...[/yellow]")
-        result = rune.apply(item)
-        reportItem(item, 'Sandbox', f'Applied {rune.name}:\n{result.message}')
 
-        if result == CraftOutcome.NO_EFFECT:
+        if item.foresighted:
+            if any(n in rune.name.lower() for n in IGNORES_FORESIGHT):
+                console.print(f"[yellow]{rune.name} ignores Foresight! This will not consume foresight.[/yellow]")
+                if Prompt.ask("Apply anyway?", choices=['y', 'n']) == 'y':
+                    result = rune.apply(item)
+                    reportItem(item, 'Sandbox', f'Applied {rune.name}:\n{result.message}')
+                else:
+                    continue
+
+            elif rune.name in item.foresightResults:
+                console.print(f"[medium_violet_red]This Rune has had its results foretold already. Results:[/medium_violet_red]\n{item.foresightResults[rune.name]['message']}")
+                if Prompt.ask(f"Apply {rune.name}? This will consume your Foresight.", choices=['y', 'n']) == 'y':
+                    foreseenMessage = item.foresightResults[rune.name]['message']
+                    for kind in ['prefixes', 'suffixes']:
+                        for data in item.foresightResults[rune.name][kind]:
+                            if kind == 'prefixes':
+                                item.prefixSlots[data['slot']].affix = data['affix']
+                            else:
+                                item.suffixSlots[data['slot']].affix = data['affix']
+
+                    item.foresighted = False
+                    item.foresightResults = {}
+                    item.update()
+                    item._generateName()
+                    realEntropy = round(rune.successEntropy * 1.3, 3)
+                    item.addEntropy(realEntropy)
+                    reportItem(item, 'Sandbox', f'Applied {rune.name} and consumed Foresight')
+                    result = CraftResult(
+                        outcome=CraftOutcome.SUCCESS,
+                        message=foreseenMessage,
+                        entropyAdded=realEntropy
+                    )
+                else:
+                    continue
+
+            else:
+                fakeItem = deepcopy(item)
+                result = rune.apply(fakeItem)
+                if result.outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
+                    changes = {'prefixes': [], 'suffixes': [], 'message': result.message}
+                    for i in range(len(item.prefixSlots)):
+                        changes['prefixes'].append({'slot': i, 'affix': fakeItem.prefixSlots[i].affix})
+                    for i in range(len(item.suffixSlots)):
+                        changes['suffixes'].append({'slot': i, 'affix': fakeItem.suffixSlots[i].affix})
+                    item.foresightResults[rune.name] = changes
+                    reportItem(fakeItem, 'Sandbox', f'Foresight Rune saw the results of {rune.name}. Results:\n{result.message}')
+                else:
+                    printError(f"Attempted to apply {rune.name} to {item.name} but failed:\n{result.message}")
+                console.print(f"\n{result.message}\n")
+                pause()
+                console.print("\n" + "="*50)
+                console.print(item)
+                console.print("="*50)
+                continue
+        else:
+            result = rune.apply(item)
+            reportItem(item, 'Sandbox', f'Applied {rune.name}:\n{result.message}')
+
+        if result.outcome == CraftOutcome.NO_EFFECT:
             console.print("[red]✗ Rune had no effect![/red]")
-        elif result == CraftOutcome.SUCCESS:
+        elif result.outcome == CraftOutcome.SUCCESS:
             console.print("[green bold]✓ Rune applied successfully![/green bold]")
-        elif result == CraftOutcome.PARTIAL_SUCCESS:
+        elif result.outcome == CraftOutcome.PARTIAL_SUCCESS:
             console.print("[yellow]⚠ Rune partially succeeded[/yellow]")
         console.print(f"\n{result.message}\n")
         pause()

@@ -15,7 +15,7 @@ class Shrine(Station):
 
     def _getUpgradeRequirements(self):
         return {
-            1: {"cloth": 20, "crystal": 5, "ascended_essence": 3,
+            1: {"soul": 10, "ascended_essence": 10,
                 'description': 'Unlock the option to [gold1 bold]Ascend[/gold1 bold] at level 20.\nYou will be given multiple choices of [gold1]Ascendancies[/gold1] to pick from, and are allowed to switch at any point for free.'
                 },
             2: {
@@ -27,8 +27,8 @@ class Shrine(Station):
             4: {
                 'description': 'Not yet implemented.'
                 },
-            5: {
-                'description': 'Not yet implemented.'
+            5: {"soul": 100, "ascended_essence": 100,
+                'description': 'You can now increase your max level by 1 at the Shrine for the cost of 50 Souls and 50 Ascended Essence.'
                 }
         }
 
@@ -92,6 +92,20 @@ class Shrine(Station):
                 printError(f"{e}")
                 pause()
 
+    def increasePlayerMaxLevel(self):
+        if self.level != 5:
+            printWarning("Shrine Level 5 Required to Increase Max Level")
+            return
+
+        if not self.player.hasItem('soul', 50) or not self.player.hasItem('ascended_essence', 50):
+            printWarning(f"Not enough resources to increase max level. You have {self.player.getItem('soul')}/50 Souls and {self.player.getItem('ascended_essence')}/50 Ascended Essence.")
+            return
+
+        self.player._maxLevel += 1
+        self.player.removeItem('soul', 50)
+        self.player.removeItem('ascended_essence', 50)
+        printSuccess(f"Player level increased by 1. Consumed 50 Souls and 50 Ascended Essence. New Max Level: {self.player._maxLevel}")
+
     def mainMenu(self):
         while True:
             clearScreen()
@@ -115,8 +129,7 @@ class Shrine(Station):
                     case 1:
                         self.playerAscend()
                     case 2:
-                        console.print("[error]No implementation for this function yet[/error]")
-                        # self.increasePlayerMaxLevel()
+                        self.increasePlayerMaxLevel()
                     case 9:
                         self.upgrade()
                     case _:

@@ -44,7 +44,7 @@ SLOTS = {
 }
 
 RARITIES = {
-    1: ItemRarity.COMMON, 2: ItemRarity.UNCOMMON, 3: ItemRarity.RARE, 4: ItemRarity.EPIC, 5: ItemRarity.LEGENDARY, 6: ItemRarity.MYTHIC
+    1: ItemRarity.COMMON, 2: ItemRarity.UNCOMMON, 3: ItemRarity.RARE, 4: ItemRarity.EPIC, 5: ItemRarity.LEGENDARY, 6: ItemRarity.MYTHIC, 7: ItemRarity.BLANK
 }
 
 class Debugger:
@@ -181,7 +181,10 @@ class Debugger:
                 slot = _chooseSlot()
                 level = _chooseLevel()
                 rarity = _chooseRarity()
-                equipment = Equipment._generateEquipmentPiece(level, slot, rarity, self.game.player.className, self.game.player._name)
+                if rarity == ItemRarity.BLANK:
+                    equipment = Equipment._generateBlankEquipmentPiece(level, slot, self.game.player.className, self.game.player._name)
+                else:
+                    equipment = Equipment._generateEquipmentPiece(level, slot, rarity, self.game.player.className, self.game.player._name)
                 self.game.player.addEquipmentToStorage(equipment)
                 equipName = formatRarity(equipment.name, equipment.rarity.value)
                 console.print(f"\n[success]Generated equipment![/success]")
@@ -287,6 +290,7 @@ class Debugger:
 
     def simulate(self):
         player = self.game.player
+        totalFights = 0
         while True:
             clearScreen()
             printHeader("Simulate Player Progression")
@@ -307,6 +311,9 @@ class Debugger:
                     while player._level < level:
                         enemies = self.game.generateEnemies()
                         self.game.postBattle('victory', enemies)
+                        totalFights += 1
+                        if player._level == level:
+                            printSuccess(f"Successfully simulated progression to level {level}. Total encounters simulated: {totalFights}")
 
             except ValueError:
                 printWarning("Invalid input")

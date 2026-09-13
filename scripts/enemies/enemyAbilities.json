@@ -8,7 +8,6 @@
                     "buff",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 35,
                 "cooldown": 5,
                 "stamina_cost": 15,
@@ -35,7 +34,6 @@
                     "offensive",
                     "physical"
                 ],
-                "tier": 1,
                 "level_req": 4,
                 "cooldown": 2,
                 "stamina_cost": 11,
@@ -56,7 +54,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 70,
                 "cooldown": 6,
                 "stamina_cost": 29,
@@ -91,7 +88,6 @@
                     "dot",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 90,
                 "cooldown": 4,
                 "stamina_cost": 30,
@@ -122,7 +118,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 2,
                 "level_req": 38,
                 "cooldown": 4,
                 "stamina_cost": 21,
@@ -150,7 +145,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 2,
                 "level_req": 42,
                 "cooldown": 4,
                 "stamina_cost": 20,
@@ -177,7 +171,6 @@
                     "holy",
                     "debuff"
                 ],
-                "tier": 2,
                 "level_req": 48,
                 "cooldown": 5,
                 "stamina_cost": 19,
@@ -209,7 +202,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 75,
                 "cooldown": 5,
                 "stamina_cost": 30,
@@ -244,7 +236,6 @@
                     "physical",
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 72,
                 "cooldown": 4,
                 "stamina_cost": 27,
@@ -272,7 +263,6 @@
                     "offensive",
                     "physical"
                 ],
-                "tier": 1,
                 "level_req": 2,
                 "cooldown": 3,
                 "stamina_cost": 11,
@@ -291,7 +281,6 @@
                     "offensive",
                     "physical"
                 ],
-                "tier": 1,
                 "level_req": 1,
                 "cooldown": 3,
                 "stamina_cost": 11,
@@ -312,7 +301,6 @@
                     "stun",
                     "cc"
                 ],
-                "tier": 1,
                 "level_req": 5,
                 "cooldown": 3,
                 "stamina_cost": 12,
@@ -340,7 +328,6 @@
                     "stun",
                     "cc"
                 ],
-                "tier": 2,
                 "level_req": 33,
                 "cooldown": 4,
                 "stamina_cost": 19,
@@ -369,7 +356,6 @@
                     "cc",
                     "debuff"
                 ],
-                "tier": 2,
                 "level_req": 45,
                 "cooldown": 4,
                 "stamina_cost": 18,
@@ -402,7 +388,6 @@
                     "dot",
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 60,
                 "cooldown": 3,
                 "stamina_cost": 27,
@@ -439,7 +424,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 68,
                 "cooldown": 4,
                 "stamina_cost": 29,
@@ -471,7 +455,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 78,
                 "cooldown": 5,
                 "stamina_cost": 30,
@@ -501,7 +484,6 @@
                     "bleed",
                     "dot"
                 ],
-                "tier": 1,
                 "level_req": 3,
                 "cooldown": 2,
                 "stamina_cost": 10,
@@ -528,7 +510,6 @@
                     "poison",
                     "dot"
                 ],
-                "tier": 1,
                 "level_req": 15,
                 "cooldown": 3,
                 "stamina_cost": 10,
@@ -555,7 +536,6 @@
                     "burn",
                     "dot"
                 ],
-                "tier": 1,
                 "level_req": 15,
                 "cooldown": 3,
                 "stamina_cost": 10,
@@ -583,7 +563,6 @@
                     "dot",
                     "debuff"
                 ],
-                "tier": 2,
                 "level_req": 30,
                 "cooldown": 3,
                 "stamina_cost": 18,
@@ -614,7 +593,6 @@
                     "poison",
                     "dot"
                 ],
-                "tier": 2,
                 "level_req": 30,
                 "cooldown": 4,
                 "stamina_cost": 17,
@@ -641,7 +619,6 @@
                     "bleed",
                     "dot"
                 ],
-                "tier": 2,
                 "level_req": 35,
                 "cooldown": 4,
                 "stamina_cost": 18,
@@ -668,7 +645,6 @@
                     "chill",
                     "debuff"
                 ],
-                "tier": 2,
                 "level_req": 35,
                 "cooldown": 3,
                 "stamina_cost": 17,
@@ -698,7 +674,6 @@
                     "dot",
                     "debuff"
                 ],
-                "tier": 2,
                 "level_req": 45,
                 "cooldown": 4,
                 "stamina_cost": 19,
@@ -730,7 +705,6 @@
                     "poison",
                     "dot"
                 ],
-                "tier": 3,
                 "level_req": 65,
                 "cooldown": 4,
                 "stamina_cost": 26,
@@ -761,7 +735,6 @@
                     "dot",
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 70,
                 "cooldown": 4,
                 "stamina_cost": 27,
@@ -794,7 +767,6 @@
                     "debuff",
                     "sustain"
                 ],
-                "tier": 3,
                 "level_req": 80,
                 "cooldown": 5,
                 "stamina_cost": 27,
@@ -829,7 +801,6 @@
                     "defensive",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 32,
                 "cooldown": 4,
                 "stamina_cost": 16,
@@ -865,7 +836,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 66,
                 "cooldown": 5,
                 "stamina_cost": 26,
@@ -901,7 +871,6 @@
                     "dot",
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 60,
                 "cooldown": 5,
                 "stamina_cost": 28,
@@ -931,7 +900,6 @@
                     "physical",
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 82,
                 "cooldown": 4,
                 "stamina_cost": 29,
@@ -962,7 +930,6 @@
                     "dot",
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 80,
                 "cooldown": 5,
                 "stamina_cost": 30,
@@ -995,7 +962,6 @@
                     "buff",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 76,
                 "cooldown": 6,
                 "stamina_cost": 26,
@@ -1028,7 +994,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 90,
                 "cooldown": 7,
                 "stamina_cost": 34,
@@ -1072,7 +1037,6 @@
                     "holy",
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 85,
                 "cooldown": 5,
                 "stamina_cost": 31,
@@ -1108,7 +1072,6 @@
                     "offensive",
                     "physical"
                 ],
-                "tier": 1,
                 "level_req": 1,
                 "cooldown": 1,
                 "stamina_cost": 6,
@@ -1129,7 +1092,6 @@
                     "burn",
                     "dot"
                 ],
-                "tier": 1,
                 "level_req": 7,
                 "cooldown": 2,
                 "stamina_cost": 8,
@@ -1156,7 +1118,6 @@
                     "chill",
                     "debuff"
                 ],
-                "tier": 1,
                 "level_req": 9,
                 "cooldown": 2,
                 "stamina_cost": 8,
@@ -1185,7 +1146,6 @@
                     "shock",
                     "debuff"
                 ],
-                "tier": 1,
                 "level_req": 6,
                 "cooldown": 3,
                 "stamina_cost": 11,
@@ -1213,7 +1173,6 @@
                     "blind",
                     "debuff"
                 ],
-                "tier": 1,
                 "level_req": 8,
                 "cooldown": 3,
                 "stamina_cost": 11,
@@ -1240,7 +1199,6 @@
                     "holy",
                     "debuff"
                 ],
-                "tier": 1,
                 "level_req": 10,
                 "cooldown": 3,
                 "stamina_cost": 11,
@@ -1268,7 +1226,6 @@
                     "shock",
                     "debuff"
                 ],
-                "tier": 2,
                 "level_req": 36,
                 "cooldown": 2,
                 "stamina_cost": 13,
@@ -1294,7 +1251,6 @@
                     "offensive",
                     "physical"
                 ],
-                "tier": 3,
                 "level_req": 73,
                 "cooldown": 2,
                 "stamina_cost": 18,
@@ -1316,7 +1272,6 @@
                 "tags": [
                     "debuff"
                 ],
-                "tier": 1,
                 "level_req": 5,
                 "cooldown": 4,
                 "stamina_cost": 9,
@@ -1342,7 +1297,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 1,
                 "level_req": 8,
                 "cooldown": 4,
                 "stamina_cost": 13,
@@ -1367,7 +1321,6 @@
                 "tags": [
                     "debuff"
                 ],
-                "tier": 1,
                 "level_req": 6,
                 "cooldown": 3,
                 "stamina_cost": 9,
@@ -1392,7 +1345,6 @@
                 "tags": [
                     "debuff"
                 ],
-                "tier": 2,
                 "level_req": 30,
                 "cooldown": 5,
                 "stamina_cost": 15,
@@ -1418,7 +1370,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 2,
                 "level_req": 40,
                 "cooldown": 5,
                 "stamina_cost": 20,
@@ -1448,7 +1399,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 2,
                 "level_req": 37,
                 "cooldown": 4,
                 "stamina_cost": 18,
@@ -1474,7 +1424,6 @@
                     "debuff",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 63,
                 "cooldown": 5,
                 "stamina_cost": 24,
@@ -1503,7 +1452,6 @@
                 "tags": [
                     "debuff"
                 ],
-                "tier": 3,
                 "level_req": 77,
                 "cooldown": 5,
                 "stamina_cost": 22,
@@ -1532,7 +1480,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 1,
                 "level_req": 10,
                 "cooldown": 5,
                 "stamina_cost": 10,
@@ -1558,7 +1505,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 1,
                 "level_req": 12,
                 "cooldown": 5,
                 "stamina_cost": 10,
@@ -1586,7 +1532,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 1,
                 "level_req": 9,
                 "cooldown": 4,
                 "stamina_cost": 9,
@@ -1614,7 +1559,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 50,
                 "cooldown": 6,
                 "stamina_cost": 19,
@@ -1645,7 +1589,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 33,
                 "cooldown": 5,
                 "stamina_cost": 16,
@@ -1674,7 +1617,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 70,
                 "cooldown": 6,
                 "stamina_cost": 24,
@@ -1707,7 +1649,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 68,
                 "cooldown": 6,
                 "stamina_cost": 25,
@@ -1739,7 +1680,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 86,
                 "cooldown": 7,
                 "stamina_cost": 30,
@@ -1770,7 +1710,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 20,
                 "cooldown": 8,
                 "stamina_cost": 20,
@@ -1800,7 +1739,6 @@
                     "buff",
                     "sustain"
                 ],
-                "tier": 2,
                 "level_req": 40,
                 "cooldown": 5,
                 "stamina_cost": 20,
@@ -1827,7 +1765,6 @@
                     "buff",
                     "sustain"
                 ],
-                "tier": 3,
                 "level_req": 75,
                 "cooldown": 7,
                 "stamina_cost": 28,
@@ -1859,7 +1796,6 @@
                     "buff",
                     "self"
                 ],
-                "tier": 1,
                 "level_req": 8,
                 "cooldown": 4,
                 "stamina_cost": 10,
@@ -1886,7 +1822,6 @@
                     "buff",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 34,
                 "cooldown": 5,
                 "stamina_cost": 17,
@@ -1914,7 +1849,6 @@
                     "defensive",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 39,
                 "cooldown": 5,
                 "stamina_cost": 16,
@@ -1941,7 +1875,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 41,
                 "cooldown": 4,
                 "stamina_cost": 15,
@@ -1969,7 +1902,6 @@
                     "buff",
                     "aoe"
                 ],
-                "tier": 3,
                 "level_req": 65,
                 "cooldown": 5,
                 "stamina_cost": 28,
@@ -2006,7 +1938,6 @@
                     "buff",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 64,
                 "cooldown": 5,
                 "stamina_cost": 24,
@@ -2035,7 +1966,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 71,
                 "cooldown": 6,
                 "stamina_cost": 27,
@@ -2067,7 +1997,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 89,
                 "cooldown": 7,
                 "stamina_cost": 31,
@@ -2102,7 +2031,6 @@
                     "defensive",
                     "self"
                 ],
-                "tier": 1,
                 "level_req": 3,
                 "cooldown": 3,
                 "stamina_cost": 9,
@@ -2129,7 +2057,6 @@
                     "defensive",
                     "self"
                 ],
-                "tier": 1,
                 "level_req": 10,
                 "cooldown": 4,
                 "stamina_cost": 9,
@@ -2155,7 +2082,6 @@
                     "debuff",
                     "taunt"
                 ],
-                "tier": 1,
                 "level_req": 5,
                 "cooldown": 3,
                 "stamina_cost": 10,
@@ -2181,7 +2107,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 41,
                 "cooldown": 4,
                 "stamina_cost": 15,
@@ -2210,7 +2135,6 @@
                     "sustain",
                     "self"
                 ],
-                "tier": 2,
                 "level_req": 40,
                 "cooldown": 5,
                 "stamina_cost": 18,
@@ -2243,7 +2167,6 @@
                     "buff",
                     "defensive"
                 ],
-                "tier": 2,
                 "level_req": 35,
                 "cooldown": 5,
                 "stamina_cost": 18,
@@ -2275,7 +2198,6 @@
                     "defensive",
                     "self"
                 ],
-                "tier": 3,
                 "level_req": 69,
                 "cooldown": 6,
                 "stamina_cost": 26,
@@ -2304,7 +2226,6 @@
                     "defensive",
                     "sustain"
                 ],
-                "tier": 3,
                 "level_req": 91,
                 "cooldown": 7,
                 "stamina_cost": 33,
@@ -2333,6 +2254,65 @@
                 "description": "Plants itself between the target and everyone else, daring them to get through. NOTE: relies on the same not-yet-implemented 'taunt' mechanic as Taunt.",
                 "weight": 1
             }
+        }
+    },
+    "affixes": {
+        "Psionic Blast": {
+            "name": "Psionic Blast",
+            "category": "ability",
+            "tags": [
+                "offensive",
+                "psychic",
+                "slow"
+            ],
+            "cooldown": 3,
+            "stamina_cost": 25,
+            "targets": 1,
+            "damage_base": 10,
+            "damage_scaling": 70,
+            "damage_type": "psychic",
+            "effects": {
+                "target": {
+                    "slow": {
+                        "amount": 0.2,
+                        "turns": 2
+                    }
+                }
+            },
+            "description": "Rip into the target's mind, leaving them slowed.",
+            "weight": 0,
+            "level_req": 15
+        },
+        "Void Rend": {
+            "name": "Void Rend",
+            "category": "ability",
+            "tags": [
+                "offensive",
+                "chaos",
+                "curse",
+                "dot",
+                "debuff"
+            ],
+            "level_req": 50,
+            "cooldown": 4,
+            "stamina_cost": 30,
+            "targets": 1,
+            "damage_base": 40,
+            "damage_scaling": 90,
+            "damage_type": "chaos",
+            "effects": {
+                "target": {
+                    "curse": {
+                        "stacks": 2
+                    },
+                    "exposed": {
+                        "turns": 3,
+                        "amount": 20
+                    }
+                }
+            },
+            "description": "Tears a rift into the target, cursing them with the hunger of the void.",
+            "weight": 0
         }
     }
 }

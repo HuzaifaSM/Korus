@@ -1,4 +1,5 @@
-mod error;
+#![allow(non_snake_case)]
+
 mod differ;
 mod reporter;
 mod watcher;

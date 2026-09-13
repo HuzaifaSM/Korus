@@ -1,4 +1,4 @@
-#![allow(non_snake_case)]
+#![allow(non_snake_case, unused_assignments)]
 
 use std::collections::HashMap;
 use crate::error::{KorusError, KorusResult};

@@ -1,6 +1,7 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.items.items import ItemRarity, RARITY_VALUES
-from scripts.items.equipment import ENTROPY_RESISTANCE
+from ..items.items import ItemRarity, RARITY_VALUES, MYTHIC_BLANK_SPLIT
+from ..items.equipment import ENTROPY_RESISTANCE, AffixSlot
+from ..items.mythicAffixes import rollMythicAffix
 import random
 from typing import Dict
 
@@ -137,14 +138,60 @@ class EpicRarityRune(BaseRarityRune):
     successEntropy = 0.2
     dropWeight = 35
 
-class LegendaryRarityRune(BaseRarityRune):
-    name = '[red3 bold underline]Rarity Rune: Mythic[/red3 bold underline]'
-    description = 'Upgrades a legendary item to mythic rarity and removes some entropy from the item.'
+class AscendantRarityRune(BaseRarityRune):
+    name = '[thistle1 bold underline]Ascendant Rarity Rune[/thistle1 bold underline]'
+    description = 'Upgrades a level 60+ Legendary item into either a Mythic or Blank rarity item. 70% Chance for Mythic, 30% Chance flor Blank. If mythic, it will be given a Mythic Affix. If Blank, the item will be undiscovered.'
     fromRarity = ItemRarity.LEGENDARY
-    toRarity = ItemRarity.MYTHIC
-    minItemLevel = 65
-    successEntropy = -0.1
+    successEntropy = 0.0
     dropWeight = 2
+
+    def apply(self, item, player=None) -> CraftResult:
+        if not item.craftable:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item cannot be modified"
+            )
+        if item.level < self.minItemLevel:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item level too low"
+            )
+        if item.rarity != self.fromRarity:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item is not legendary"
+            )
+
+        if random.random() >= MYTHIC_BLANK_SPLIT:
+            self.toRarity = ItemRarity.MYTHIC
+            self.successEntropy = -0.1
+            result = super().apply(item)
+            if result.outcome == CraftOutcome.SUCCESS:
+                bucket = 'shield' if item.slot == 'offhand' else (f'sigil_{item.sigilType}' if item.slot == 'sigil' else item.slot)
+                item.mythicAffix = rollMythicAffix(bucket, item.level, item.rarity)
+                item.update()
+                item._generateName()
+                result.message += f' Granted mythic affix:\n{item.mythicAffix}'
+            return result
+
+        item.rarity = ItemRarity.BLANK
+        numPre = max(4, len(item.prefixSlots))
+        numSuf = max(4, len(item.suffixSlots))
+        item.prefixSlots = [AffixSlot('prefix') for _ in range(numPre)]
+        item.suffixSlots = [AffixSlot('suffix') for _ in random(numSuf)]
+        item.blankCuratedHand = None
+        item.blankTableKey = None
+        item.destabilised = False
+        item.entropy = 0
+        item.maxEntropy = float('inf')
+        item.baseEntropyResistance = ENTROPY_RESISTANCE[item.rarity]
+        item.update()
+        item._generateName()
+
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message=f"[thistle1]{item.name} has become a Blank item.[/thistle1]"
+        )
 
 class ChaosRarityRune(BaseRarityRune):
     name = '[magenta bold italic]Chaos Rarity Rune[/magenta bold italic]'
@@ -185,12 +232,10 @@ RARITY_RUNES: Dict[str, BaseRarityRune] = {
     'uncommon': UncommonRarityRune(),
     'rare': RareRarityRune(),
     'epic': EpicRarityRune(),
-    'legendary': LegendaryRarityRune(),
+    'ascendant': AscendantRarityRune(),
     'chaos': ChaosRarityRune()
 }
 
 """
 IDEAS:
-ascension rarity rune:
-    - always upgrades item to next tier rarity
 """

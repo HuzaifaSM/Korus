@@ -1,0 +1,107 @@
+{
+  "overpower": {
+    "name": "Overpower",
+    "category": "buff",
+    "tags": ["buff", "mythic", "damage"],
+    "damage_type": "heal",
+    "stamina_cost": 40,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 3, "speed": 0, "damage": 1.2}
+      }
+    },
+    "description": "Once per combat: spend a burst of Stamina to fight harder for a few turns."
+  },
+  "underworld_strike": {
+    "name": "Underworld Strike",
+    "category": "damage",
+    "tags": ["damage", "mythic"],
+    "damage_base": 0,
+    "damage_scaling": 150,
+    "damage_type": null,
+    "stamina_cost": 30,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "vulnerable": {"turns": 1, "amount": 0.2}
+      }
+    },
+    "description": "Once per combat: an empowered strike that leaves the target vulnerable to your next hits."
+  },
+  "buff_theft": {
+    "name": "Buff Theft",
+    "category": "utility",
+    "tags": ["utility", "mythic"],
+    "damage_type": "heal",
+    "stamina_cost": 20,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "weaken": {"turns": 2, "amount": 0.15}
+      }
+    },
+    "description": "Once per combat: unsettle the target, weakening their next attacks."
+  },
+  "bloodlust": {
+    "name": "Bloodlust",
+    "category": "buff",
+    "tags": ["buff", "mythic"],
+    "damage_type": "heal",
+    "stamina_cost": 25,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 4, "speed": 0, "damage": 1.5}
+      }
+    },
+    "description": "Once per combat: enter a bloodthirsty state, hitting much harder for a few turns."
+  },
+  "detonate": {
+    "name": "Detonate",
+    "category": "damage",
+    "tags": ["damage", "mythic"],
+    "damage_base": 0,
+    "damage_scaling": 100,
+    "damage_type": null,
+    "stamina_cost": 20,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {},
+    "description": "Once per combat: detonate stored momentum onto a single enemy."
+  },
+  "aegis": {
+    "name": "Aegis",
+    "category": "buff",
+    "tags": ["buff", "shield", "mythic"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "shield_generation": {"turns": 99, "amount_percent": 0.25}
+      }
+    },
+    "description": "Once per combat: grant yourself a Shield equal to a portion of Max HP."
+  },
+  "all_in": {
+    "name": "All In",
+    "category": "buff",
+    "tags": ["buff", "mythic"],
+    "damage_type": "heal",
+    "stamina_cost": 30,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 99, "speed": 0.5, "damage": 2.0}
+      }
+    },
+    "description": "Once per combat, for the rest of the fight: go all in - massively increased offense at the cost of your Defenses."
+  }
+}

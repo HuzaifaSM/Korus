@@ -235,8 +235,10 @@ class CombatManager:
         enemyUnits = [self.registerUnit(enemy, "enemy") for enemy in enemies]
 
         self.player.entity.onCombatStart(self, self.player)
+        self.player.entity._mythicDispatch('onCombatStart', self, self.player)
         for enemy, e in zip(enemies, enemyUnits):
             enemy.onCombatStart(self, e)
+            enemy._mythicDispatch('onCombatStart', self, e)
 
         self.turnOrder = sorted(
             [u for u in self.units if u.isActive],
@@ -262,6 +264,7 @@ class CombatManager:
         currentUnit = self.getCurrentUnit()
         if currentUnit: #reduce all ability cooldowns by 1 turn
             currentUnit.entity.onTurnEnd()
+            currentUnit.entity._mythicDispatch('onTurnEnd')
             for ability in currentUnit.entity._abilities.values():
                 if ability.cooldown > 0:
                     ability.cooldown -= 1
@@ -304,6 +307,9 @@ class CombatManager:
             nextEntity = nextUnit.entity
             if not nextEntity.isPlayer:
                 nextEntity.onTurnStart(self)
+                nextEntity._mythicDispatch('onTurnStart', self)
+                if nextEntity.hasLiveConditionalModifiers():
+                    nextEntity._recalculateStats(False, True)  # refreshes mythic conditional_modifier state each turn - some class onTurnStart overrides skip super(), so this can't rely on Entity.onTurnStart's own recalc call
 
     def getCurrentUnit(self) -> Optional[CombatUnit]:
         if 0 <= self.currentTurnIndex < len(self.turnOrder):
@@ -379,6 +385,7 @@ class CombatManager:
             if blockChance > 0 and random.random() * 100 < blockChance:
                 didBlock = True
                 target.onBlock(self)
+                target._mythicDispatch('onBlock', self)
                 return 0, armourDamagePrevented, esDamagePrevented, didEvade, didBlock
 
         if damageType != 'true': # true damage ignores all other defenses
@@ -389,6 +396,7 @@ class CombatManager:
 
                 if didEvade:
                     target.onEvade(self)
+                    target._mythicDispatch('onEvade', self)
                     return 0, armourDamagePrevented, esDamagePrevented, True, didBlock
 
             if damageType != 'ethereal': # ethereal ignores armour
@@ -405,6 +413,7 @@ class CombatManager:
                         target._stats['energy_shield'] = 0
                         console.print(f"    [warning]{target._name}'s energy shield was broken![/warning]")
                         target.onEnergyShieldBroken(self)
+                        target._mythicDispatch('onEnergyShieldBroken', self)
                     else:
                         esDamagePrevented = finalDamage
                         target._stats['energy_shield'] -= finalDamage
@@ -438,12 +447,25 @@ class CombatManager:
 
             if attackerUnit.team == 'player':
                 ability.applyResourceCosts(attacker)
+            else:
+                attacker._stamina = max(0, attacker._stamina - ability.staminaCost)
 
             selfEffects = ability.effects.get('self', {})
+            attackerAscendancy = getattr(attacker, '_ascendancy', None)
+            ascendancyValue = getattr(attackerAscendancy, 'value', attackerAscendancy)  # enum for enemies, plain string for players
+            selfPreservingSubclass = ascendancyValue in ('tank', 'healer')
+            isSupportSelfBuff = (
+                ability.targets == 'self' and attackerUnit.team != 'player' and
+                getattr(getattr(attacker, 'className', None), 'value', None) == 'support' and
+                not selfPreservingSubclass
+            )
             if ability.targets == 'all_allies':
                 effectRecipients = list(self.allAlive)
             elif ability.targets == 'ally':
                 effectRecipients = [target]
+            elif isSupportSelfBuff:
+                allies = [a for a in self.allAlive if a is not attacker and not a._isDead]
+                effectRecipients = [random.choice(allies)] if allies else [attacker]
             else:
                 effectRecipients = [attacker]
 
@@ -455,6 +477,7 @@ class CombatManager:
                         self.addStatusEffect(recipient, effect, attacker)
 
             attacker.onAbilityCast(ability, self)  # fires once per use regardless of category - the only hook heal/buff abilities reach
+            attacker._mythicDispatch('onAbilityCast', ability, self)
 
             targetEffectsDict = ability.effects.get('target', {})
             effectsBeforeTargeting: List[StatusEffect] = []
@@ -490,6 +513,11 @@ class CombatManager:
             # TARGETING + PRE-DAMAGE MECHANICS
 
             damage, damageType, targets = attacker.onBeforeDamage(ability, damage, damageType, targets, self)
+            for _mResult in attacker._mythicDispatch('onBeforeDamage', ability, damage, damageType, targets, self):
+                if isinstance(_mResult, dict):
+                    damage = _mResult.get('damage', damage)
+                    damageType = _mResult.get('damageType', damageType)
+                    targets = _mResult.get('targets', targets)
             effectsBeforeTargeting.extend(attacker._pendingEffects)
             attacker._pendingEffects = []
 
@@ -499,15 +527,21 @@ class CombatManager:
             # CRITICAL
 
             attacker.onBeforeCritRoll(targetUnit, targets, self)
+            attacker._mythicDispatch('onBeforeCritRoll', targetUnit, targets, self)
             isCrit, critMult = attacker.rollCritical(targetUnit, damage)
             attacker.onAfterCritRoll(targetUnit, targets, self)
+            attacker._mythicDispatch('onAfterCritRoll', targetUnit, targets, self)
 
             if isCrit:
                 damage = int(damage * critMult)
                 console.print(f"[bold gold1]✨ CRITICAL {'HIT' if damageType != 'heal' else 'HEAL'}! ✨[/bold gold1] [damage]{critMult*100:.0f}%[/damage] {'damage' if damageType != 'heal' else 'healing'}!")
 
                 damage = attacker.onCrit(targets, self, damage)
+                for _mResult in attacker._mythicDispatch('onCrit', targets, self, damage):
+                    damage = _mResult
                 damage = target.onCriticallyHit(attacker, self, damage, damageType)
+                for _mResult in target._mythicDispatch('onCriticallyHit', attacker, self, damage, damageType):
+                    damage = _mResult
 
             # in case either died through extra mechanics
             if self.checkDead(target) and len(targets) == 1:
@@ -524,6 +558,7 @@ class CombatManager:
                 if random.random() < attacker.chanceToMultihit:
                     attacks = attacker.numMultihits
                     attacker.onMultihitActivated()
+                    attacker._mythicDispatch('onMultihitActivated')
                     console.print(f"[multihit]Multihit activated! Attacking {attacks} times.[/multihit]")
 
                 starterDamage = damage * (0.75 if attacks > 1 else 1)
@@ -557,12 +592,20 @@ class CombatManager:
                             console.print(f"  [dim]|- Hitting {t._name}[/dim]")
 
                         finalDamage = attacker.onPrepareHit(t, targetUnit, finalDamage, damageType, self)
+                        for _mResult in attacker._mythicDispatch('onPrepareHit', t, targetUnit, finalDamage, damageType, self):
+                            finalDamage = _mResult
                         mechanics.extend(attacker._pendingEffects)
                         attacker._pendingEffects = []
 
                         finalDamage = t.onBeforeHit(finalDamage, damageType, attacker, self)
+                        for _mResult in t._mythicDispatch('onBeforeHit', finalDamage, damageType, attacker, self):
+                            finalDamage = _mResult
 
                         finalDamage, damageType = attacker.onAttack(finalDamage, damageType, targetUnit, self, ability, isCrit)
+                        for _mResult in attacker._mythicDispatch('onAttack', finalDamage, damageType, targetUnit, self, ability, isCrit):
+                            if isinstance(_mResult, dict):
+                                finalDamage = _mResult.get('damageDealt', finalDamage)
+                                damageType = _mResult.get('damageType', damageType)
                         mechanics.extend(attacker._pendingEffects)
                         attacker._pendingEffects = []
 
@@ -576,10 +619,18 @@ class CombatManager:
                         if esDamagePrevented > 0:
                             attacker._logDamage(f"{t._name}'s Energy Shield", flat=-esDamagePrevented)
                         finalDamage, damageType = t.onHit(finalDamage, damageType, isCrit, attacker, self)
+                        for _mResult in t._mythicDispatch('onHit', finalDamage, damageType, isCrit, attacker, self):
+                            if isinstance(_mResult, dict):
+                                finalDamage = _mResult.get('damageTaken', finalDamage)
+                                damageType = _mResult.get('damageType', damageType)
 
                         finalDamage = attacker.onDealDamage(t, targetUnit, finalDamage, damageType, evaded or blocked, armourDamagePrevented, esDamagePrevented, self)
+                        for _mResult in attacker._mythicDispatch('onDealDamage', t, targetUnit, finalDamage, damageType, evaded or blocked, armourDamagePrevented, esDamagePrevented, self):
+                            finalDamage = _mResult
 
                         finalDamage = t.onAfterMitigation(attacker, finalDamage, damageType, evaded or blocked, armourDamagePrevented, esDamagePrevented, preMitigationDamage, self)
+                        for _mResult in t._mythicDispatch('onAfterMitigation', attacker, finalDamage, damageType, evaded or blocked, armourDamagePrevented, esDamagePrevented, preMitigationDamage, self):
+                            finalDamage = _mResult
 
                         if attacker._stats['Bonuses']['lifesteal'] > 0:
                             heal = int(finalDamage * (attacker._stats['Bonuses']['lifesteal'] / 100))
@@ -589,15 +640,18 @@ class CombatManager:
                         if evaded:
                             console.print(f'[evasion bold]{t._name} evaded the attack![/evasion bold]')
                             t.onEvade(self)
+                            t._mythicDispatch('onEvade', self)
                         elif blocked:
                             console.print(f'[cyan bold]{t._name} blocked the attack![/cyan bold]')
                             t.onBlock(self)
+                            t._mythicDispatch('onBlock', self)
                         else:
                             if attacker._damageLog:
                                 for line in formatDamageBreakdown(baseDamageForBreakdown, attacker._damageLog, finalDamage, damageType):
                                     console.print(line)
                             damageReductionValue = t.damage(finalDamage, damageType, targetUnit, attacker=attacker)
                             t.onDamaged(attacker, damageReductionValue, armourDamagePrevented, self)
+                            t._mythicDispatch('onDamaged', attacker, damageReductionValue, armourDamagePrevented, self)
 
                             thorns = t._stats['Bonuses']['thorns']
                             if thorns > 0:
@@ -605,21 +659,27 @@ class CombatManager:
                             attacker.damage(thorns, 'physical')
 
                             attacker.onAfterAttack(t, targetUnit, finalDamage, self)
+                            attacker._mythicDispatch('onAfterAttack', t, targetUnit, finalDamage, self)
 
                         if not evaded and not blocked:
                             if mechanics and not t._isDead:
                                 for mechanic in mechanics:
                                     mechanic = t.onStatusApplied(mechanic, attacker)
+                                    for _mResult in t._mythicDispatch('onStatusApplied', mechanic, attacker):
+                                        mechanic = _mResult
                                     if mechanic:
                                         self.addStatusEffect(t, mechanic, attacker)
                                         if mechanic.effectType == 'cc':
                                             t.onCC(attacker, self)
+                                            t._mythicDispatch('onCC', attacker, self)
                             death = self.checkDead(t)
                             if death:
                                 killData = {'damage': finalDamage, 'damageType': damageType, 'mechanics': mechanics, 'ability': ability}
                                 attacker.onKill(t, killData, self)
+                                attacker._mythicDispatch('onKill', t, killData, self)
                             else:
                                 attacker.onExecuteCheck(t, self) # check for any executes (e.g. blood spike or ascendancy-specific)
+                                attacker._mythicDispatch('onExecuteCheck', t, self)
 
                             if t._isDead:
                                 break # prevent multihit bugs
@@ -655,9 +715,16 @@ class CombatManager:
             return
 
         if not self._enemyDecisions: # build snapshot for all enemies this round, cache it
-            actionLists = [e.ai.buildActionList(self.allAlive) for e in self.allAlive]
-            self._enemyDecisions = EnemyAI.decideTurn(self.allAlive, aliveTargets[0], actionLists)
-            self._enemyIndexMap = {e: i for i, e in enumerate(self.allAlive)}
+            enemyUnits = self.getUnitsInTeam('enemy')
+            allies = [u.entity for u in enemyUnits]
+            actionLists = [e.ai.buildActionList(allies) for e in allies]
+            buffStates = [any(effect.effectType == 'buff' for effect in u.statusEffects) for u in enemyUnits]
+            ignoresDangerStates = [random.random() < getattr(e, 'aggression', 0.3) for e in allies]
+            actsDefensivelyStates = [random.random() < getattr(e, 'cautious', 0.3) for e in allies]
+            self._enemyDecisions = EnemyAI.decideTurn(
+                allies, aliveTargets[0], actionLists, buffStates, ignoresDangerStates, actsDefensivelyStates
+            )
+            self._enemyIndexMap = {e: i for i, e in enumerate(allies)}
 
         idx = self._enemyIndexMap.get(enemy, 0)
         decision = self._enemyDecisions.get(idx)

@@ -17,8 +17,19 @@ pub struct EnemyState {
     pub baseDamage: Option<i32>,
     pub damageType: String,
     pub resources: HashMap<String, i32>, // key = resource name, value = current amount
+    pub resistances: HashMap<String, i32>,
     pub availableActions: Vec<Action>,
     pub difficulty: f32, // 0.0 = random, 1.0 = optimal
+    pub rarity: String,
+    pub className: String, // "attacker" | "support"
+    pub ascendancy: Option<String>, // subclass, e.g. "bruiser" | "healer" - None for un-subclassed (usually common-rarity) enemies
+    pub consumableAvailable: bool,
+    pub consumableHeal: Option<i32>,
+    pub hasActiveBuff: bool, // whether this enemy currently has any active buff status effect
+    // both pre-rolled in python (against this enemy's aggression/cautious stats) rather
+    // than in Rust, so the engine itself stays fully deterministic given a snapshot
+    pub ignoresDanger: bool, // this turn, ignore lethal threat and act normally anyway
+    pub actsDefensively: bool, // this turn, proactively prioritise a defensive/buff action
 }
 
 #[derive(Debug, Deserialize)]
@@ -27,6 +38,16 @@ pub struct PlayerState {
     pub maxHp: i32,
     pub resistances: HashMap<String, i32>, // key = damage type, value = resistance %
     pub speed: f32,
+    pub damage: i32,
+    pub damageType: String,
+    pub abilities: Vec<PlayerAbility>,
+}
+
+// pre-resolved damage figure for one player ability
+#[derive(Debug, Deserialize)]
+pub struct PlayerAbility {
+    pub damage: i32,
+    pub damageType: Option<String>,
 }
 
 // single action the enemy can potentially take this turn
@@ -47,6 +68,7 @@ pub struct Action {
 pub struct ActionEffect {
     pub mechanic: String,
     pub effectType: String,
+    pub target: Option<String>,
     pub chance: Option<f32>,
     pub turns: Option<i32>,
     pub value: Option<f32>,
@@ -56,6 +78,9 @@ pub struct ActionEffect {
     // debuff specific
     pub amount: Option<f32>,
     pub resistanceReduction: Option<f32>,
+    // haste-specific: JSON's 'damage' key inside haste effect param (multiplier)
+    #[serde(rename = "damage")]
+    pub damageMultiplier: Option<f32>
 }
 
 impl ActionEffect {
@@ -162,6 +187,21 @@ impl ActionEffect {
 
         rawValue * chance
     }
+
+    pub fn selfUtility(&self, enemyBaseDamage: i32) -> f32 {
+        let turns = self.turns.unwrap_or(1) as f32;
+
+        match self.effectType.as_str() {
+            "buff" => match self.mechanic.as_str() {
+                "haste" => enemyBaseDamage as f32 * 0.3 * turns,
+                "stoneskin" => enemyBaseDamage as f32 * 0.25 * turns,
+                "regeneration" => enemyBaseDamage as f32 * 0.2 * turns,
+                _ => enemyBaseDamage as f32 * 0.1 * turns
+            },
+            "cc" => -(enemyBaseDamage as f32 * 2.0 * turns),
+            _ => 0.0,
+        }
+    }
 }
 
 // mirrors 'category' field in json
@@ -171,5 +211,5 @@ impl ActionEffect {
 pub enum ActionCategory {
     Attack,
     Ability,
-    Consumable,
+    Heal, // support-class basic heal, targets the neediest living ally rather than the player
 }

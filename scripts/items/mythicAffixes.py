@@ -1,171 +1,160 @@
 import json
-from typing import Optional, Dict, Any, List, Set
 import random
-from ..styles import console, printError
-from copy import deepcopy
 from os.path import exists
-from .affixes import Affix
+from typing import Any, Dict, List, Optional
 
-descMark = 'plum4'
+def _mythicAffixDataPath() -> str:
+    return 'Korus/scripts/items/mythicAffixes.json' if exists('Korus') else 'scripts/items/mythicAffixes.json'
 
-class MythicAffix(Affix):
-    def __init__(self, id, name, levelReq, tier, stat, slot, minVal, maxVal, isPercent = False, kind = "prefix", weight = 100, categories = None, description = "", sign = True, **kwargs):
-        super().__init__(id, name, levelReq, tier, stat, slot, minVal, maxVal, isPercent, kind, weight, categories, isMythic = True, **kwargs)
-        self.descriptionBase = f'[{descMark}]{description}[/{descMark}]'
-        self.sign = sign
+def _loadMythicAffixData() -> Dict[str, Dict]:
+    with open(_mythicAffixDataPath(), 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def _rollRangeValue(minVal, maxVal):
+    if isinstance(minVal, float) or isinstance(maxVal, float):
+        return round(random.uniform(minVal, maxVal), 2)
+    return random.randint(minVal, maxVal)
+
+def _formatValue(value) -> str:
+    if isinstance(value, float) and value.is_integer():
+        value = int(value)
+    return str(value)
+
+class MythicAffixLine:
+    def __init__(self, effect: str, text: str, values: Dict[str, float] = None,
+                 percentFlags: Dict[str, bool] = None, meta: Dict = None, affixId: str = None,
+                 mastery: float = 0):
+        self.effect = effect
+        self.text = text
+        self._baseValues = values or {}
+        self.percentFlags = percentFlags or {}
+        self.meta = meta or {}
+        self.affixId = affixId  # owning MythicAffix's id, used to look up bespoke onActions handlers
+        self.mastery = mastery  # kept in sync with Equipment.mastery via Equipment.applyMastery()
+
+    @property
+    def values(self) -> Dict[str, float]:
+        """Mastery-scaled values, mirroring Affix.value - every consumer (onActions handlers,
+        conditional_modifier, ability patchers, etc.) reads through here, so scaling this one
+        property is enough to make mastery affect mythic lines exactly like normal affixes."""
+        mastery = self.mastery / 100
+        scaled = {}
+        for key, base in self._baseValues.items():
+            if isinstance(base, float):
+                scaled[key] = round(base * (1 + mastery), 2)
+            else:
+                scaled[key] = round(base * (1 + mastery))
+        return scaled
 
     @property
     def description(self) -> str:
-        sign = ''
-        per = ''
-        if self.value is not None:
-            if self.sign:
-                if self.value > 0:
-                    sign = '+'
-                elif self.value < 0:
-                    sign = '-'
-            if self.isPercent:
-                per = '%'
+        desc = self.text
+        for key, value in self.values.items():
+            desc = desc.replace(f'[{key}]', _formatValue(value))
+        return desc
 
-        value = f'{sign}{self.value}'
-        if '[x]' in self.descriptionBase:
-            desc = self.descriptionBase.replace('[x]', f'[bold]{value}{per}[/bold]')
-            return desc
-        return self.descriptionBase
+    @property
+    def onActions(self) -> Dict[str, Any]:
+        """hookName -> callable(entity, item, line, *hookArgs) for this line's game effect,
+        resolved lazily from the mythicEffects registry (never serialised - callables aren't
+        JSON-safe, and the registry can change/expand between game versions)."""
+        from . import mythicEffects
+        return mythicEffects.getHandlers(self.affixId, self.effect)
 
-    def _serialise(self):
-        x = super()._serialise()
-        x['description'] = self.descriptionBase
+    def serialise(self) -> dict:
+        return {
+            'effect': self.effect,
+            'text': self.text,
+            'values': self._baseValues,
+            'percentFlags': self.percentFlags,
+            'meta': self.meta,
+            'affixId': self.affixId,
+            'mastery': self.mastery,
+        }
 
     @classmethod
-    def deserialise(cls, data):
-        affix = super().deserialise(data)
-        affix.descriptionBase = data['description']
-        return affix
+    def deserialise(cls, data: dict) -> 'MythicAffixLine':
+        return cls(data['effect'], data['text'], data.get('values', {}),
+                   data.get('percentFlags', {}), data.get('meta', {}), data.get('affixId'),
+                   data.get('mastery', 0))
+
+    @classmethod
+    def roll(cls, lineData: dict, affixId: str = None) -> 'MythicAffixLine':
+        effect = lineData['effect']
+        text = lineData['text']
+        values: Dict[str, float] = {}
+        percentFlags: Dict[str, bool] = {}
+
+        if 'rolls' in lineData:
+            for rollSpec in lineData['rolls']:
+                key = rollSpec['key']
+                values[key] = _rollRangeValue(rollSpec['min'], rollSpec['max'])
+                percentFlags[key] = rollSpec.get('isPercent', False)
+        elif 'perLevel' in lineData:
+            perLevel = lineData['perLevel']
+            values['x'] = _rollRangeValue(perLevel['min'], perLevel['max'])
+            percentFlags['x'] = lineData.get('isPercent', False)
+
+        meta = {k: v for k, v in lineData.items() if k not in ('effect', 'text', 'rolls', 'perLevel')}
+
+        return cls(effect, text, values, percentFlags, meta, affixId)
 
     def __str__(self):
         return self.description
 
-def _createMythicAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
-    fp = 'Korus/data/everything old/mythicAffixes.json' if exists('Korus') else 'data/everything old/mythicAffixes.json'
-    with open(fp, 'r') as f:
-        affixData = json.load(f)
+class MythicAffix:
+    def __init__(self, affixId: str, name: str, levelReq: int, equipType: str,
+                 categories: List[str], lines: List[MythicAffixLine], kind: str = 'suffix'):
+        self.id = affixId
+        self.name = name
+        self.levelReq = levelReq
+        self.equipType = equipType
+        self.categories = categories
+        self.lines = lines
+        self.kind = kind  # 'prefix' or 'suffix' - which half of the item name this occupies
 
-    affixPool = {
-        'weapon': {'prefixes': {}, 'suffixes': {}},
-        'head': {'prefixes': {}, 'suffixes': {}},
-        'chest': {'prefixes': {}, 'suffixes': {}},
-        'legs': {'prefixes': {}, 'suffixes': {}},
-        'feet': {'prefixes': {}, 'suffixes': {}},
-        'ring': {'prefixes': {}, 'suffixes': {}},
-        'amulet': {'prefixes': {}, 'suffixes': {}},
-    }
+    @property
+    def description(self) -> str:
+        return '\n'.join(line.description for line in self.lines)
 
-    markup = 'bold underline italic dark_magenta'
+    def serialise(self) -> dict:
+        return {
+            'id': self.id,
+            'name': self.name,
+            'levelReq': self.levelReq,
+            'equipType': self.equipType,
+            'categories': self.categories,
+            'lines': [line.serialise() for line in self.lines],
+            'kind': self.kind,
+        }
 
-    for equipType in ['weapon',
-                      'head', 'chest', 'legs', 'feet',
-                      'ring', 'amulet'
-                      ]:
-        if equipType not in affixData:
-            continue
+    @classmethod
+    def deserialise(cls, data: dict) -> 'MythicAffix':
+        return cls(
+            data['id'], data['name'], data['levelReq'], data['equipType'],
+            data['categories'], [MythicAffixLine.deserialise(l) for l in data['lines']],
+            data.get('kind', 'suffix'),
+        )
 
-        for affixType in ['prefixes', 'suffixes']:
-            if affixType not in affixData[equipType]:
-                continue
+    def __str__(self):
+        return self.description
 
-            for affixId, affixInfo in affixData[equipType][affixType].items():
-                data = affixInfo['tiers']['1']
-                name = data['name']
-                name = f'[{markup}]{name}[/{markup}]'
-                sign = affixInfo.get('sign', True)
+MYTHIC_AFFIX_DATA: Dict[str, Dict] = _loadMythicAffixData()
 
-                mAffix = MythicAffix(
-                    id=affixId,
-                    name=name,
-                    levelReq=data['levelReq'],
-                    tier=1,
-                    stat=affixInfo['stat'],
-                    slot=equipType,
-                    minVal=data['min'],
-                    maxVal=data['max'],
-                    isPercent=affixInfo.get('isPercent', False),
-                    kind=affixType[:-2],
-                    weight=data.get('weight', 100),
-                    categories=affixInfo['categories'],
-                    description=affixInfo['description'],
-                    sign=sign,
-                )
-
-                affixPool[equipType][affixType][affixId] = mAffix
-        
-    return affixPool
-
-def rollMythicAffix(equipType: str, affixType: str, itemLevel: int, rarity: object,
-                    excludeIds: Set[str], defenseType: str = None,
-                    minAffixLevel: int | None = None) -> Optional[Affix]:
-    """rarity = ItemRarity"""
+def rollMythicAffix(equipType: str, itemLevel: int, rarity: object = None) -> Optional[MythicAffix]:
     from .items import ItemRarity
-    if rarity != ItemRarity.MYTHIC:
+    if rarity is not None and rarity != ItemRarity.MYTHIC:
         return None
 
-    excludeIds = excludeIds or set()
-
-    if equipType not in MYTHIC_AFFIX_POOL:
+    pool = MYTHIC_AFFIX_DATA.get(equipType)
+    if not pool:
         return None
-    
-    if affixType == 'prefix':
-        affixType = 'prefixes'
-    elif affixType == 'suffix':
-        affixType = 'suffixes'
 
-    availableAffixes = MYTHIC_AFFIX_POOL[equipType][affixType]
-
-    minLevelAffix = max(0, min(30, itemLevel - 75))
-    if minAffixLevel:
-        minLevelAffix = minAffixLevel
-
-    validAffixes = []
-    weights = []
-
-    for affixId, affix in availableAffixes.items():
-        if minLevelAffix <= affix.levelReq <= itemLevel and affixId not in excludeIds:
-            baseId = affix.id
-            if baseId not in excludeIds:
-
-                if defenseType:
-                    defenseTypes = ['armour', 'evasion', 'energy_shield']
-                    if affix.stat in defenseTypes:
-                        if affix.stat != defenseType:
-                            continue
-
-                validAffixes.append(affix)
-                weight = affix.weight
-                weights.append(weight)
-
-    if not validAffixes:
+    eligible = [(affixId, info) for affixId, info in pool.items() if info['levelReq'] <= itemLevel]
+    if not eligible:
         return None
-    
-    aff = random.choices(validAffixes, weights=weights, k=1)[0]
 
-    rolledAffix = MythicAffix(
-        id=aff.id,
-        name=aff.name,
-        levelReq=aff.levelReq,
-        tier=aff.tier,
-        stat=aff.stat,
-        slot=equipType,
-        minVal=aff.minVal,
-        maxVal=aff.maxVal,
-        isPercent=aff.isPercent,
-        kind=aff.kind,
-        weight=aff.weight,
-        categories=list(aff.categories),
-        description=aff.descriptionBase,
-        sign=aff.sign,
-    )
-    rolledAffix.rollValue()
-
-    return rolledAffix
-
-MYTHIC_AFFIX_POOL = _createMythicAffixList()
+    affixId, info = random.choice(eligible)
+    lines = [MythicAffixLine.roll(lineData, affixId) for lineData in info['lines']]
+    return MythicAffix(affixId, info['name'], info['levelReq'], equipType, info['categories'], lines,
+                       info.get('kind', 'suffix'))

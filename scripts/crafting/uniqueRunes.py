@@ -1,5 +1,6 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.items.affixes import rollAffix, Affix, resolveAffixPoolKey
+from ..items.affixes import rollAffix, Affix, resolveAffixPoolKey
+from ..items.items import ItemRarity
 import random
 import json
 from typing import Dict
@@ -85,10 +86,10 @@ class PreservationRune(CraftingItem):
                 message='Item level too low'
             )
         
-        item.update()
-        item.addEntropy(self.successEntropy)
         item.entropyPreserved = True
         item.numPreserved += 1
+        item.update()
+        item.addEntropy(self.successEntropy)
         return CraftResult(
             outcome=CraftOutcome.SUCCESS,
             message=f'Item has gained an entropy lock. {item.numPreserved}/{item.maxPreservations} Preservation runes used on this item.',
@@ -335,17 +336,77 @@ class ParallelRune(CraftingItem):
             message=f"{item.name} was successfully duplicated. The duplicate can be found in your inventory."
         )
 
+class UndoingRune(CraftingItem):
+    name = '[thistle1 bold]Undoing Rune[/thistle1 bold]'
+    description = "Resets a Blank item to undiscovered again."
+    minItemLevel = 60
+    successEntropy = 0.0
+    dropWeight = 6
+
+    def apply(self, item, player=None) -> CraftResult:
+        if item.rarity != ItemRarity.BLANK:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message='Only usable on Blank items'
+            )
+
+        for slot in item.prefixSlots + item.suffixSlots:
+            slot.affix = None
+        item.blankCuratedHand = None
+        item.blankTableKey = None
+        item.destabilised = False
+        item.entropy = 0
+        item.maxEntropy = float('inf')
+        item.update()
+        item._generateName()
+
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message=f'{item.name} has been wiped clean and is re-discoverable.'
+        )
+
+class ForesightRune(CraftingItem):
+    name = '[bold underline medium_violet_red]Foresight Rune[/bold underline medium_violet_red]'
+    description = "Grants Foresight to an item, letting you preview the result of any crafting runes used before actually consuming them. The next applied rune will have a 30% Increaed Entropy cost."
+    minItemLevel = 50
+    successEntropy = 0.0
+    dropWeight = 1
+
+    def apply(self, item, player=None) -> CraftResult:
+        if not item.craftable:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item cannot be modified"
+            )
+        if item.level < self.minItemLevel:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item level too low"
+            )
+        if item.foresighted:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item already has a foresight rune applied"
+            )
+
+        item.foresighted = True
+        item.update()
+
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message=f"{item.name} has been granted foresight."
+        )
+
 UNIQUE_RUNES: Dict[str, CraftingItem] = {
     'immutable': ImmutableRune(),
     'preservation': PreservationRune(),
     'echoing': EchoingRune(),
     'soulbound': SoulboundRune(),
     'parallel': ParallelRune(),
+    'undoing': UndoingRune(),
+    'foresight': ForesightRune(),
 }
 
 """
 IDEAS:
-- foresight rune:
-    - lets you see the outcome of the next rune used before it is actually used
-    - displays item after craft would be complete, asked for confirmation y/n whether to actually apply item
 """

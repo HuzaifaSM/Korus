@@ -18,6 +18,7 @@ import time
 from pathlib import Path
 from typing import Optional, List
 from rich.text import Text
+from collections import deque
 
 from scripts.styles import console
 from scripts.combat import CombatManager
@@ -25,6 +26,7 @@ from scripts.enemies.enemy import createEnemy
 from scripts.player_classes.classes import CLASSES, ASCENDANCIES, Player
 from scripts.player_classes.fighter import Threshold
 from scripts.items.equipment import ARMOUR_SLOTS, Equipment
+from scripts.entities import SIGIL_SLOTS
 from scripts.campAreas.campfire import Campfire
 from scripts.campAreas.market import Market
 from scripts.abilities import Ability, resolveEffects
@@ -35,8 +37,8 @@ TARGET_LEVEL = 100
 ASCEND_AT_LEVEL = 20
 MAX_TURNS_PER_FIGHT = 100
 MAX_FIGHTS_PER_RUN = 10000 # safety ceiling to prevent infinite loop. very high to allow level 100 to be reached
-MAX_FLEE_PER_RUN = 25000
-MAX_FLEE_PER_LEVEL = 500
+MAX_FLEE_PER_RUN = 50000
+MAX_FLEE_PER_LEVEL = 1000
 
 SAVE_DIR = Path(__file__).parent / "tests" / "save"
 
@@ -184,8 +186,8 @@ def _equipNewestDrops(player: Player, enemies):
             player.addRune(cat, rType)
 
 def _runFightOrDie(player: Player, level: int, label: str, camp: Campfire) -> tuple[str, Optional[dict]]:
-    """returns 'won', 'fled' or 'died'"""
-    enemies = [createEnemy(max(1, level))
+    """returns 'won', 'fled', 'died' or 'stalemate'"""
+    enemies = [createEnemy(max(1, level), playerClassName=player.className, playerName=player._name)
                for _ in range(random.randint(min(3, 1 + (player._level) // 30), min(1 + player._level//16, 4)))
                ]
     cm = CombatManager()
@@ -194,11 +196,15 @@ def _runFightOrDie(player: Player, level: int, label: str, camp: Campfire) -> tu
     FLEE_DAMAGE_THRESHOLD = 0.2
     FLEE_HP_THRESHOLD = 0.3
     fled = False
+    stalemate = False
     turns = 0
     outcome = None
     while cm.battleActive:
         turns += 1
-        assert turns < MAX_TURNS_PER_FIGHT, f"{label}: a fight exceeded {MAX_TURNS_PER_FIGHT} turns"
+        if turns >= MAX_TURNS_PER_FIGHT:
+            cm.endBattle()
+            stalemate = True
+            break
 
         outcome = cm.checkBattleEnd()
         if outcome:
@@ -210,6 +216,9 @@ def _runFightOrDie(player: Player, level: int, label: str, camp: Campfire) -> tu
 
         if currentUnit.team == 'player':
             player.onTurnStart(cm)
+            player._mythicDispatch('onTurnStart', cm)
+            if player.hasLiveConditionalModifiers():
+                player._recalculateStats(False, True)
             outcome = cm.checkBattleEnd()
             if outcome:
                 break
@@ -227,6 +236,7 @@ def _runFightOrDie(player: Player, level: int, label: str, camp: Campfire) -> tu
                 if _inDanger(): # still going to die after consumable, flee
                     cm.endBattle()
                     player.onCombatEnd()
+                    player._mythicDispatch('onCombatEnd')
                     fled = True
                     break
 
@@ -240,13 +250,21 @@ def _runFightOrDie(player: Player, level: int, label: str, camp: Campfire) -> tu
             break
         cm.nextTurn()
 
+    fightData = {'enemies': _summariseEnemies(enemies), 'combatLog': cm.combatLog}
+
+    if stalemate:
+        player.onCombatEnd()
+        player._mythicDispatch('onCombatEnd')
+        return 'stalemate', fightData
+
     if fled:
-        return 'fled', None
+        return 'fled', fightData
 
     player.onCombatEnd()
+    player._mythicDispatch('onCombatEnd')
 
     if outcome == 'enemy':
-        return 'died', {'enemies': _summariseEnemies(enemies), 'combatLog': cm.combatLog}
+        return 'died', fightData
 
     _equipNewestDrops(player, enemies)
     totalXp = 0
@@ -254,19 +272,16 @@ def _runFightOrDie(player: Player, level: int, label: str, camp: Campfire) -> tu
     for enemy in enemies:
         if enemy._isDead:
             xp = enemy.getExperienceReward()
-            gold = max(5, enemy._level // 2) * random.randint(2, 5)
+            gold = enemy.getGoldReward()
             xpBonus = player._stats['Bonuses']['xp_gain']
             if xpBonus > 0:
-                effectiveBonus = xpBonus / (1 + (xpBonus / 100))
-                xpModifier = effectiveBonus / 100
-            else:
-                xpModifier = xpBonus / 100
-            if xpBonus > 0:
-                xp = round(xp * xpModifier)
+                effectiveBonus = xpBonus / (1.5 + (xpBonus / 100))
+                xp += round(xp * (effectiveBonus / 100))
             totalXp += xp
 
             goldBonus = player._stats['Bonuses']['gold_gain']
-            gold = round(gold * (goldBonus / 100))
+            if goldBonus > 0:
+                gold += round(gold * (goldBonus / 100))
             totalGold += gold
 
     player.gainExperience(totalXp)
@@ -275,7 +290,7 @@ def _runFightOrDie(player: Player, level: int, label: str, camp: Campfire) -> tu
     if camp.level > 0:
         camp.supplies += random.randint(2, 5 + camp.level)
 
-    return 'won', None
+    return 'won', fightData
 
 def _visitMarket(player: Player, market: Market):
     market._generateStock()
@@ -325,7 +340,7 @@ def _attemptRuneApplications(player: Player):
 
         if not eq.craftable:
             continue
-        if eq.allSlotsFilled and eq.mastery < 20 and mastery:
+        if eq.allSlotsFilled and eq.mastery < eq.maxMastery and mastery:
             chosen = sorted(mastery, key=lambda m: m.masteryToAdd, reverse=True)
 
         if not eq.allSlotsFilled and growth:
@@ -343,19 +358,39 @@ def _attemptRuneApplications(player: Player):
                 chosenRune = chosen[0] # picks highest item level since higher item level = better
                 chosenRune.apply(eq, player)
 
+def _getTotalResistanceValue(equipment: Equipment) -> int:
+    if equipment.slot == 'weapon':
+        return 0
+    total = 0
+    for a in equipment.prefixes + equipment.suffixes:
+        if 'resistance' in a.categories or 'resistance' in a.stat:
+            total += a.value * (2 if 'max' in a.stat else 1) # max resistances count as 2x resistance value
+    return total
+
 def _ensureEquipment(player: Player):
     for slot, eq in player._equipment.items():
-        valid = [e for e in player._equipmentStorage if e.slot == slot]
+        # stored sigils are all generically tagged .slot == 'sigil', never 'sigil_2'/'sigil_3'/etc,
+        # so a plain e.slot == slot check can never match a numbered sigil slot
+        isSigilSlot = slot in SIGIL_SLOTS
+        valid = [e for e in player._equipmentStorage if e.slot == slot or (isSigilSlot and e.slot == 'sigil')]
+        # equip() only auto-stores the item being *displaced*, not the one being pulled in -
+        # anything sourced from storage here must be removed manually or it stays "in stock"
+        # and can get equipped again into the next matching empty/upgradeable slot this same pass
+        # (this bites sigils specifically, since all 5 numbered slots share one generic storage pool)
+        def _takeFromStorage(item):
+            player._equipmentStorage.remove(item)
+            player.equip(item, slot=slot)
+
         if eq is None:
             if valid:
                 new = sorted(valid, key=lambda e: e.level, reverse=True)[0]
-                player.equip(new)
+                _takeFromStorage(new)
         else:
             if slot == 'weapon':
                 if valid:
                     potential = sorted(valid, key=lambda e: e.damage, reverse=True)[0]
                     if potential.damage > eq.damage and potential.rarity - 1 >= eq.rarity:
-                        player.equip(potential)
+                        _takeFromStorage(potential)
             elif slot in ARMOUR_SLOTS:
                 if valid:
                     potential = sorted(valid, key=lambda e: e.defenseValue, reverse=True)[0:3]
@@ -364,13 +399,17 @@ def _ensureEquipment(player: Player):
                         weights.append(1 if e.defenseType != 'energy_shield' else 2)
                     potential = random.choices(potential, weights, k=1)[0]
                     bias = potential.defenseValue // 5 if potential.defenseType == 'energy_shield' else 0
-                    if potential.defenseValue + bias > eq.defenseValue and potential.rarity - 1 >= eq.rarity:
-                        player.equip(potential)
+                    currentResVal = _getTotalResistanceValue(eq)
+                    newResVal = _getTotalResistanceValue(potential)
+                    if (potential.defenseValue + bias > eq.defenseValue or newResVal - 10 >= currentResVal) and potential.rarity - 1 >= eq.rarity:
+                        _takeFromStorage(potential)
             else:
                 if valid:
                     potential = sorted(valid, key=lambda e: e.level, reverse=True)[0]
-                    if potential.level > eq.level or (potential.level > eq.level - 10 and potential.rarity - 1 >= eq.rarity):
-                        player.equip(potential)
+                    currentResVal = _getTotalResistanceValue(eq)
+                    newResVal = _getTotalResistanceValue(potential)
+                    if potential.level > eq.level or newResVal - 10 >= currentResVal or (potential.level > eq.level - 10 and potential.rarity - 1 >= eq.rarity):
+                        _takeFromStorage(potential)
 
 def _summariseEnemies(enemies) -> list:
     return [{
@@ -385,7 +424,7 @@ def _summariseEnemies(enemies) -> list:
         'abilities': list(e._abilities.keys()),
     } for e in enemies]
 
-def _climbOrDie(player: Player, targetLevel: int, label: str, fightLog: list, realPrint) -> tuple[str, int]:
+def _climbOrDie(player: Player, targetLevel: int, label: str, fightLog: list, realPrint, recentCombats: deque) -> tuple[str, int]:
     """returns 'reached_target', 'died', or 'stalled' and number of fled combats"""
     fights = 0
     flee = 0
@@ -402,7 +441,8 @@ def _climbOrDie(player: Player, targetLevel: int, label: str, fightLog: list, re
 
         levelBefore = player._level
         hpBefore = player._health
-        result, enemyData = _runFightOrDie(player, player._level, label, camp)
+        result, fightData = _runFightOrDie(player, player._level, label, camp)
+        recentCombats.append({'fight': fights, 'result': result, **fightData})
         logEntry = {
             'fight': len(fightLog) + 1,
             'level': player._level,
@@ -411,13 +451,18 @@ def _climbOrDie(player: Player, targetLevel: int, label: str, fightLog: list, re
             'maxHp': player._maxHealth,
             'result': result,            
         }
-        if enemyData:
-            logEntry['killedBy'] = enemyData
+        if result == 'died':
+            logEntry['killedBy'] = fightData
+        elif result == 'stalemate':
+            logEntry['stalemateData'] = fightData
         fightLog.append(logEntry)
 
         if result == 'died':
             realPrint(f"[bold red]{label}: died at level {player._level}, fight {fights}[/bold red]")
             return 'died', flee
+        elif result == 'stalemate':
+            realPrint(f"[bold red]{label}: a fight stalemated (exceeded {MAX_TURNS_PER_FIGHT} turns) at level {player._level}, fight {fights}[/bold red]")
+            return 'stalemate', flee
         elif result == 'fled':
             realPrint(f"[yellow]{label}: fled a dangerous fight at level {player._level} (fight {fights})[/yellow]")
             fights -= 1
@@ -451,7 +496,7 @@ def _climbOrDie(player: Player, targetLevel: int, label: str, fightLog: list, re
 
     return 'reached_target', flee
 
-def _writeRunReport(player: Player, className: str, ascendancy: str, outcome: str, fightLog: list, fledCombats) -> Path:
+def _writeRunReport(player: Player, className: str, ascendancy: str, outcome: str, fightLog: list, fledCombats: int, recentCombats: deque) -> Path:
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
     stamp = time.strftime("%Y%m%d_%H%M%S")
     path = SAVE_DIR / f"{className}_{ascendancy or 'base'}_{stamp}.json"
@@ -464,6 +509,7 @@ def _writeRunReport(player: Player, className: str, ascendancy: str, outcome: st
         'fightsSurvived': len(fightLog),
         'fightsFled': fledCombats,
         'fightLog': fightLog,
+        'recentCombats': recentCombats,
         'finalState': player.serialise(),
     }
     with open(path, 'w', encoding='utf-8') as f:
@@ -506,16 +552,17 @@ def run(className: str, ascendancy: str = None):
 
     realPrint(f"[bold cyan]Starting {label} - target level {TARGET_LEVEL}[/bold cyan]")
 
+    recentCombats = deque(maxlen=5)
     firstPhaseTarget = ASCEND_AT_LEVEL if ascendancy else TARGET_LEVEL
     fledCombats = 0
-    outcome, numFled = _climbOrDie(player, firstPhaseTarget, label, fightLog, realPrint)
+    outcome, numFled = _climbOrDie(player, firstPhaseTarget, label, fightLog, realPrint, recentCombats)
     fledCombats += numFled
 
     if outcome == 'reached_target' and ascendancy:
         if player.updateAscendancy(ascendancy):
             player._health = min(player._health, player._maxHealth)  # ascending can shift maxHealth
             realPrint(f"[bold gold1]{label}: ascended into {ascendancy} at level {player._level}[/bold gold1]")
-            outcome, numFled = _climbOrDie(player, TARGET_LEVEL, label, fightLog, realPrint)
+            outcome, numFled = _climbOrDie(player, TARGET_LEVEL, label, fightLog, realPrint, recentCombats)
             fledCombats += numFled
         else:
             outcome = 'ascend_failed'
@@ -523,7 +570,7 @@ def run(className: str, ascendancy: str = None):
 
     console.print = realPrint
 
-    path = _writeRunReport(player, className, ascendancy, outcome, fightLog, fledCombats)
+    path = _writeRunReport(player, className, ascendancy, outcome, fightLog, fledCombats, list(recentCombats))
 
     realPrint(f"\n[bold gold1]{'=' * 60}[/bold gold1]")
     realPrint(f"[bold gold1]{label}: {outcome}[/bold gold1]")

@@ -332,6 +332,44 @@ class BaseTypeRandomiserRune(BaseRandomiserRune):
             entropyAdded=self.successEntropy
         )
 
+class MasteryRandomiserRune(CraftingItem):
+    name = '[orange4 bold]Mastery Randomiser Rune[/orange4 bold]'
+    description = 'Randomises the mastery on an item between 1 and 20. The item must have mastery already.'
+    successEntropy = 0.1
+    minItemLevel = 20
+    dropWeight = 100
+
+    def apply(self, item, player=None):
+        if not item.craftable:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message='Item cannot be modified'
+            )
+        if item.level < self.minItemLevel:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item level too low."
+            )
+
+        if item.mastery == 0:
+            return CraftResult(
+                outcome=CraftOutcome.NO_EFFECT,
+                message="Item does not have any mastery to randomise"
+            )
+
+        diff = 0
+        while diff == 0:
+            newMastery = random.randint(1, 20)
+            diff = newMastery - item.mastery
+
+        item.gainMastery(diff)
+        item.addEntropy(self.successEntropy)
+
+        return CraftResult(
+            outcome=CraftOutcome.SUCCESS,
+            message=f"Mastery successfully randomised. New Mastery: {newMastery} ({'Gained' if diff > 0 else 'Lost'} {abs(diff)} Mastery)"
+        )
+
 RANDOMISER_RUNES: Dict[str, BaseRandomiserRune] = {
     'value': ValueRandomiserRune(),
     'greater_value': GreaterValueRandomiserRune(),
@@ -345,7 +383,8 @@ RANDOMISER_RUNES: Dict[str, BaseRandomiserRune] = {
     'greater_affix': GreaterAffixRandomiserRune(),
     'perfect_affix': PerfectAffixRandomiserRune(),
 
-    'base_type': BaseTypeRandomiserRune()
+    'base_type': BaseTypeRandomiserRune(),
+    'mastery': MasteryRandomiserRune(),
 }
 
 """

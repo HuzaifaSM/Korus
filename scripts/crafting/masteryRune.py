@@ -1,4 +1,5 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
+from random import randint
 from typing import Dict
 
 class BaseMasteryRune(CraftingItem):
@@ -61,8 +62,20 @@ class PerfectMasteryRune(BaseMasteryRune):
     successEntropy = 0.16
     dropWeight = 35
 
+class WildMasteryRune(BaseMasteryRune):
+    name = '[tan bold]Wild Mastery Rune[/tan bold]'
+    description = 'Adds a random amount of mastery to an item between 1 and 20. Maximum 20% mastery.'
+    successEntropy = 0.13
+    minItemLevel = 20
+    dropWeight = 75
+
+    def apply(self, item, player=None):
+        self.masteryToAdd = randint(1, 20)
+        return super().apply(item, player)
+
 MASTERY_RUNES: Dict[str, BaseMasteryRune] = {
     'mastery': MasteryRune(),
     'greater': GreaterMasteryRune(),
     'perfect': PerfectMasteryRune(),
+    'wild': WildMasteryRune(),
 }

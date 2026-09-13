@@ -519,8 +519,6 @@ class SacrificeRune(CraftingItem):
         sacrifiedAffix = sacrifice.affix
         slots.remove(sacrifice) # removed to prevent being attempted to add onto
         sacrificeTier = sacrifice.affix.tier
-        sacrificeAffixId = sacrifice.affix.id
-        sacrifice.affix = None
 
         totalPower = tierPower(sacrificeTier)
         totalPower = applyEfficiency(totalPower, self.tierEfficiency)
@@ -570,6 +568,7 @@ class SacrificeRune(CraftingItem):
                 item.durability += newAffix.value
             else:
                 item.durability = int(item.durability * (1 + (newAffix.value / 100)))
+        sacrifice.affix = None # only removed on success, otherwise kept, so placing here means it won't change if rune failed
 
         item.update()
         item._generateName()

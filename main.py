@@ -6,7 +6,8 @@ import random
 import subprocess
 
 from scripts.player import Player, selectClass, deserialisePlayer
-from scripts.enemies.enemy import Enemy, createEnemy
+from scripts.enemies.enemy import Enemy, createEnemy, rollEncounterClasses
+from scripts.entities import SIGIL_SLOTS
 from scripts.combat import CombatManager
 from scripts.runeDrops import rollGuaranteedRunes
 from scripts.camp import Camp
@@ -15,7 +16,7 @@ from scripts.debug import Debugger
 from scripts.difficulty import Difficulty
 from scripts.help import Help
 from scripts.items.equipment import peekNextEquipmentId, setNextEquipmentId
-from scripts.korusFeedClient import ensureServerRunning
+from scripts.korusFeedClient import ensureServerRunning, isServerRunning
 
 from scripts.styles import (
     console, printHeader, printSeparator, pause, clearScreen,
@@ -24,6 +25,9 @@ from scripts.styles import (
     createAbilityTables, createCombatStatusTable, createEnemyPreview,
     ReturnToMainMenu, GoToSaveMenu, checkGlobalCommand
 )
+
+AREA_LEVEL_SCALING_START_LEVEL = 50 # area level free-climbs on battles won only once the player reaches this level
+AREA_LEVEL_LEVEL_STEP = 5 # below that level, area level instead rises by 1 every this many player levels
 
 class Game:
     def __init__(self):
@@ -69,7 +73,9 @@ class Game:
             console.print("[dim]1.[/dim] [green]New Game[/green]")
             console.print("[dim]2.[/dim] [cyan]Load Game[/cyan]")
             console.print("[dim]3.[/dim] [red]Exit[/red]\n")
-            
+            if isServerRunning():
+                console.print("[dim green]Korus Feed Server Running. Link: http://localhost:8080 [/dim green]")
+
             choice = console.input("[cyan]Choose an option:\n> [/cyan]").strip()
 
             if choice in ['cheat', 'quick', 'bug', 'skip']:
@@ -308,7 +314,10 @@ class Game:
                 self.saveMenu()
                 continue
 
-            if choice.lower() == "debug" or choice.startswith("/"):
+            if choice == "":
+                printWarning("Invalid input.")
+                continue
+            elif choice.lower() == "debug" or choice.startswith("/"):
                 if self.debugAllowed:
                     auto = None
                     if choice.startswith("/"):
@@ -420,8 +429,9 @@ class Game:
             #console.print("[dim]1.[/dim] [gold1]Change Difficulty[/gold1]")
             console.print("[dim]2.[/dim] [green]Help Menu[/green]")
             console.print("[dim]3.[/dim] [orange1]Save Menu[/orange1]")
+            console.print("[dim]4.[/dim] [gold1]Rename Yourself[/gold1]")
             debugStr = "Enable" if not self.debugAllowed else "Disable"
-            console.print(f"[dim]4.[/dim] [dim cyan]{debugStr} Debugging[/dim cyan]")
+            console.print(f"[dim]5.[/dim] [dim cyan]{debugStr} Debugging[/dim cyan]")
 
             choice = console.input("[bold cyan]>[/bold cyan] ").strip()
             checkGlobalCommand(choice)
@@ -439,6 +449,12 @@ class Game:
                     case 3:
                         self.saveMenu()
                     case 4:
+                        name = console.input("[bold cyan]Enter your new name:\n>[/bold cyan] ")
+                        if name != '' and name != ' ':
+                            self.player._name = name
+                            printSuccess(f"Your new player name is now {self.player._name}")
+                            pause()
+                    case 5:
                         self.debugAllowed = not self.debugAllowed
                         debugStr = "enabled" if self.debugAllowed else "disabled"
                         printSuccess(f"Debug commands have been {debugStr}")
@@ -521,9 +537,13 @@ class Game:
     def postBattle(self, result: str, enemies: List[Enemy], *, waveEncounter: bool = False, lootBonus: int = 0):
         if result == "victory":
             self.player.onCombatEnd()
+            self.player._mythicDispatch('onCombatEnd')
             self.battlesWon += 1
             currentAreaLevel = self.areaLevel
-            if self.areaLevel > 100:
+            if self.player._level < AREA_LEVEL_SCALING_START_LEVEL:
+                levelBasedAreaLevel = 1 + self.player._level // AREA_LEVEL_LEVEL_STEP
+                self.areaLevel = max(self.areaLevel, levelBasedAreaLevel)
+            elif self.areaLevel > 100:
                 self.areaLevel += 1 if self.battlesWon % 20 == 0 else 0
             else:
                 self.areaLevel += 1 if self.battlesWon % 10 == 0 else 0
@@ -628,10 +648,11 @@ class Game:
                 return
 
     def generateEnemies(self, waveEncounter: bool = False, lootBonus: int = 0) -> List[Enemy]:
-        numEnemies = random.randint(min(3, 1 + (self.player._level + self.areaLevel) // 40), min(1 + self.areaLevel//8, 4))
+        numEnemies = random.randint(min(3, max(1, 1 + (self.player._level + self.areaLevel) // 40)), min(1 + (self.player._level + self.areaLevel) //25, 8))
         enemyBonus = self.player._stats['Bonuses']['enemy_quantity']
         multiplier = 1 + (enemyBonus / 100)
         numEnemies = min(8, int(numEnemies * multiplier)) # hard cap at 8 enemies
+        numEnemies = max(2, numEnemies) # every fight has at least 2 enemies
 
         enemies = []
         if waveEncounter:
@@ -643,8 +664,10 @@ class Game:
         rarity = (self.player._stats['Bonuses']["item_rarity"] + self.player._getExtraBonuses('item_rarity') + lootBonus) / 100
         quantity = (self.player._stats['Bonuses']["item_quantity"] + self.player._getExtraBonuses('item_quantity') + lootBonus) / 100
 
-        for _ in range(numEnemies):
-            enemies.append(createEnemy(enemyLevel, difficulty, rarity, quantity, self.player.className, self.player._name))
+        encounterClasses = rollEncounterClasses(numEnemies)
+        for enemyClass in encounterClasses:
+            enemies.append(createEnemy(enemyLevel, difficulty, rarity, quantity, self.player.className, self.player._name,
+                                        enemyClass=enemyClass, groupSize=numEnemies))
 
         return enemies
 
@@ -694,6 +717,9 @@ class Game:
 
     def playerTurn(self, enemies: List[Enemy]):
         self.player.onTurnStart(self.combatManager)
+        self.player._mythicDispatch('onTurnStart', self.combatManager)
+        if self.player.hasLiveConditionalModifiers():
+            self.player._recalculateStats(False, True)
 
         if not self._monitorCombatResults(enemies):
             return
@@ -740,6 +766,7 @@ class Game:
                 console.print("[red]Fled from battle.[/red]")
                 self.combatManager.battleActive = False
                 self.player.onCombatEnd()
+                self.player._mythicDispatch('onCombatEnd')
                 return
             elif action.lower() == 'p':
                 console.print("[dim red1]You skipped your turn...[/dim red1]")
@@ -778,7 +805,7 @@ class Game:
 
     def chooseTarget(self, enemies: List[Enemy]) -> Optional[Enemy]:
         for enemy in enemies:
-            if getattr(enemy, 'taunting', False):
+            if enemy.taunting:
                 return enemy
 
         if len(enemies) == 1:
@@ -825,16 +852,16 @@ class Game:
         tradeVouchers = 0
 
         if self.camp.forge.level >= 1:
-            fuel = random.randint(1, 4 + self.camp.forge.level)
+            fuel = random.randint(1, 3 + self.camp.forge.level)
             blueprints = random.randint(1, 2 + self.camp.forge.level)
         if self.camp.campfire.level >= 1:
-            supplies = random.randint(2, 5 + self.camp.campfire.level)
+            supplies = random.randint(1, 3 + self.camp.campfire.level)
         if self.camp.market.level >= 1:
             tradeVouchers = random.randint(0, 2 + (self.camp.market.level // 2))
 
         for enemy in enemies:
             totalXp += enemy.getExperienceReward()
-            totalGold += max(5, enemy._level // 2) * random.randint(2, 5)
+            totalGold += enemy.getGoldReward()
 
             resources, equipmentPool, runes = enemy.dropLoot()
             
@@ -859,7 +886,7 @@ class Game:
 
         xpBonus = self.player._stats['Bonuses']['xp_gain'] + lootBonus
         if xpBonus > 0:
-            effectiveBonus = xpBonus / (1 + (xpBonus / 100))
+            effectiveBonus = xpBonus / (1.5 + (xpBonus / 100))
             xpModifier = effectiveBonus / 100
         else:
             xpModifier = xpBonus / 100
@@ -901,18 +928,37 @@ class Game:
             for equipment in allEquipment:
                 console.print(equipment)
 
-                if equipment.slot in self.player._equipment:
+                isSigil = equipment.slot == 'sigil'
+
+                if not isSigil and equipment.slot in self.player._equipment:
                     current = self.player._equipment[equipment.slot]
                     if current:
                         console.print(f"{equipment.compareTo(current)}")
 
-                if equipment.slot in self.player._equipment:
-                    choice = console.input(f"\n    [cyan]Equip {equipment.name}? (y/n/s to store):[/cyan] [dim](default = store)[/dim]\n> ").strip().lower()
-                    if choice == 'n':
-                        continue
-                    elif choice == 'y':
-                        if not self.player.equip(equipment):
+                if isSigil or equipment.slot in self.player._equipment:
+                    console.print(f"[cyan]Equip {equipment.name}?[/cyan] | [green]Y to Equip[/green] | [red]N to place in Storage[/red] | [yellow]S to Quick Sell for[/yellow] {equipment.value} [yellow]Gold[/yellow] | [dim]Default = N[/dim]")
+                    choice = console.input("[cyan]>[/cyan] ").strip().lower()
+                    if choice == 'y':
+                        slotKey = None
+                        if isSigil:
+                            unlockedSlots = SIGIL_SLOTS[:self.player.unlockedSigilSlots]
+                            if len(unlockedSlots) > 1:
+                                console.print("\n    [dim]Currently equipped sigils:[/dim]")
+                                for i, s in enumerate(unlockedSlots, 1):
+                                    current = self.player._equipment.get(s)
+                                    console.print(f"      {i}. {current.name if current else '[dim]empty[/dim]'}")
+                                slotChoice = console.input(f"    [cyan]Which sigil slot? (1-{len(unlockedSlots)}):[/cyan] [dim](default = first empty)[/dim]\n> ").strip()
+                                try:
+                                    idx = int(slotChoice) - 1
+                                    if 0 <= idx < len(unlockedSlots):
+                                        slotKey = unlockedSlots[idx]
+                                except ValueError:
+                                    pass
+                        if not self.player.equip(equipment, slot=slotKey):
                             self.player.addEquipmentToStorage(equipment)
+                    elif choice == 's':
+                        printInfo(f"Quick Sold {equipment.name} for {equipment.value} gold.")
+                        self.player.gainGold(equipment.value)
                     else:
                         self.player.addEquipmentToStorage(equipment)
                 else:

@@ -6,7 +6,7 @@ from ..entities import Entity
 from ..styles import console
 
 _HERE = dirname(abspath(__file__))
-_KORUS_ROOT = dirname(_HERE)
+_KORUS_ROOT = dirname(dirname(_HERE))
 _AI_EXE = join(_KORUS_ROOT, "tools", "korus_enemy_ai.exe")
 
 class EnemyAI:
@@ -14,12 +14,6 @@ class EnemyAI:
         self._enemy = enemy
 
     def buildActionList(self, allies: list = None) -> list:
-        """
-        Builds action list of available actions for this enemy.\n
-        Call once per enemy at turn start.\n
-        `allies` should be the full living enemy-team roster (this enemy included) -
-        needed so Support-class enemies can tell whether a basic heal is available.
-        """
         actions = []
         enemy = self._enemy
 
@@ -47,9 +41,6 @@ class EnemyAI:
                 "effects": []
             })
             if isHealer:
-                # healers specifically keep basic attack too - a failsafe for when they have
-                # no way to save themselves (all self-heals on cooldown) and are about to die,
-                # since their normal healing kit only benefits allies, not themselves
                 actions.append(basicAttackAction)
         else:
             actions.append(basicAttackAction)
@@ -78,8 +69,6 @@ class EnemyAI:
         """Executes action Rust engine chose for this enemy"""
         enemy = self._enemy
 
-        # consumable use is a free action (matches the player's own consumable use) -
-        # it happens regardless of, and before, whatever the main action turns out to be
         if decision and decision.get('useConsumable') and enemy.consumable.useable:
             self._useConsumable()
 
@@ -101,12 +90,6 @@ class EnemyAI:
         combatManager.performAttack(enemy, player, "Basic Attack")
 
     def _useBasicHeal(self, decision: dict, player: Entity, combatManager):
-        """
-        Heals the ally the Rust engine identified as neediest (lowest HP%).
-        Costs the caster HP equal to 50% of the amount healed.
-        Falls back to a basic attack if no valid ally is found (e.g. they died
-        earlier in the same round, between snapshot-build and this decision).
-        """
         enemy = self._enemy
         allies = combatManager.allAlive
         allyIndex = decision.get('allyTargetIndex') if decision else None
@@ -149,10 +132,6 @@ class EnemyAI:
         else:
             damageTargets = [player]
 
-        # damage, effects (ability.effects['target']/['self']), AND cooldown-setting-on-success
-        # are all resolved inside performAttack, uniformly for player- and enemy-used abilities.
-        # for 'all_allies' abilities, performAttack itself resolves the real recipient list
-        # (self.allAlive) for the effects application - the target passed here doesn't matter.
         if damageTargets:
             for t in damageTargets:
                 combatManager.performAttack(enemy, t, abilityName=ability.name)
@@ -172,12 +151,9 @@ class EnemyAI:
 
     # -- turn-level static method -- #
     @staticmethod
-    def decideTurn(enemies: list[Entity], player: Entity, actionLists: list) -> dict:
-        """
-        Sends full round snapshot to Rust Engine.\n
-        Returns: dict { enemyIndex: decision } or empty dict on failure
-        """
-        snapshot = EnemyAI._buildSnapshot(enemies, player, actionLists)
+    def decideTurn(enemies: list[Entity], player: Entity, actionLists: list, buffStates: list = None,
+                   ignoresDangerStates: list = None, actsDefensivelyStates: list = None) -> dict:
+        snapshot = EnemyAI._buildSnapshot(enemies, player, actionLists, buffStates, ignoresDangerStates, actsDefensivelyStates)
         response = EnemyAI._callEngine(snapshot)
         if response is None:
             return {}
@@ -188,9 +164,15 @@ class EnemyAI:
         }
 
     @staticmethod
-    def _buildSnapshot(enemies: list[Entity], player: Entity, actionLists: list) -> dict:
+    def _buildSnapshot(enemies: list[Entity], player: Entity, actionLists: list, buffStates: list = None,
+                        ignoresDangerStates: list = None, actsDefensivelyStates: list = None) -> dict:
+        buffStates = buffStates or [False] * len(enemies)
+        ignoresDangerStates = ignoresDangerStates or [False] * len(enemies)
+        actsDefensivelyStates = actsDefensivelyStates or [False] * len(enemies)
         enemyStates = []
-        for i, (enemy, actions) in enumerate(zip(enemies, actionLists)):
+        for i, (enemy, actions, hasActiveBuff, ignoresDanger, actsDefensively) in enumerate(
+            zip(enemies, actionLists, buffStates, ignoresDangerStates, actsDefensivelyStates)
+        ):
             consumableUseable = enemy.consumable.useable
             enemyStates.append({
                 "index":              i,
@@ -207,6 +189,9 @@ class EnemyAI:
                 "baseDamage":         enemy._damage,
                 "consumableAvailable": consumableUseable,
                 "consumableHeal":      int(enemy._maxHealth * enemy.consumable.healPercent) if consumableUseable else None,
+                "hasActiveBuff":       hasActiveBuff,
+                "ignoresDanger":       ignoresDanger,
+                "actsDefensively":     actsDefensively,
             })
         return {
             "enemies": enemyStates,
@@ -223,8 +208,6 @@ class EnemyAI:
 
     @staticmethod
     def _getPlayerDamagingAbilities(player: Entity) -> list:
-        """Resolved damage numbers for every damaging player ability - used by the
-        engine's lethal-threat check. Only damaging abilities are included."""
         result = []
         for ability in player._abilities.values():
             isDamaging = getattr(ability, 'baseDamage', 0) > 0 or getattr(ability, 'damageScaling', 0) > 0

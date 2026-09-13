@@ -1,6 +1,6 @@
 import random
 from typing import List, Dict
-from scripts.enemies.enemy import createEnemy
+from scripts.enemies.enemy import createEnemy, rollEncounterClasses
 
 from scripts.styles import console, printSuccess, printWarning, pause, clearScreen, printSeparator
 from scripts.items.items import ItemRarity, DungeonMap
@@ -136,12 +136,12 @@ class Dungeon:
             console.print(f"[bold cyan]WAVE {wave}/{self.waves}[/bold cyan]")
             printSeparator()
 
-            numEnemies = random.randint(1, 3 + wave // 2 + self.tier // 5)
+            numEnemies = max(2, random.randint(1, 3 + wave // 2 + self.tier // 5)) # every fight has at least 2 enemies
             enemies = []
 
-            for _ in range(numEnemies):
+            for enemyClass in rollEncounterClasses(numEnemies):
                 enemy = createEnemy(self.level, difficulty=self.difficulty,
-                                    rarity=self.rarity, quantity=self.quantity)
+                                    rarity=self.rarity, quantity=self.quantity, enemyClass=enemyClass, groupSize=numEnemies)
 
                 for mod in self.modifiers:
                     if mod.modType == 'negative':

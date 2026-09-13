@@ -3,7 +3,7 @@ import random
 from copy import deepcopy
 from .items.items import Consumable
 from .items.equipment import Equipment
-from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, BasicAttack, Effects
+from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, EnemyAbility, BasicAttack, Effects
 from .runeDrops import getRuneObject
 from .styles import (
     console, printSuccess, printWarning, printError, printInfo,
@@ -14,6 +14,8 @@ from .styles import (
 ELEMENTAL_RES: frozenset = ['fire', 'earth', 'cold', 'lightning']
 DIVINE_RES: frozenset = ['holy', 'dark', 'arcane']
 OTHERWORLD_RES: frozenset = ['chaos', 'ethereal', 'psychic']
+ALL_RES: frozenset = ['physical', 'fire', 'earth', 'cold', 'lightning', 'holy', 'dark', 'arcane', 'chaos', 'ethereal', 'psychic']
+"""all non-categorical resistances"""
 T = TypeVar("T")
 
 SIGIL_SLOTS = ('sigil_1', 'sigil_2', 'sigil_3', 'sigil_4', 'sigil_5')
@@ -30,6 +32,7 @@ _PROC_EFFECTS = {
     'chance_to_apply_vulnerable': lambda: Effects.createVulnerable(),
     'chance_to_apply_exposed': lambda: Effects.createExposed(),
     'chance_to_stun': lambda: Effects.createStun(),
+    'chance_to_poison': lambda: Effects.createPoison(),
 }
 
 class ResistanceBlock(TypedDict):
@@ -295,6 +298,8 @@ class Entity:
                 'siphon_cap_flat': 0,
                 'echo_damage_increased': 0,
                 'siphon_immune': 0,
+                'increased_damage_taken': 0,
+                'ability_cost_multiplier': 0,
             },
             'Permanent': {
                 'physical': 0,
@@ -434,7 +439,7 @@ class Entity:
             'critMultiIncreased': 0
         }
         self._stats: Stats = _freeze(_rawStats)
-        self._abilities: Dict[str, Ability] = {"Basic Attack": BasicAttack()}
+        self._abilities: Dict[str, Ability | EnemyAbility] = {"Basic Attack": BasicAttack()}
         self._inventory: Dict[str, int] = {}  # {item_name: quantity}
         self._craftingInventory: Dict[str, int] = {}
         """{f'{category}_{runeType}': quantity}"""
@@ -621,6 +626,8 @@ class Entity:
         else:
             self.consumable.updateValue(self._level)
         self._abilities = {"Basic Attack": BasicAttack()}
+        for e in self._equipment.values():
+            self._grantMythicAbilities(e)
 
         self._recalculateStats()
 
@@ -665,6 +672,7 @@ class Entity:
             console.print(f"  [dim]- -{round(stoneskinMod  * 100)} Damage from Stoneskin Buff%[/dim]")
 
         damage = int(round(damage * (1 - resistMod) * (1 - stoneskinMod)))
+        damage = int(round(damage * (1 + self._stats['Bonuses']['increased_damage_taken'] / 100)))
         trueDamage = max(0, damage - self._shield)
         damagePrevented = damage - trueDamage
         self._shield -= damagePrevented
@@ -691,6 +699,7 @@ class Entity:
         if modifiedAmount > 0:
             self._health = min(self._health + modifiedAmount, self._maxHealth)
             self.onHeal(modifiedAmount)
+            self._mythicDispatch('onHeal', modifiedAmount)
             if doPrint:
                 console.print(f"[success]{self._name} healed for {modifiedAmount} HP{reasonStr}.[/success] [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
         elif modifiedAmount < 0:
@@ -756,9 +765,10 @@ class Entity:
                 console.print(f"[warning]{self._name} no longer has the ability: {ability}[/warning]")
 
     def canUseAbility(self, ability: Ability) -> bool:
-        if self._stamina < ability.staminaCost:
+        cost = int(ability.staminaCost * (1 + self._stats['Bonuses']['ability_cost_multiplier'] / 100))
+        if self._stamina < cost:
             return False
-        self._stamina -= ability.staminaCost
+        self._stamina -= cost
         return True
 
     def spendHealthForAbility(self, amount: int):
@@ -847,6 +857,11 @@ class Entity:
         return equipment.slot
 
     def equip(self, equipment: Equipment, doPrint: bool = True, slot: Optional[str] = None) -> bool:
+        if equipment.durability == 0:
+            printError(f"{equipment.name} has no durability and cannot be equipped. Repair at the Forge before equipping")
+            pause()
+            return False
+
         if slot is None:
             slot = self._resolveEquipSlot(equipment)
 
@@ -867,24 +882,23 @@ class Entity:
                     printError(f"Sigil slot {slotIndex} is not unlocked yet (unlocks at level {(slotIndex - 1) * 20}).")
                 return False
 
-        if slot == 'offhand':
-            mainHand = self._equipment.get('weapon')
-            if mainHand is not None and mainHand.twoHanded:
-                if doPrint:
-                    printError("Cannot equip an offhand item while wielding a two-handed weapon.")
-                return False
-
         if slot == 'weapon' and equipment.twoHanded and self._equipment.get('offhand'):
-            evicted = self.unequip('offhand', doPrint)
+            evicted = self.unequip('offhand', False, doPrint)
+            if evicted:
+                self.addEquipmentToStorage(evicted, doPrint)
+
+        elif slot == 'offhand' and self._equipment['weapon'] is not None and self._equipment.get('weapon').twoHanded:
+            evicted = self.unequip('weapon', False, doPrint)
             if evicted:
                 self.addEquipmentToStorage(evicted, doPrint)
 
         if self._equipment[slot]:
-            displaced = self.unequip(slot, doPrint)
+            displaced = self.unequip(slot, False, doPrint)
             if displaced:
                 self.addEquipmentToStorage(displaced, doPrint)
 
         self._equipment[slot] = equipment
+        self._grantMythicAbilities(equipment)
         self._recalculateStats(doPrint)
         if equipment.slot != 'weapon':
             hGain, hInc, _ = equipment.getStatBonuses('health')
@@ -897,14 +911,45 @@ class Entity:
             printSuccess(f"Equipped {equipName} in {slot} slot.")
         return True
 
-    def unequip(self, slot: str, doPrint: bool = True) -> Optional[Equipment]:
+    def unequip(self, slot: str, toStorage: bool = True, doPrint: bool = True) -> Optional[Equipment]:
         if slot in self._equipment and self._equipment[slot]:
             item = self._equipment[slot]
             self._equipment[slot] = None
+            self._revokeMythicAbilities(item)
             self._recalculateStats(doPrint)
             printInfo(f"Unequipped {item.name}")
+            if toStorage:
+                self.addEquipmentToStorage(item, doPrint)
             return item
         return None
+
+    def _grantMythicAbilities(self, equipment: Optional[Equipment]):
+        if not equipment or not equipment.mythicAffix:
+            return
+        from scripts.items.mythicEffects import buildGrantedAbility
+        for line in equipment.mythicAffix.lines:
+            if line.effect == 'grant_ability':
+                ability = buildGrantedAbility(line, equipment)
+                if ability:
+                    self._abilities[ability.name] = ability
+
+    def _revokeMythicAbilities(self, equipment: Optional[Equipment]):
+        if not equipment or not equipment.mythicAffix:
+            return
+        from scripts.abilities import MYTHIC_GRANTED_ABILITIES
+        for line in equipment.mythicAffix.lines:
+            if line.effect == 'grant_ability':
+                baseAbility = MYTHIC_GRANTED_ABILITIES.get(line.meta.get('ability'))
+                if baseAbility and baseAbility.name in self._abilities:
+                    del self._abilities[baseAbility.name]
+
+    def hasLiveConditionalModifiers(self) -> bool:
+        for equipment in self._equipment.values():
+            if equipment and equipment.mythicAffix:
+                for line in equipment.mythicAffix.lines:
+                    if line.effect == 'conditional_modifier':
+                        return True
+        return False
 
     def _getExtraBonuses(self, stat: str) -> int:
         """gets temporary + permanent buffs for a stat, divided by 100 if 'increased_'"""
@@ -932,6 +977,8 @@ class Entity:
         for res in self._stats['Resistances']:
             self._stats['Resistances'][res] = 0
             self._stats['Max_Resistances'][res] = 75
+
+        conditionalLines = []
 
         armour = 0
         evasion = 0
@@ -973,17 +1020,30 @@ class Entity:
                 if slot == "weapon":
                     self._damageType = equipment.getDamageType() if equipment.getDamageType() else self._damageType
 
-                else: # all non-weapons can roll resistances/max resistances
+                else: # all non-weapons can roll resistances/max resistances. no min() calculations here, done after this for loop
                     for damageType in self._stats['Resistances'].keys():
                         resFlat, _, _ = equipment.getStatBonuses(f'{damageType}_resistance')
                         maxResFlat, _, _ = equipment.getStatBonuses(f'max_{damageType}_resistance')
-                        self._stats['Max_Resistances'][damageType] = min(
-                            self._stats['Max_Resistances'][damageType] + maxResFlat, 90
-                        )
-                        self._stats['Resistances'][damageType] = min(
-                            self._stats['Resistances'][damageType] + resFlat,
-                            self._stats['Max_Resistances'][damageType]
-                        )
+
+                        if damageType == 'elemental':
+                            for res in ELEMENTAL_RES:
+                                self._stats['Resistances'][res] += resFlat
+                                self._stats['Max_Resistances'][res] += maxResFlat
+                        elif damageType ==  OTHERWORLD_RES:
+                            for res in ['psychic', 'ethereal', 'chaos']:
+                                self._stats['Resistances'][res] += resFlat
+                                self._stats['Max_Resistances'][res] += maxResFlat
+                        elif damageType == 'divine':
+                            for res in DIVINE_RES:
+                                self._stats['Resistances'][res] += resFlat
+                                self._stats['Max_Resistances'][res] += maxResFlat
+                        elif damageType == 'all':
+                            for res in ALL_RES:
+                                self._stats['Resistances'][res] += resFlat
+                                self._stats['Max_Resistances'][res] += maxResFlat
+                        else: # categorical resistances don't actually add to their own values
+                            self._stats['Max_Resistances'][damageType] += maxResFlat
+                            self._stats['Resistances'][damageType] += resFlat
 
                 for bonus in self._stats['Bonuses'].keys():
                     bonusFlat, bonusInc, _ = equipment.getStatBonuses(bonus)
@@ -1008,6 +1068,20 @@ class Entity:
                 evasion += equipment.implicits.get('evasion', 0)
                 es += equipment.implicits.get('energy_shield', 0)
 
+                if equipment.mythicAffix:
+                    for line in equipment.mythicAffix.lines:
+                        if line.effect == 'secondary_defense_conversion':
+                            secondaryValue = equipment.defenseValue * (line.values.get('x', 0) / 100)
+                            target = line.meta.get('target_defense')
+                            if target == 'armour':
+                                armour += secondaryValue
+                            elif target == 'evasion':
+                                evasion += secondaryValue
+                            elif target == 'energy_shield':
+                                es += secondaryValue
+                        elif line.effect == 'conditional_modifier':
+                            conditionalLines.append(line)
+
                 if equipment.slot == 'amulet':
                     _, _, gIncArm = equipment.getStatBonuses('armour')
                     globalArmourInc += gIncArm
@@ -1016,7 +1090,7 @@ class Entity:
                     _, _, gIncEs = equipment.getStatBonuses('energy_shield')
                     globalEsInc += gIncEs
 
-        for damageType in self._stats['Resistances'].keys():
+        for damageType in self._stats['Resistances'].keys(): # also caps all resistances to correct values
             maxExtra = self._getExtraBonuses(f'max_{damageType}')
             extra = self._getExtraBonuses(damageType)
             self._stats['Max_Resistances'][damageType] = min(
@@ -1072,6 +1146,8 @@ class Entity:
             self._health = min(self._health, self._maxHealth)
         self._speed = round(self._speed, 2)
 
+        self._applyConditionalModifiers(conditionalLines, inCombat)
+
         if doPrint:
             console.print("\n[bold cyan]Stats updated:[/bold cyan]")
             console.print(f"[health]HP:[/health] {self._health} / {self._maxHealth}")
@@ -1090,6 +1166,76 @@ class Entity:
 
             console.print()
             pause()
+
+    def _applyConditionalModifiers(self, conditionalLines: list, inCombat: bool):
+        for line in conditionalLines:
+            condition = line.meta.get('condition')
+            values = line.values
+
+            if condition == 'damage_exceeds_max_hp':  # glass_cannon
+                if self._damage > self._maxHealth:
+                    self._damage = int(self._damage * (1 + values.get('x', 0) / 100))
+                    defenseMult = 1 - values.get('y', 0) / 100
+                    self._stats['armour'] = int(self._stats['armour'] * defenseMult)
+                    self._stats['evasion'] = int(self._stats['evasion'] * defenseMult)
+                    self._stats['max_energy_shield'] = int(self._stats['max_energy_shield'] * defenseMult)
+                    if not inCombat:
+                        self._stats['energy_shield'] = int(self._stats['energy_shield'] * defenseMult)
+                    self._maxHealth = int(self._maxHealth * (1 - values.get('z', 0) / 100))
+                    if not inCombat:
+                        self._health = min(self._health, self._maxHealth)
+
+            elif condition == 'two_or_more_debuffs':  # debuffed_fury
+                debuffCount = 0
+                if self.combatUnit is not None:
+                    debuffCount = len([s for s in self.combatUnit.statusEffects
+                                        if getattr(s, 'effectType', None) == 'debuff'])
+                if debuffCount >= 2:
+                    self._damage = int(self._damage * (1 + values.get('x', 0) / 100))
+                    self._stats['Bonuses']['crit_chance'] += values.get('y', 0) / 100
+                    self._stats['Bonuses']['increased_damage_taken'] += values.get('z', 0)
+
+            elif condition == 'above_90_percent_hp':  # perfect_form
+                hpFrac = (self._health / self._maxHealth) if self._maxHealth > 0 else 0
+                if hpFrac > 0.9:
+                    self._stats['Resistances']['all'] = min(
+                        self._stats['Resistances']['all'] + values.get('x', 0),
+                        self._stats['Max_Resistances']['all']
+                    )
+
+            elif condition == 'hp_above_below_50_percent':  # reckless_stride
+                hpFrac = (self._health / self._maxHealth) if self._maxHealth > 0 else 1
+                mult = values.get('x', 1.0) if hpFrac > 0.5 else values.get('y', 1.0)
+                self._stats['evasion'] = int(self._stats['evasion'] * mult)
+
+            elif condition == 'enemies_defeated_this_combat':  # momentum
+                kills = line.meta.get('_mythicKills', 0)
+                if kills:
+                    self._speed = round(self._speed * (1 + kills * values.get('x', 0) / 100), 2)
+
+            elif condition == 'stamina_full_or_below_50':  # tempo
+                staminaFrac = (self._stamina / self._maxStamina) if self._maxStamina > 0 else 0
+                if staminaFrac >= 1.0:
+                    self._stats['Bonuses']['ability_cost_multiplier'] -= values.get('x', 0)
+                elif staminaFrac < 0.5:
+                    self._stats['Bonuses']['ability_cost_multiplier'] += values.get('y', 0)
+
+            elif condition == 'no_status_buffs':  # self_reliance - not actually conditional (see
+                                                   # mythicEffects._selfRelianceOnStatusApplied for
+                                                   # the "cannot gain buffs" half of the trade)
+                self._damage = int(self._damage * (1 + values.get('x', 0) / 100))
+                defenseMult = 1 + values.get('y', 0) / 100
+                self._stats['armour'] = int(self._stats['armour'] * defenseMult)
+                self._stats['evasion'] = int(self._stats['evasion'] * defenseMult)
+                self._stats['max_energy_shield'] = int(self._stats['max_energy_shield'] * defenseMult)
+                if not inCombat:
+                    self._stats['energy_shield'] = int(self._stats['energy_shield'] * defenseMult)
+                for res in self._stats['Resistances']:
+                    self._stats['Resistances'][res] = min(
+                        self._stats['Resistances'][res] + values.get('z', 0),
+                        self._stats['Max_Resistances'][res]
+                    )
+                self._stats['Bonuses']['hp_regen'] = 0
 
     def useConsumable(self):
         if self.consumable.useable:
@@ -1182,6 +1328,19 @@ class Entity:
         if flat or percent:
             self._damageLog.append((reason, flat, percent))
 
+    def _mythicDispatch(self, hookName: str, *args, **kwargs) -> list:
+        results = []
+        for equipment in self._equipment.values():
+            if not equipment or not equipment.mythicAffix:
+                continue
+            for line in equipment.mythicAffix.lines:
+                handler = line.onActions.get(hookName)
+                if handler:
+                    result = handler(self, line, *args, **kwargs)
+                    if result is not None:
+                        results.append(result)
+        return results
+
     def onBeforeDamage(self, ability: Ability, damage: int, damageType: str, targets: list[Entity], combatManager):
         """Rewrite per class. Returns: damage, damageType, targets"""
         return damage, damageType, targets
@@ -1272,7 +1431,7 @@ class Entity:
             weapon.durability = max(0, weapon.durability - (durabilityLoss // max(1, weapon.level // 10)))
             if weapon.durability == 0:
                 printWarning(f"{weapon.name} has broken!")
-                self.unequip('weapon', False)
+                self.unequip('weapon', True, False)
         accessoryLoss = durabilityLoss // 2
         for slot in ['ring', 'amulet']:
             if self._equipment.get(slot):
@@ -1280,7 +1439,7 @@ class Entity:
                 accessory.durability = max(0, accessory.durability - (accessoryLoss // max(1, accessory.level // 10)))
                 if accessory.durability == 0:
                     printWarning(f"{accessory.name} has broken!")
-                    self.unequip(slot, False)
+                    self.unequip(slot, True, False)
 
         healOnHit = self._stats['Bonuses']['health_on_hit']
         if healOnHit != 0:
@@ -1303,7 +1462,7 @@ class Entity:
                 armour.durability = max(0, armour.durability - (durabilityLoss // max(1, armour.level // 10)))
                 if armour.durability == 0:
                     printWarning(f"{armour.name} has broken!")
-                    self.unequip(slot, False)
+                    self.unequip(slot, True, False)
 
         self._stamina = min(self._maxStamina, self._stamina + self._stats['Bonuses']['stamina_on_hit'])
 

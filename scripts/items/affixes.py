@@ -1,7 +1,7 @@
 import json
 from typing import Optional, Dict, Set, Any, List
 import random
-from ..styles import console, printError, highlightKeywords
+from ..styles import printError, highlightKeywords
 from copy import deepcopy
 from os.path import exists
 

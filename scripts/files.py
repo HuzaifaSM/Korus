@@ -306,6 +306,12 @@ def save(game, saveNum: int = 0):
         }
         ensure_directories()
 
+        try:
+            from scripts.korusFeedClient import reportPlayerSave
+            reportPlayerSave(game.player, saveNum, saveData['camp'], saveData['game'])
+        except Exception:
+            pass  # feed being unavailable should never block an actual save
+
         tmpJson = _tempJsonPath(saveNum)
         with open(tmpJson, 'w') as outFile:
             json.dump(saveData, outFile, indent=4)

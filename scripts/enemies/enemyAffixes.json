@@ -1,0 +1,609 @@
+{
+    "prefixes": {
+        "deadly": {
+            "name": "Deadly",
+            "category": "offensive",
+            "weight": 100,
+            "level_req": 3,
+            "effects": {
+                "increased_damage": 12,
+                "added_damage": 3,
+                "chance_to_bleed": 20
+            },
+            "loot_bonus": {
+                "rarity": 10,
+                "quantity": 5,
+                "xp": 10,
+                "gold": 20
+            },
+            "tags": [
+                "damage",
+                "offensive",
+                "bleed",
+                "dot"
+            ],
+            "excludes": []
+        },
+        "warded": {
+            "name": "Warded",
+            "category": "defensive",
+            "weight": 100,
+            "level_req": 3,
+            "effects": {
+                "increased_defenses": 20,
+                "all_resistance": 5
+            },
+            "loot_bonus": {
+                "rarity": 5,
+                "quantity": 10,
+                "xp": 15,
+                "gold": 15
+            },
+            "tags": [
+                "defensive",
+                "resistance",
+                "defenses"
+            ],
+            "excludes": []
+        },
+        "swift": {
+            "name": "Swift",
+            "category": "offensive",
+            "weight": 90,
+            "level_req": 5,
+            "effects": {
+                "added_speed": 0.08,
+                "crit_chance": 5
+            },
+            "loot_bonus": {
+                "rarity": 8,
+                "xp": 8
+            },
+            "tags": [
+                "offensive",
+                "speed",
+                "critical"
+            ],
+            "excludes": []
+        },
+        "venomous": {
+            "name": "Venomous",
+            "category": "offensive",
+            "weight": 70,
+            "level_req": 8,
+            "effects": {
+                "chance_to_poison": 25,
+                "added_damage": 2
+            },
+            "loot_bonus": {
+                "rarity": 10,
+                "quantity": 5,
+                "xp": 12
+            },
+            "tags": [
+                "offensive",
+                "poison",
+                "dot"
+            ],
+            "excludes": []
+        },
+        "bulwarked": {
+            "name": "Bulwarked",
+            "category": "defensive",
+            "weight": 80,
+            "level_req": 12,
+            "effects": {
+                "increased_defenses": 15,
+                "chance_to_block": 10
+            },
+            "loot_bonus": {
+                "rarity": 5,
+                "quantity": 15,
+                "xp": 10
+            },
+            "tags": [
+                "defensive",
+                "block"
+            ],
+            "excludes": []
+        },
+        "frenzied": {
+            "name": "Frenzied",
+            "category": "offensive",
+            "weight": 50,
+            "level_req": 25,
+            "effects": {
+                "increased_damage": 30,
+                "chance_to_multihit": 15
+            },
+            "loot_bonus": {
+                "rarity": 15,
+                "quantity": 10,
+                "xp": 25,
+                "gold": 15
+            },
+            "tags": [
+                "offensive",
+                "multihit"
+            ],
+            "excludes": []
+        },
+        "ancient": {
+            "name": "Ancient",
+            "category": "defensive",
+            "weight": 30,
+            "level_req": 45,
+            "effects": {
+                "all_resistance": 8,
+                "increased_health": 20
+            },
+            "loot_bonus": {
+                "rarity": 25,
+                "quantity": 20,
+                "xp": 40,
+                "gold": 30
+            },
+            "tags": [
+                "defensive",
+                "health",
+                "resistance"
+            ],
+            "excludes": []
+        },
+        "empowered": {
+            "name": "Empowered",
+            "category": "omni",
+            "weight": 30,
+            "level_req": 25,
+            "effects": {
+                "increased_damage": 10,
+                "added_speed": 0.03,
+                "increased_health": 10,
+                "all_resistance": 5
+            },
+            "loot_bonus": {
+                "rarity": 10,
+                "quantity": 10,
+                "xp": 15,
+                "gold": 10
+            },
+            "tags": [
+                "omni",
+                "milestone",
+                "damage",
+                "speed",
+                "health",
+                "resistance"
+            ],
+            "excludes": [
+                "exalted",
+                "transcendent",
+                "apex"
+            ]
+        },
+        "exalted": {
+            "name": "Exalted",
+            "category": "omni",
+            "weight": 18,
+            "level_req": 50,
+            "effects": {
+                "increased_damage": 15,
+                "added_speed": 0.05,
+                "increased_health": 15,
+                "all_resistance": 8
+            },
+            "loot_bonus": {
+                "rarity": 15,
+                "quantity": 15,
+                "xp": 25,
+                "gold": 15
+            },
+            "tags": [
+                "omni",
+                "milestone",
+                "damage",
+                "speed",
+                "health",
+                "resistance"
+            ],
+            "excludes": [
+                "empowered",
+                "transcendent",
+                "apex"
+            ]
+        },
+        "transcendent": {
+            "name": "Transcendent",
+            "category": "omni",
+            "weight": 10,
+            "level_req": 75,
+            "effects": {
+                "increased_damage": 20,
+                "added_speed": 0.07,
+                "increased_health": 20,
+                "all_resistance": 10
+            },
+            "loot_bonus": {
+                "rarity": 20,
+                "quantity": 20,
+                "xp": 35,
+                "gold": 20
+            },
+            "tags": [
+                "omni",
+                "milestone",
+                "damage",
+                "speed",
+                "health",
+                "resistance"
+            ],
+            "excludes": [
+                "empowered",
+                "exalted",
+                "apex"
+            ]
+        },
+        "apex": {
+            "name": "Apex",
+            "category": "omni",
+            "weight": 5,
+            "level_req": 100,
+            "effects": {
+                "increased_damage": 25,
+                "added_speed": 0.1,
+                "increased_health": 25,
+                "all_resistance": 12
+            },
+            "loot_bonus": {
+                "rarity": 25,
+                "quantity": 25,
+                "xp": 50,
+                "gold": 25
+            },
+            "tags": [
+                "omni",
+                "milestone",
+                "damage",
+                "speed",
+                "health",
+                "resistance"
+            ],
+            "excludes": [
+                "empowered",
+                "exalted",
+                "transcendent"
+            ]
+        },
+        "immortal": {
+            "name": "Immortal",
+            "category": "defensive",
+            "weight": 12,
+            "level_req": 65,
+            "effects": {
+                "increased_health": 35,
+                "hp_regen": 20,
+                "increased_defenses": 15
+            },
+            "loot_bonus": {
+                "rarity": 15,
+                "quantity": 20,
+                "xp": 30,
+                "gold": 15
+            },
+            "tags": [
+                "defensive",
+                "health",
+                "sustain"
+            ],
+            "excludes": [
+                "annihilating"
+            ]
+        },
+        "annihilating": {
+            "name": "Annihilating",
+            "category": "offensive",
+            "weight": 12,
+            "level_req": 60,
+            "effects": {
+                "increased_damage": 45,
+                "crit_chance": 10,
+                "crit_multi": 20
+            },
+            "loot_bonus": {
+                "rarity": 15,
+                "quantity": 10,
+                "xp": 30,
+                "gold": 20
+            },
+            "tags": [
+                "offensive",
+                "critical",
+                "damage"
+            ],
+            "excludes": [
+                "immortal"
+            ]
+        }
+    },
+    "suffixes": {
+        "psionic": {
+            "name": "of Psionic Blast",
+            "category": "utility",
+            "weight": 60,
+            "level_req": 15,
+            "effects": {
+                "grants_ability": "Psionic Blast"
+            },
+            "loot_bonus": {
+                "rarity": 20,
+                "quantity": 15,
+                "xp": 30,
+                "gold": 20
+            },
+            "tags": [
+                "offensive",
+                "utility",
+                "ability"
+            ],
+            "excludes": []
+        },
+        "planning": {
+            "name": "of Planning",
+            "category": "behaviour",
+            "weight": 70,
+            "level_req": 10,
+            "effects": {
+                "added_speed": -0.05,
+                "added_difficulty": 0.1,
+                "added_cautious": 0.2
+            },
+            "loot_bonus": {
+                "rarity": 20,
+                "xp": 40
+            },
+            "tags": [
+                "behaviour",
+                "utility",
+                "speed",
+                "difficulty"
+            ],
+            "excludes": []
+        },
+        "surpassing": {
+            "name": "of Surpassing",
+            "category": "defensive",
+            "weight": 40,
+            "level_req": 35,
+            "effects": {
+                "added_max_all_resistance": 5,
+                "all_resistance": 10
+            },
+            "loot_bonus": {
+                "quantity": 30,
+                "xp": 50,
+                "gold": 25
+            },
+            "tags": [
+                "defensive",
+                "resistance"
+            ],
+            "excludes": []
+        },
+        "vigor": {
+            "name": "of Vigor",
+            "category": "utility",
+            "weight": 85,
+            "level_req": 6,
+            "effects": {
+                "hp_regen": 2
+            },
+            "loot_bonus": {
+                "rarity": 8,
+                "xp": 10
+            },
+            "tags": [
+                "utility",
+                "sustain"
+            ],
+            "excludes": []
+        },
+        "malice": {
+            "name": "of Malice",
+            "category": "behaviour",
+            "weight": 55,
+            "level_req": 18,
+            "effects": {
+                "added_difficulty": 0.15,
+                "increased_damage": 10,
+                "added_aggression": 0.25
+            },
+            "loot_bonus": {
+                "rarity": 15,
+                "xp": 20,
+                "gold": 10
+            },
+            "tags": [
+                "behaviour",
+                "offensive",
+                "difficulty"
+            ],
+            "excludes": []
+        },
+        "titan": {
+            "name": "of the Titan",
+            "category": "defensive",
+            "weight": 45,
+            "level_req": 30,
+            "effects": {
+                "increased_defenses": 10,
+                "increased_health": 15
+            },
+            "loot_bonus": {
+                "rarity": 18,
+                "quantity": 15,
+                "xp": 30
+            },
+            "tags": [
+                "defensive",
+                "health"
+            ],
+            "excludes": []
+        },
+        "ruin": {
+            "name": "of Ruin",
+            "category": "offensive",
+            "weight": 35,
+            "level_req": 40,
+            "effects": {
+                "chance_to_apply_exposed": 20,
+                "increased_damage": 15
+            },
+            "loot_bonus": {
+                "rarity": 20,
+                "quantity": 10,
+                "xp": 35,
+                "gold": 20
+            },
+            "tags": [
+                "offensive",
+                "exposed",
+                "debuff"
+            ],
+            "excludes": []
+        },
+        "void_caller": {
+            "name": "of the Void Caller",
+            "category": "utility",
+            "weight": 20,
+            "level_req": 50,
+            "effects": {
+                "grants_ability": "Void Rend"
+            },
+            "loot_bonus": {
+                "rarity": 30,
+                "quantity": 20,
+                "xp": 50,
+                "gold": 25
+            },
+            "tags": [
+                "offensive",
+                "utility",
+                "ability"
+            ],
+            "excludes": []
+        },
+        "fortune": {
+            "name": "of Fortune",
+            "category": "lucky",
+            "weight": 50,
+            "level_req": 10,
+            "effects": {},
+            "loot_bonus": {
+                "rarity": 15,
+                "quantity": 15,
+                "xp": 15,
+                "gold": 15
+            },
+            "tags": [
+                "lucky",
+                "loot"
+            ],
+            "excludes": [
+                "hoard",
+                "connoisseur",
+                "legend",
+                "providence"
+            ]
+        },
+        "hoard": {
+            "name": "of the Hoard",
+            "category": "lucky",
+            "weight": 40,
+            "level_req": 15,
+            "effects": {},
+            "loot_bonus": {
+                "quantity": 35,
+                "gold": 50
+            },
+            "tags": [
+                "lucky",
+                "loot",
+                "gold",
+                "quantity"
+            ],
+            "excludes": [
+                "fortune",
+                "connoisseur",
+                "legend",
+                "providence"
+            ]
+        },
+        "connoisseur": {
+            "name": "of the Connoisseur",
+            "category": "lucky",
+            "weight": 30,
+            "level_req": 25,
+            "effects": {},
+            "loot_bonus": {
+                "rarity": 45,
+                "quantity": 5
+            },
+            "tags": [
+                "lucky",
+                "loot",
+                "rarity"
+            ],
+            "excludes": [
+                "fortune",
+                "hoard",
+                "legend",
+                "providence"
+            ]
+        },
+        "legend": {
+            "name": "of Legend",
+            "category": "lucky",
+            "weight": 35,
+            "level_req": 20,
+            "effects": {},
+            "loot_bonus": {
+                "xp": 60,
+                "gold": 5
+            },
+            "tags": [
+                "lucky",
+                "loot",
+                "xp"
+            ],
+            "excludes": [
+                "fortune",
+                "hoard",
+                "connoisseur",
+                "providence"
+            ]
+        },
+        "providence": {
+            "name": "of Providence",
+            "category": "lucky",
+            "weight": 15,
+            "level_req": 55,
+            "effects": {},
+            "loot_bonus": {
+                "rarity": 30,
+                "quantity": 30,
+                "xp": 35,
+                "gold": 30
+            },
+            "tags": [
+                "lucky",
+                "loot"
+            ],
+            "excludes": [
+                "fortune",
+                "hoard",
+                "connoisseur",
+                "legend"
+            ]
+        }
+    }
+}

@@ -15047,12 +15047,924 @@
         }
       }
     },
-    "Warlord": {},
-    "Juggernaut": {},
-    "Blood Reaver": {},
-    "Annihilist": {},
-    "Tyrant": {},
-    "Conqueror": {}
+    "Warlord": {
+      "Rending Blow": {
+        "resources+": {
+          "gain": {
+            "fury": 1
+          }
+        },
+        "tags+": [
+          "fury"
+        ],
+        "description+": "Warlord: Also grants 1 Fury."
+      },
+      "Battle Cry": {
+        "resources+": {
+          "gain": {
+            "fury": 2
+          }
+        },
+        "tags+": [
+          "fury"
+        ],
+        "description+": "Warlord: Also grants 2 Fury."
+      },
+      "Savage Cleave": {
+        "name": "Savage Cleave",
+        "category": "damage",
+        "tags": [
+          "damage",
+          "aoe",
+          "fire",
+          "rage",
+          "fury",
+          "burn",
+          "dot",
+          "elemental"
+        ],
+        "damage_base": 30,
+        "damage_scaling": 28,
+        "damage_type": "fire",
+        "stamina_cost": 55,
+        "resources": {
+          "required": {
+            "rage": 10
+          },
+          "gain": {
+            "fury": 2
+          }
+        },
+        "level": 20,
+        "cooldown": 4,
+        "targets": "all",
+        "effects": {
+          "target": {
+            "burn": {
+              "stacks": 1
+            }
+          }
+        },
+        "description": "Cleave through every enemy before you, feeding your fury.\n  - Cooldown: 4 Turns\n  - Deal 30 Damage + 28% of your base damage as Fire to all enemies.\n  - 1 Burn. Gain 2 Fury. Requires 10 Rage to use.",
+        "evolutions": {
+          "40": {
+            "damage_base": 65,
+            "damage_scaling": 50,
+            "resources": {
+              "required": {
+                "rage": 18
+              },
+              "gain": {
+                "fury": 3
+              }
+            },
+            "level": 40,
+            "stamina_cost": 95,
+            "tags+": [
+              "vulnerable"
+            ],
+            "effects": {
+              "target": {
+                "burn": {
+                  "stacks": 2
+                },
+                "vulnerable": {
+                  "turns": 2,
+                  "amount": 0.2
+                }
+              }
+            },
+            "description": "Cleave through every enemy before you, feeding your fury.\n  - Cooldown: 4 Turns\n  - Deal 65 Damage + 50% of your base damage as Fire to all enemies.\n  - 2 Burn. 20% Vulnerable for 2 turns. Gain 3 Fury. Requires 18 Rage to use."
+          },
+          "65": {
+            "damage_base": 130,
+            "damage_scaling": 80,
+            "resources": {
+              "required": {
+                "rage": 28
+              },
+              "gain": {
+                "fury": 4
+              }
+            },
+            "level": 65,
+            "stamina_cost": 160,
+            "tags+": [
+              "weaken"
+            ],
+            "effects": {
+              "target": {
+                "burn": {
+                  "stacks": 3
+                },
+                "vulnerable": {
+                  "turns": 2,
+                  "amount": 0.3
+                },
+                "weaken": {
+                  "turns": 2,
+                  "amount": 0.2
+                }
+              }
+            },
+            "description": "Cleave through every enemy before you, feeding your fury.\n  - Cooldown: 4 Turns\n  - Deal 130 Damage + 80% of your base damage as Fire to all enemies.\n  - 3 Burn. 30% Vulnerable, 20% Weaken for 2 turns. Gain 4 Fury. Requires 28 Rage to use."
+          }
+        }
+      },
+      "Berserker's Release": {
+        "name": "Berserker's Release",
+        "category": "buff",
+        "tags": [
+          "buff",
+          "fury",
+          "rage",
+          "haste"
+        ],
+        "damage_type": "heal",
+        "stamina_cost": 60,
+        "resources": {
+          "gain": {
+            "rage": 15
+          }
+        },
+        "level": 30,
+        "cooldown": 5,
+        "targets": 1,
+        "effects": {
+          "self": {
+            "haste": {
+              "turns": 3,
+              "speed": 0.15,
+              "damage": 1.2
+            }
+          }
+        },
+        "description": "Give in to the fury boiling beneath your skin.\n  - Cooldown: 5 Turns\n  - Gain 15 Rage. Haste: +0.15 Speed, +20% Damage for 3 turns.",
+        "evolutions": {
+          "55": {
+            "resources": {
+              "gain": {
+                "rage": 25
+              }
+            },
+            "level": 55,
+            "stamina_cost": 110,
+            "effects": {
+              "self": {
+                "haste": {
+                  "turns": 3,
+                  "speed": 0.2,
+                  "damage": 1.35
+                }
+              }
+            },
+            "description": "Give in to the fury boiling beneath your skin.\n  - Cooldown: 5 Turns\n  - Gain 25 Rage. Haste: +0.2 Speed, +35% Damage for 3 turns."
+          },
+          "80": {
+            "resources": {
+              "gain": {
+                "rage": 40
+              }
+            },
+            "level": 80,
+            "stamina_cost": 170,
+            "effects": {
+              "self": {
+                "haste": {
+                  "turns": 4,
+                  "speed": 0.25,
+                  "damage": 1.5
+                }
+              }
+            },
+            "description": "Give in to the fury boiling beneath your skin.\n  - Cooldown: 5 Turns\n  - Gain 40 Rage. Haste: +0.25 Speed, +50% Damage for 4 turns."
+          }
+        }
+      }
+    },
+    "Juggernaut": {
+      "Volcanic Slam": {
+        "tags+": [
+          "fortify"
+        ],
+        "effects+": {
+          "target": {
+            "stun": {
+              "chance": 0.1
+            }
+          }
+        },
+        "description+": "Juggernaut: +10% Stun Chance."
+      },
+      "Iron Resolve": {
+        "effects+": {
+          "self": {
+            "stoneskin": {
+              "amount": 0.06
+            }
+          }
+        },
+        "resources+": {
+          "gain": {
+            "rage": 5
+          }
+        },
+        "tags+": [
+          "fortify"
+        ],
+        "description+": "Juggernaut: +6% additional Damage Reduction, gain 5 Rage."
+      },
+      "Unshakeable Bulwark": {
+        "name": "Unshakeable Bulwark",
+        "category": "buff",
+        "tags": [
+          "buff",
+          "fortify",
+          "stoneskin",
+          "rage"
+        ],
+        "damage_type": "heal",
+        "stamina_cost": 50,
+        "resources": {
+          "gain": {
+            "rage": 10
+          }
+        },
+        "level": 20,
+        "cooldown": 4,
+        "targets": 1,
+        "effects": {
+          "self": {
+            "stoneskin": {
+              "turns": 3,
+              "amount": 0.15
+            }
+          }
+        },
+        "description": "Root yourself as an immovable wall of muscle and steel.\n  - Cooldown: 4 Turns\n  - Gain 15% Damage Reduction for 3 turns. Gain 10 Rage.",
+        "evolutions": {
+          "40": {
+            "resources": {
+              "gain": {
+                "rage": 18
+              }
+            },
+            "level": 40,
+            "stamina_cost": 90,
+            "effects": {
+              "self": {
+                "stoneskin": {
+                  "turns": 3,
+                  "amount": 0.22
+                }
+              }
+            },
+            "description": "Root yourself as an immovable wall of muscle and steel.\n  - Cooldown: 4 Turns\n  - Gain 22% Damage Reduction for 3 turns. Gain 18 Rage."
+          },
+          "65": {
+            "resources": {
+              "gain": {
+                "rage": 30
+              }
+            },
+            "level": 65,
+            "stamina_cost": 150,
+            "effects": {
+              "self": {
+                "stoneskin": {
+                  "turns": 4,
+                  "amount": 0.3
+                }
+              }
+            },
+            "description": "Root yourself as an immovable wall of muscle and steel.\n  - Cooldown: 4 Turns\n  - Gain 30% Damage Reduction for 4 turns. Gain 30 Rage."
+          }
+        }
+      },
+      "Seismic Slam": {
+        "name": "Seismic Slam",
+        "category": "damage",
+        "tags": [
+          "damage",
+          "aoe",
+          "physical",
+          "stun",
+          "fortify"
+        ],
+        "damage_base": 28,
+        "damage_scaling": 24,
+        "damage_type": "physical",
+        "stamina_cost": 55,
+        "resources": {
+          "required": {
+            "rage": 20
+          }
+        },
+        "level": 30,
+        "cooldown": 5,
+        "targets": "all",
+        "effects": {
+          "target": {
+            "stun": {
+              "turns": 1,
+              "chance": 0.35
+            }
+          }
+        },
+        "description": "Drive the earth itself into your enemies' bones.\n  - Cooldown: 5 Turns\n  - Deal 28 Damage + 24% of your base damage as Physical to all enemies.\n  - 35% Stun chance. Requires 20 Rage to use.",
+        "evolutions": {
+          "55": {
+            "damage_base": 65,
+            "damage_scaling": 45,
+            "resources": {
+              "required": {
+                "rage": 35
+              }
+            },
+            "level": 55,
+            "stamina_cost": 110,
+            "effects": {
+              "target": {
+                "stun": {
+                  "turns": 1,
+                  "chance": 0.45
+                }
+              }
+            },
+            "description": "Drive the earth itself into your enemies' bones.\n  - Cooldown: 5 Turns\n  - Deal 65 Damage + 45% of your base damage as Physical to all enemies.\n  - 45% Stun chance. Requires 35 Rage to use."
+          },
+          "80": {
+            "damage_base": 130,
+            "damage_scaling": 75,
+            "resources": {
+              "required": {
+                "rage": 50
+              }
+            },
+            "level": 80,
+            "stamina_cost": 190,
+            "effects": {
+              "target": {
+                "stun": {
+                  "turns": 1,
+                  "chance": 0.55
+                }
+              }
+            },
+            "description": "Drive the earth itself into your enemies' bones.\n  - Cooldown: 5 Turns\n  - Deal 130 Damage + 75% of your base damage as Physical to all enemies.\n  - 55% Stun chance. Requires 50 Rage to use."
+          }
+        }
+      }
+    },
+    "Annihilist": {
+      "Raging Strike": {
+        "resources+": {
+          "gain": {
+            "annihilation": 1
+          }
+        },
+        "tags+": [
+          "annihilation"
+        ],
+        "description+": "Annihilist: Also grants 1 Annihilation stack."
+      },
+      "Rending Blow": {
+        "tags+": [
+          "execute_bonus",
+          "annihilation"
+        ],
+        "description+": "Annihilist: 50% Increased Damage if the target is below 50% Health."
+      },
+      "Annihilate": {
+        "name": "Annihilate",
+        "category": "damage",
+        "tags": [
+          "damage",
+          "fire",
+          "strike",
+          "rage",
+          "annihilation",
+          "execute_bonus"
+        ],
+        "damage_base": 45,
+        "damage_scaling": 48,
+        "damage_type": "fire",
+        "stamina_cost": 60,
+        "resources": {
+          "required": {
+            "rage": 15
+          },
+          "gain": {
+            "annihilation": 1
+          }
+        },
+        "level": 20,
+        "cooldown": 4,
+        "targets": 1,
+        "effects": {
+          "target": {
+            "burn": {
+              "stacks": 2
+            }
+          }
+        },
+        "description": "Focus your rage into a single annihilating blow.\n  - Cooldown: 4 Turns\n  - Deal 45 Damage + 48% of your base damage as Fire.\n  - 50% Increased Damage if the target is below 50% Health.\n  - 2 Burn. Gain 1 Annihilation stack. Requires 15 Rage to use.",
+        "evolutions": {
+          "45": {
+            "damage_base": 100,
+            "damage_scaling": 85,
+            "resources": {
+              "required": {
+                "rage": 28
+              },
+              "gain": {
+                "annihilation": 2
+              }
+            },
+            "level": 45,
+            "stamina_cost": 110,
+            "tags+": [
+              "vulnerable"
+            ],
+            "effects": {
+              "target": {
+                "burn": {
+                  "stacks": 3
+                },
+                "vulnerable": {
+                  "turns": 2,
+                  "amount": 0.25
+                }
+              }
+            },
+            "description": "Focus your rage into a single annihilating blow.\n  - Cooldown: 4 Turns\n  - Deal 100 Damage + 85% of your base damage as Fire.\n  - 50% Increased Damage if the target is below 50% Health.\n  - 3 Burn, 25% Vulnerable for 2 turns. Gain 2 Annihilation stacks. Requires 28 Rage to use."
+          },
+          "70": {
+            "damage_base": 190,
+            "damage_scaling": 130,
+            "resources": {
+              "required": {
+                "rage": 45
+              },
+              "gain": {
+                "annihilation": 3
+              }
+            },
+            "level": 70,
+            "stamina_cost": 180,
+            "effects": {
+              "target": {
+                "burn": {
+                  "stacks": 4
+                },
+                "vulnerable": {
+                  "turns": 2,
+                  "amount": 0.35
+                }
+              }
+            },
+            "description": "Focus your rage into a single annihilating blow.\n  - Cooldown: 4 Turns\n  - Deal 190 Damage + 130% of your base damage as Fire.\n  - 50% Increased Damage if the target is below 50% Health.\n  - 4 Burn, 35% Vulnerable for 2 turns. Gain 3 Annihilation stacks. Requires 45 Rage to use."
+          }
+        }
+      },
+      "Blood Frenzy": {
+        "name": "Blood Frenzy",
+        "category": "buff",
+        "tags": [
+          "buff",
+          "annihilation",
+          "haste",
+          "rage"
+        ],
+        "damage_type": "heal",
+        "stamina_cost": 55,
+        "resources": {
+          "gain": {
+            "annihilation": 2
+          }
+        },
+        "level": 30,
+        "cooldown": 5,
+        "targets": 1,
+        "effects": {
+          "self": {
+            "haste": {
+              "turns": 3,
+              "speed": 0.1,
+              "damage": 1.15
+            }
+          }
+        },
+        "description": "Taste the promise of the kill and let it drive you.\n  - Cooldown: 5 Turns\n  - Gain 2 Annihilation stacks. Haste: +0.1 Speed, +15% Damage for 3 turns.",
+        "evolutions": {
+          "55": {
+            "resources": {
+              "gain": {
+                "annihilation": 3
+              }
+            },
+            "level": 55,
+            "stamina_cost": 105,
+            "effects": {
+              "self": {
+                "haste": {
+                  "turns": 3,
+                  "speed": 0.15,
+                  "damage": 1.25
+                }
+              }
+            },
+            "description": "Taste the promise of the kill and let it drive you.\n  - Cooldown: 5 Turns\n  - Gain 3 Annihilation stacks. Haste: +0.15 Speed, +25% Damage for 3 turns."
+          },
+          "80": {
+            "resources": {
+              "gain": {
+                "annihilation": 4
+              }
+            },
+            "level": 80,
+            "stamina_cost": 165,
+            "effects": {
+              "self": {
+                "haste": {
+                  "turns": 4,
+                  "speed": 0.2,
+                  "damage": 1.4
+                }
+              }
+            },
+            "description": "Taste the promise of the kill and let it drive you.\n  - Cooldown: 5 Turns\n  - Gain 4 Annihilation stacks. Haste: +0.2 Speed, +40% Damage for 4 turns."
+          }
+        }
+      }
+    },
+    "Tyrant": {
+      "Iron Resolve": {
+        "effects+": {
+          "self": {
+            "stoneskin": {
+              "amount": 0.05
+            }
+          }
+        },
+        "tags+": [
+          "armour"
+        ],
+        "description+": "Tyrant: +5% additional Damage Reduction."
+      },
+      "Battle Cry": {
+        "effects+": {
+          "target": {
+            "vulnerable": {
+              "amount": 0.1
+            }
+          }
+        },
+        "tags+": [
+          "armour"
+        ],
+        "description+": "Tyrant: +10% additional Vulnerable."
+      },
+      "Bulwark Strike": {
+        "name": "Bulwark Strike",
+        "category": "damage",
+        "tags": [
+          "damage",
+          "physical",
+          "strike",
+          "rage",
+          "armour",
+          "stoneskin"
+        ],
+        "damage_base": 35,
+        "damage_scaling": 40,
+        "damage_type": "physical",
+        "stamina_cost": 55,
+        "resources": {
+          "required": {
+            "rage": 12
+          }
+        },
+        "level": 20,
+        "cooldown": 3,
+        "targets": 1,
+        "effects": {
+          "self": {
+            "stoneskin": {
+              "turns": 2,
+              "amount": 0.1
+            }
+          }
+        },
+        "description": "Drive your weapon home from behind an unyielding guard.\n  - Cooldown: 3 Turns\n  - Deal 35 Damage + 40% of your base damage as Physical.\n  - Gain 10% Damage Reduction for 2 turns. Requires 12 Rage to use.",
+        "evolutions": {
+          "40": {
+            "damage_base": 80,
+            "damage_scaling": 70,
+            "resources": {
+              "required": {
+                "rage": 22
+              }
+            },
+            "level": 40,
+            "stamina_cost": 95,
+            "effects": {
+              "self": {
+                "stoneskin": {
+                  "turns": 2,
+                  "amount": 0.16
+                }
+              }
+            },
+            "description": "Drive your weapon home from behind an unyielding guard.\n  - Cooldown: 3 Turns\n  - Deal 80 Damage + 70% of your base damage as Physical.\n  - Gain 16% Damage Reduction for 2 turns. Requires 22 Rage to use."
+          },
+          "65": {
+            "damage_base": 155,
+            "damage_scaling": 110,
+            "resources": {
+              "required": {
+                "rage": 35
+              }
+            },
+            "level": 65,
+            "stamina_cost": 155,
+            "effects": {
+              "self": {
+                "stoneskin": {
+                  "turns": 3,
+                  "amount": 0.22
+                }
+              }
+            },
+            "description": "Drive your weapon home from behind an unyielding guard.\n  - Cooldown: 3 Turns\n  - Deal 155 Damage + 110% of your base damage as Physical.\n  - Gain 22% Damage Reduction for 3 turns. Requires 35 Rage to use."
+          }
+        }
+      },
+      "Unyielding Bastion": {
+        "name": "Unyielding Bastion",
+        "category": "buff",
+        "tags": [
+          "buff",
+          "shield",
+          "stoneskin",
+          "armour"
+        ],
+        "damage_type": "heal",
+        "stamina_cost": 60,
+        "resources": {
+          "gain": {
+            "rage": 10
+          }
+        },
+        "level": 30,
+        "cooldown": 5,
+        "targets": 1,
+        "effects": {
+          "self": {
+            "stoneskin": {
+              "turns": 3,
+              "amount": 0.12
+            },
+            "shield_generation": {
+              "turns": 99,
+              "amount_percent": 0.15
+            }
+          }
+        },
+        "description": "Become an unbreakable bastion for a handful of turns.\n  - Cooldown: 5 Turns\n  - Gain 12% Damage Reduction for 3 turns and a Shield equal to 15% of your Max HP. Gain 10 Rage.",
+        "evolutions": {
+          "55": {
+            "resources": {
+              "gain": {
+                "rage": 18
+              }
+            },
+            "level": 55,
+            "stamina_cost": 115,
+            "effects": {
+              "self": {
+                "stoneskin": {
+                  "turns": 3,
+                  "amount": 0.18
+                },
+                "shield_generation": {
+                  "turns": 99,
+                  "amount_percent": 0.22
+                }
+              }
+            },
+            "description": "Become an unbreakable bastion for a handful of turns.\n  - Cooldown: 5 Turns\n  - Gain 18% Damage Reduction for 3 turns and a Shield equal to 22% of your Max HP. Gain 18 Rage."
+          },
+          "80": {
+            "resources": {
+              "gain": {
+                "rage": 28
+              }
+            },
+            "level": 80,
+            "stamina_cost": 175,
+            "effects": {
+              "self": {
+                "stoneskin": {
+                  "turns": 4,
+                  "amount": 0.25
+                },
+                "shield_generation": {
+                  "turns": 99,
+                  "amount_percent": 0.3
+                }
+              }
+            },
+            "description": "Become an unbreakable bastion for a handful of turns.\n  - Cooldown: 5 Turns\n  - Gain 25% Damage Reduction for 4 turns and a Shield equal to 30% of your Max HP. Gain 28 Rage."
+          }
+        }
+      }
+    },
+    "Conqueror": {
+      "Volcanic Slam": {
+        "tags+": [
+          "weaken"
+        ],
+        "effects+": {
+          "target": {
+            "weaken": {
+              "turns": 2,
+              "amount": 0.15
+            }
+          }
+        },
+        "description+": "Conqueror: Also applies 15% Weaken for 2 turns to all enemies."
+      },
+      "Rending Blow": {
+        "resources+": {
+          "gain": {
+            "rage": 2
+          }
+        },
+        "tags+": [
+          "rage"
+        ],
+        "description+": "Conqueror: Also grants 2 Rage."
+      },
+      "Encircling Strike": {
+        "name": "Encircling Strike",
+        "category": "damage",
+        "tags": [
+          "damage",
+          "aoe",
+          "fire",
+          "rage"
+        ],
+        "damage_base": 26,
+        "damage_scaling": 26,
+        "damage_type": "fire",
+        "stamina_cost": 50,
+        "resources": {
+          "required": {
+            "rage": 10
+          }
+        },
+        "level": 20,
+        "cooldown": 4,
+        "targets": "all",
+        "effects": {
+          "target": {
+            "exposed": {
+              "turns": 2,
+              "amount": 8
+            }
+          }
+        },
+        "description": "Cut down every enemy surrounding you, exploiting the numbers against them.\n  - Cooldown: 4 Turns\n  - Deal 26 Damage + 26% of your base damage as Fire to all enemies.\n  - 8% Exposed for 2 turns. Requires 10 Rage to use.",
+        "evolutions": {
+          "40": {
+            "damage_base": 60,
+            "damage_scaling": 48,
+            "resources": {
+              "required": {
+                "rage": 18
+              }
+            },
+            "level": 40,
+            "stamina_cost": 90,
+            "effects": {
+              "target": {
+                "exposed": {
+                  "turns": 2,
+                  "amount": 14
+                }
+              }
+            },
+            "description": "Cut down every enemy surrounding you, exploiting the numbers against them.\n  - Cooldown: 4 Turns\n  - Deal 60 Damage + 48% of your base damage as Fire to all enemies.\n  - 14% Exposed for 2 turns. Requires 18 Rage to use."
+          },
+          "65": {
+            "damage_base": 120,
+            "damage_scaling": 78,
+            "resources": {
+              "required": {
+                "rage": 30
+              }
+            },
+            "level": 65,
+            "stamina_cost": 150,
+            "effects": {
+              "target": {
+                "exposed": {
+                  "turns": 3,
+                  "amount": 20
+                }
+              }
+            },
+            "description": "Cut down every enemy surrounding you, exploiting the numbers against them.\n  - Cooldown: 4 Turns\n  - Deal 120 Damage + 78% of your base damage as Fire to all enemies.\n  - 20% Exposed for 3 turns. Requires 30 Rage to use."
+          }
+        }
+      },
+      "Rallying Regeneration": {
+        "name": "Rallying Regeneration",
+        "category": "buff",
+        "tags": [
+          "buff",
+          "heal",
+          "regeneration",
+          "rage"
+        ],
+        "damage_type": "heal",
+        "stamina_cost": 50,
+        "resources": {
+          "gain": {
+            "rage": 10
+          }
+        },
+        "level": 30,
+        "cooldown": 5,
+        "targets": 1,
+        "effects": {
+          "self": {
+            "regeneration": {
+              "turns": 3,
+              "amount_percent": 3,
+              "amount_flat": 0
+            },
+            "haste": {
+              "turns": 3,
+              "speed": 0.05,
+              "damage": 1.05
+            }
+          }
+        },
+        "description": "Rally your resolve, standing tall no matter how many surround you.\n  - Cooldown: 5 Turns\n  - Regenerate 3% Max HP per turn for 3 turns. Haste: +0.05 Speed, +5% Damage for 3 turns. Gain 10 Rage.",
+        "evolutions": {
+          "55": {
+            "resources": {
+              "gain": {
+                "rage": 18
+              }
+            },
+            "level": 55,
+            "stamina_cost": 105,
+            "effects": {
+              "self": {
+                "regeneration": {
+                  "turns": 3,
+                  "amount_percent": 5,
+                  "amount_flat": 0
+                },
+                "haste": {
+                  "turns": 3,
+                  "speed": 0.1,
+                  "damage": 1.1
+                }
+              }
+            },
+            "description": "Rally your resolve, standing tall no matter how many surround you.\n  - Cooldown: 5 Turns\n  - Regenerate 5% Max HP per turn for 3 turns. Haste: +0.1 Speed, +10% Damage for 3 turns. Gain 18 Rage."
+          },
+          "80": {
+            "resources": {
+              "gain": {
+                "rage": 28
+              }
+            },
+            "level": 80,
+            "stamina_cost": 165,
+            "effects": {
+              "self": {
+                "regeneration": {
+                  "turns": 4,
+                  "amount_percent": 7,
+                  "amount_flat": 0
+                },
+                "haste": {
+                  "turns": 4,
+                  "speed": 0.15,
+                  "damage": 1.15
+                }
+              }
+            },
+            "description": "Rally your resolve, standing tall no matter how many surround you.\n  - Cooldown: 5 Turns\n  - Regenerate 7% Max HP per turn for 4 turns. Haste: +0.15 Speed, +15% Damage for 4 turns. Gain 28 Rage."
+          }
+        }
+      }
+    }
   },
   "Wretch": {
     "base": {

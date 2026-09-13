@@ -5,9 +5,10 @@ import random
 
 WARRIOR_DESCRIPTIONS = {
     "Warrior": "[class_warrior]A proud and tenacious combatant, emboldened by the thrill of battle.[/class_warrior]\n"
-        "- +3 Damage dealt per Rage. Gain Rage based on Damage Dealt when attacking. Gain Rage based on Damage Taken when being hit. +2 HP per leftover Rage at the end of combat.\n"
-        "- Dealing Fire damage grants +1 Rage. Taking Fire damage increases Rage gain by 10%.\n"
-        "[bold]Starting Stats:[/bold] 50 Health | 4 Damage | 5% Crit Chance | 200% Crit Damage | Fire Damage | 0.85 Speed | Max 50 Rage | +1 Rage on Level Up.",
+        "- +2 Damage dealt per Rage. Gain Rage based on Damage Dealt when attacking. Gain Rage based on Damage Taken when being hit. +2 HP per leftover Rage at the end of combat.\n"
+        "- Upon levelling up, gain 5% Increased Rage Effect. And +1 Max Rage. You start with 50 Max Rage."
+        "- Dealing Fire damage increases Rage gain by 10%. Taking Fire damage increases Rage gain by 20%.\n"
+        "[bold]Starting Stats:[/bold] 50 Health | 4 Damage | 5% Crit Chance | 200% Crit Damage | Fire Damage | 0.85 Speed",
     #ascendancies
     "Warlord": "[lore]Feel your Rage flow through your veins, empowering you to even greater heights. Embrace your inner Fury, and slaughter those who dare face you.[/lore]"
         "- 20% Increased Rage gained from dealing damage. Gain 1 Fury on attack if you have more than 50 Rage.\n"
@@ -49,6 +50,7 @@ class Warrior(Player):
         super().__init__(name, health, damage, 0.05, 2.0, damageType, speed, className="Warrior", classDescription=WARRIOR_DESCRIPTIONS['Warrior'])
         self._rage = 0 # build rage during combat, 1 rage = +3 damage
         self._baseMaxRage = 50
+        self.rageEffect = 1.0
 
         self._fury = 0
         self._maxFury = 10
@@ -85,12 +87,14 @@ class Warrior(Player):
         temp = super().serialise()
         temp['maxRage'] = self._baseMaxRage
         temp['rageGeneration'] = self.rageGeneration
+        temp['rageEffeect'] = self.rageEffect
         return temp
 
     def deserialise(self, data):
         super().deserialise(data)
-        self._baseMaxRage = data.get('maxRage', 30)
+        self._baseMaxRage = data.get('maxRage', 50)
         self.rageGeneration = data.get('rageGeneration', 0)
+        self.rageEffect = data.get('rageEffect', 1.0)
 
     def _recalculateStats(self, doPrint = True, inCombat = False):
         super()._recalculateStats(doPrint, inCombat)
@@ -219,7 +223,7 @@ class Warrior(Player):
             rageGain = int(rageGain * 0.8)
 
         if damageType == 'fire' and damageDealt > 0:
-            rageGain += 1
+            rageGain = int(rageGain * 1.1)
 
         self._rage = min(self.maxRage, self._rage + rageGain)
         self.annihilationRage += rageGain
@@ -254,8 +258,8 @@ class Warrior(Player):
                 damageDealt = int(damageDealt * (1 + (0.1 * self.conquerorEnemies)))
 
         if self._rage > 0:
-            self._logDamage("Rage", flat=self._rage * 3)
-        damageDealt = damageDealt + ((self._rage * 3))
+            self._logDamage("Rage", flat=self._rage * int(2 * self.rageEffect))
+        damageDealt = damageDealt + ((self._rage * int(2 * self.rageEffect)))
 
         if self._ascendancy == 'Warlord':
             if self._fury > 0:
@@ -276,7 +280,7 @@ class Warrior(Player):
         damageTaken, damageType = super().onHit(damageTaken, damageType, isCrit, attacker, combatManager)
         rageGain = max(0, damageTaken // (10 * (1 + self._level // 12))) + self._stats['Bonuses'].get('rage_gain_on_hit', 0)
         if damageType == 'fire':
-            rageGain = int(rageGain * 1.1)
+            rageGain = int(rageGain * 1.2)
 
         if self._ascendancy == 'Warlord':
             if self._rage > 40:
@@ -383,6 +387,7 @@ class Warrior(Player):
     def _levelUp(self):
         super()._levelUp()
         self._baseMaxRage += 1
+        self.rageEffect += 0.05
 
     ASCENDANCY_DELTAS = {
         'Warlord': {

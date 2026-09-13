@@ -1,14 +1,18 @@
 import time
 
-from scripts.entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES, SIGIL_SLOTS
-from scripts.styles import (
+from ..entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES, SIGIL_SLOTS
+from ..styles import (
     console, displayLevelUp, pause,
     formatEffectsDetailed, formatAbilityCost, clearScreen, printHeader,
     printSeparator, printWarning, printSuccess, formatRarity,
     createEquipmentStoragePages, stepPage, selectFromNumberedList,
     checkGlobalCommand
 )
-from scripts.abilities import CLASS_ABILITIES
+from ..abilities import CLASS_ABILITIES
+from ..items.items import ItemRarity
+from ..items.blankCraftingSets import CRAFTING_SETS, rollCraftingTable, buildCuratedHand
+from ..runeDrops import getRuneObject
+from ..crafting.base import CraftOutcome
 
 def _abilityChanged(old, new) -> bool:
     return (
@@ -121,9 +125,10 @@ class Player(Entity):
             if levelUp and (isNew or isUpgrade): # won't print on deserialising or on init
                 title = "CLASS ABILITY LEARNED" if isNew else "ABILITY UPGRADED"
                 emoji = "🌟" if isNew else "⬆️"
+                spacer = " " if isNew else "  " # the up-arrow emoji renders double-width in most terminals, swallowing a single trailing space
                 colour = "gold1" if isNew else "cyan"
                 console.print(f"\n[bold]{'='*50}[/bold]")
-                console.print(f"[{colour}]{emoji} {title}: {name} {emoji}[/{colour}]")
+                console.print(f"[{colour}]{emoji}{spacer}{title}: {name} {emoji}[/{colour}]")
                 console.print(f"[bold]{'='*50}[/bold]")
                 if resolved.damageType:
                     damageTypeFormatted = f" [{resolved.damageType}]{resolved.damageType.title()}[/{resolved.damageType}]"
@@ -217,6 +222,7 @@ class Player(Entity):
             console.print("[dim]1.[/dim] [green]Equip from Storage[/green]")
             console.print("[dim]2.[/dim] [yellow]Unequip to Storage[/yellow]")
             console.print("[dim]3.[/dim] [orange1]Compare Equipment[/orange1]")
+            console.print("[dim]4.[/dim] [thistle1]Reveal Blank Items[/thistle1]")
 
             choice = console.input("\n[bold cyan]>[/bold cyan] ").strip()
             checkGlobalCommand(choice)
@@ -232,6 +238,8 @@ class Player(Entity):
                         self.unequipToStorage()
                     case 3:
                         self.compareEquipment()
+                    case 4:
+                        self.revealBlankItems()
                     case _:
                         printWarning("Invalid choice!")
                         time.sleep(1)
@@ -436,4 +444,134 @@ class Player(Entity):
         console.print(equip1.compareTo(equip2))
         console.print("="*50)
         pause()
+
+    def revealBlankItems(self):
+        blankItems = [e for e in self._equipmentStorage if e.rarity == ItemRarity.BLANK]
+        if not blankItems:
+            printWarning("No Blank items in storage!")
+            pause()
+            return
+
+        def renderChoice(i, item):
+            status = " [dim](crafting in progress)[/dim]" if item.blankCuratedHand is not None else ""
+            console.print(f"  [cyan]{i}.[/cyan] {item.name}{status}")
+
+        clearScreen()
+        printHeader("Reveal Blank Items")
+        console.print("\n[bold cyan]=== Blank Items in Storage ===[/bold cyan]")
+        index = selectFromNumberedList(blankItems, "Choose an item to reveal/continue crafting (0 to cancel):", render=renderChoice)
+        if index is None:
+            return
+
+        self._craftBlankItem(blankItems[index])
+
+    def _craftBlankItem(self, item):
+        if item.blankCuratedHand is None:
+            tableKey = rollCraftingTable()
+            item.blankTableKey = tableKey
+            item.blankCuratedHand = buildCuratedHand(tableKey, item)
+            item._generateName()
+            table = CRAFTING_SETS[tableKey]
+            clearScreen()
+            console.print(f"\n[bold thistle1]The item reveals itself as a {table['displayName']} item![/bold thistle1]")
+            console.print(f"[dim]{table['description']}[/dim]")
+            pause()
+
+        tableKey = getattr(item, 'blankTableKey', None)
+        table = CRAFTING_SETS.get(tableKey, {'displayName': 'Unknown'})
+
+        while True:
+            clearScreen()
+            printHeader(f"Blank Crafting - {table['displayName']} Hand")
+            console.print(item)
+            printSeparator()
+
+            hand = item.blankCuratedHand
+            console.print("[cyan bold]Your Hand:[/cyan bold]")
+            for i, entry in enumerate(hand, 1):
+                rune = getRuneObject(entry['category'], entry['runeType'])
+                if not rune:
+                    continue
+                console.print(f"  [cyan]{i}.[/cyan] {rune.name} [dim]x{entry['count']}[/dim] - {rune.description}")
+
+            console.print("\n[cyan]Options:[/cyan]")
+            console.print("  [dim]#.[/dim] Apply a rune from your hand")
+            console.print("  [dim]S.[/dim] Finish Safely (locks the item, no risk)")
+            console.print("  [dim]G.[/dim] Finish with a Gamble (apply the Destabilisation Rune)")
+            console.print("  [dim]0.[/dim] Leave crafting (your hand is saved, come back anytime)")
+
+            choice = console.input("\n[cyan]>[/cyan] ").strip()
+            checkGlobalCommand(choice)
+
+            if choice == '0':
+                return
+
+            if choice.lower() == 's':
+                confirm = console.input("\n[cyan]Lock the item in safely? This ends crafting with no risk. (y/n):\n>[/cyan] ").strip().lower()
+                if confirm == 'y':
+                    item.maxEntropy = 0
+                    item._generateName()
+                    clearScreen()
+                    printSuccess("=== ITEM LOCKED IN ===")
+                    console.print(item)
+                    pause()
+                    return
+                continue
+
+            if choice.lower() == 'g':
+                destabEntries = [e for e in hand if e['category'] == 'destabilisation']
+                if not destabEntries:
+                    printWarning("No Destabilisation Rune in this hand!")
+                    pause()
+                    continue
+                confirm = console.input("\n[dark_red bold]Destabilise the item now? This rolls the real outcome table - there's a real chance of a brick. (y/n):[/dark_red bold]\n> ").strip().lower()
+                if confirm != 'y':
+                    continue
+                entry = destabEntries[0]
+                rune = getRuneObject(entry['category'], entry['runeType'])
+                result = rune.apply(item, self)
+                item.update()
+                item._generateName()
+                self._recalculateStats(False)
+                clearScreen()
+                console.print(f"[bold]{result.message}[/bold]")
+                console.print(item)
+                pause()
+                return
+
+            try:
+                index = int(choice) - 1
+            except ValueError:
+                printWarning("Invalid input!")
+                pause()
+                continue
+            if not (0 <= index < len(hand)):
+                printWarning("Invalid choice!")
+                pause()
+                continue
+
+            entry = hand[index]
+            rune = getRuneObject(entry['category'], entry['runeType'])
+            if not rune:
+                printWarning("That rune could not be found!")
+                pause()
+                continue
+
+            console.print(f"\n[yellow]Applying:[/yellow] {rune.name}")
+            console.print(f"[dim]{rune.description}[/dim]")
+            confirmApply = console.input("\n[cyan]Confirm? (y/n):\n>[/cyan] ").strip().lower()
+            if confirmApply != 'y':
+                continue
+
+            result = rune.apply(item, self)
+            item.update()
+            item._generateName()
+            self._recalculateStats(False)
+
+            console.print(f"\n[bold]{result.message}[/bold]")
+            if result.outcome in (CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS):
+                entry['count'] -= 1
+                if entry['count'] <= 0:
+                    hand.remove(entry)
+            pause()
 

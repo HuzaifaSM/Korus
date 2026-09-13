@@ -156,6 +156,7 @@ RARITY_VALUES = {
     "epic": 4,
     "legendary": 5,
     "mythic": 10,
+    "blank": 10,
     "quest": 1
 }
 
@@ -406,6 +407,8 @@ def _shiftRarityWeights(rarity: float, weights: Dict[ItemRarity, float]) -> Dict
 
     return newWeights
 
+MYTHIC_BLANK_SPLIT = 0.3  # of rolls that land on MYTHIC below, this share becomes BLANK instead
+
 def rollRarity(level: int = 0, rarity: float = 1.0) -> ItemRarity:
     weights = RARITY_WEIGHTS.copy()
     if level > 0:
@@ -427,12 +430,16 @@ def rollRarity(level: int = 0, rarity: float = 1.0) -> ItemRarity:
     roll = random.uniform(0, totalWeight)
     currentWeight = 0.0
 
+    result = list(weights.keys())[-1]
     for r, weight in weights.items():
         currentWeight += weight
         if roll <= currentWeight:
-            return r
+            result = r
+            break
 
-    return list(weights.keys())[-1]
+    if result == ItemRarity.MYTHIC and random.random() < MYTHIC_BLANK_SPLIT:
+        return ItemRarity.BLANK
+    return result
 
 class LootTable:
     def __init__(self):
