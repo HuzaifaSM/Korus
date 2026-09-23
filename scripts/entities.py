@@ -1,8 +1,9 @@
-from typing import Dict, Optional, List, TypedDict, TypeVar
+from typing import Dict, Optional, List, TypedDict, TypeVar, Any
 import random
 from copy import deepcopy
 from .items.items import Consumable
 from .items.equipment import Equipment
+from .items.food import FoodItem
 from .abilities import CLASS_ABILITIES, Ability, ENEMY_ABILITIES, EnemyAbility, BasicAttack, Effects
 from .runeDrops import getRuneObject
 from .styles import (
@@ -47,10 +48,6 @@ class ResistanceBlock(TypedDict):
     psychic: float
     ethereal: float
     chaos: float
-    all: float
-    elemental: float
-    otherworld: float
-    divine: float
 
 class BonusBlock(TypedDict):
     item_rarity: float
@@ -71,6 +68,8 @@ class BonusBlock(TypedDict):
     added_multihits: float
     hp_regen: float
     stamina_regen: float
+    added_damage: float
+    increased_damage: float
     increased_defenses: float
     increased_health: float
     health_on_hit: float
@@ -83,6 +82,44 @@ class BonusBlock(TypedDict):
     chance_to_apply_exposed: float
     chance_to_stun: float
     chance_to_block: float
+    execute_threshold: float
+    less_damage_taken: float
+    rage_gain_on_attack: float
+    rage_gain_on_hit: float
+    max_rage: float
+    mana_cost_reduced: float
+    mana_damage_return_increased: float
+    mastery_gain_flat: float
+    insanity_swing_increased: float
+    insanity_penalty_reduction: float
+    insanity_extreme_effect_increased: float
+    beast_form_damage_flat: float
+    verdance_gain_flat: float
+    human_form_defenses_flat: float
+    aggression_gain_flat: float
+    discipline_gain_flat: float
+    trained_threshold_reduction: float
+    dedicated_threshold_reduction: float
+    allin_threshold_reduction: float
+    lost_damage_increased: float
+    hope_gain_flat: float
+    hopeless_gain_flat: float
+    blood_spike_gain_flat: float
+    buff_effect_increased_low_hp: float
+    favour_gain_flat: float
+    favour_defensive_effect_increased: float
+    favour_heal_increased: float
+    crit_chance_when_faster: float
+    unleash_cost_reduced: float
+    static_flow_gain_flat: float
+    vengeance_gain_flat: float
+    vengeance_consume_crit_damage_increased: float
+    ghostly_heal_increased: float
+    siphon_cap_flat: float
+    echo_damage_increased: float
+    siphon_immune: float
+    increased_damage_taken: float
+    ability_cost_multiplier: float
 
 class GeneralStatBlock(TypedDict):
     physical: float
@@ -96,10 +133,6 @@ class GeneralStatBlock(TypedDict):
     chaos: float
     ethereal: float
     arcane: float
-    divine: float
-    elemental: float
-    otherworld: float
-    all: float
     max_physical: float
     max_fire: float
     max_earth: float
@@ -111,10 +144,6 @@ class GeneralStatBlock(TypedDict):
     max_chaos: float
     max_ethereal: float
     max_arcane: float
-    max_divine: float
-    max_elemental: float
-    max_otherworld: float
-    max_all: float
     resistance_penetration: float
     speed: float
     stun_avoidance: float
@@ -128,7 +157,10 @@ class GeneralStatBlock(TypedDict):
     damage_reduction: float
     increased_damage_reduction: float
     hp_regen: float
+    less_damage_taken: float
     stamina_regen: float
+    added_damage: float
+    increased_damage: float
     enemy_quantity: float
     added_multihits: float
     chance_to_multihit: float
@@ -147,6 +179,7 @@ class GeneralStatBlock(TypedDict):
     chance_to_apply_exposed: float
     chance_to_stun: float
     chance_to_block: float
+    execute_threshold: float
 
 class Stats(TypedDict):
     Max_Resistances: ResistanceBlock
@@ -155,7 +188,7 @@ class Stats(TypedDict):
     Permanent: GeneralStatBlock
     Temporary: GeneralStatBlock
     baseCritChance: float
-    baseCritMuli: float
+    baseCritMulti: float
     armour: float
     evasion: float
     energy_shield: float
@@ -211,10 +244,6 @@ class Entity:
                 'psychic': 75,
                 'ethereal': 75,
                 'chaos': 75,
-                'all': 75,
-                'elemental': 75,
-                'otherworld': 75,
-                'divine': 75,
             },
             'Resistances': {
                 'physical': 0,
@@ -228,10 +257,6 @@ class Entity:
                 'psychic': 0,
                 'ethereal': 0,
                 'chaos': 0,
-                'all': 0,
-                'elemental': 0,
-                'otherworld': 0,
-                'divine': 0
             },
             'Bonuses': {
                 'item_rarity': 0,
@@ -252,6 +277,8 @@ class Entity:
                 'added_multihits': 0,
                 'hp_regen': 0,
                 'stamina_regen': 0,
+                'added_damage': 0,
+                'increased_damage': 0,
                 'increased_defenses': 0,
                 'increased_health': 0,
                 'health_on_hit': 0,
@@ -264,6 +291,8 @@ class Entity:
                 'chance_to_apply_exposed': 0,
                 'chance_to_stun': 0,
                 'chance_to_block': 0,
+                'execute_threshold': 0,
+                'less_damage_taken': 0,
                 'rage_gain_on_attack': 0,
                 'rage_gain_on_hit': 0,
                 'max_rage': 0,
@@ -313,10 +342,6 @@ class Entity:
                 'chaos': 0,
                 'ethereal': 0,
                 'arcane': 0,
-                'divine': 0,
-                'elemental': 0,
-                'otherworld': 0,
-                'all': 0,
                 'max_physical': 0,
                 'max_fire': 0,
                 'max_earth': 0,
@@ -328,10 +353,6 @@ class Entity:
                 'max_chaos': 0,
                 'max_ethereal': 0,
                 'max_arcane': 0,
-                'max_divine': 0,
-                'max_elemental': 0,
-                'max_otherworld': 0,
-                'max_all': 0,
                 'resistance_penetration': 0,
                 'stun_avoidance': 0,
                 'ailment_avoidance': 0,
@@ -352,7 +373,11 @@ class Entity:
                 'chance_to_apply_exposed': 0,
                 'chance_to_stun': 0,
                 'chance_to_block': 0,
+                'execute_threshold': 0,
+                'less_damage_taken': 0,
                 'stamina_regen': 0,
+                'added_damage': 0,
+                'increased_damage': 0,
                 'enemy_quantity': 0,
                 'added_multihits': 0,
                 'chance_to_multihit': 0,
@@ -377,10 +402,6 @@ class Entity:
                 'chaos': 0,
                 'ethereal': 0,
                 'arcane': 0,
-                'divine': 0,
-                'elemental': 0,
-                'otherworld': 0,
-                'all': 0,
                 'max_physical': 0,
                 'max_fire': 0,
                 'max_earth': 0,
@@ -392,10 +413,6 @@ class Entity:
                 'max_chaos': 0,
                 'max_ethereal': 0,
                 'max_arcane': 0,
-                'max_divine': 0,
-                'max_elemental': 0,
-                'max_otherworld': 0,
-                'max_all': 0,
                 'resistance_penetration': 0,
                 'stun_avoidance': 0,
                 'ailment_avoidance': 0,
@@ -416,7 +433,11 @@ class Entity:
                 'chance_to_apply_exposed': 0,
                 'chance_to_stun': 0,
                 'chance_to_block': 0,
+                'execute_threshold': 0,
+                'less_damage_taken': 0,
                 'stamina_regen': 0,
+                'added_damage': 0,
+                'increased_damage': 0,
                 'enemy_quantity': 0,
                 'added_multihits': 0,
                 'chance_to_multihit': 0,
@@ -472,6 +493,8 @@ class Entity:
         self._xp = 0
         self.calcXpRequirement()
         self._name = name
+        self.titles: List[Dict[str, str]] = []
+        self.equippedTitle: Optional[Dict[str, str]] = None
         self.className = className
         self.classDescription = None
         self._ascendancy = None
@@ -481,6 +504,9 @@ class Entity:
         self.combatUnit = None
         self._pendingEffects = []
         self._damageLog: List[tuple] = []  # (reason, flatAmount, percentAmount) contributions to the hit currently being resolved
+        self._foodInventory: List = []  # cooked FoodItems, single-use
+        self._foodBuff: Optional[Dict[str, Any]] = None  # active {prefix, suffix, turnsRemaining} from the last eaten food
+        self._emergencyRevivalUsedThisCombat = False
 
     @property
     def _isDead(self) -> bool:
@@ -525,6 +551,14 @@ class Entity:
     @property
     def chanceToMultihit(self) -> float:
         return round((self._stats['Bonuses']['chance_to_multihit'] + self._getExtraBonuses('chance_to_multihit')) / 100, 2)
+
+    def formatTitledName(self) -> str:
+        if not self.equippedTitle:
+            return self._name
+        text = self.equippedTitle['text']
+        if self.equippedTitle.get('style') == 'prefix':
+            return f"{text} {self._name}"
+        return f"{self._name} {text}"
 
     def __rich__(self):
         return self.__str__()
@@ -571,6 +605,8 @@ class Entity:
                 'baseSpeed': self._baseSpeed,
                 'stats': self._stats,
                 'name': self._name,
+                'titles': self.titles,
+                'equippedTitle': self.equippedTitle,
                 'level': self._level,
                 'xp': self._xp,
                 'xpToNextLevel': self._xpToNextLevel,
@@ -579,6 +615,7 @@ class Entity:
                 'equipmentStorage': equipmentStorage,
                 'craftingInventory': self._craftingInventory,
                 'inventory': self._inventory,
+                'foodInventory': [f.serialise() for f in self._foodInventory],
                 'consumable': self.consumable.serialise(),
                 'className': self.className,
                 'classDescription': self.classDescription,
@@ -598,6 +635,8 @@ class Entity:
         self._baseSpeed = data.get('baseSpeed', 1.0)
         self._stats = data.get('stats')
         self._name = data.get('name', 'Entity')
+        self.titles = data.get('titles', [])
+        self.equippedTitle = data.get('equippedTitle', None)
         self._level = data.get('level', 0)
         self._xp = data.get('xp', 0)
         self._xpToNextLevel = data.get('xpToNextLevel', 50)
@@ -621,6 +660,7 @@ class Entity:
         
         self._inventory = data.get('inventory', {})
         self._craftingInventory = data.get('craftingInventory', {})
+        self._foodInventory = [FoodItem.deserialise(f) for f in data.get('foodInventory', [])]
         if 'consumable' in data:
             self.consumable = self.consumable.deserialise(data['consumable'])
         else:
@@ -628,6 +668,7 @@ class Entity:
         self._abilities = {"Basic Attack": BasicAttack()}
         for e in self._equipment.values():
             self._grantMythicAbilities(e)
+            self._grantSoulboundAbilities(e)
 
         self._recalculateStats()
 
@@ -647,13 +688,6 @@ class Entity:
             stoneskinMod = combatUnit.getStoneskinModifier()
         else:
             resistMod = self._stats['Resistances'].get(damageType, 0) / 100
-            if damageType in ELEMENTAL_RES:
-                resistMod += self._stats['Resistances']['elemental'] / 100
-            elif damageType in DIVINE_RES:
-                resistMod += self._stats['Resistances']['divine'] / 100
-            elif damageType in OTHERWORLD_RES:
-                resistMod += self._stats['Resistances']['otherworld'] / 100
-            resistMod += self._stats['Resistances']['all'] / 100
             resistMod = min(0.75, resistMod)
             stoneskinMod = 0
         if damageType == 'true':
@@ -664,8 +698,14 @@ class Entity:
         damage = max(0, damage - self._stats['Bonuses']['damage_reduction'])
         damageReductionValue = preMitigation - damage
 
+        lessDamageTaken = self._stats['Bonuses']['less_damage_taken']
+        if lessDamageTaken != 0:
+            damage = int(round(damage * (1 - lessDamageTaken / 100)))
+
         if damageReductionValue > 0:
             console.print(f"  [dim]- -{damageReductionValue} Damage from Damage Reduction[/dim]")
+        if lessDamageTaken != 0:
+            console.print(f"  [dim]- {'-' if lessDamageTaken > 0 else '+'}{abs(round(lessDamageTaken))}% Damage from Less Damage Taken[/dim]")
         if resistMod != 0:
             console.print(f"  [dim]- {'-' if resistMod > 0 else '+'}{round(resistMod * 100)}% Damage from {damageType.title()} Resistance[/dim]")
         if stoneskinMod != 0:
@@ -685,8 +725,10 @@ class Entity:
             damageTypeFormatted = f"[{damageType}]{damageType.title()}[/{damageType}]"
             dmgColour = formatDamageValue(trueDamage)
             console.print(f"[damage]- {self._name} took[/damage] [{dmgColour}]{trueDamage}[/{dmgColour}] [damage]{damageTypeFormatted} damage.[/damage] [dim]({damagePrevented} damage prevented with shield)[/dim] | [health]HP remaining: {self._health} / {self._maxHealth}[/health]")
-            if self._isDead:
+            if self._isDead and not self._tryEmergencyRevival():
                 self.death()
+        elif damagePrevented > 0:
+            console.print(f"[cyan]- {self._name}'s shield fully absorbed the hit![/cyan] [dim]({damagePrevented} damage prevented with shield)[/dim] | [health]HP remaining: {self._health} / {self._maxHealth}[/health]")
 
         return damageReductionValue
 
@@ -707,7 +749,7 @@ class Entity:
             self._health -= damageTaken
             if doPrint:
                 printError(f"{self._name}'s negative Healing Magnitude dealt {damageTaken} damage{reasonStr}! [dim]HP Remaining: {self._health} / {self._maxHealth}[/dim]")
-            if  self._isDead:
+            if self._isDead and not self._tryEmergencyRevival():
                 self.death()
         else:
             if doPrint:
@@ -716,7 +758,47 @@ class Entity:
 
     def death(self):
         console.print(f"[error]{self._name} has been defeated[/error]")
-        return True 
+        return True
+
+    def _tryEmergencyRevival(self) -> bool:
+        campfire = getattr(self, '_campfire', None)
+        if campfire is None or campfire.level < 5:
+            return False
+        if self._emergencyRevivalUsedThisCombat:
+            return False
+        cost = getattr(campfire, 'EMERGENCY_REVIVAL_SUPPLIES_COST', 50)
+        if campfire.supplies < cost:
+            return False
+
+        campfire.supplies -= cost
+        self._emergencyRevivalUsedThisCombat = True
+        self._health = max(1, round(self._maxHealth * 0.20))
+        console.print(f"[gold1 bold]The warmth of your Campfire pulls you back from the brink! Revived at {self._health} HP, consuming {cost} Supplies.[/gold1 bold]")
+        return True
+
+    def eatFood(self, food) -> None:
+        if self._foodBuff is not None:
+            oldPrefix = self._foodBuff.get('prefix')
+            oldSuffix = self._foodBuff.get('suffix')
+            if oldPrefix:
+                self._stats['Temporary'][oldPrefix['stat']] -= oldPrefix['value']
+            if oldSuffix:
+                self._stats['Temporary'][oldSuffix['stat']] -= oldSuffix['value']
+            self._foodBuff = None
+
+        healAmount = round(self._maxHealth * food.totalHealPercent / 100)
+        if healAmount > 0:
+            self.heal(healAmount, reason=food.name)
+
+        prefix = food.combatPrefix
+        suffix = food.combatSuffix
+        if prefix or suffix:
+            if prefix:
+                self._stats['Temporary'][prefix['stat']] = self._stats['Temporary'].get(prefix['stat'], 0) + prefix['value']
+            if suffix:
+                self._stats['Temporary'][suffix['stat']] = self._stats['Temporary'].get(suffix['stat'], 0) + suffix['value']
+            self._foodBuff = {'prefix': prefix, 'suffix': suffix, 'turnsRemaining': food.buffDuration}
+            self._recalculateStats(False, True)
 
     def rollCritical(self, target: Entity, damageDealt: int=None) -> tuple[bool, float]:
         """target is combatUnit"""
@@ -727,6 +809,9 @@ class Entity:
     def gainGold(self, amount: int):
         self._gold += amount
         console.print(f"[gold]{self._name} got +{amount}g.[/gold] [dim]Total gold: {self._gold}[/dim]")
+        questBoard = getattr(self, '_questBoard', None)
+        if questBoard is not None:
+            questBoard.notifyEvent('gold_gained', amount=amount)
 
     def gainAbility(self, ability: str, doPrint: bool = True):
         if self.isPlayer:
@@ -773,7 +858,7 @@ class Entity:
 
     def spendHealthForAbility(self, amount: int):
         self._health = max(0, self._health - amount)
-        if self._isDead:
+        if self._isDead and not self._tryEmergencyRevival():
             self.death()
 
     def displayAbilities(self):
@@ -818,6 +903,9 @@ class Entity:
             self._inventory[itemName] = self._inventory.get(itemName, 0) + quantity
             if doPrint:
                 console.print(f"[success]  - Gained {quantity}x {itemName}[/success]")
+            questBoard = getattr(self, '_questBoard', None)
+            if questBoard is not None:
+                questBoard.notifyEvent('resource_gained', amount=quantity)
 
     def removeItem(self, itemName: str, quantity: int = 1) -> bool:
         if self._inventory.get(itemName) >= quantity:
@@ -838,10 +926,18 @@ class Entity:
         if doPrint:
             equipName = formatRarity(equipment.name, equipment.rarity.value)
             console.print(f"[info]Stored {equipName} in equipment storage.[/info]")
+        questBoard = getattr(self, '_questBoard', None)
+        if questBoard is not None:
+            questBoard.notifyEvent('item_found', rarity=equipment.rarity.value)
 
-    def removeEquipmentFromStorage(self, index: int) -> Optional[Equipment]:
-        if 0 <= index < len(self._equipmentStorage):
-            return self._equipmentStorage.pop(index)
+    def removeEquipmentFromStorage(self, *, index: int = None, equipment: Equipment = None) -> Optional[Equipment]:
+        if index:
+            if 0 <= index < len(self._equipmentStorage):
+                return self._equipmentStorage.pop(index)
+        if equipment:
+            if equipment in self._equipmentStorage:
+                index = self._equipmentStorage.index(equipment)
+                return self._equipmentStorage.pop(index)
         return None
 
     def _resolveEquipSlot(self, equipment: Equipment) -> str:
@@ -899,6 +995,7 @@ class Entity:
 
         self._equipment[slot] = equipment
         self._grantMythicAbilities(equipment)
+        self._grantSoulboundAbilities(equipment)
         self._recalculateStats(doPrint)
         if equipment.slot != 'weapon':
             hGain, hInc, _ = equipment.getStatBonuses('health')
@@ -916,6 +1013,7 @@ class Entity:
             item = self._equipment[slot]
             self._equipment[slot] = None
             self._revokeMythicAbilities(item)
+            self._revokeSoulboundAbilities(item)
             self._recalculateStats(doPrint)
             printInfo(f"Unequipped {item.name}")
             if toStorage:
@@ -943,6 +1041,26 @@ class Entity:
                 if baseAbility and baseAbility.name in self._abilities:
                     del self._abilities[baseAbility.name]
 
+    def _grantSoulboundAbilities(self, equipment: Optional[Equipment]):
+        if not equipment or not equipment.soulbound:
+            return
+        from scripts.items.soulboundEffects import buildGrantedSoulboundAbility
+        for affix in equipment.stats:
+            if affix.soulbound and affix.stat == 'grant_ability':
+                ability = buildGrantedSoulboundAbility(affix)
+                if ability:
+                    self._abilities[ability.name] = ability
+
+    def _revokeSoulboundAbilities(self, equipment: Optional[Equipment]):
+        if not equipment or not equipment.soulbound:
+            return
+        from scripts.abilities import SOULBOUND_GRANTED_ABILITIES
+        for affix in equipment.stats:
+            if affix.soulbound and affix.stat == 'grant_ability':
+                baseAbility = SOULBOUND_GRANTED_ABILITIES.get(affix.data.get('ability'))
+                if baseAbility and baseAbility.name in self._abilities:
+                    del self._abilities[baseAbility.name]
+
     def hasLiveConditionalModifiers(self) -> bool:
         for equipment in self._equipment.values():
             if equipment and equipment.mythicAffix:
@@ -964,6 +1082,17 @@ class Entity:
         return total
 
     def _recalculateStats(self, doPrint: bool = True, inCombat: bool = False):
+        # one-time self-heal for saves/sessions predating the categorical-resistance refactor:
+        # 'elemental'/'divine'/'otherworld'/'all' are no longer real stats, just a shorthand that
+        # gets distributed into their real children at the source - a save's `_stats` dict loaded
+        # verbatim via deserialise() can still carry these as literal leftover keys, which would
+        # otherwise get double-counted or shown as a phantom, non-functional resistance line.
+        for legacyName in ('elemental', 'divine', 'otherworld', 'all'):
+            for sub in ('Resistances', 'Max_Resistances', 'Permanent', 'Temporary'):
+                self._stats[sub].pop(legacyName, None)
+            self._stats['Permanent'].pop(f'max_{legacyName}', None)
+            self._stats['Temporary'].pop(f'max_{legacyName}', None)
+
         self._maxHealth = self._baseHealth
         self._damage = self._baseDamage
         self._speed = self._baseSpeed
@@ -1021,7 +1150,9 @@ class Entity:
                     self._damageType = equipment.getDamageType() if equipment.getDamageType() else self._damageType
 
                 else: # all non-weapons can roll resistances/max resistances. no min() calculations here, done after this for loop
-                    for damageType in self._stats['Resistances'].keys():
+                    categoricalNames = ('elemental', 'divine', 'otherworld', 'all')
+                    realResistanceKeys = [k for k in self._stats['Resistances'].keys() if k not in categoricalNames]
+                    for damageType in realResistanceKeys + list(categoricalNames):
                         resFlat, _, _ = equipment.getStatBonuses(f'{damageType}_resistance')
                         maxResFlat, _, _ = equipment.getStatBonuses(f'max_{damageType}_resistance')
 
@@ -1029,8 +1160,8 @@ class Entity:
                             for res in ELEMENTAL_RES:
                                 self._stats['Resistances'][res] += resFlat
                                 self._stats['Max_Resistances'][res] += maxResFlat
-                        elif damageType ==  OTHERWORLD_RES:
-                            for res in ['psychic', 'ethereal', 'chaos']:
+                        elif damageType == 'otherworld':
+                            for res in OTHERWORLD_RES:
                                 self._stats['Resistances'][res] += resFlat
                                 self._stats['Max_Resistances'][res] += maxResFlat
                         elif damageType == 'divine':
@@ -1041,7 +1172,7 @@ class Entity:
                             for res in ALL_RES:
                                 self._stats['Resistances'][res] += resFlat
                                 self._stats['Max_Resistances'][res] += maxResFlat
-                        else: # categorical resistances don't actually add to their own values
+                        else:
                             self._stats['Max_Resistances'][damageType] += maxResFlat
                             self._stats['Resistances'][damageType] += resFlat
 
@@ -1116,6 +1247,8 @@ class Entity:
         armour += self._getExtraBonuses('added_armour')
         evasion += self._getExtraBonuses('added_evasion')
         es += self._getExtraBonuses('added_energy_shield')
+        dmgFlat += self._getExtraBonuses('added_damage')
+        dmgInc += self._getExtraBonuses('increased_damage')
 
         self._damage = int((self._baseDamage + dmgFlat) * (1 + dmgInc))
         self._maxHealth = int((self._maxHealth + healthFlat) * (1 + healthInc))
@@ -1147,6 +1280,10 @@ class Entity:
         self._speed = round(self._speed, 2)
 
         self._applyConditionalModifiers(conditionalLines, inCombat)
+
+        questBoard = getattr(self, '_questBoard', None)
+        if questBoard is not None:
+            questBoard.refreshStateChecks()
 
         if doPrint:
             console.print("\n[bold cyan]Stats updated:[/bold cyan]")
@@ -1198,10 +1335,12 @@ class Entity:
             elif condition == 'above_90_percent_hp':  # perfect_form
                 hpFrac = (self._health / self._maxHealth) if self._maxHealth > 0 else 0
                 if hpFrac > 0.9:
-                    self._stats['Resistances']['all'] = min(
-                        self._stats['Resistances']['all'] + values.get('x', 0),
-                        self._stats['Max_Resistances']['all']
-                    )
+                    bonus = values.get('x', 0)
+                    for res in ALL_RES:
+                        self._stats['Resistances'][res] = min(
+                            self._stats['Resistances'][res] + bonus,
+                            self._stats['Max_Resistances'][res]
+                        )
 
             elif condition == 'hp_above_below_50_percent':  # reckless_stride
                 hpFrac = (self._health / self._maxHealth) if self._maxHealth > 0 else 1
@@ -1220,9 +1359,7 @@ class Entity:
                 elif staminaFrac < 0.5:
                     self._stats['Bonuses']['ability_cost_multiplier'] += values.get('y', 0)
 
-            elif condition == 'no_status_buffs':  # self_reliance - not actually conditional (see
-                                                   # mythicEffects._selfRelianceOnStatusApplied for
-                                                   # the "cannot gain buffs" half of the trade)
+            elif condition == 'no_status_buffs':
                 self._damage = int(self._damage * (1 + values.get('x', 0) / 100))
                 defenseMult = 1 + values.get('y', 0) / 100
                 self._stats['armour'] = int(self._stats['armour'] * defenseMult)
@@ -1396,9 +1533,11 @@ class Entity:
         """Rewrite per class. return finalDamage"""
         return finalDamage
 
-    def onExecuteCheck(self, target: Entity, combatManager):
-        """Rewrite per class"""
-        pass
+    def onExecuteCheck(self, target: Entity, combatManager) -> bool:
+        """Return true if executed, false if not. execute_threshold is stored as whole percentage points."""
+        if target._health < target._maxHealth * (self._stats['Bonuses']['execute_threshold'] / 100):
+            return True
+        return False
 
     def onCC(self, attacker: Entity, combatManager):
         """Rewrite per class"""
@@ -1500,6 +1639,19 @@ class Entity:
         if self._speed < 0.2: # minimum speed is 0.2
             self._speed = 0.2
 
+        if self._foodBuff is not None:
+            self._foodBuff['turnsRemaining'] -= 1
+            if self._foodBuff['turnsRemaining'] <= 0:
+                prefix = self._foodBuff.get('prefix')
+                suffix = self._foodBuff.get('suffix')
+                if prefix:
+                    self._stats['Temporary'][prefix['stat']] -= prefix['value']
+                if suffix:
+                    self._stats['Temporary'][suffix['stat']] -= suffix['value']
+                console.print(f"[dim]Your food's effects have worn off.[/dim]")
+                self._foodBuff = None
+                self._recalculateStats(False, True)
+
     def onTurnEnd(self):
         """Rewrite per class"""
         pass
@@ -1507,6 +1659,7 @@ class Entity:
     def onCombatStart(self, combatManager, combatUnit):
         """Assigns given combatUnit to self. run at the start of each onCombatStart"""
         self.combatUnit = combatUnit
+        self._emergencyRevivalUsedThisCombat = False
 
     def onCombatEnd(self):
         """Sets all temporary stats to 0 and sets self.combatUnit to None, use at end of onCombatEnd methods."""

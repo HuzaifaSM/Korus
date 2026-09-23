@@ -37,11 +37,10 @@ MARAUDER_DESCRIPTIONS = {
     "Harrower": "[lore]Their strength is useless. Cripple them instead. Rain blows upon them. Steal even their ability to flee.[/lore]"
         "- Siphon Speed instead of Damage. You can Siphon up to 0.5 Speed total. Siphon 0.02 Speed per 1 Damage that would have been Siphoned. Enemies cannot steal Siphoned Speed.\n"
         "- If you have Siphoned more than 0.25 Speed, gain 40% Increased Damage, 10% Elemental Resistance and 20% Physical Resistance.\n"
-        "- If you attack an enemy before they have acted, they are executed if they have less than 8% Max HP remaining. Executing an enemy grants you Empowerment for the rest of combat.\n"
-        "- Empowerment: +30% Increased Cold Damage, +20 HP Regen, -0.2 Speed.\n"
+        "- Executing an enemy grants you Empowerment for the rest of combat. Empowerment: +30% Increased Cold Damage, +20 HP Regen, -0.2 Speed.\n"
         "- If an enemy attacks you after you have acted, their Speed is reduced by 5%, and they take Cold Damage equal to their base damage.\n"
         "- If an enemy attacks you before you have acted, their hit treats your Evasion as 150% of its actual value.\n"
-        "[bold]Stat Changes:[/bold] -10 HP. +10 Damage. +0.1 Speed. +5% Crit Chance. +25% Crit Damage.",
+        "[bold]Stat Changes:[/bold] -10 HP. +10 Damage. +0.1 Speed. +5% Crit Chance. +25% Crit Damage. +8% Execute Threshold.",
     "Butcher": "[lore]Their fear tastes so sweet. Revel in delight as you carve them up, one by one. Watch as they cower in fear.[/lore]"
         "- At the start of combat, apply Marked to a random enemy. Marked: 25% Increased Damage Taken, 10% Increased Damage Dealt.\n"
         "- When you kill a Marked enemy, Siphon all of its base damage, ignoring your cap, and deal Cold Damage to all enemies equal to 500% of the killed enemy's base damage.\n"
@@ -87,7 +86,8 @@ class Marauder(Player):
     def checkHarrowerBuff(self):
         if self._stats['Temporary']['speed'] >= 0.25 and not self.harrowerSpeedBuffGained:
             self.harrowerSpeedBuffGained = True
-            self._stats['Temporary']['elemental'] += 10
+            for res in ELEMENTAL_RES:
+                self._stats['Temporary'][res] += 10
             self._stats['Temporary']['physical'] += 20
 
     def empowerHarrower(self):
@@ -182,6 +182,8 @@ class Marauder(Player):
         if self._ascendancy == 'Colossus' and self.colossusRetaliateCharges > 0 and attacker:
             attacker.applyCrush()
             self.colossusRetaliateCharges -= 1
+        elif self._ascendancy == 'Sovereign' and not self.combatUnit.hasActed:
+            attacker.applyShame()
         return damageTaken, damageType
 
     def onBeforeHit(self, finalDamage, damageType, attacker, combatManager):
@@ -299,7 +301,8 @@ class Marauder(Player):
         return finalDamage
 
     def onExecuteCheck(self, target, combatManager):
-        if self._harrowerExecuteReady and target._health <= (target._maxHealth * 0.08):
+        threshold = self._stats['Bonuses']['execute_threshold'] / 100
+        if self._harrowerExecuteReady and target._health <= (target._maxHealth * threshold):
             console.print(f"[asc_harrower]Harrower: {target._name} has been Executed![/asc_harrower]")
             target.damage(target._health, 'true')
             combatManager.checkDead(target)
@@ -586,6 +589,7 @@ class Marauder(Player):
             '_baseSpeed': 0.1,
             '_stats.Permanent.crit_chance': 0.05,
             '_stats.Permanent.crit_multi': 0.25,
+            '_stats.Permanent.execute_threshold': 8,
         },
         'Butcher': {
             '_baseHealth': 10,

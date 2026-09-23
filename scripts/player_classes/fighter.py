@@ -213,10 +213,12 @@ class Fighter(Player): # higher speed, lower damage, physical damage
                     delta['crit_multi'] = delta.get('crit_multi', 0) + 0.5
             elif threshold == Threshold.TRAINED:
                 delta = {'damage_reduction': self._level, 'increased_defenses': 10, 'hp_regen': int(self._maxHealth * 0.01)}
+                if self._ascendancy == 'Arbiter':
+                    delta['less_damage_taken'] = delta.get('less_damage_taken', 0) + 5
             elif threshold == Threshold.DEDICATED:
-                delta = {'thorns': self._baseDamage, 'increased_defenses': 25, 'hp_regen': int(self._maxHealth * 0.03)}
+                delta = {'thorns': self._baseDamage, 'increased_defenses': 25, 'hp_regen': int(self._maxHealth * 0.03), 'less_damage_taken': 15}
             elif threshold == Threshold.ALL_IN:
-                delta = {'crit_chance': -100, 'thorns': self._damage * 3}
+                delta = {'crit_chance': -100, 'thorns': self._damage * 3, 'less_damage_taken': 40}
             else:
                 delta = {}
 
@@ -371,9 +373,9 @@ class Fighter(Player): # higher speed, lower damage, physical damage
                 self.balanceDiscStacks = 0
 
     TRANSGRESSOR_SYNC_TIERS = {
-        'agg': {'increasedDamage': 0.30, 'lessDamageTaken': 0.10, 'stats': {'crit_chance': 0.05}},
-        'disc': {'increasedDamage': 0.20, 'lessDamageTaken': 0.0, 'stats': {'increased_defenses': 20}},
-        'both': {'increasedDamage': 0.25, 'lessDamageTaken': 0.0, 'stats': {'crit_chance': 0.10, 'crit_multi': 0.5, 'increased_defenses': 25}},
+        'agg': {'increasedDamage': 0.30, 'stats': {'crit_chance': 0.05, 'less_damage_taken': 10}},
+        'disc': {'increasedDamage': 0.20, 'stats': {'increased_defenses': 20}},
+        'both': {'increasedDamage': 0.25, 'stats': {'crit_chance': 0.10, 'crit_multi': 0.5, 'increased_defenses': 25}},
     }
 
     def _transgressorCurrentTier(self):
@@ -650,24 +652,10 @@ class Fighter(Player): # higher speed, lower damage, physical damage
         disGain = damageTaken // (8 * (1 + self._level // 11)) + self._stats['Bonuses'].get('discipline_gain_flat', 0)
         self.gainDiscipline(disGain)
 
-        if self.currentDisciplineThreshold != Threshold.NEUTRAL:
-            if self.currentDisciplineThreshold == Threshold.DEDICATED:
-                attacker._logDamage(f"{self._name}'s Dedicated Discipline", percent=-0.15)
-                damageTaken = int(damageTaken * 0.85)
-            elif self.currentDisciplineThreshold == Threshold.ALL_IN:
-                attacker._logDamage(f"{self._name}'s All-In Discipline", percent=-0.4)
-                damageTaken = int(damageTaken * 0.6)
-
-        if self._ascendancy == 'Arbiter':
-            if self.currentDisciplineThreshold == Threshold.TRAINED:
-                attacker._logDamage(f"{self._name}'s Trained Discipline (Arbiter)", percent=-0.05)
-                damageTaken = int(damageTaken * 0.95)
-            if self.balance or self.balanceDiscStacks:
-                attacker._logDamage(f"{self._name}'s Balance ({self.balance + self.balanceDiscStacks} stacks, Arbiter)", percent=-(0.01 * (self.balance + self.balanceDiscStacks)))
-                damageTaken = int(damageTaken * (1 - 0.01 * (self.balance + self.balanceDiscStacks)))
-        elif self._ascendancy == 'Transgressor' and self.transgressorSyncTier == 'agg':
-            attacker._logDamage(f"{self._name}'s Dual-Stance Synergy (Transgressor)", percent=-self.TRANSGRESSOR_SYNC_TIERS['agg']['lessDamageTaken'])
-            damageTaken = int(damageTaken * (1 - self.TRANSGRESSOR_SYNC_TIERS['agg']['lessDamageTaken']))
+        # Dedicated/All-In Discipline (base and Arbiter's Trained Discipline/Balance bonus, and
+        # Transgressor's 'agg' sync tier) all grant their "Less Damage Taken" via the less_damage_taken
+        # stat now - see _thresholdEffects, _recalculateStats (Arbiter's live Balance recompute), and
+        # TRANSGRESSOR_SYNC_TIERS - rather than multiplying damageTaken here directly.
 
         return damageTaken, damageType
 
@@ -813,6 +801,10 @@ class Fighter(Player): # higher speed, lower damage, physical damage
                     self._stats['energy_shield'] = self._stats['max_energy_shield']
                 if doPrint:
                     console.print(f"[asc_triarch]Triarch: Converted defenses - +{fromEvasion + fromEs} Armour, +{fromArmour + fromEs} Evasion, +{fromArmour + fromEvasion} Energy Shield.[/asc_triarch]")
+        elif self._ascendancy == 'Arbiter':
+            balanceStacks = self.balance + self.balanceDiscStacks
+            if balanceStacks:
+                self._stats['Bonuses']['less_damage_taken'] += balanceStacks
 
     def rollCritical(self, target, damageDealt=None):
         if self._ascendancy == 'Triarch':
@@ -874,7 +866,9 @@ class Fighter(Player): # higher speed, lower damage, physical damage
             '_baseDamage': 7,
             '_baseSpeed': -0.1,
             '_stats.Permanent.physical': 10,
-            '_stats.Permanent.divine': 5,
+            '_stats.Permanent.holy': 5,
+            '_stats.Permanent.dark': 5,
+            '_stats.Permanent.arcane': 5,
         },
     }
 

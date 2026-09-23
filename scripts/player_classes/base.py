@@ -1,6 +1,6 @@
 import time
 
-from ..entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES, SIGIL_SLOTS
+from ..entities import Entity, ELEMENTAL_RES, DIVINE_RES, OTHERWORLD_RES, ALL_RES, SIGIL_SLOTS
 from ..styles import (
     console, displayLevelUp, pause,
     formatEffectsDetailed, formatAbilityCost, clearScreen, printHeader,
@@ -13,6 +13,7 @@ from ..items.items import ItemRarity
 from ..items.blankCraftingSets import CRAFTING_SETS, rollCraftingTable, buildCuratedHand
 from ..runeDrops import getRuneObject
 from ..crafting.base import CraftOutcome
+from ..difficulty import getActiveDifficulty
 
 def _abilityChanged(old, new) -> bool:
     return (
@@ -40,6 +41,8 @@ class Player(Entity):
         self.dungeonKeys = {}
         self._maxLevel = 100
         self.isPlayer = True
+        self._questBoard = None
+        self._accountId: str = None
         self.gainClassAbilities()
 
     def serialise(self):
@@ -80,8 +83,7 @@ class Player(Entity):
         while self._xp >= self._xpToNextLevel:
             if self._level >= self._maxLevel:
                 break
-            self._levelUp()
-            pause()
+            self._levelUp() # already pauses once internally for its own content
 
     def _levelUp(self):
         if self._level < self._maxLevel:
@@ -97,23 +99,31 @@ class Player(Entity):
 
             if self._level == self._maxLevel:
                 console.print("[gold1]Congratulations! You have reached the maximum level![/gold1]")
-            self._recalculateStats()
+            self._recalculateStats(False) # displayLevelUp below covers the level-up screen - avoid _recalculateStats' own doPrint dump+pause too
             displayLevelUp(self)
-            self.gainClassAbilities(True)
+            shownAbilityBanner = self.gainClassAbilities(True)
             self._health = self._maxHealth
             self._stamina = self._maxStamina
-            pause()
+            questBoard = getattr(self, '_questBoard', None)
+            if questBoard is not None:
+                questBoard.notifyEvent('level_reached', level=self._level)
+            if not shownAbilityBanner: # ability banners already pause on their own - avoid a redundant blank prompt
+                pause()
 
-    def gainClassAbilities(self, levelUp: bool = False):
+    def gainClassAbilities(self, levelUp: bool = False) -> bool:
+        """Returns True if at least one ability-learned/upgraded banner was shown (and paused on)."""
         if not self.className or self.className not in CLASS_ABILITIES:
-            return
+            return False
 
         treesByName = CLASS_ABILITIES[self.className].get('base', {})
         ascendancyData = CLASS_ABILITIES[self.className].get(self._ascendancy, {})
         alterations = ascendancyData.get('alterations', {})
         ascendancyTrees = ascendancyData.get('abilities', {})
 
+        shownAny = False
+
         def _learn(name, resolved):
+            nonlocal shownAny
             if not resolved:
                 return
 
@@ -143,12 +153,15 @@ class Player(Entity):
                     console.print(f"[buff]- {line}[/buff]")
                 console.print(f"[bold]{'='*50}[/bold]\n")
                 pause()
+                shownAny = True
 
         for name, tree in treesByName.items():
             _learn(name, tree.getCurrentAbility(self._level, alterations.get(name)))
 
         for name, tree in ascendancyTrees.items():
             _learn(name, tree.getCurrentAbility(self._level, None))
+
+        return shownAny
 
     def _forgetAscendancyAbilities(self):
         for ascendancyName, ascendancyData in CLASS_ABILITIES.get(self.className, {}).items():
@@ -170,6 +183,11 @@ class Player(Entity):
         weapon = self._equipment['weapon']
         if not weapon or not weapon.damageType:
             self._damageType = self.defaultDamageType
+
+        difficulty = getActiveDifficulty()
+        self._stats['Bonuses']['item_rarity'] += difficulty.getLootRarityBonus()
+        self._stats['Bonuses']['item_quantity'] += difficulty.getLootQuantityBonus()
+        self._stats['Bonuses']['enemy_quantity'] += difficulty.getEnemyQuantityBonus()
 
     def _applyStatDelta(self, delta: dict, sign: int = 1):
         for path, amount in delta.items():
@@ -475,6 +493,9 @@ class Player(Entity):
             clearScreen()
             console.print(f"\n[bold thistle1]The item reveals itself as a {table['displayName']} item![/bold thistle1]")
             console.print(f"[dim]{table['description']}[/dim]")
+            questBoard = getattr(self, '_questBoard', None)
+            if questBoard is not None:
+                questBoard.notifyEvent('blank_item_revealed')
             pause()
 
         tableKey = getattr(item, 'blankTableKey', None)
@@ -530,6 +551,9 @@ class Player(Entity):
                 entry = destabEntries[0]
                 rune = getRuneObject(entry['category'], entry['runeType'])
                 result = rune.apply(item, self)
+                questBoard = getattr(self, '_questBoard', None)
+                if questBoard is not None:
+                    questBoard.notifyEvent('rune_used', category=entry['category'], runeType=entry['runeType'])
                 item.update()
                 item._generateName()
                 self._recalculateStats(False)
@@ -573,5 +597,8 @@ class Player(Entity):
                 entry['count'] -= 1
                 if entry['count'] <= 0:
                     hand.remove(entry)
+                questBoard = getattr(self, '_questBoard', None)
+                if questBoard is not None:
+                    questBoard.notifyEvent('rune_used', category=entry['category'], runeType=entry['runeType'])
             pause()
 

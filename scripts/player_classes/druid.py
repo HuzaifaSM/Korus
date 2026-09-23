@@ -709,7 +709,10 @@ class Druid(Player): # balanced damage and speed, earth damage
             '_baseHealth': 15,
             '_baseDamage': -2,
             '_baseSpeed': -0.1,
-            '_stats.Permanent.elemental': 15,
+            '_stats.Permanent.fire': 15,
+            '_stats.Permanent.cold': 15,
+            '_stats.Permanent.lightning': 15,
+            '_stats.Permanent.earth': 15,
             '_stats.Permanent.added_armour': 50,
         },
         'Skinwalker': {
@@ -724,7 +727,10 @@ class Druid(Player): # balanced damage and speed, earth damage
             '_baseDamage': 1,
             '_baseSpeed': 0.05,
             'maxVerdance': 5,
-            '_stats.Permanent.elemental': 10,
+            '_stats.Permanent.fire': 10,
+            '_stats.Permanent.cold': 10,
+            '_stats.Permanent.lightning': 10,
+            '_stats.Permanent.earth': 10,
         },
         'Wellspring': {
             '_baseHealth': 15,

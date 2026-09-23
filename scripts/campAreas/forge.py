@@ -8,9 +8,10 @@ from scripts.styles import (
     pause, printWarning, printError, printSuccess, formatRarity,
     Panel, checkGlobalCommand, createEquipmentStoragePages, stepPage
 )
-from scripts.runeDrops import getRuneObject
+from scripts.runeDrops import getRuneObject, rollGuaranteedRunes
 from scripts.korusFeedClient import reportItem
 from scripts.crafting.base import CraftOutcome, CraftResult, CraftingItem
+from scripts.difficulty import getActiveDifficulty
 from rich.columns import Columns
 from rich.table import Table
 from rich import box
@@ -25,6 +26,12 @@ class Forge(Station):
     _EMPTY_BLOCKED_RUNES = frozenset({'erasing', 'fusion', 'equilibrium', 'sacrifice', 'chaos',
                                        'tier randomiser', 'value randomiser', 'affix randomiser', 'immutable'})
     _IGNORES_FORESIGHT = frozenset({'mastery', 'conversion', 'revealing', 'rarity', 'base type', 'mythic chaos'})
+    RARITY_TO_FUSE = {
+        ItemRarity.COMMON: 3,
+        ItemRarity.UNCOMMON: 3,
+        ItemRarity.RARE: 4,
+        ItemRarity.EPIC: 4
+    }
 
     def __init__(self, player):
         super().__init__(player, "Forge")
@@ -43,19 +50,19 @@ class Forge(Station):
     def _getUpgradeRequirements(self) -> Dict[int, Dict[str, int]]:
         return {
             1: {"brick": 10, "metal": 5,
-                'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair and fuse equipment. [resource]Blueprints[/resource] are used to craft and fuse new peices of equipment.\nYou are able to craft Common and Uncommon equipment.\nYou are able to fuse Common Equipment to Uncommon.'
+                'description': 'Enemies will begin to drop [resource]Fuel[/resource] and [resource]Blueprints[/resource].\n[resource]Fuel[/resource] is used to repair and fuse equipment. [resource]Blueprints[/resource] are used to craft and fuse equipment.\nYou are able to craft Common and Uncommon equipment.\nYou are able to fuse Common Equipment to Uncommon.'
                 },
             2: {"brick": 20, "metal": 10,
-                'description': "Repairing items grants 20% more durability recovered. You can now craft Rare equipment. You can fuse Uncommon Equipment to Rare."
+                'description': "Repairing items grants 20% more durability recovered.\nYou can now craft Rare equipment.\nYou can fuse Uncommon Equipment to Rare.\nYou can now vaporise equipment to get a random assortment of crafting runes."
                 },
             3: {"brick": 30, "metal": 20,
-                'description': "Repairing items grants 20% more durability recovered. You can now craft Epic equipment. You can fuse Rare Equipment to Epic."
+                'description': "Repairing items grants 20% more durability recovered.\nYou can now craft Epic equipment.\nYou can fuse Rare Equipment to Epic.\nRunes gained from vaporisation have a minimum item level of 10."
                 },
             4: {"brick": 50, "metal": 35,
-                'description': "Repairing items grants 20% more durability recovered. You can now craft Legendary equipment. Crafted equipment cannot be Common. You can fuse Epic Equipment to Legendary."
+                'description': "Repairing items grants 20% more durability recovered.\nYou can now craft Legendary equipment. Crafted equipment cannot be Common.\nYou can fuse Epic Equipment to Legendary.\nRunes gained from vaporisation have a minimum item level of 25."
                 },
             5: {"brick": 75, "metal": 50,
-                'description': "Repairing items grants 20% more durability recovered. Crafted equipment cannot be Uncommon. Fusing requires 1 less item per tier."
+                'description': "Repairing items grants 20% more durability recovered.\nCrafted equipment cannot be Uncommon.\nFusing requires 1 less item per tier.\nRunes gained from vaporisation have a minimum item level of 40."
                 }
         }
 
@@ -143,7 +150,10 @@ class Forge(Station):
             console.print("[dim]1.[/dim] Craft Equipment")
             console.print("[dim]2.[/dim] Repair Equipment")
             console.print("[dim]3.[/dim] Craft With Runes")
-            console.print("[dim]4.[/dim] Fuse Equipment")
+            if self.level > 0:
+                console.print("[dim]4.[/dim] Fuse Equipment")
+            if self.level >= 2:
+                console.print("[dim]5.[/dim] Vaporise Equipment")
             console.print("[dim]9.[/dim] Upgrade Forge")
 
             choice = console.input("\n[cyan]>[/cyan] ").strip()
@@ -161,7 +171,11 @@ class Forge(Station):
                     case 3:
                         self.craftingInterface()
                     case 4:
-                        self.fuseEquipmentMenu()
+                        if self.level > 0:
+                            self.fuseEquipmentMenu()
+                    case 5:
+                        if self.level >= 2:
+                            self.vaporiseEquipmentMenu()
                     case 9:
                         self.upgrade()
                     case _:
@@ -257,8 +271,10 @@ class Forge(Station):
             if 0 <= index < len(allEquipment):
                 _, equip = allEquipment[index]
 
+                economyMultiplier = getActiveDifficulty().getEconomyMultiplier()
+
                 durabilityNeeded: int = round((equip.maxDurability - equip.durability) / equip.maxDurability) * 100
-                fuelCost = max(1, durabilityNeeded // 10) #1 fuel per 10% durability missing
+                fuelCost = max(1, round((durabilityNeeded // 10) * economyMultiplier)) #1 fuel per 10% durability missing
 
                 resourceCost: dict[ItemRarity, dict[str, int]] = {
                     ItemRarity.COMMON: {"brick": 1, "metal": 1},
@@ -269,8 +285,12 @@ class Forge(Station):
                     ItemRarity.MYTHIC: {"metal": 5, "brick": 5},
                     ItemRarity.BLANK: {"metal": 5, "brick": 5},
                 }
-                resources = resourceCost.get(equip.rarity, {"brick", 3})
-                amount *= equip.level * int(1 + 0.2 * self.level)
+                baseResources = resourceCost.get(equip.rarity, {"brick": 3})
+                levelMultiplier = equip.level * int(1 + 0.2 * self.level)
+                resources = {
+                    res: max(1, round(val * levelMultiplier * economyMultiplier))
+                    for res, val in baseResources.items()
+                }
                 resStr = ""
                 for res, val in resources.items():
                     resStr += f"- [resource]{res.title()}:[/resource] {val}\n"
@@ -378,17 +398,25 @@ class Forge(Station):
                             printWarning(f"{rune.name} ignores Foresight! Apply? This will not consume foresight. (Y/N)")
                             conf = console.input("[cyan]>[/cyan] ").strip().lower()
                             if conf == 'y':
+                                isEquipped = self.currentItem in self.player._equipment.values()
+                                if isEquipped:
+                                    self.player._revokeMythicAbilities(self.previousItem)
+                                    self.player._revokeSoulboundAbilities(self.previousItem)
                                 result = rune.apply(self.currentItem, self.player)
                                 outcome = result.outcome
                                 self._invalidateRunePages()
                                 reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name}:\n{result.message}")
 
+                                if isEquipped:
+                                    self.player._grantMythicAbilities(self.currentItem)
+                                    self.player._grantSoulboundAbilities(self.currentItem)
                                 self.player._recalculateStats(False)
                                 clearScreen()
                                 self._showCraftingResult(result, rune.name)
 
                                 if outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
                                     self.player.removeRune(category, runeType, 1)
+                                    self._notifyRuneUsed(category, runeType)
                         else:
                             if rune.name in self.currentItem.foresightResults:
                                 console.print(f"[medium_violet_red]This Rune has had its results foretold already. Results:[/medium_violet_red]\n{self.currentItem.foresightResults[rune.name]['message']}")
@@ -396,6 +424,11 @@ class Forge(Station):
                                 conf = console.input("[cyan]>/[cyan] ").strip().lower()
 
                                 if conf == 'y':
+                                    isEquipped = self.currentItem in self.player._equipment.values()
+                                    if isEquipped:
+                                        self.player._revokeMythicAbilities(self.currentItem)
+                                        self.player._revokeSoulboundAbilities(self.currentItem)
+
                                     for kind in ['prefixes', 'suffixes']:
                                         for data in self.currentItem.foresightResults[kind]:
                                             if kind == 'prefixes':
@@ -411,6 +444,9 @@ class Forge(Station):
                                     self.currentItem.addEntropy(realEntropy)
                                     self._invalidateRunePages()
                                     reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name} and consumed Foresight")
+                                    if isEquipped:
+                                        self.player._grantMythicAbilities(self.currentItem)
+                                        self.player._grantSoulboundAbilities(self.currentItem)
                                     self.player._recalculateStats(False)
                                     clearScreen()
                                     result = CraftResult(
@@ -420,6 +456,7 @@ class Forge(Station):
                                     )
                                     self._showCraftingResult(result, rune.name)
                                     self.player.removeRune(category, runeType, 1)
+                                    self._notifyRuneUsed(category, runeType)
 
                             else:
                                 fakeItem = deepcopy(self.currentItem)
@@ -439,17 +476,25 @@ class Forge(Station):
                                 else:
                                     printWarning(f"Attempted to apply {rune.name} to {self.currentItem.name} but failed:\n{result.message}")
                     else:
+                        isEquipped = self.currentItem in self.player._equipment.values()
+                        if isEquipped:
+                            self.player._revokeMythicAbilities(self.previousItem)
+                            self.player._revokeSoulboundAbilities(self.previousItem)
                         result = rune.apply(self.currentItem, self.player)
                         outcome = result.outcome
                         self._invalidateRunePages()
                         reportItem(self.currentItem, self.player._name, event=f"Applied {rune.name}:\n{result.message}")
 
+                        if isEquipped:
+                            self.player._grantMythicAbilities(self.currentItem)
+                            self.player._grantSoulboundAbilities(self.currentItem)
                         self.player._recalculateStats(False)
                         clearScreen()
                         self._showCraftingResult(result, rune.name)
 
                         if outcome in [CraftOutcome.SUCCESS, CraftOutcome.PARTIAL_SUCCESS]:
                             self.player.removeRune(category, runeType, 1)
+                            self._notifyRuneUsed(category, runeType)
 
                     pause()
                 else:
@@ -557,13 +602,6 @@ class Forge(Station):
             pause()
             return
 
-        RARITY_TO_FUSE = {
-            ItemRarity.COMMON: 3,
-            ItemRarity.UNCOMMON: 3,
-            ItemRarity.RARE: 4,
-            ItemRarity.EPIC: 4
-        }
-
         fusionPieces, fusedRarity, newRarity = self.getFusionPieces()
         if fusionPieces is None or fusedRarity is None:
             return
@@ -571,7 +609,7 @@ class Forge(Station):
         if slot is None:
             return
 
-        neededToFuse = RARITY_TO_FUSE[fusedRarity]
+        neededToFuse = self.RARITY_TO_FUSE[fusedRarity]
         if self.level == 5:
             neededToFuse -= 1
         chosenToFuse: list[Equipment] = []
@@ -629,6 +667,35 @@ class Forge(Station):
         self.player.addEquipmentToStorage(newEquipment)
         printSuccess(f"Successfully fused {neededToFuse} {fusedRarity.value.title()} pieces of Equipment to create {newEquipment.name}")
         pause()
+
+    def vaporiseEquipmentMenu(self):
+        if self.level < 2:
+            printWarning("Forge Level 2 required for Fusion.")
+            pause()
+            return
+
+        item = self._selectEquipment()
+        if not item:
+            return
+
+        numRunes = item.rarity.num + item.level // 10 + 1
+        runeMinLevel = 40 if self.level == 5 else (25 if self.level == 4 else (10 if self.level == 3 else 0))
+        if item.level < runeMinLevel:
+            runeMinLevel = item.level
+        console.print(f"[red]Vaporise {item.name} for a random assortment of {numRunes} {f'level {runeMinLevel}+ ' if runeMinLevel != 0 else ''}runes? (y/n)[/red]")
+        conf = console.input("[cyan]>[/cyan] ").strip().lower()
+
+        if conf == 'y':
+            runes = rollGuaranteedRunes(item.level, numRunes, runeMinLevel)
+            for cat, rType in runes:
+                self.player.addRune(cat, rType)
+            pause()
+            self.player.removeEquipmentFromStorage(equipment=item)
+
+    def _notifyRuneUsed(self, category: str, runeType: str):
+        questBoard = getattr(self.player, '_questBoard', None)
+        if questBoard is not None:
+            questBoard.notifyEvent('rune_used', category=category, runeType=runeType)
 
     def _showCraftingResult(self, result: CraftResult, runeName: str):
         if result.outcome == CraftOutcome.SUCCESS:

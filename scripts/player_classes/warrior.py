@@ -1,4 +1,4 @@
-from .base import Player
+from .base import Player, ALL_RES
 from scripts.styles import console
 from scripts.abilities import Effects
 import random
@@ -13,12 +13,12 @@ WARRIOR_DESCRIPTIONS = {
     "Warlord": "[lore]Feel your Rage flow through your veins, empowering you to even greater heights. Embrace your inner Fury, and slaughter those who dare face you.[/lore]"
         "- 20% Increased Rage gained from dealing damage. Gain 1 Fury on attack if you have more than 50 Rage.\n"
         "- Fury: 5% Increased Damage, +2% Lifesteal. Max 10 stacks of Fury. At max Fury, your next attack deals 100% Increased Damage to all enemies and consumes all Fury.\n"
-        "- While above 40 Rage, gain 15% Damage Reduction. Upon dealing a Critical Hit, gain +20% Crit Multi per stack of Fury.\n"
+        "- While above 40 Rage, gain 15% Less Damage Taken. Upon dealing a Critical Hit, gain +20% Crit Multi per stack of Fury.\n"
         "- Gain 1% Damage Reduction per 20 Rage. All damage prevented from Damage Reduction is gained as Shield. Whenever an enemy attacks you, deal 50 Fire Damage to them.\n"
         "- -1% Crit Chance per 50 Shield. Deal 1% Increased Damage per 25 Shield. Whenever your shield is broken, heal for 3% of your Max HP and deal Fire damage to all enemies equal to 5% of current HP.\n"
         "[bold]Stat Changes:[/bold] +15 HP. +8 Damage. -0.05 Speed. +15% Fire Resistance. +10% Physical Resistance.",
     "Juggernaut": "[lore]An unstoppable force, trampling those in your way. Your Rage fuels your march, turning you into an immovable bastion of domination.[/lore]"
-        "- You have 1 Fortify per 10 Rage, up to 15 stacks. +1% Damage Reduction, +2% Crit Chance, +5% Crit Damage per Fortify.\n"
+        "- You have 1 Fortify per 10 Rage, up to 15. +1% Damage Reduction, +2% Crit Chance, +5% Crit Damage per Fortify.\n"
         "- 25% Increased Rage gained from taking damage. At max Fortify your next attack hits all enemies, applies [cc]Stun[/cc] and consumes 100 Rage.\n"
         "- Whenever you are critically hit, gain Bastion until the start of your next turn. Take 25% Less Damage from critical hits.\n"
         "- Bastion: +25% Ailment Avoidance, +30% Crit Resistance, 10% Less Damage taken.\n"
@@ -96,8 +96,20 @@ class Warrior(Player):
         self.rageGeneration = data.get('rageGeneration', 0)
         self.rageEffect = data.get('rageEffect', 1.0)
 
+    def juggernautForfityBuffs(self):
+        if self._ascendancy != 'Juggernaut':
+            return
+        self._stats['Temporary']['crit_chance'] -= 0.02 * self._fortify
+        self._stats['Temporary']['crit_multi'] -= 0.05 * self._fortify
+        self._fortify = min(15, self._rage // 10)
+        self._stats['Temporary']['crit_chance'] += 0.02 * self._fortify
+        self._stats['Temporary']['crit_multi'] += 0.05 * self._fortify        
+
     def _recalculateStats(self, doPrint = True, inCombat = False):
         super()._recalculateStats(doPrint, inCombat)
+
+        if self._ascendancy == 'Warlord' and self._rage > 40:
+            self._stats['Bonuses']['less_damage_taken'] += 15
 
         if self._ascendancy == 'Tyrant':
             evConverted = int(0.25 * self.evasion)
@@ -164,6 +176,7 @@ class Warrior(Player):
         if not self.bastion and self._ascendancy == 'Juggernaut':
             self._stats['Temporary']['ailment_avoidance'] += 25
             self._stats['Temporary']['crit_resistance'] += 30
+            self._stats['Temporary']['less_damage_taken'] += 10
             self.bastion = True
 
     def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
@@ -243,7 +256,7 @@ class Warrior(Player):
                 self._logDamage("Bonus Damage from Crits (Annihilist)", flat=self.annihilistDamage)
             damageDealt += self.annihilistDamage
 
-        elif self._ascendancy == 'Warlord' and self._rage >= 30 and self._fury < self._maxFury:
+        elif self._ascendancy == 'Warlord' and self._rage >= 50 and self._fury < self._maxFury:
             self._fury += 1
             self._stats['Temporary']['lifesteal'] += 2
             console.print(f"\n[bold damage]Your fury increases! Current Fury: {self._fury} / {self._maxFury}[/bold damage]")
@@ -282,16 +295,9 @@ class Warrior(Player):
         if damageType == 'fire':
             rageGain = int(rageGain * 1.2)
 
-        if self._ascendancy == 'Warlord':
-            if self._rage > 40:
-                attacker._logDamage(f"{self._name}'s Rage above 40 (Warlord)", percent=-0.15)
-                damageTaken = int(damageTaken * 0.85)
-
-        elif self._ascendancy == 'Juggernaut':
+        if self._ascendancy == 'Juggernaut':
             rageGain = int(rageGain * 1.25)
-            if self.bastion:
-                attacker._logDamage(f"{self._name}'s Bastion (Juggernaut)", percent=-0.1)
-                damageTaken = int(damageTaken * 0.9)
+            damageTaken = int(damageTaken * (1 - (0.01 * self._fortify)))
 
         elif self._ascendancy == 'Tyrant':
             if damageTaken < self._baseDamage:
@@ -300,9 +306,6 @@ class Warrior(Player):
             rageGain = 0 # no rage change from taking damage
 
         elif self._ascendancy == 'Conqueror':
-            if self.conquerorEnemies > 0:
-                attacker._logDamage(f"{self._name}'s Conqueror ({self.conquerorEnemies} Enemies)", percent=-(0.05 * self.conquerorEnemies))
-                damageTaken = int(damageTaken * (1 - (0.05 * self.conquerorEnemies)))
             rageGain = int(rageGain * 0.8)
 
         self._rage = min(self.maxRage, self._rage + rageGain)
@@ -316,6 +319,7 @@ class Warrior(Player):
         if self._ascendancy == 'Conqueror':
             self.conquerorEnemies = len(combatManager.allAlive) - 1
             self._stats['Temporary']['speed'] += 0.05 * self.conquerorEnemies
+            self._stats['Temporary']['less_damage_taken'] += 5 * self.conquerorEnemies
 
     def onKill(self, entity, data, combatManager):
         super().onKill()
@@ -354,14 +358,12 @@ class Warrior(Player):
             console.print(f"[dark_red] +{self.rageGeneration} Rage gained from Rage Generation![/dark_red]")
 
         if self._ascendancy == 'Juggernaut':
-            self._stats['Temporary']['all'] -= self._fortify
-            self._fortify = min(self._maxFortify, self._rage // 10)
-            console.print(f"\n[asc_juggernaut]Juggernaut:[/asc_juggernaut] You now have {self._fortify} / {self._maxFortify} Fortify Stacks. (+{self._fortify}% All Resistance)")
-            self._stats['Temporary']['all'] += self._fortify
+            self.juggernautForfityBuffs()
 
             if self.bastion:
                 self._stats['Temporary']['ailment_avoidance'] -= 25
                 self._stats['Temporary']['crit_resistance'] -= 30
+                self._stats['Temporary']['less_damage_taken'] -= 10
                 self.bastion = False
 
         elif self._ascendancy == 'Annihilist':

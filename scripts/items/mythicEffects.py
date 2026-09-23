@@ -1,31 +1,3 @@
-"""
-Bespoke gameplay implementations for mythic affix lines whose effect isn't a simple passive
-stat (those - scale_with_item_level, secondary_defense_conversion, mastery_bonus,
-affix_slot_bonus - are handled directly in Equipment's own stat calculations instead).
-
-Each handler has the signature (entity, line, *hookArgs) -> Optional[result], matching
-whatever Entity._mythicDispatch(hookName, *hookArgs) passes through for that hook. Handlers
-may return None (no change), or - for hooks that thread a value - the shape that hook's
-dispatch site expects (see entities.py's onX methods for exactly what each accepts).
-
-grant_ability affixes (overpower, underworld_strike, buff_theft, bloodlust, detonate, aegis,
-all_in) work differently: rather than a hook handler, ABILITY_PATCHERS below holds a function
-per affix that patches the rolled affix's values into a copy of that affix's Ability
-(scripts/items/mythicAbilities.json, loaded as MYTHIC_GRANTED_ABILITIES), which
-Entity.equip()/unequip() then adds to/removes from self._abilities - the same dict class
-abilities live in, so they show up and are castable exactly like any other ability. Several
-of these are simplified relative to their affix flavour text (e.g. Overpower's "spend all
-Stamina, scale off amount spent" collapses to a fixed buff) rather than left unimplemented.
-
-conditional_modifier affixes (glass_cannon, debuffed_fury, perfect_form, reckless_stride,
-momentum, tempo, self_reliance) are mostly handled directly in Entity._applyConditionalModifiers
-(called at the end of _recalculateStats, which - via explicit calls added at combat.py's and
-main.py's/auto_playthrough.py's turn-start call sites - now runs every turn so these live stat
-checks stay current). momentum and broken_rhythm need a running counter (kills / hits taken)
-that has nowhere to live but line.meta, and self_reliance needs to actively block incoming buff
-statuses - those three pieces are the handlers below instead.
-"""
-
 import random
 from copy import deepcopy
 from typing import Callable, Dict, Optional

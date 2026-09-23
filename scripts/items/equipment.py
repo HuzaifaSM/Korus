@@ -1,8 +1,9 @@
-from .items import Item, ItemRarity, ItemType, RARITY_SERIALS, RARITY_VALUES
+from .items import Item, ItemRarity, ItemType, RARITY_SERIALS
 from ..items.affixes import Affix, rollAffix
 from ..styles import console, printError
 from ..korusFeedClient import reportItem
 from ..items.mythicAffixes import rollMythicAffix, MythicAffix
+from ..difficulty import getActiveDifficulty
 from typing import Optional, List, Dict, Any, Tuple
 import random
 import json
@@ -28,7 +29,7 @@ def setNextEquipmentId(value: int) -> None:
     _equipmentIdCounter = itertools.count(value)
 
 def _loadEquipmentBases() -> dict:
-    fp = 'Korus/scripts/items/equipmentBases.json' if exists('Korus') else 'scripts/items/equipmentBases.json'
+    fp = 'Korus/scripts/items/data/equipmentBases.json' if exists('Korus') else 'scripts/items/data/equipmentBases.json'
     with open(fp, 'r', encoding='utf-8') as f:
         return json.load(f)
 
@@ -147,6 +148,7 @@ class AffixSlot:
         )
 
 ARMOUR_SLOTS = ['head', 'chest', 'legs', 'feet', 'offhand']
+EQUIPMENT_SLOTS = ['weapon', 'head', 'chest', 'legs', 'feet', 'ring', 'amulet', 'offhand', 'sigil']
 EQUIPMENT_BASES_KEY = {'offhand': 'shield'}  # equipment.slot -> equipmentBases.json top-level key, where they differ
 
 RARITY_MULTIPLIERS = {
@@ -188,13 +190,11 @@ def _formatImplicitLine(stat: str, value) -> str:
     statDisplay = stat.replace('_', ' ').title()
     return f"    |-> [cyan]{prefix}{value}{suffix} {statDisplay}[/cyan]"
 
-
 class Equipment(Item):
     def __init__(self, slot: str, rarity: ItemRarity = ItemRarity.COMMON,
                  defenses: dict[str, int] = {}, damages: dict[str, Any] = {}, implicits: dict[str, float] = {},
                  prefixes: List[Affix] = None, suffixes: List[Affix] = None, numPrefixes: int = 1, numSuffixes: int = 1,
                  level: int = 1, maxEntropy: float | None = None, baseTypeName: Optional[str] = None):
-
         itemType = ItemType.EQUIPMENT
 
         super().__init__("", itemType, rarity)
@@ -506,13 +506,28 @@ class Equipment(Item):
         return e
 
     def calculateValue(self) -> int:
-        value = 100 + self.level
-        tiers = [a.tier for a in (self.prefixes + self.suffixes)]
-        value += sum(tiers) * 75
-        value += (len(self.prefixes) + len(self.suffixes)) * random.randint(30, 70)
-        value = int(value * RARITY_VALUES[self.rarity.value])
+        from .affixes import getMaxAffixTier
 
-        self.value = value
+        def affixScore(affix):
+            if affix.soulbound or affix.isMythic:
+                return 900  # fixed unique lines aren't drawn from a weighted pool, so weight isn't meaningful
+            kind = 'prefixes' if affix.kind == 'prefix' else 'suffixes'
+            maxTier = (getMaxAffixTier(affix.slot, kind, affix.id, affixPool='affixes')
+                       or getMaxAffixTier(affix.slot, kind, affix.id, affixPool='market')
+                       or affix.tier)
+            tierFraction = affix.tier / maxTier if maxTier else 1.0
+            rarityScore = 1000 / max(20, affix.weight)  # rarer roll (lower weight) = worth more
+            return 12 * (1 + tierFraction) * rarityScore
+
+        affixes = self.prefixes + self.suffixes
+        value = 40 + self.level * 6
+        value += sum(affixScore(a) for a in affixes)
+        if self.mythicAffix:
+            value += 1500
+        value = int(value * (1 + self.mastery / 100 * 0.5))
+        value = int(value * RARITY_MULTIPLIERS[self.rarity])
+
+        self.value = max(1, value)
 
     def __rich__(self):
         return self.__str__()
@@ -613,13 +628,13 @@ class Equipment(Item):
 
     @property
     def maxMastery(self) -> float:
-        """Base cap is 20%, extended by a mythic mastery_bonus line if present."""
+        """Base cap is 20%, extended by a mythic mastery_bonus line if present. Hard-capped at 40%."""
         cap = 20
         if self.mythicAffix:
             for line in self.mythicAffix.lines:
                 if line.effect == 'mastery_bonus':
                     cap += line.values.get('x', 0)
-        return cap
+        return min(40, cap)
 
     def gainMastery(self, amount: int):
         cap = self.maxMastery
@@ -668,10 +683,10 @@ class Equipment(Item):
                 excludedPre.add('increased_energy_shield')
 
         for affix in self.prefixes:
-            baseId = affix.id.split('_t')[0]
+            baseId = affix.id.rsplit('_t', 1)[0]
             excludedPre.add(baseId)
         for affix in self.suffixes:
-            baseId = affix.id.split('_t')[0]
+            baseId = affix.id.rsplit('_t', 1)[0]
             excludedSuf.add(baseId)
 
         if self.rarity == ItemRarity.BLANK: # entropy 100% dead stat on blank items
@@ -987,7 +1002,25 @@ class Equipment(Item):
             self.entropyResistance -= 0.1 * self.numPreserved #10% resistance reduction per preservation rune used
 
     @staticmethod
-    def _generateEquipmentPiece(level: int, slot: str, rarity: ItemRarity, className: str = None, playerName: str = None) -> 'Equipment':
+    def _boostAffixTier(affix: Affix, boost: int) -> Optional[Affix]:
+        """Returns a copy of affix rolled boost tiers higher (clamped to its own max tier), or None if it's already at/above that tier."""
+        from .affixes import getMaxAffixTier, getTieredAffix
+        kind = 'prefixes' if affix.kind == 'prefix' else 'suffixes'
+        baseId = affix.id.rsplit('_t', 1)[0]
+        maxTier = getMaxAffixTier(affix.slot, kind, affix.id, affixPool='affixes')
+        if not maxTier:
+            return None
+        targetTier = min(maxTier, affix.tier + boost)
+        if targetTier <= affix.tier:
+            return None
+        newAffix = getTieredAffix(affix.slot, kind, affixId=f"{baseId}_t{targetTier}", affixPool='affixes')
+        if newAffix:
+            newAffix.rollValue()
+        return newAffix
+
+    @staticmethod
+    def _generateEquipmentPiece(level: int, slot: str, rarity: ItemRarity, className: str = None, playerName: str = None,
+                                 market: bool = False, marketAffixChance: float = 0.3, nonMarketTierBoost: int = 0) -> 'Equipment':
         def getAffixCounts(level, rarity):
             bases = {
                 ItemRarity.COMMON: ([1], [1]),
@@ -1106,17 +1139,34 @@ class Equipment(Item):
         else:
             affixPoolKey = slot
 
+        marketAffixes = 0
         for _ in range(numPrefixes):
-            affix = rollAffix(affixPoolKey, 'prefixes', level, rarity, excludedPrefixIds, tierBias, defenseType)
+            if market and (marketAffixes == 0 or random.random() < marketAffixChance):
+                affPool = 'market'
+                marketAffixes += 1
+            else:
+                affPool = 'affixes'
+            affix = rollAffix(affixPoolKey, 'prefixes', level, rarity, excludedPrefixIds, affixPool=affPool,
+                               tierBias=tierBias, defenseType=defenseType)
+            if affix and affPool == 'affixes' and nonMarketTierBoost > 0:
+                affix = Equipment._boostAffixTier(affix, nonMarketTierBoost) or affix
             if affix:
                 prefixes.append(affix)
-                excludedPrefixIds.add(affix.id.split('_t')[0])
+                excludedPrefixIds.add(affix.id.rsplit('_t', 1)[0])
 
         for _ in range(numSuffixes):
-            affix = rollAffix(affixPoolKey, 'suffix', level, rarity, excludedSuffixIds, tierBias, defenseType)
+            if market and (marketAffixes == 0 or random.random() < marketAffixChance):
+                affPool = 'market'
+                marketAffixes += 1
+            else:
+                affPool = 'affixes'
+            affix = rollAffix(affixPoolKey, 'suffix', level, rarity, excludedSuffixIds, affixPool=affPool,
+                               tierBias=tierBias, defenseType=defenseType)
+            if affix and affPool == 'affixes' and nonMarketTierBoost > 0:
+                affix = Equipment._boostAffixTier(affix, nonMarketTierBoost) or affix
             if affix:
                 suffixes.append(affix)
-                excludedSuffixIds.add(affix.id.split('_t')[0])
+                excludedSuffixIds.add(affix.id.rsplit('_t', 1)[0])
 
         equipment['prefixes'] = prefixes
         equipment['suffixes'] = suffixes
@@ -1371,7 +1421,7 @@ class Equipment(Item):
             comparison += "\n[bold green3 underline]Gains:[/bold green3 underline]"
             newStats = {a.stat.replace('_', ' ').title(): a.value for a in newStats
                         if not ((self.slot == 'weapon' and a.stat == 'damage')
-                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield'] and not a.stat.isGlobal))
+                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield'] and not a.isGlobal))
                         }
             for k, v in newStats.items(): # k = stat, v = value
                 comparison += f"\n[success] [+] {v} {k}[/success]"
@@ -1380,7 +1430,7 @@ class Equipment(Item):
             comparison += "\n[bold red3 underline]Losses:[/bold red3 underline]"
             oldStats = {a.stat.replace('_', ' ').title(): a.value for a in oldStats
                         if not ((self.slot == 'weapon' and a.stat == 'damage')
-                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield'] and not a.stat.isGlobal))
+                        or (self.slot in ARMOUR_SLOTS and a.stat in ['armour', 'evasion', 'energy_shield'] and not a.isGlobal))
                         }
             for k, v in oldStats.items():
                 comparison += f"\n[error] [-] {v} {k}[/error]"
@@ -1415,8 +1465,6 @@ class Equipment(Item):
                 elif affix.stat and affix.isPercent:
                     totalIncrease += affix.value / 100
 
-        # damage/defenseType are handled in recalculateDamage/recalculateDefenses instead,
-        # since those stats aren't read back out through getStatBonuses by the aggregation loop
         if stat not in ('damage', self.defenseType):
             totalBonus += self._mythicScalingBonus(stat)
 
@@ -1430,6 +1478,8 @@ class Equipment(Item):
             console.print('[green1]Your Preservation Rune prevents your item from gaining entropy![/green1]')
             self.entropyPreserved = False
             amount = 0
+        if amount > 0:
+            amount *= getActiveDifficulty().getEntropyMultiplier()
         amount = round(amount, 4)
         self.calculateEntropyResistance()
         resistance = self.entropyResistance

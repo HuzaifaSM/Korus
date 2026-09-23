@@ -689,7 +689,7 @@ ENEMY_ABILITIES: Dict[str, Dict[str, Dict[str, EnemyAbility]]] = loadEnemyAbilit
 ENEMY_AFFIX_ABILITIES: Dict[str, EnemyAbility] = loadEnemyAffixAbilities()
 
 def loadMythicAbilities() -> Dict[str, Ability]:
-    with open('scripts/items/mythicAbilities.json', 'r') as f:
+    with open('scripts/items/data/mythicAbilities.json', 'r') as f:
         data = load(f)
     return {
         abilityKey: _buildAbilityFromData(abilityData)
@@ -697,5 +697,15 @@ def loadMythicAbilities() -> Dict[str, Ability]:
     }
 
 MYTHIC_GRANTED_ABILITIES: Dict[str, Ability] = loadMythicAbilities()
+
+def loadSoulboundAbilities() -> Dict[str, Ability]:
+    with open('scripts/items/data/soulboundAbilities.json', 'r') as f:
+        data = load(f)
+    return {
+        abilityKey: _buildAbilityFromData(abilityData)
+        for abilityKey, abilityData in data.items()
+    }
+
+SOULBOUND_GRANTED_ABILITIES: Dict[str, Ability] = loadSoulboundAbilities()
 
 ...

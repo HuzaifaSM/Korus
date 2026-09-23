@@ -630,7 +630,9 @@ class Tempest(Player):
             '_baseSpeed': -0.1,
             '_stats.Permanent.added_evasion': 75,
             '_stats.Permanent.added_energy_shield': 20,
-            '_stats.Permanent.otherworld': 5,
+            '_stats.Permanent.chaos': 5,
+            '_stats.Permanent.ethereal': 5,
+            '_stats.Permanent.psychic': 5,
         },
     }
 

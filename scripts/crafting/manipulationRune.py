@@ -119,7 +119,7 @@ class FusionRune(CraftingItem):
         baseWeights = {}
 
         for _, affix in availableAffixes.items():
-            baseId = affix.id.split('_t')[0]
+            baseId = affix.id.rsplit('_t', 1)[0]
             if affix.levelReq > item.level:
                 continue
             if baseId in excludedIds:
@@ -378,7 +378,7 @@ class EquilibriumRune(CraftingItem):
                 overflow += tierPower(tier) - tierPower(availableTiers[-1])
                 tier = availableTiers[-1]
 
-            affixId = affix.id.split('_t')[0]
+            affixId = affix.id.rsplit('_t', 1)[0]
             affixId = f"{affixId}_t{tier}"
             newAffix = getTieredAffix(affix.slot, affix.kind, affixId=affixId)
             newAffix.rollValue()
@@ -399,7 +399,7 @@ class EquilibriumRune(CraftingItem):
                 cost = tierPower(nextTier) - tierPower(affix.tier)
 
                 if overflow >= cost:
-                    affixId = affix.id.split('_t')[0]
+                    affixId = affix.id.rsplit('_t', 1)[0]
                     affixId = f'{affixId}_t{tier}'
                     newAffix = getTieredAffix(affix.slot, affix.kind, affixId=affixId)
                     newAffix.rollValue()
@@ -455,7 +455,7 @@ class DeceivingEquilibriumRune(EquilibriumRune):
         for slot in slots:
             if random.random() <= 0.2:
                 affix = slot.affix
-                afId = affix.id.split('_t')[0]
+                afId = affix.id.rsplit('_t', 1)[0]
                 nextTier = affix.tier + 1
                 affixId = f'{afId}_t{nextTier}'
                 newAffix = getTieredAffix(affix.slot, affix.kind, affixId=affixId)
@@ -526,7 +526,7 @@ class SacrificeRune(CraftingItem):
         candidates = []
         for s in slots:
             affix = s.affix
-            baseId = affix.id.split('_t')[0]
+            baseId = affix.id.rsplit('_t', 1)[0]
             maxTier = MAX_TIERS.get((affix.slot, baseId))
             if maxTier is None:
                 continue
@@ -541,7 +541,7 @@ class SacrificeRune(CraftingItem):
         targetSlot = random.choice(candidates)
         targetAffix = targetSlot.affix
 
-        baseId = targetAffix.id.split('_t')[0]
+        baseId = targetAffix.id.rsplit('_t', 1)[0]
         maxTier = MAX_TIERS[(targetAffix.slot, baseId)]
         availableTiers = list(range(1, maxTier + 1))
 

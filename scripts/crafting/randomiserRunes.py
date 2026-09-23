@@ -261,7 +261,7 @@ class BaseAffixRandomiserRune(BaseRandomiserRune):
             if newAffix is None:
                 continue
 
-            excludeIds.append(newAffix.id.split('_t')[0])
+            excludeIds.append(newAffix.id.rsplit('_t', 1)[0])
             slot.affix = newAffix
             changed += 1
 

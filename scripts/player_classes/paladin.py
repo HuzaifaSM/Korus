@@ -203,12 +203,14 @@ class Paladin(Player): #higher health, lower damage, holy damage
             favourEffect += 0.3
 
         if 'crit_' in buffType:
-            val /= 100
-
-        val = int(val * amount * favourEffect)
+            val = round(val * amount * favourEffect / 100, 4)
+            strVal = round(val * 100, 2)
+        else:
+            val = int(val * amount * favourEffect)
+            strVal = val
         buff = buffType.replace('_', ' ').title()
         ex = "" if buffType == 'damage' else "%"
-        console.print(f"  [gold1]Spent {amount} Favour on offensive buff: +{val}{ex} {buff}.[/gold1]")
+        console.print(f"  [gold1]Spent {amount} Favour on offensive buff: +{strVal}{ex} {buff}.[/gold1]")
         pause()
         return {buffType: val}
 
@@ -641,7 +643,9 @@ class Paladin(Player): #higher health, lower damage, holy damage
             '_baseDamage': 8,
             '_baseSpeed': 0.1,
             '_stats.Permanent.crit_multi': 0.25,
-            '_stats.Permanent.divine': 5,
+            '_stats.Permanent.holy': 5,
+            '_stats.Permanent.dark': 5,
+            '_stats.Permanent.arcane': 5,
         },
         'Inquisitor': {
             '_baseHealth': 10,

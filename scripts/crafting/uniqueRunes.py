@@ -206,11 +206,6 @@ class SoulboundRune(CraftingItem):
         return random.choice(allEmpty)
 
     def apply(self, item, player=None):
-        # TEMPORARY
-        return CraftResult(
-            outcome=CraftOutcome.NO_EFFECT,
-            message="This item is temporarily disabled"
-        )
         if not item.craftable:
             return CraftResult(
                 outcome=CraftOutcome.NO_EFFECT,
@@ -234,7 +229,7 @@ class SoulboundRune(CraftingItem):
                 message='Item has no empty affix slots'
             )
         
-        equipType = item.slot
+        equipType = resolveAffixPoolKey(item)
         affixType = 'prefixes' if slot.kind == 'prefix' else 'suffixes'
 
         if equipType not in self.soulboundData:
@@ -283,6 +278,9 @@ class SoulboundRune(CraftingItem):
         else:
             value = random.randint(int(minVal), int(maxVal))
 
+        knownFields = {'stat', 'isPercent', 'categories', 'name', 'min', 'max', 'levelReq', 'isGlobal'}
+        extraData = {k: v for k, v in affixData.items() if k not in knownFields}
+
         soulboundAffix = Affix(
             id=f"soulbound_{affixId}",
             name=affixData['name'],
@@ -296,7 +294,8 @@ class SoulboundRune(CraftingItem):
             kind=slot.kind,
             weight=0,
             categories=affixData.get('categories', ['soulbound']),
-            isGlobal=affixData.get('isGlobal', False)
+            isGlobal=affixData.get('isGlobal', False),
+            **extraData
         )
         soulboundAffix.baseValue = value
         soulboundAffix.soulbound = True

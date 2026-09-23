@@ -1,0 +1,342 @@
+{
+  "flowing_strikes": {
+    "name": "Flowing Strikes",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 25,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 3, "speed": 0.3, "damage": 1.3}
+      }
+    },
+    "description": "Once per combat: chain together a flurry of strikes, greatly increasing your Speed and damage for a few turns."
+  },
+  "opening_strike": {
+    "name": "Opening Strike",
+    "category": "damage",
+    "tags": ["damage", "soulbound"],
+    "damage_base": 0,
+    "damage_scaling": 100,
+    "damage_type": null,
+    "stamina_cost": 20,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "vulnerable": {"turns": 2, "amount": 0.2}
+      }
+    },
+    "description": "Once per combat: a precise opening blow that leaves the enemy exposed to increased damage for a few turns."
+  },
+  "shield_bash": {
+    "name": "Shield Bash",
+    "category": "damage",
+    "tags": ["damage", "soulbound"],
+    "damage_base": 0,
+    "damage_scaling": 80,
+    "damage_type": "physical",
+    "stamina_cost": 20,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "exposed": {"turns": 3, "amount": 20}
+      }
+    },
+    "description": "Once per combat: slam your shield into the enemy, shattering their defenses and exposing them to all damage types."
+  },
+  "bulwark_stance": {
+    "name": "Bulwark Stance",
+    "category": "buff",
+    "tags": ["buff", "shield", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "stoneskin": {"turns": 99, "amount": 0.25}
+      }
+    },
+    "description": "Once per combat, for the rest of the fight: brace behind your shield, drastically reducing damage taken."
+  },
+  "arcane_detonation": {
+    "name": "Arcane Detonation",
+    "category": "damage",
+    "tags": ["damage", "soulbound"],
+    "damage_base": 0,
+    "damage_scaling": 100,
+    "damage_type": null,
+    "stamina_cost": 25,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {},
+    "description": "Once per combat: channel the sigil's stored power into a devastating burst of damage against one enemy."
+  },
+  "hexbreaker": {
+    "name": "Hexbreaker",
+    "category": "utility",
+    "tags": ["utility", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 15,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "weaken": {"turns": 2, "amount": 0.3}
+      }
+    },
+    "description": "Once per combat: overload the sigil, weakening the target's next attacks significantly."
+  },
+  "wardstone": {
+    "name": "Wardstone",
+    "category": "buff",
+    "tags": ["buff", "shield", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "shield_generation": {"turns": 99, "amount_percent": 0.25}
+      }
+    },
+    "description": "Once per combat: the sigil erects a protective ward, shielding you for a portion of your maximum health."
+  },
+  "sanctuary": {
+    "name": "Sanctuary",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "regeneration": {"turns": 5, "amount_percent": 0.05, "amount_flat": 0}
+      }
+    },
+    "description": "Once per combat: call upon the sigil's wardings to regenerate a portion of your health each turn for several turns."
+  },
+  "titans_fury": {
+    "name": "Titan's Fury",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 3, "speed": 0, "damage": 1.3}
+      }
+    },
+    "description": "Once per combat: heave your weapon with earth-shaking force, greatly increasing your damage for a few turns."
+  },
+  "executioners_verdict": {
+    "name": "Executioner's Verdict",
+    "category": "damage",
+    "tags": ["damage", "soulbound"],
+    "damage_base": 0,
+    "damage_scaling": 100,
+    "damage_type": null,
+    "stamina_cost": 20,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "vulnerable": {"turns": 2, "amount": 0.2}
+      }
+    },
+    "description": "Once per combat: a finishing blow that leaves the enemy exposed to overwhelming force."
+  },
+  "third_eye": {
+    "name": "Third Eye",
+    "category": "damage",
+    "tags": ["damage", "soulbound"],
+    "damage_base": 0,
+    "damage_scaling": 60,
+    "damage_type": null,
+    "stamina_cost": 15,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "exposed": {"turns": 3, "amount": 20}
+      }
+    },
+    "description": "Once per combat: pierce the enemy's mind, laying their defenses bare."
+  },
+  "unbroken_will": {
+    "name": "Unbroken Will",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "stoneskin": {"turns": 99, "amount": 0.25}
+      }
+    },
+    "description": "Once per combat, for the rest of the fight: steel your mind against pain, reducing damage taken."
+  },
+  "second_heart": {
+    "name": "Second Heart",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "regeneration": {"turns": 5, "amount_percent": 0.05, "amount_flat": 0}
+      }
+    },
+    "description": "Once per combat: awaken a second heartbeat, regenerating your health each turn for several turns."
+  },
+  "martyrs_resolve": {
+    "name": "Martyr's Resolve",
+    "category": "buff",
+    "tags": ["buff", "shield", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "shield_generation": {"turns": 99, "amount_percent": 0.25}
+      }
+    },
+    "description": "Once per combat: steel your chest against the killing blow, shielding yourself for a portion of your maximum health."
+  },
+  "relentless_charge": {
+    "name": "Relentless Charge",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 20,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 3, "speed": 0.3, "damage": 1.2}
+      }
+    },
+    "description": "Once per combat: surge forward with relentless momentum, gaining a burst of Speed and damage for a few turns."
+  },
+  "crippling_stride": {
+    "name": "Crippling Stride",
+    "category": "utility",
+    "tags": ["utility", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 15,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "weaken": {"turns": 2, "amount": 0.3}
+      }
+    },
+    "description": "Once per combat: a decisive step that throws the enemy off balance, weakening their next attacks."
+  },
+  "windrunners_gait": {
+    "name": "Windrunner's Gait",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 99, "speed": 0.5, "damage": 1.15}
+      }
+    },
+    "description": "Once per combat, for the rest of the fight: move with impossible speed."
+  },
+  "severing_kick": {
+    "name": "Severing Kick",
+    "category": "damage",
+    "tags": ["damage", "soulbound"],
+    "damage_base": 0,
+    "damage_scaling": 70,
+    "damage_type": null,
+    "stamina_cost": 15,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "elemental_exposure": {"turns": 3, "amount": 20}
+      }
+    },
+    "description": "Once per combat: a searing kick that cracks the enemy's elemental wards."
+  },
+  "bloodpact_surge": {
+    "name": "Bloodpact Surge",
+    "category": "damage",
+    "tags": ["damage", "soulbound"],
+    "damage_base": 0,
+    "damage_scaling": 60,
+    "damage_type": null,
+    "stamina_cost": 15,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "target": {
+        "vulnerable": {"turns": 2, "amount": 0.2}
+      }
+    },
+    "description": "Once per combat: channel a pact of blood, marking the enemy for greater harm."
+  },
+  "veins_of_vigor": {
+    "name": "Veins of Vigor",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "regeneration": {"turns": 5, "amount_percent": 0.05, "amount_flat": 0}
+      }
+    },
+    "description": "Once per combat: quicken your blood, regenerating your health each turn for several turns."
+  },
+  "soul_anchor": {
+    "name": "Soul Anchor",
+    "category": "buff",
+    "tags": ["buff", "shield", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "shield_generation": {"turns": 99, "amount_percent": 0.25}
+      }
+    },
+    "description": "Once per combat: anchor your very soul, shielding you against annihilation."
+  },
+  "apotheosis_echo": {
+    "name": "Apotheosis Echo",
+    "category": "buff",
+    "tags": ["buff", "soulbound"],
+    "damage_type": "heal",
+    "stamina_cost": 0,
+    "cooldown": 99,
+    "targets": 1,
+    "effects": {
+      "self": {
+        "haste": {"turns": 99, "speed": 0, "damage": 1.4}
+      }
+    },
+    "description": "Once per combat, for the rest of the fight: channel a fragment of apotheosis, empowering your strikes."
+  }
+}

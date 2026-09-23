@@ -1,10 +1,11 @@
 from .base import CraftingItem, CraftOutcome, CraftResult
-from scripts.items.affixes import rollAffix, Affix, AFFIX_POOL, resolveAffixPoolKey
+from scripts.items.affixes import rollAffix, Affix, resolveAffixPoolKey
 import random
 from typing import Dict
 
 class BaseGrowthRune(CraftingItem):
     affixesToAdd: int = 1
+    market: bool = False
     
     def _serialise(self):
         temp = super()._serialise()
@@ -61,12 +62,15 @@ class BaseGrowthRune(CraftingItem):
             excludedIds = prefixExcluded if slot.kind == 'prefix' else suffixExcluded
 
             defenseType = item.defenseType
-            
+
+            affixPool = 'market' if self.market else 'affixes'
+
             affix = rollAffix(
                 equipType=resolveAffixPoolKey(item),
                 affixType=slot.kind,
                 itemLevel=item.level,
                 rarity=item.rarity,
+                affixPool=affixPool,
                 excludeIds=excludedIds,
                 tierBias=0.0,
                 defenseType=defenseType,
@@ -239,197 +243,6 @@ class PerfectSuffixGrowthRune(SuffixGrowthRune):
     successEntropy = 0.25
     dropWeight = 35
 
-class DuplicatingGrowthRune(BaseGrowthRune):
-    name = '[turquoise2 bold]Duplicating Growth Rune[/turquoise2 bold]'
-    description = 'Adds a random affix above level 20 based on the tags of existing affixes. Functions as a basic Growth Rune if no valid tags.'
-    affixesToAdd = 1
-    minAffixLevel = 20
-    minItemLevel = 20
-    successEntropy = 0.2
-    dropWeight = 80
-
-    def apply(self, item, player=None) -> CraftResult:
-        if not item.craftable:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item cannot be modified'
-            )
-        if item.level < self.minItemLevel:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item level is too low'
-            )
-        
-        slot = self.getRandomEmptySlot(item)
-        if slot is None:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item has no empty affix slots'
-            )
-
-        categoryWeights = {}
-        for s in item.prefixSlots + item.suffixSlots:
-            if s.affix:
-                for cat in s.affix.categories:
-                    categoryWeights[cat] = categoryWeights.get(cat, 0) + 1
-
-        if not categoryWeights:
-            super().apply(item, player=None)
-
-        equipType = resolveAffixPoolKey(item)
-        affixType = 'prefixes' if slot.kind == 'prefix' else 'suffixes'
-        availableAffixes = AFFIX_POOL[equipType][affixType]
-
-        prefixExcluded, suffixExcluded = item.getExcludedIds()
-        excludedIds = prefixExcluded if slot.kind == 'prefix' else suffixExcluded
-
-        validAffixes = []
-        weights = []
-
-        for affixId, affix in availableAffixes.items():
-            if affix.levelReq > item.level:
-                continue
-            if affixId in excludedIds:
-                continue
-            baseId = affix.id.split('_t')[0]
-            if baseId in excludedIds:
-                continue
-
-            weight = 1
-            for cat in affix.categories:
-                if cat in categoryWeights:
-                    weight += categoryWeights[cat] * 10
-
-            validAffixes.append(affix)
-            weights.append(weight)
-
-        if not validAffixes:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item has no empty affix slots or has no valid affixes available'
-            )
-        
-        chosenAffix = random.choices(validAffixes, weights=weights, k=1)[0]
-
-        newAffix = Affix(
-            id=chosenAffix.id,
-            name=chosenAffix.name,
-            levelReq=chosenAffix.levelReq,
-            tier=chosenAffix.tier,
-            stat=chosenAffix.stat,
-            slot=item.slot,
-            minVal=chosenAffix.minVal,
-            maxVal=chosenAffix.maxVal,
-            isPercent=chosenAffix.isPercent,
-            kind=chosenAffix.kind,
-            weight=chosenAffix.weight,
-            categories=chosenAffix.categories
-        )
-        newAffix.rollValue()
-
-        slot.affix = newAffix
-        item.update()
-        item._generateName()
-        item.addEntropy(self.successEntropy)
-        
-        return CraftResult(
-                outcome=CraftOutcome.SUCCESS,
-                message=f'Added {self.affixesToAdd} affixes',
-                entropyAdded=self.successEntropy
-            )
-
-class ImitatingGrowthRune(BaseGrowthRune):
-    name = '[light_goldenrod1 bold underline]Imitating Growth Rune[/light_goldenrod1 bold underline]'
-    description = 'Adds a random affix with level between the highest and lowest level existing affixes.'
-    affixesToAdd = 1
-    minItemLevel = 30
-    successEntropy = 0.2
-    dropWeight = 80
-
-    def apply(self, item, player=None) -> CraftResult:
-        if not item.craftable:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item cannot be modified'
-            )
-        if item.level < self.minItemLevel:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item level is too low'
-            )
-        
-        slot = self.getRandomEmptySlot(item)
-        if slot is None:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item has no empty affix slots'
-            )
-        
-        existingAffixes = [s.affix for s in item.prefixSlots + item.suffixSlots if s.affix]
-
-        if not existingAffixes:
-            minLevel = min(1, item.level - 15)
-            maxLevel = item.level
-        else:
-            minLevel = min(a.levelReq for a in existingAffixes)
-            maxLevel = max(a.levelReq for a in existingAffixes)
-
-        equipType = resolveAffixPoolKey(item)
-        affixType = 'prefixes' if slot.kind == 'prefix' else 'suffixes'
-        availableAffixes = AFFIX_POOL[equipType][affixType]
-        
-        prefixExcluded, suffixExcluded = item.getExcludedIds()
-        excludedIds = prefixExcluded if slot.kind == 'prefix' else suffixExcluded
-        
-        validAffixes = []
-        
-        for affixId, affix in availableAffixes.items():
-            if minLevel <= affix.levelReq <= maxLevel:
-                if affixId not in excludedIds:
-                    baseId = affixId.split('_t')[0]
-                    if baseId not in excludedIds:
-                        validAffixes.append(affix)
-        
-        if not validAffixes:
-            return CraftResult(
-                outcome=CraftOutcome.NO_EFFECT,
-                message='Item has no empty affix slots or no valid affixes available'
-            )
-
-        chosenAffix = random.choice(validAffixes)
-        added: list[Affix] = []
-        
-        newAffix = Affix(
-            id=chosenAffix.id,
-            name=chosenAffix.name,
-            levelReq=chosenAffix.levelReq,
-            tier=chosenAffix.tier,
-            stat=chosenAffix.stat,
-            slot=item.slot,
-            minVal=chosenAffix.minVal,
-            maxVal=chosenAffix.maxVal,
-            isPercent=chosenAffix.isPercent,
-            kind=chosenAffix.kind,
-            weight=chosenAffix.weight,
-            categories=chosenAffix.categories
-        )
-        newAffix.rollValue()
-        added.append(newAffix)
-        addedStr = ""
-        for a in added:
-            addedStr += f"[dim green1]- {a}[/dim green1]"
-
-        slot.affix = newAffix
-        item.update()
-        item._generateName()
-        item.addEntropy(self.successEntropy)
-
-        return CraftResult(
-                outcome=CraftOutcome.SUCCESS,
-                message=f'Added {self.affixesToAdd} affixes. Added:\n{addedStr}',
-                entropyAdded=self.successEntropy
-            )
-
 class OverflowingGrowthRune(BaseGrowthRune):
     name = '[bold italic spring_green4]Overflowing Growth Rune[/bold italic spring_green4]'
     description = 'Adds a random affix to every empty affix slot.'
@@ -528,10 +341,6 @@ GROWTH_RUNES: Dict[str, BaseGrowthRune] = {
     'suffix': SuffixGrowthRune(),
     'greater_suffix': GreaterSuffixGrowthRune(),
     'perfect_suffix': PerfectSuffixGrowthRune(),
-
-    'duplicating': DuplicatingGrowthRune(),
-
-    'imitating': ImitatingGrowthRune(),
 
     'overflowing': OverflowingGrowthRune(),
 }

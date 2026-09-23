@@ -11,9 +11,11 @@ from scripts.entities import SIGIL_SLOTS
 from scripts.combat import CombatManager
 from scripts.runeDrops import rollGuaranteedRunes
 from scripts.camp import Camp
-from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, displayExistingSaves
+from scripts.files import save, load, deleteSave, addToDeathLog, logCrash, undoLastOperation, checkForSaves, displayExistingSaves, _saveFilePath
+from scripts.accounts import listAccounts, createAccount, deleteAccountAndSaves, strandSave, loadAccount, STRANDED_ACCOUNT_ID
+from scripts.settings import loadSettings, setLastUsedAccountId
 from scripts.debug import Debugger
-from scripts.difficulty import Difficulty
+from scripts.difficulty import Difficulty, setActiveDifficulty
 from scripts.help import Help
 from scripts.items.equipment import peekNextEquipmentId, setNextEquipmentId
 from scripts.korusFeedClient import ensureServerRunning, isServerRunning
@@ -42,6 +44,17 @@ class Game:
         self.difficulty = Difficulty.NORMAL
         self.hardcoreMode = False
         self.saveNum: Optional[int] = None
+        self.accountId: Optional[str] = None
+        self.accountName: Optional[str] = None
+
+    @property
+    def difficulty(self) -> Difficulty:
+        return self._difficulty
+
+    @difficulty.setter
+    def difficulty(self, value: Difficulty):
+        self._difficulty = value
+        setActiveDifficulty(value)
 
     def _serialise(self):
         return {
@@ -51,6 +64,7 @@ class Game:
             'difficulty': self.difficulty.value,
             'hardcoreMode': self.hardcoreMode,
             'saveNum': self.saveNum,
+            'accountId': self.accountId,
             'nextEquipmentID': peekNextEquipmentId()
         }
 
@@ -62,23 +76,158 @@ class Game:
         self.difficulty = Difficulty(difficulty)
         self.hardcoreMode = data.get('hardcoreMode', False)
         self.saveNum = data.get('saveNum')
+        self.accountId = data.get('accountId')
         setNextEquipmentId(data.get('nextEquipmentID', 1))
 
+    def accountScreen(self) -> bool:
+        while True:
+            clearScreen()
+            printHeader("Select Account")
+            accounts = listAccounts()
+            if accounts:
+                console.print("\n[bold cyan]Existing Accounts:[/bold cyan]")
+                for i, (accountId, name) in enumerate(accounts, 1):
+                    console.print(f"[dim]{i}.[/dim] {name}")
+            else:
+                console.print("\n[dim]No accounts yet.[/dim]")
+
+            console.print("\n[dim]N.[/dim] [green]Create New Account[/green]")
+            if accounts:
+                console.print("[dim]D.[/dim] [orange1]Delete an Account[/orange1]")
+            console.print("[dim]S.[/dim] [yellow]Browse Stranded Saves[/yellow] [dim](saves whose accounts were deleted)[/dim]")
+            console.print("[dim]0.[/dim] [red]Exit[/red]")
+
+            choice = console.input("\n[cyan]>[cyan] ").strip().lower()
+
+            if choice == '0':
+                return False
+            elif choice == 'n':
+                if self._createAccountFlow():
+                    return True
+                return False
+            elif choice == 'd' and accounts:
+                self._deleteAccountFlow(accounts)
+                continue
+            elif choice == 's':
+                self._selectAccount(STRANDED_ACCOUNT_ID)
+                return True
+            else:
+                try:
+                    index = int(choice) - 1
+                except ValueError:
+                    printWarning("Invalid input!")
+                    pause()
+                    continue
+                if 0 <= index < len(accounts):
+                    accountId, name = accounts[index]
+                    self.accountId = accountId
+                    self.accountName = name
+                    return True
+                printWarning("Invalid choice!")
+                pause()
+
+    def _selectAccount(self, accountId: Optional[str]):
+        self.accountId = accountId
+        self.accountName = self._accountDisplayName(accountId)
+        setLastUsedAccountId(accountId)
+
+    def _accountDisplayName(self, accountId: Optional[str]) -> str:
+        if accountId is None:
+            return "Unasasigned Saves"
+        if accountId == STRANDED_ACCOUNT_ID:
+            return "Stranded Saves"
+        account = loadAccount(accountId)
+        return account.name if account else "(Unknown Account)"
+
+    def _createAccountFlow(self) -> bool:
+        clearScreen()
+        printHeader("Create New Account")
+        name = console.input("[cyan]Account name (blank to cancel):\n>[cyan] ").strip()
+        if not name:
+            return False
+        account = createAccount(name)
+        printSuccess(f"\nAccount '{name}' created.")
+        pause()
+        self._selectAccount(account.accountId)
+        return True
+
+    def _deleteAccountFlow(self, accounts):
+        clearScreen()
+        printHeader("Delete an Account")
+        for i, (accountId, name) in enumerate(accounts, 1):
+            console.print(f"[dim]{i}.[/dim] {name}")
+        choice = console.input("\n[cyan]Select an Account to delete (0 to cancel):\n>[/cyan] ").strip()
+
+        try:
+            index = int(choice) - 1
+        except ValueError:
+            printWarning("Invalid input!")
+            pause()
+            return
+
+        if index == -1:
+            return
+        if not (0 <= index < len(accounts)):
+            printWarning("Invalid choice!")
+            pause()
+            return
+
+        accountId, name = accounts[index]
+        printWarning(f"\nDelete account '{name}'? All saves linked to this account will also be deleted. (y/n)")
+        confirm = console.input("[cyan]> [/cyan]").strip().lower()
+
+        if confirm != 'y':
+            return
+
+        strandingCurrent = self.player is not None and self.accountId == accountId
+        if strandingCurrent and self.saveNum is not None:
+            strandSave(self.saveNum, accountId)
+
+        deleteAccountAndSaves(self.saveNum, keepSaveNum=self.saveNum if strandingCurrent else None)
+        printSuccess(f"Account '{name}' deleted.")
+
+        if strandingCurrent:
+            self.player._accountId = STRANDED_ACCOUNT_ID
+            self._selectAccount(STRANDED_ACCOUNT_ID)
+            printWarning("Your current character was part of the deleted account and has been moved to Stranded Saves.")
+            printWarning("You must create or select a new account for it, otherwise you will no longer be able to access the Account Stash feature on this save file.")
+        elif self.accountId == accountId:
+            self.accountId = None
+            self.accountName = None
+        pause()
+
     def titleScreen(self):
+        settings = loadSettings()
+        if 'lastUsedAccountId' in settings:
+            accountId = settings['lastUsedAccountId']
+            validAccount = self.accountId is None or self.accountId == STRANDED_ACCOUNT_ID or loadAccount(accountId) is not None
+            if validAccount:
+                self.accountId = accountId
+                self.accountName = self._accountDisplayName(accountId)
+            elif not self.accountScreen():
+                printSuccess("\nThank you for playing!")
+                exit()
+        elif not self.accountScreen():
+            printSuccess("\nThank you for playing!")
+            exit()
+
         while True:
             clearScreen()
             printHeader("Welcome, Traveller, to Korus.")
 
             console.print("\n[bold cyan]Main Menu[/bold cyan]")
+            console.print("[dim]0.[/dim] [red]Exit[/red]")
             console.print("[dim]1.[/dim] [green]New Game[/green]")
             console.print("[dim]2.[/dim] [cyan]Load Game[/cyan]")
-            console.print("[dim]3.[/dim] [red]Exit[/red]\n")
+            console.print("[dim]3.[/dim] [yellow]Switch Account[/yellow]")
+            console.print("[dim]4.[/dim] [magenta]Tutorial[/magenta]")
+            console.print()
             if isServerRunning():
                 console.print("[dim green]Korus Feed Server Running. Link: http://localhost:8080 [/dim green]")
 
             choice = console.input("[cyan]Choose an option:\n> [/cyan]").strip()
 
-            if choice in ['cheat', 'quick', 'bug', 'skip']:
+            if choice == 'skip':
                 self.difficulty = Difficulty.NORMAL
                 self.hardcoreMode = False
                 name = "The Hero"
@@ -86,10 +235,13 @@ class Game:
                 self.camp = Camp(self.player)
                 if not self.mainMenu():
                     break
-            
+
             try:
                 choice = int(choice)
                 match choice:
+                    case 0:
+                        printSuccess("\nThank you for playing!")
+                        exit()
                     case 1:
                         self.newGame()
                         if not self.mainMenu():
@@ -99,14 +251,21 @@ class Game:
                             if not self.mainMenu():
                                 break
                     case 3:
-                        printSuccess("\nThank you for playing!")
-                        exit()
+                        if not self.accountScreen():
+                            printSuccess("\nThank you for playing!")
+                            exit()
+                    case 4:
+                        self.tutorial()
                     case _:
                         printWarning("Invalid choice!")
                         pause()
             except ValueError:
                 printWarning("Please enter a number!")
                 pause()
+
+    def tutorial(self):
+        from scripts.tutorial import runTutorial
+        runTutorial(self)
 
     def loadFromTitleScreen(self) -> bool:
         clearScreen()
@@ -118,7 +277,7 @@ class Game:
             return False
 
         try:
-            saves = displayExistingSaves()
+            saves = displayExistingSaves(self.accountId)
 
             if not saves:
                 printWarning("No saves found.")
@@ -131,8 +290,8 @@ class Game:
 
             if saveNum == '0':
                 return False
-            
-            data = load(saveNum)
+
+            data = load(saveNum, self.accountId)
             if data:
                 self.player = deserialisePlayer(data['player'])
                 self.camp = Camp(self.player)
@@ -163,10 +322,10 @@ class Game:
         if not name:
             name = "The Hero"
 
-        #self.selectDifficulty() <-- need to rework difficulty
-        self.difficulty = Difficulty.NORMAL
+        self.selectDifficulty()
 
         self.player = selectClass(name)
+        self.player._accountId = self.accountId
         self.camp = Camp(self.player)
         console.print(f"\n[success]The journey of {name} begins.[/success]")
 
@@ -186,7 +345,7 @@ class Game:
                 console.print(f"[dim]{i}.[/dim] {diff.getDisplayName()}")
                 console.print(f"    [dim]{diff.getDescription()}[/dim]\n")
 
-            choice = console.input("[cyan]Choose a difficulty (1-4):\n> [/cyan]")
+            choice = console.input(f"[cyan]Choose a difficulty (1-{len(Difficulty)}):\n> [/cyan]")
             try:
                 index = int(choice) - 1
                 if 0 <= index < len(Difficulty):
@@ -229,7 +388,7 @@ class Game:
         
         console.print("[dim]0.[/dim] [red]Cancel[/red]\n")
         
-        choice = console.input("[cyan]Choose new difficulty (1-4, 0 to cancel):\n> [/cyan]").strip()
+        choice = console.input(f"[cyan]Choose new difficulty (1-{len(Difficulty)}, 0 to cancel):\n> [/cyan]").strip()
         
         try:
             if choice == '0':
@@ -259,9 +418,9 @@ class Game:
         while True:
             clearScreen()
             if self.player._ascendancy is None:
-                printHeader(f"{self.player._name} - Level {self.player._level} {self.player.className}")
+                printHeader(f"{self.player.formatTitledName()} - Level {self.player._level} {self.player.className}")
             else:
-                printHeader(f"{self.player._name} - Level {self.player._level} {self.player._ascendancy} ({self.player.className})")
+                printHeader(f"{self.player.formatTitledName()} - Level {self.player._level} {self.player._ascendancy} ({self.player.className})")
 
             dType = f"[{self.player._damageType}]{self.player._damageType.title()}[/{self.player._damageType}]"
             console.print(f"[health]HP:[/health] {self.player._health}/{self.player._maxHealth} | "
@@ -426,7 +585,7 @@ class Game:
 
             printSeparator()
             console.print("[dim]0.[/dim] [red]Exit[/red]")
-            #console.print("[dim]1.[/dim] [gold1]Change Difficulty[/gold1]")
+            console.print("[dim]1.[/dim] [gold1]Change Difficulty[/gold1]")
             console.print("[dim]2.[/dim] [green]Help Menu[/green]")
             console.print("[dim]3.[/dim] [orange1]Save Menu[/orange1]")
             console.print("[dim]4.[/dim] [gold1]Rename Yourself[/gold1]")
@@ -442,10 +601,9 @@ class Game:
                     case 0:
                         return
                     case 1:
-                        continue
                         self.changeDifficulty()
                     case 2:
-                        self.help.helpMenu()
+                        self.help.helpMenu(self.player)
                     case 3:
                         self.saveMenu()
                     case 4:
@@ -487,30 +645,31 @@ class Game:
                     case 0:
                         return
                     case 1:
-                        displayExistingSaves()
+                        displayExistingSaves(self.accountId)
                         saveNum = console.input("[cyan]Input the save number you want to save to: (0 to cancel)\n[bold]>[/bold][/cyan] ").strip()
                         checkGlobalCommand(saveNum)
                         if saveNum == '0':
                             printWarning("Cancelled Save")
                             return
                         else:
-                            save(self, saveNum)
+                            save(self, saveNum, self.accountId)
                             try:
                                 self.saveNum = int(saveNum)
                             except ValueError:
                                 pass
                         break
                     case 2:
-                        displayExistingSaves()
+                        displayExistingSaves(self.accountId)
                         saveNum = console.input("[cyan]Input the save number you want to load from: (0 to cancel)\n[bold]>[/bold][/cyan] ").strip()
                         checkGlobalCommand(saveNum)
                         if saveNum == '0':
                             printWarning("Cancelled Load")
                             return
                         else:
-                            data = load(saveNum)
+                            data = load(saveNum, self.accountId)
                             if data:
                                 self.player = deserialisePlayer(data['player'])
+                                self.player._accountId = self.accountId
                                 self.camp.deserialiseAll(data['camp'], self.player)
                                 self.deserialise(data['game'])
                         try:
@@ -519,15 +678,15 @@ class Game:
                             pass
                         break
                     case 3:
-                        displayExistingSaves()
+                        displayExistingSaves(self.accountId)
                         saveNum = console.input("[cyan]Input the save number you want to delete: (0 to cancel)\n[bold]>[/bold][/cyan] ").strip()
                         checkGlobalCommand(saveNum)
                         if saveNum == '0':
                             printWarning("Cancelled Save Deletion")
                             return
-                        deleteSave(saveNum)
+                        deleteSave(saveNum, self.accountId)
                     case 4:
-                        undoLastOperation()
+                        undoLastOperation(self.accountId)
                     case _:
                         printError("Invalid choice.")
                         pause()
@@ -566,7 +725,7 @@ class Game:
                 printHeader("HARDCORE MODE - SAVE DELETED", style="bold red")
 
                 try:
-                    savePath = f"Korus/data/saves/Save {self.saveNum}.json"
+                    savePath = _saveFilePath(self.saveNum, self.accountId)
                     if path.exists(savePath):
                         remove(savePath)
                         printInfo(f"Save {self.saveNum} has been permanently deleted.")
@@ -724,6 +883,8 @@ class Game:
         if not self._monitorCombatResults(enemies):
             return
 
+        usedBonusAction = False
+
         while True:
             clearScreen()
             printHeader(f"Your Turn: Round {self.combatManager.turnNumber}")
@@ -732,8 +893,10 @@ class Game:
             aliveEnemies = [e for e in enemies if not e._isDead]
 
             console.print("\n[bold cyan]=== Actions ===[/bold cyan]\n")
-            if self.player.consumable.useable:
-                console.print(f"[dim]C.[/dim] [green]Use {self.player.consumable.name} to heal for {int(self.player.consumable.healPercent*100)}% Max HP.[/green] [bold](Free Action)[/bold]")
+            if not usedBonusAction and self.player.consumable.useable:
+                console.print(f"[dim]C.[/dim] [green]Use {self.player.consumable.name} to heal for {int(self.player.consumable.healPercent*100)}% Max HP.[/green] [bold](Bonus Action)[/bold]")
+            if not usedBonusAction and self.player._foodInventory:
+                console.print(f"[dim]E.[/dim] [green]Eat Food ({len(self.player._foodInventory)} available)[/green] [bold](Bonus Action)[/bold]")
             console.print("[dim]F.[/dim] [yellow]Flee from Combat[/yellow]")
             console.print("[dim]D.[/dim] [dim red]View Enemy Details[/dim red]")
             console.print("[dim]P. Pass Turn[/dim]")
@@ -759,8 +922,32 @@ class Game:
                         if eq is not None:
                             console.print(f"{slot}:\n{eq}")
                 pause()
-            elif action.lower() == 'c' and self.player.consumable.useable:
+            elif action.lower() == 'c' and not usedBonusAction and self.player.consumable.useable:
                 self.player.useConsumable()
+                usedBonusAction = True
+                continue
+            elif action.lower() == 'e' and not usedBonusAction and self.player._foodInventory:
+                clearScreen()
+                printHeader("Eat Food")
+                for i, food in enumerate(self.player._foodInventory, 1):
+                    console.print(f"  [cyan]{i}.[/cyan] {food.describe()}")
+                choice = console.input("\n[cyan]Eat which food? (0 to cancel):\n> [/cyan]").strip()
+                try:
+                    index = int(choice) - 1
+                except ValueError:
+                    printError("Invalid input!")
+                    pause()
+                    continue
+                if index == -1:
+                    continue
+                if not (0 <= index < len(self.player._foodInventory)):
+                    printWarning("Invalid choice!")
+                    pause()
+                    continue
+                food = self.player._foodInventory.pop(index)
+                self.player.eatFood(food)
+                usedBonusAction = True
+                pause()
                 continue
             elif action.lower() == 'f':
                 console.print("[red]Fled from battle.[/red]")
@@ -859,9 +1046,19 @@ class Game:
         if self.camp.market.level >= 1:
             tradeVouchers = random.randint(0, 2 + (self.camp.market.level // 2))
 
+        questBoard = getattr(self.player, '_questBoard', None)
+        if questBoard is not None:
+            questBoard.notifyEvent('battle_won')
         for enemy in enemies:
             totalXp += enemy.getExperienceReward()
             totalGold += enemy.getGoldReward()
+
+            if questBoard is not None:
+                questBoard.notifyEvent(
+                    'enemy_killed',
+                    rarity=enemy.rarity.value if getattr(enemy, 'rarity', None) else 'common',
+                    className=enemy.className.value if getattr(enemy, 'className', None) else None,
+                )
 
             resources, equipmentPool, runes = enemy.dropLoot()
             
@@ -992,7 +1189,7 @@ def main():
             response = console.input("[cyan]Would you like to save before exiting? (y/n):[/cyan]\n> ").strip().lower()
             if response == "y":
                 saveNum = console.input("[cyan]Enter save slot number:[/cyan]\n> ").strip()
-                save(game, saveNum)
+                save(game, saveNum, game.accountId)
     except Exception as e:
         console.print("\n" + "="*70)
         printError("CRITICAL ERROR - The game has crashed!")
@@ -1011,7 +1208,7 @@ def main():
             saveCrash = console.input("[green]Would you like to save your file before the game exits? (Y/N)[/green]\n[cyan]> [/cyan]").lower().strip()
             if saveCrash == 'y':
                 printInfo("\nYour game state has been saved and can be recovered/loaded at any time. The crash save is save file 999")
-                save(game, 999)
+                save(game, 999, game.accountId)
         pause()
         raise
 

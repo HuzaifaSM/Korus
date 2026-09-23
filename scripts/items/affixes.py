@@ -121,7 +121,8 @@ class Affix:
             'locked': self.locked,
             'soulbound': self.soulbound,
             'isMythic': self.isMythic,
-            'isGlobal': self.isGlobal
+            'isGlobal': self.isGlobal,
+            'data': self.data
         }
 
     @classmethod
@@ -131,7 +132,7 @@ class Affix:
                 id=data.get('id', ''),
                 name=data.get('name', ''),
                 levelReq=data.get('levelReq', 1),
-                tier=data.get('tier', int(data.get('id', '',).split('_t')[-1])),
+                tier=data.get('tier', int(data.get('id', '',).rsplit('_t', 1)[-1])),
                 stat=data.get('stat', ''),
                 slot=data.get('slot', ''),
                 minVal=data.get('minVal', 0),
@@ -149,6 +150,7 @@ class Affix:
                 levelReq=data.get('levelReq', 1),
                 tier=0,
                 stat=data.get('stat', ''),
+                slot=data.get('slot', ''),
                 minVal=data.get('minVal', 0),
                 maxVal=data.get('maxVal', 1),
                 isPercent=data.get('isPercent', False),
@@ -160,12 +162,17 @@ class Affix:
         affix.baseValue = data.get('baseValue')
         affix.mastery = data.get('mastery', 0)
         affix.locked = data.get('locked', False)
+        affix.soulbound = data.get('soulbound', False)
+        affix.data = data.get('data', {})
         return affix
 
 def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
-    fp = 'Korus/scripts/items/affixes.json' if exists('Korus') else 'scripts/items/affixes.json'
+    fp = 'Korus/scripts/items/data/affixes.json' if exists('Korus') else 'scripts/items/data/affixes.json'
+    mfp = 'Korus/scripts/items/data/marketAffixes.json' if exists('Korus') else 'scripts/items/data/marketAffixes.json'
     with open(fp, 'r') as f:
         affixData = json.load(f)
+    with open(mfp, 'r') as f:
+        marketAffixData = json.load(f)
 
     affixPool = {
         'weapon': {'prefixes': {}, 'suffixes': {}},
@@ -180,7 +187,9 @@ def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
         'sigil_offensive': {'prefixes': {}, 'suffixes': {}},
         'sigil_defensive': {'prefixes': {}, 'suffixes': {}},
     }
+    marketAffixPool = deepcopy(affixPool)
     maxTiers: Dict[tuple[str, str], int] = {}
+    maxMarketTiers = deepcopy(maxTiers)
 
     JSON_POOL_KEY = {'offhand': 'shield'}
 
@@ -246,14 +255,58 @@ def _createAffixList() -> Dict[str, Dict[str, Affix]] | Dict[str, Affix]:
                     )
 
                     affixPool[equipType][affixType][uniqueId] = affix
-                    maxTiers[(equipType, uniqueId.split('_t')[0])] = maxTier
-                    
-    return affixPool, maxTiers
+                    maxTiers[(equipType, uniqueId.rsplit('_t', 1)[0])] = maxTier
+
+        if jsonPoolKey not in marketAffixData:
+            continue
+
+        for affixType in ['prefixes', 'suffixes']:
+            if affixType not in marketAffixData[jsonPoolKey]:
+                continue
+
+            for mAffixId, mAffixInfo in marketAffixData[jsonPoolKey][affixType].items():
+                maxTier = int(max(mAffixInfo['tiers'].keys()))
+                topTier = maxTier - 1
+
+                for mTierId, mTierData in mAffixInfo['tiers'].items():
+                    uniqueId = f"{mAffixId}_t{mTierId}"
+                    mTierId = int(mTierId)
+
+                    if mTierId == maxTier:
+                        markup = 'cornsilk1 bold underline'
+                    elif mTierId == topTier:
+                        markup = 'cornsilk dim bold'
+                    else:
+                        markup = 'wheat1'
+
+                    name = f"[{markup}]{mTierData['name']}[/{markup}]"
+
+                    affix =Affix(
+                        id=uniqueId,
+                        name=name,
+                        levelReq=mTierData['levelReq'],
+                        tier=mTierId,
+                        stat=mAffixInfo['stat'],
+                        slot=equipType,
+                        minVal=mTierData['min'],
+                        maxVal=mTierData['max'],
+                        isPercent=mAffixInfo.get('isPercent', False),
+                        kind=affixType[:-2], #prefixes => prefix
+                        weight=mTierData.get('weight', 100),
+                        categories=mAffixInfo['categories'],
+                        isGlobal=mAffixInfo.get('isGlobal', False),
+                    )
+
+                    marketAffixPool[equipType][affixType][uniqueId] = affix
+                    maxMarketTiers[(equipType, uniqueId.rsplit('_t', 1)[0])] = maxTier
+           
+    return affixPool, marketAffixPool, maxTiers, maxMarketTiers
 
 def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
-              excludeIds: Set[str] = None, tierBias: float = 0.0,
-              defenseType: str = None,
+              excludeIds: Set[str] = None, affixPool: str = 'affixes',
+              tierBias: float = 0.0, defenseType: str = None,
               minAffixLevel: int | None = None, noEmpty: bool = False) -> Optional[Affix]:
+    """affixPool = 'affixes' or 'market'"""
     from .items import ItemRarity
     baseEmptyChance = {
         ItemRarity.COMMON: 0.4,
@@ -273,15 +326,17 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
 
     excludeIds = excludeIds or set()
 
-    if equipType not in AFFIX_POOL:
+    pool = AFFIX_POOL if affixPool == 'affixes' else MARKET_AFFIX_POOL
+
+    if equipType not in pool:
         return None
 
     if affixType == 'prefix':
         affixType = 'prefixes'
     elif affixType == 'suffix':
         affixType = 'suffixes'
-    
-    availableAffixes = AFFIX_POOL[equipType][affixType]
+
+    availableAffixes = pool[equipType][affixType]
 
     minLevelAffix = max(0, min(30, itemLevel - 75)) # min lvl 25 at level 100, min 30 at 105
     if minAffixLevel:
@@ -292,7 +347,7 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
 
     for affixId, affix in availableAffixes.items():
         if minLevelAffix <= affix.levelReq <= itemLevel and affixId not in excludeIds:
-            baseId = affix.id.split('_t')[0]
+            baseId = affix.id.rsplit('_t', 1)[0]
             if baseId not in excludeIds:
 
                 if defenseType:
@@ -306,10 +361,10 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
                 baseWeight = affix.weight
 
                 if tierBias > 0.0:
-                    tierNum = int(affixId.split('_t')[1])
+                    tierNum = int(affixId.rsplit('_t', 1)[1])
                     maxTier = 1
                     for otherId in availableAffixes.keys():
-                        otherTier = int(otherId.split('_t')[1])
+                        otherTier = int(otherId.rsplit('_t', 1)[1])
                         maxTier = max(maxTier, otherTier)
 
                     tierRatio = tierNum / maxTier
@@ -342,36 +397,39 @@ def rollAffix(equipType: str, affixType: str, itemLevel: int, rarity: str,
 
     return rolledAffix
 
-def getAffixById(affixId: str) -> Optional[Affix]:
-    for equipType in AFFIX_POOL.values():
+def getAffixById(affixId: str, affixPool: str = 'affixes') -> Optional[Affix]:
+    pool = AFFIX_POOL if affixPool == 'affixes' else MARKET_AFFIX_POOL
+    for equipType in pool.values():
         for affixType in equipType.values():
             if affixId in affixType:
                 return affixType[affixId]
-            
+
     return None
 
-def getMaxAffixTier(equipType: str, kind: str, affixId: str) -> Optional[int]:
-    affixId = affixId.split('_t')[0]
-    if equipType in AFFIX_POOL:
-        if kind in AFFIX_POOL[equipType]:
+def getMaxAffixTier(equipType: str, kind: str, affixId: str, affixPool: str = 'affixes') -> Optional[int]:
+    pool = AFFIX_POOL if affixPool == 'affixes' else MARKET_AFFIX_POOL    
+    affixId = affixId.rsplit('_t', 1)[0]
+    if equipType in pool:
+        if kind in pool[equipType]:
             highest = 0
-            for affix in AFFIX_POOL[equipType][kind]:
-                if affix.split('_t')[0] == affixId:
-                    tier = int(affix.split('_t')[1])
+            for affix in pool[equipType][kind]:
+                if affix.rsplit('_t', 1)[0] == affixId:
+                    tier = int(affix.rsplit('_t', 1)[1])
                     if tier > highest:
                         highest = tier
             return highest if highest > 0 else None
     return None
 
-def getTierVariants(item, affix) -> List[Affix]:
+def getTierVariants(item, affix: Affix, affixPool: str = 'affixes') -> List[Affix]:
+    pool = AFFIX_POOL if affixPool == 'affixes' else MARKET_AFFIX_POOL
     equipType = affix.slot  # not item.slot - a 1h weapon's affixes live in the 'one_handed' pool
     poolType = 'prefixes' if affix.kind == 'prefix' else 'suffixes'
     affixId = affix.id
 
     candidates = []
 
-    for otherId, otherAffix in AFFIX_POOL[equipType][poolType].items():
-        if otherId.split('_t')[0] != affixId.split('_t')[0]:
+    for otherId, otherAffix in pool[equipType][poolType].items():
+        if otherId.rsplit('_t', 1)[0] != affixId.rsplit('_t', 1)[0]:
             continue
         if otherAffix.levelReq > item.level:
             continue
@@ -379,11 +437,12 @@ def getTierVariants(item, affix) -> List[Affix]:
 
     return candidates
 
-def getTieredAffix(slot: str, kind: str, info: Optional[List[Affix, str]] =[], affixId: Optional[str] = None) -> Optional[Affix]:
+def getTieredAffix(slot: str, kind: str, info: Optional[List[Affix, str]] =[], affixId: Optional[str] = None, affixPool: str = 'affixes') -> Optional[Affix]:
     """
     kind=prefixes/suffixes\n
     info should be [Affix, tier]\n
-    affixId should be exact id to immediately extract from the affix pool e.g. 'added_damage_t4'
+    affixId should be exact id to immediately extract from the affix pool e.g. 'added_damage_t4'\n
+    affixPool must be 'affixes' or 'market'
     """
     if affixId is None:
         affix = info[0]
@@ -395,7 +454,8 @@ def getTieredAffix(slot: str, kind: str, info: Optional[List[Affix, str]] =[], a
         kind = 'prefixes'
     elif kind == 'suffix':
         kind = 'suffixes'
-    newAffix = AFFIX_POOL[slot][kind].get(affixId, None)
+    pool = AFFIX_POOL if affixPool == 'affixes' else MARKET_AFFIX_POOL
+    newAffix = pool[slot][kind].get(affixId, None)
     return deepcopy(newAffix) if newAffix is not None else None
 
-AFFIX_POOL, MAX_TIERS = _createAffixList()
+AFFIX_POOL, MARKET_AFFIX_POOL, MAX_TIERS, MAX_MARKET_TIERS = _createAffixList()

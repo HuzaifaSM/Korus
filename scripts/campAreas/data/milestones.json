@@ -1,0 +1,363 @@
+{
+    "reach_level_5": {
+        "name": "Getting Started",
+        "description": "Reach character level 5.",
+        "act": 1,
+        "trigger": {"event": "level_reached", "mode": "gauge", "valueKey": "level", "target": 5},
+        "rewards": {"gold": 150, "items": {"wood": 15, "stone": 15}}
+    },
+    "reach_level_10": {
+        "name": "Finding Your Feet",
+        "description": "Reach character level 10.",
+        "act": 1,
+        "trigger": {"event": "level_reached", "mode": "gauge", "valueKey": "level", "target": 10},
+        "rewards": {"gold": 400, "items": {"wood": 30, "stone": 30}}
+    },
+    "reach_level_15": {
+        "name": "Building Momentum",
+        "description": "Reach character level 15.",
+        "act": 1,
+        "trigger": {"event": "level_reached", "mode": "gauge", "valueKey": "level", "target": 15},
+        "rewards": {"gold": 800, "items": {"brick": 15, "leather": 15}}
+    },
+    "reach_level_20": {
+        "name": "Ready to Ascend",
+        "description": "Reach character level 20.",
+        "act": 1,
+        "trigger": {"event": "level_reached", "mode": "gauge", "valueKey": "level", "target": 20},
+        "rewards": {"gold": 1500, "items": {"soul": 5, "ascended_essence": 5}}
+    },
+    "choose_ascendancy": {
+        "name": "A New Path",
+        "description": "Visit the Shrine and choose your first Ascendancy.",
+        "act": 1,
+        "trigger": {"event": "ascendancy_chosen", "target": 1},
+        "rewards": {"gold": 2500}
+    },
+    "campfire_level_5": {
+        "name": "Master of the Hearth",
+        "description": "Reach Campfire Level 5.",
+        "act": 2,
+        "trigger": {"event": "station_upgraded", "filter": {"station": "Campfire"}, "mode": "gauge", "valueKey": "level", "target": 5},
+        "rewards": {"gold": 1000, "items": {"wood": 50, "stone": 50}}
+    },
+    "forge_level_5": {
+        "name": "Master of the Forge",
+        "description": "Reach Forge Level 5.",
+        "act": 2,
+        "trigger": {"event": "station_upgraded", "filter": {"station": "Forge"}, "mode": "gauge", "valueKey": "level", "target": 5},
+        "rewards": {"gold": 1000, "items": {"brick": 50, "metal": 50}}
+    },
+    "market_level_5": {
+        "name": "Master of the Market",
+        "description": "Reach Market Level 5.",
+        "act": 2,
+        "trigger": {"event": "station_upgraded", "filter": {"station": "Market"}, "mode": "gauge", "valueKey": "level", "target": 5},
+        "rewards": {"gold": 1000, "items": {"leather": 50, "cloth": 50}}
+    },
+    "shrine_level_5": {
+        "name": "Master of the Shrine",
+        "description": "Reach Shrine Level 5.",
+        "act": 2,
+        "trigger": {"event": "station_upgraded", "filter": {"station": "Shrine"}, "mode": "gauge", "valueKey": "level", "target": 5},
+        "rewards": {"gold": 1000, "items": {"soul": 20, "ascended_essence": 20}}
+    },
+    "find_legendary": {
+        "name": "Legendary Find",
+        "description": "Find a Legendary rarity item.",
+        "act": 3,
+        "trigger": {"event": "item_found", "filter": {"rarity": "legendary"}, "target": 1},
+        "rewards": {"gold": 1500, "items": {"metal": 20, "cloth": 20}}
+    },
+    "find_mythic": {
+        "name": "Mythic Find",
+        "description": "Find a Mythic rarity item.",
+        "act": "endgame",
+        "trigger": {"event": "item_found", "filter": {"rarity": "mythic"}, "target": 1},
+        "rewards": {"gold": 3000, "items": {"soul": 10}, "title": {"text": "Mythical", "style": "prefix"}}
+    },
+    "reveal_blank": {
+        "name": "Unbound Potential",
+        "description": "Reveal a Blank rarity item.",
+        "act": "endgame",
+        "trigger": {"event": "blank_item_revealed", "target": 1},
+        "rewards": {"gold": 3000, "items": {"ascended_essence": 10}, "title": {"text": "Unbound", "style": "prefix"}}
+    },
+
+    "craft_growth_basic": {
+        "name": "Nurturing Touch",
+        "description": "Use a Growth Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "growth", "runeType": "growth"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "growth", "runeType": "growth", "quantity": 1}]}
+    },
+    "craft_growth_greater": {
+        "name": "Flourishing Touch",
+        "description": "Use a Greater Growth Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "growth", "runeType": "greater"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "growth", "runeType": "greater", "quantity": 1}]}
+    },
+    "craft_growth_perfect": {
+        "name": "Unrestrained Growth",
+        "description": "Use a Perfect Growth Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "growth", "runeType": "perfect"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "growth", "runeType": "perfect", "quantity": 1}]}
+    },
+
+    "craft_chaos_basic": {
+        "name": "A Roll of the Dice",
+        "description": "Use a Chaos Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "chaos", "runeType": "chaos"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "chaos", "runeType": "chaos", "quantity": 1}]}
+    },
+    "craft_chaos_greater": {
+        "name": "Embracing Chaos",
+        "description": "Use a Greater Chaos Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "chaos", "runeType": "greater"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "chaos", "runeType": "greater", "quantity": 1}]}
+    },
+    "craft_chaos_perfect": {
+        "name": "Agent of Chaos",
+        "description": "Use a Perfect Chaos Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "chaos", "runeType": "perfect"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "chaos", "runeType": "perfect", "quantity": 1}]}
+    },
+
+    "craft_erasing_basic": {
+        "name": "Clean Slate",
+        "description": "Use an Erasing Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "erasing", "runeType": "erasing"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "erasing", "runeType": "erasing", "quantity": 1}]}
+    },
+    "craft_erasing_greater": {
+        "name": "Wiping Away",
+        "description": "Use a Greater Erasing Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "erasing", "runeType": "greater"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "erasing", "runeType": "greater", "quantity": 1}]}
+    },
+    "craft_erasing_perfect": {
+        "name": "Leave No Trace",
+        "description": "Use a Perfect Erasing Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "erasing", "runeType": "perfect"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "erasing", "runeType": "perfect", "quantity": 1}]}
+    },
+
+    "craft_mastery_basic": {
+        "name": "Getting the Hang of It",
+        "description": "Use a Mastery Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "mastery", "runeType": "mastery"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "mastery", "runeType": "mastery", "quantity": 1}]}
+    },
+    "craft_mastery_greater": {
+        "name": "Skilled Hand",
+        "description": "Use a Greater Mastery Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "mastery", "runeType": "greater"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "mastery", "runeType": "greater", "quantity": 1}]}
+    },
+    "craft_mastery_perfect": {
+        "name": "True Mastery",
+        "description": "Use a Perfect Mastery Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "mastery", "runeType": "perfect"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "mastery", "runeType": "perfect", "quantity": 1}]}
+    },
+
+    "craft_destabilisation_basic": {
+        "name": "Tempting Fate",
+        "description": "Use a Destabilisation Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "destabilisation", "runeType": "destabilisation"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "destabilisation", "runeType": "destabilisation", "quantity": 1}]}
+    },
+    "craft_destabilisation_greater": {
+        "name": "Calculated Risk",
+        "description": "Use a Greater Destabilisation Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "destabilisation", "runeType": "greater"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "destabilisation", "runeType": "greater", "quantity": 1}]}
+    },
+    "craft_destabilisation_perfect": {
+        "name": "High Roller",
+        "description": "Use a Perfect Destabilisation Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "destabilisation", "runeType": "perfect"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "destabilisation", "runeType": "perfect", "quantity": 1}]}
+    },
+
+    "craft_revealing_basic": {
+        "name": "Peering Closer",
+        "description": "Use a Revealing Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "revealing", "runeType": "revealing"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "revealing", "runeType": "revealing", "quantity": 1}]}
+    },
+    "craft_revealing_greater": {
+        "name": "Clear Sight",
+        "description": "Use a Greater Revealing Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "revealing", "runeType": "greater"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "revealing", "runeType": "greater", "quantity": 1}]}
+    },
+    "craft_revealing_perfect": {
+        "name": "Nothing Hidden",
+        "description": "Use a Perfect Revealing Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "revealing", "runeType": "perfect"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "revealing", "runeType": "perfect", "quantity": 1}]}
+    },
+
+    "craft_randomiser_basic": {
+        "name": "Leave It to Chance",
+        "description": "Use a Value Randomiser Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "randomiser", "runeType": "value"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "randomiser", "runeType": "value", "quantity": 1}]}
+    },
+    "craft_randomiser_greater": {
+        "name": "Rolling Again",
+        "description": "Use a Greater Value Randomiser Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "randomiser", "runeType": "greater_value"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "randomiser", "runeType": "greater_value", "quantity": 1}]}
+    },
+    "craft_randomiser_perfect": {
+        "name": "Loaded Dice",
+        "description": "Use a Perfect Value Randomiser Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "randomiser", "runeType": "perfect_value"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "randomiser", "runeType": "perfect_value", "quantity": 1}]}
+    },
+
+    "craft_manipulation_basic": {
+        "name": "Bringing Together",
+        "description": "Use a Fusion Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "manipulation", "runeType": "fusion"}, "target": 1},
+        "rewards": {"gold": 50, "runes": [{"category": "manipulation", "runeType": "fusion", "quantity": 1}]}
+    },
+    "craft_manipulation_greater": {
+        "name": "Greater Union",
+        "description": "Use a Greater Fusion Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "manipulation", "runeType": "greater_fusion"}, "target": 1},
+        "rewards": {"gold": 150, "runes": [{"category": "manipulation", "runeType": "greater_fusion", "quantity": 1}]}
+    },
+    "craft_manipulation_perfect": {
+        "name": "Perfect Union",
+        "description": "Use a Perfect Fusion Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "manipulation", "runeType": "perfect_fusion"}, "target": 1},
+        "rewards": {"gold": 400, "runes": [{"category": "manipulation", "runeType": "perfect_fusion", "quantity": 1}]}
+    },
+
+    "craft_rarity": {
+        "name": "Rolling the Rarity",
+        "description": "Use a Rarity Rune.",
+        "act": 4,
+        "trigger": {"event": "rune_used", "filter": {"category": "rarity"}, "target": 1},
+        "rewards": {"gold": 200, "runes": [{"category": "rarity", "runeType": "common", "quantity": 1}]}
+    },
+
+    "defeat_30_legendary": {
+        "name": "Giant Slayer",
+        "description": "Defeat 30 Legendary rarity enemies.",
+        "act": 5,
+        "trigger": {"event": "enemy_killed", "filter": {"rarity": "legendary"}, "target": 30},
+        "rewards": {"gold": 5000, "items": {"metal": 30, "cloth": 30}}
+    },
+    "defeat_20_champion": {
+        "name": "Champion Hunter",
+        "description": "Defeat 20 Champion enemies.",
+        "act": 5,
+        "trigger": {"event": "enemy_killed", "filter": {"className": "champion"}, "target": 20},
+        "rewards": {"gold": 4000, "items": {"brick": 30, "leather": 30}}
+    },
+    "reach_90_resistance": {
+        "name": "Impenetrable",
+        "description": "Reach 90% resistance in any single damage type.",
+        "act": 5,
+        "trigger": {"event": "state_check", "check": "max_resistance", "target": 90},
+        "rewards": {"gold": 4000, "items": {"soul": 15}}
+    },
+
+    "reach_level_100": {
+        "name": "Reach Level 100",
+        "description": "Reach character level 100.",
+        "act": "endgame",
+        "trigger": {"event": "level_reached", "mode": "gauge", "valueKey": "level", "target": 100},
+        "rewards": {"gold": 8000, "items": {"soul": 25, "ascended_essence": 25}, "title": {"text": "Unbroken", "style": "prefix"}}
+    },
+    "true_max_mastery": {
+        "name": "True Mastery",
+        "description": "Reach 35% Mastery on a single item, hard-capped at 40% - a target within reach of a maxed Overcharged mythic affix and dedicated grinding.",
+        "act": "endgame",
+        "trigger": {"event": "state_check", "check": "max_item_mastery", "target": 35},
+        "rewards": {"gold": 8000, "items": {"ascended_essence": 25}, "title": {"text": "the Perfectionist", "style": "suffix"}}
+    },
+    "black_market_mythic_and_blank": {
+        "name": "Black Market Regular",
+        "description": "Buy both a Mythic and a Blank item from the Black Market.",
+        "act": "endgame",
+        "trigger": {"event": "black_market_purchase", "mode": "multi", "filters": [{"rarity": "mythic"}, {"rarity": "blank"}], "target": 3},
+        "rewards": {"gold": 8000, "items": {"soul": 20}, "title": {"text": "the Fence", "style": "suffix"}}
+    },
+    "use_soulbound_rune": {
+        "name": "Bound for Life",
+        "description": "Use a Soulbound Rune.",
+        "act": "endgame",
+        "trigger": {"event": "rune_used", "filter": {"category": "unique", "runeType": "soulbound"}, "target": 1},
+        "rewards": {"gold": 6000, "items": {"soul": 15}, "title": {"text": "the Bound", "style": "suffix"}}
+    },
+    "use_parallel_rune": {
+        "name": "Parallel Paths",
+        "description": "Use a Parallel Rune.",
+        "act": "endgame",
+        "trigger": {"event": "rune_used", "filter": {"category": "unique", "runeType": "parallel"}, "target": 1},
+        "rewards": {"gold": 6000, "items": {"soul": 15}, "title": {"text": "the Mirrored", "style": "suffix"}}
+    },
+    "use_foresight_rune": {
+        "name": "Seeing Ahead",
+        "description": "Use a Foresight Rune.",
+        "act": "endgame",
+        "trigger": {"event": "rune_used", "filter": {"category": "unique", "runeType": "foresight"}, "target": 1},
+        "rewards": {"gold": 6000, "items": {"soul": 15}, "title": {"text": "the Seer", "style": "suffix"}}
+    },
+    "use_ascendant_rarity_rune": {
+        "name": "Beyond Legendary",
+        "description": "Use an Ascendant Rarity Rune.",
+        "act": "endgame",
+        "trigger": {"event": "rune_used", "filter": {"category": "rarity", "runeType": "ascendant"}, "target": 1},
+        "rewards": {"gold": 6000, "items": {"soul": 15}, "title": {"text": "the Ascendant", "style": "suffix"}}
+    },
+    "roll_eternal_outcome": {
+        "name": "Never Ending",
+        "description": "Roll the 'Eternal' outcome with a Destabilisation Rune.",
+        "act": "endgame",
+        "trigger": {"event": "destabilisation_outcome", "filter": {"outcome": "eternal"}, "target": 1},
+        "rewards": {"gold": 7000, "items": {"ascended_essence": 15}, "title": {"text": "Everlasting", "style": "prefix"}}
+    },
+    "roll_transcendent_outcome": {
+        "name": "Beyond the Self",
+        "description": "Roll the 'Transcendent' outcome with a Destabilisation Rune.",
+        "act": "endgame",
+        "trigger": {"event": "destabilisation_outcome", "filter": {"outcome": "transcendent"}, "target": 1},
+        "rewards": {"gold": 7000, "items": {"ascended_essence": 15}, "title": {"text": "Transcendent", "style": "prefix"}}
+    },
+    "legendary_in_every_slot": {
+        "name": "Head to Toe",
+        "description": "Have a Legendary rarity or higher item equipped in every gear slot: weapon, offhand (or a two-handed weapon), all armour pieces, ring, amulet, and all 5 sigils.",
+        "act": "endgame",
+        "trigger": {"event": "state_check", "check": "legendary_in_every_slot", "target": 1},
+        "rewards": {"gold": 8000, "items": {"soul": 25, "ascended_essence": 25}, "title": {"text": "Resplendent", "style": "prefix"}}
+    }
+}

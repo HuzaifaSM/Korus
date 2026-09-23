@@ -11,6 +11,8 @@ from .styles import (
 )
 from .enemies.enemyAi import EnemyAI
 
+_TRUE_ORIGINAL_PRINT = console.print
+
 class TurnPhase(Enum):
     PLAYER_TURN = "player"
     ENEMY_TURN = "enemy"
@@ -135,19 +137,9 @@ class CombatUnit:
     def getResistanceModifier(self, damageType: str, attacker=None) -> float:
         baseResist = self.entity._stats['Resistances'].get(damageType, 0)
 
-        baseResist += self.entity._stats['Resistances'].get('all', 0)
-
         ELEMENTAL_TYPES = ['fire', 'cold', 'lightning', 'earth']
-        if damageType in ELEMENTAL_TYPES:
-            baseResist += self.entity._stats['Resistances'].get('elemental', 0)
-
         DIVINE_TYPES = ['holy', 'dark', 'arcane']
-        if damageType in DIVINE_TYPES:
-            baseResist += self.entity._stats['Resistances'].get('divine', 0)
-
         OTHERWORLD_TYPES = ['chaos', 'ethereal', 'psychic']
-        if damageType in OTHERWORLD_TYPES:
-            baseResist += self.entity._stats['Resistances'].get('otherworld', 0)
 
         for effect in self.statusEffects:
             if effect.name == "burn":
@@ -228,7 +220,7 @@ class CombatManager:
         self.units = []
         self.battleLog = []
         self.combatLog: List[str] = []
-        self._originalPrint = console.print
+        self._originalPrint = _TRUE_ORIGINAL_PRINT
         console.print = self._capturePrint
 
         self.player = self.registerUnit(player, "player")
@@ -344,8 +336,8 @@ class CombatManager:
 
     def endBattle(self):
         self.battleActive = False
+        console.print = _TRUE_ORIGINAL_PRINT
         if hasattr(self, '_originalPrint'):
-            console.print = self._originalPrint
             del self._originalPrint
 
     def addStatusEffect(self, target: Entity, statusEffect: StatusEffect, attacker: Entity):
@@ -678,11 +670,10 @@ class CombatManager:
                                 attacker.onKill(t, killData, self)
                                 attacker._mythicDispatch('onKill', t, killData, self)
                             else:
-                                attacker.onExecuteCheck(t, self) # check for any executes (e.g. blood spike or ascendancy-specific)
+                                if attacker.onExecuteCheck(t, self):
+                                    t.damage(t._health, 'true', targetUnit, attacker=attacker)
+                                    self.checkDead(t)
                                 attacker._mythicDispatch('onExecuteCheck', t, self)
-
-                            if t._isDead:
-                                break # prevent multihit bugs
 
             return True
 

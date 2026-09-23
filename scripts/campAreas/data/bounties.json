@@ -1,0 +1,75 @@
+{
+    "kill_enemies_basic": {
+        "name": "Pest Control",
+        "tier": 0,
+        "descriptionTemplate": "Defeat {target} enemies.",
+        "trigger": {"event": "enemy_killed", "targetRange": [8, 15]},
+        "rewards": {"creditsRange": [1, 2]}
+    },
+    "win_battles_basic": {
+        "name": "Steady Victories",
+        "tier": 0,
+        "descriptionTemplate": "Win {target} battles.",
+        "trigger": {"event": "battle_won", "targetRange": [3, 6]},
+        "rewards": {"creditsRange": [1, 2]}
+    },
+    "earn_gold_basic": {
+        "name": "Treasure Hunter",
+        "tier": 0,
+        "descriptionTemplate": "Earn {target} gold.",
+        "trigger": {"event": "gold_gained", "valueKey": "amount", "targetRange": [200, 500]},
+        "rewards": {"creditsRange": [1, 2]}
+    },
+    "collect_resources_basic": {
+        "name": "Gatherer",
+        "tier": 0,
+        "descriptionTemplate": "Collect {target} resources.",
+        "trigger": {"event": "resource_gained", "valueKey": "amount", "targetRange": [20, 50]},
+        "rewards": {"creditsRange": [1, 2]}
+    },
+
+    "find_rare_items": {
+        "name": "Rare Hunter",
+        "tier": 1,
+        "descriptionTemplate": "Find {target} Rare rarity items.",
+        "trigger": {"event": "item_found", "filter": {"rarity": "rare"}, "targetRange": [2, 4]},
+        "rewards": {"creditsRange": [3, 5]}
+    },
+    "use_specific_rune_category": {
+        "name": "Rune Specialist",
+        "tier": 1,
+        "descriptionTemplate": "Use {target} {filterChoice} Runes.",
+        "trigger": {"event": "rune_used", "targetRange": [3, 6]},
+        "randomFilter": {
+            "key": "category",
+            "choices": ["growth", "chaos", "erasing", "randomiser", "mastery", "rarity", "destabilisation", "revealing", "manipulation", "quest"]
+        },
+        "rewards": {"creditsRange": [3, 5]}
+    },
+    "kill_specific_enemy_class": {
+        "name": "Champion Slayer",
+        "tier": 1,
+        "descriptionTemplate": "Defeat {target} {filterChoice} enemies.",
+        "trigger": {"event": "enemy_killed", "targetRange": [5, 10]},
+        "randomFilter": {
+            "key": "className",
+            "choices": ["attacker", "support", "bruiser", "debilitator", "champion", "fanatic", "healer", "standard_bearer", "tank"]
+        },
+        "rewards": {"creditsRange": [3, 5]}
+    },
+
+    "find_legendary_items": {
+        "name": "Legendary Hunter",
+        "tier": 2,
+        "descriptionTemplate": "Find {target} Legendary rarity items.",
+        "trigger": {"event": "item_found", "filter": {"rarity": "legendary"}, "targetRange": [1, 3]},
+        "rewards": {"creditsRange": [6, 10]}
+    },
+    "trigger_destabilisation": {
+        "name": "Risk Taker",
+        "tier": 2,
+        "descriptionTemplate": "Trigger {target} Destabilisation Rune outcomes (any kind).",
+        "trigger": {"event": "destabilisation_outcome", "targetRange": [1, 3]},
+        "rewards": {"creditsRange": [6, 10]}
+    }
+}

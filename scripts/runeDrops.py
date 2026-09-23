@@ -11,7 +11,9 @@ from scripts.crafting.rarityRune import RARITY_RUNES
 from scripts.crafting.destabilisationRune import DESTABILISATION_RUNES
 from scripts.crafting.revealingRune import REVEALING_RUNES
 from scripts.crafting.manipulationRune import MANIPULATION_RUNES
+from scripts.crafting.questRune import QUEST_RUNES
 from scripts.crafting.base import CraftingItem
+from scripts.difficulty import getActiveDifficulty
 
 ALL_RUNES = {
     'chaos': CHAOS_RUNES,
@@ -24,7 +26,10 @@ ALL_RUNES = {
     'destabilisation': DESTABILISATION_RUNES,
     'revealing': REVEALING_RUNES,
     'manipulation': MANIPULATION_RUNES,
+    'quest': QUEST_RUNES,
 }
+
+NEVER_DROPPED_CATEGORIES = frozenset({'quest'})
 
 def calculateRuneWeight(runeMinLevel: int, enemyLevel: int, baseWeight: float = 100.0) -> float:
     levelDiff = enemyLevel - runeMinLevel if runeMinLevel is not None else enemyLevel
@@ -84,31 +89,42 @@ def rollRuneDrops(level: int, quantityModifier: float = 1.0) -> List[Tuple[str, 
 
     return drops
 
-def rollGuaranteedRunes(level: int, count: int, minLevel: int = 0, market: bool = False) -> List[Tuple[str, str]]:
-    """returns [(category, runeType)]. if market = True, uniques cannot be rolled"""
+def calculateRunePrice(rune: CraftingItem) -> int:
+    level = rune.minItemLevel or 1
+    rarityScore = 1000 / max(1, rune.dropWeight)
+    price = 15 * level + 10 * rarityScore
+    return max(10, int(price))
+
+def rollGuaranteedRunes(level: int, count: int, minLevel: int = 0) -> List[Tuple[str, str]]:
+    """returns [(category, runeType)]"""
     drops = []
     for _ in range(count):
-        rune = _rollSingleRune(level, minLevel, market)
+        rune = _rollSingleRune(level, minLevel)
         if rune:
             drops.append(rune)
     return drops
 
-def _rollSingleRune(level: int, minLevel: int = 0, market: bool = False) -> Tuple[str, str]:
+def _rollSingleRune(level: int, minLevel: int = 0) -> Tuple[str, str]:
     """returns (category, runeType)"""
     validRunes = []
     weights = []
 
+    qualityBiasExponent = getActiveDifficulty().getRuneQualityBiasExponent()
+
     for category, runeDict in ALL_RUNES.items():
-        if market and category == 'unique':
+        if category in NEVER_DROPPED_CATEGORIES:
             continue
         for runeType, rune in runeDict.items():
             runeMinLevel = getattr(rune, 'minItemLevel', 1)
 
             if minLevel:
-                if runeMinLevel < minLevel:
+                if (runeMinLevel or 0) < minLevel:
                     continue
 
             weight = calculateRuneWeight(runeMinLevel, level, baseWeight=rune.dropWeight)
+
+            if qualityBiasExponent != 0:
+                weight *= (100 / max(1, rune.dropWeight)) ** qualityBiasExponent
 
             if weight > 0:
                 validRunes.append((category, runeType))

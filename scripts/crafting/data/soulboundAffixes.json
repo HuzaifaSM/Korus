@@ -74,6 +74,16 @@
                 "min": 5,
                 "max": 15,
                 "levelReq": 90
+            },
+            "soulbound_grant_titans_fury": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": "Titan's Fury,",
+                "ability": "titans_fury",
+                "min": 30,
+                "max": 50,
+                "levelReq": 90
             }
         },
         "suffixes": {
@@ -139,6 +149,16 @@
                 "min": 1,
                 "max": 2,
                 "levelReq": 90
+            },
+            "soulbound_grant_executioners_verdict": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": ", of the Executioner's Verdict",
+                "ability": "executioners_verdict",
+                "min": 15,
+                "max": 25,
+                "levelReq": 90
             }
         }
     },
@@ -180,6 +200,16 @@
                 "max": 40,
                 "turns": 3,
                 "levelReq": 85
+            },
+            "soulbound_grant_third_eye": {
+                "stat": "grant_ability",
+                "isPercent": false,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": "The Third Eye,",
+                "ability": "third_eye",
+                "min": 15,
+                "max": 25,
+                "levelReq": 90
             }
         },
         "suffixes": {
@@ -218,6 +248,16 @@
                 "min": 60,
                 "max": 180,
                 "levelReq": 85
+            },
+            "soulbound_grant_unbroken_will": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": ", Bearer of the Unbroken Will",
+                "ability": "unbroken_will",
+                "min": 20,
+                "max": 35,
+                "levelReq": 90
             }
         }
     },
@@ -278,6 +318,16 @@
                 "max": 40,
                 "turnsRequired": 5,
                 "levelReq": 85
+            },
+            "soulbound_grant_second_heart": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": "Heart of the Second Beat,",
+                "ability": "second_heart",
+                "min": 4,
+                "max": 8,
+                "levelReq": 90
             }
         },
         "suffixes": {
@@ -442,6 +492,16 @@
                 "min": 1,
                 "max": 3,
                 "levelReq": 85
+            },
+            "soulbound_grant_martyrs_resolve": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": ", The Martyr's Resolve",
+                "ability": "martyrs_resolve",
+                "min": 20,
+                "max": 35,
+                "levelReq": 90
             }
         }
     },
@@ -473,6 +533,16 @@
                 "min": 120,
                 "max": 220,
                 "levelReq": 75
+            },
+            "soulbound_grant_relentless_charge": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": "Stride of Relentless Charge,",
+                "ability": "relentless_charge",
+                "min": 20,
+                "max": 35,
+                "levelReq": 90
             }
         },
         "suffixes": {
@@ -628,6 +698,16 @@
                 "min": 0.5,
                 "max": 0.9,
                 "levelReq": 75
+            },
+            "soulbound_grant_crippling_stride": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "utility", "soulbound"],
+                "name": ", of the Crippling Stride",
+                "ability": "crippling_stride",
+                "min": 25,
+                "max": 40,
+                "levelReq": 90
             }
         }
     },
@@ -659,6 +739,16 @@
                 "min": 120,
                 "max": 220,
                 "levelReq": 75
+            },
+            "soulbound_grant_windrunners_gait": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "utility", "soulbound"],
+                "name": "Windrunner's Gait,",
+                "ability": "windrunners_gait",
+                "min": 15,
+                "max": 30,
+                "levelReq": 90
             }
         },
         "suffixes": {
@@ -697,6 +787,16 @@
                 "min": 0.5,
                 "max": 0.9,
                 "levelReq": 75
+            },
+            "soulbound_grant_severing_kick": {
+                "stat": "grant_ability",
+                "isPercent": false,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": ", of the Severing Kick",
+                "ability": "severing_kick",
+                "min": 15,
+                "max": 25,
+                "levelReq": 90
             }
         }
     },
@@ -747,6 +847,16 @@
                 "max": 5,
                 "perEntropyPercent": 10,
                 "levelReq": 90
+            },
+            "soulbound_grant_bloodpact_surge": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": "Surge of the Bloodpact,",
+                "ability": "bloodpact_surge",
+                "min": 15,
+                "max": 25,
+                "levelReq": 90
             }
         },
         "suffixes": {
@@ -794,6 +904,16 @@
                 "min": 0.5,
                 "max": 0.9,
                 "levelReq": 75
+            },
+            "soulbound_grant_veins_of_vigor": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": ", of Veins of Vigor",
+                "ability": "veins_of_vigor",
+                "min": 4,
+                "max": 8,
+                "levelReq": 90
             }
         }
     },
@@ -883,6 +1003,16 @@
                 "min": 20,
                 "max": 50,
                 "levelReq": 85
+            },
+            "soulbound_grant_soul_anchor": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": "Anchor of the Soul,",
+                "ability": "soul_anchor",
+                "min": 20,
+                "max": 35,
+                "levelReq": 90
             }
         },
         "suffixes": {
@@ -1047,6 +1177,538 @@
                 "min": 4,
                 "max": 10,
                 "levelReq": 85
+            },
+            "soulbound_grant_apotheosis_echo": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": ", Echo of Apotheosis",
+                "ability": "apotheosis_echo",
+                "min": 35,
+                "max": 55,
+                "levelReq": 90
+            }
+        }
+    },
+    "one_handed": {
+        "prefixes": {
+            "soulbound_added_damage": {
+                "stat": "damage",
+                "isPercent": false,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Empyrean Wrath,",
+                "min": 132,
+                "max": 230,
+                "levelReq": 75
+            },
+            "soulbound_increased_damage": {
+                "stat": "damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Judgement Absolute,",
+                "min": 104,
+                "max": 184,
+                "levelReq": 75
+            },
+            "soulbound_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": "Heaven's Guillotine,",
+                "min": 81,
+                "max": 144,
+                "levelReq": 80
+            },
+            "soulbound_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": false,
+                "categories": ["penetration", "offensive", "soulbound"],
+                "name": "Cataclsym Unbound,",
+                "min": 35,
+                "max": 58,
+                "levelReq": 80
+            },
+            "soulbound_lifesteal": {
+                "stat": "life_leech",
+                "isPercent": true,
+                "categories": ["lifesteal", "utility", "soulbound"],
+                "name": "Sermon of Reclamation,",
+                "min": 1.2,
+                "max": 4.0,
+                "levelReq": 85
+            },
+            "soulbound_first_blood": {
+                "stat": "first_blood_damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "First Covenant's Blade,",
+                "min": 23,
+                "max": 46,
+                "turns": 4,
+                "levelReq": 85
+            },
+            "soulbound_execution": {
+                "stat": "low_life_damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "The Reaper's Edict,",
+                "min": 29,
+                "max": 58,
+                "threshold": 25,
+                "levelReq": 85
+            },
+            "soulbound_lucky_strikes": {
+                "stat": "double_damage_chance",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "The Falling Sun,",
+                "min": 3,
+                "max": 9,
+                "levelReq": 90
+            },
+            "soulbound_grant_flowing_strikes": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": "Herald of Flowing Strikes,",
+                "ability": "flowing_strikes",
+                "min": 25,
+                "max": 45,
+                "levelReq": 90
+            }
+        },
+        "suffixes": {
+            "soulbound_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility", "soulbound"],
+                "name": ", The Imperceivable Warper",
+                "min": 0.29,
+                "max": 0.58,
+                "levelReq": 75
+            },
+            "soulbound_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": ", The Unerring Judgement",
+                "min": 5,
+                "max": 8,
+                "levelReq": 80
+            },
+            "soulbound_heal_on_kill": {
+                "stat": "heal_on_kill",
+                "isPercent": true,
+                "categories": ["healing", "utility", "soulbound"],
+                "name": ", False Immortality",
+                "min": 1.2,
+                "max": 4.0,
+                "levelReq": 85
+            },
+            "soulbound_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility", "soulbound"],
+                "name": ", The Divine Bounty",
+                "min": 40,
+                "max": 100,
+                "levelReq": 80
+            },
+            "soulbound_xp_gain": {
+                "stat": "xp_gain",
+                "isPercent": true,
+                "categories": ["xp", "utility", "soulbound"],
+                "name": ", Apotheosis Manifest",
+                "min": 80,
+                "max": 150,
+                "levelReq": 75
+            },
+            "soulbound_gold_gain": {
+                "stat": "gold_gain",
+                "isPercent": true,
+                "categories": ["gold", "utility", "soulbound"],
+                "name": ", The Gilded Providence",
+                "min": 100,
+                "max": 180,
+                "levelReq": 75
+            },
+            "soulbound_num_multihits": {
+                "stat": "added_multihits",
+                "isPercent": false,
+                "categories": ["multihit", "offensive", "soulbound"],
+                "name": ", of Fracturing Onslaught",
+                "min": 1,
+                "max": 2,
+                "levelReq": 90
+            },
+            "soulbound_grant_opening_strike": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": ", Bearer of the Opening Strike",
+                "ability": "opening_strike",
+                "min": 15,
+                "max": 25,
+                "levelReq": 90
+            }
+        }
+    },
+    "offhand": {
+        "prefixes": {
+            "soulbound_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "soulbound"],
+                "name": "Aegis of the Undying Bastion,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "soulbound"],
+                "name": "Veil of the Phantom Guard,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "soulbound"],
+                "name": "Ward of the Luminous Cage,",
+                "min": 120,
+                "max": 220,
+                "levelReq": 75
+            },
+            "soulbound_block_chance": {
+                "stat": "chance_to_block",
+                "isPercent": false,
+                "categories": ["block", "defensive", "soulbound"],
+                "name": "Bulwark of Absolute Denial,",
+                "min": 14,
+                "max": 20,
+                "levelReq": 80
+            },
+            "soulbound_guardian": {
+                "stat": "early_damage_reduction",
+                "isPercent": true,
+                "categories": ["defensive", "soulbound"],
+                "name": "The Unbroken Line,",
+                "min": 20,
+                "max": 40,
+                "turns": 3,
+                "levelReq": 85
+            },
+            "soulbound_thorns": {
+                "stat": "thorns",
+                "isPercent": false,
+                "categories": ["defensive", "offensive", "soulbound"],
+                "name": "Vengeance of the Iron Wall,",
+                "min": 80,
+                "max": 200,
+                "levelReq": 85
+            },
+            "soulbound_grant_shield_bash": {
+                "stat": "grant_ability",
+                "isPercent": false,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": "Herald of the Sundering Slam,",
+                "ability": "shield_bash",
+                "min": 15,
+                "max": 25,
+                "levelReq": 90
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", Ward Against All",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", The Storm-Turned Barrier",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", The Heaven-Turned Barrier",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_max_all_resistance": {
+                "stat": "max_all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "max_resistance", "defensive", "soulbound"],
+                "name": ", The Absolute Threshold",
+                "min": 7,
+                "max": 10,
+                "levelReq": 95
+            },
+            "soulbound_crit_resistance": {
+                "stat": "crit_resistance",
+                "isPercent": false,
+                "categories": ["defensive", "soulbound"],
+                "name": ", The Unshakeable Guard",
+                "min": 30,
+                "max": 45,
+                "levelReq": 80
+            },
+            "soulbound_healing_magnitude": {
+                "stat": "healing_magnitude",
+                "isPercent": true,
+                "categories": ["healing", "defensive", "soulbound"],
+                "name": ", The Merciful Bulwark",
+                "min": 30,
+                "max": 50,
+                "levelReq": 85
+            },
+            "soulbound_grant_bulwark_stance": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": ", of the Immovable Stand",
+                "ability": "bulwark_stance",
+                "min": 20,
+                "max": 35,
+                "levelReq": 90
+            }
+        }
+    },
+    "sigil_offensive": {
+        "prefixes": {
+            "soulbound_added_damage": {
+                "stat": "damage",
+                "isPercent": false,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Sigil of Unraveling Might,",
+                "min": 90,
+                "max": 130,
+                "levelReq": 85
+            },
+            "soulbound_increased_damage": {
+                "stat": "damage",
+                "isPercent": true,
+                "categories": ["damage", "offensive", "soulbound"],
+                "name": "Sigil of the Fracturing Flame,",
+                "min": 90,
+                "max": 140,
+                "levelReq": 85
+            },
+            "soulbound_crit_multi": {
+                "stat": "crit_multi",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": "Sigil of the Executioner's Eye,",
+                "min": 50,
+                "max": 80,
+                "levelReq": 85
+            },
+            "soulbound_penetration": {
+                "stat": "resistance_penetration",
+                "isPercent": false,
+                "categories": ["penetration", "offensive", "soulbound"],
+                "name": "Sigil of the Hollow Ward,",
+                "min": 20,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_multihit_chance": {
+                "stat": "added_multihit_chance",
+                "isPercent": true,
+                "categories": ["multihit", "offensive", "soulbound"],
+                "name": "Sigil of Splintering Fate,",
+                "min": 10,
+                "max": 15,
+                "levelReq": 90
+            },
+            "soulbound_grant_arcane_detonation": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": "Sigil of the Waking Cataclysm,",
+                "ability": "arcane_detonation",
+                "min": 80,
+                "max": 120,
+                "levelReq": 90
+            }
+        },
+        "suffixes": {
+            "soulbound_crit_chance": {
+                "stat": "crit_chance",
+                "isPercent": false,
+                "categories": ["critical", "offensive", "soulbound"],
+                "name": ", of the Piercing Eye",
+                "min": 6,
+                "max": 9,
+                "levelReq": 85
+            },
+            "soulbound_life_leech": {
+                "stat": "life_leech",
+                "isPercent": true,
+                "categories": ["lifesteal", "utility", "soulbound"],
+                "name": ", of the Hungering Rune",
+                "min": 3,
+                "max": 6,
+                "levelReq": 90
+            },
+            "soulbound_item_quantity": {
+                "stat": "item_quantity",
+                "isPercent": true,
+                "categories": ["quantity", "utility", "soulbound"],
+                "name": ", of the Overflowing Cache",
+                "min": 40,
+                "max": 90,
+                "levelReq": 80
+            },
+            "soulbound_speed": {
+                "stat": "speed",
+                "isPercent": false,
+                "categories": ["speed", "utility", "soulbound"],
+                "name": ", of the Fleeting Instant",
+                "min": 0.3,
+                "max": 0.6,
+                "levelReq": 80
+            },
+            "soulbound_grant_hexbreaker": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "offensive", "soulbound"],
+                "name": ", of the Unraveling Ward",
+                "ability": "hexbreaker",
+                "min": 25,
+                "max": 40,
+                "levelReq": 90
+            }
+        }
+    },
+    "sigil_defensive": {
+        "prefixes": {
+            "soulbound_armour": {
+                "stat": "armour",
+                "isPercent": true,
+                "categories": ["armour", "defensive", "soulbound"],
+                "name": "Sigil of the Standing Stone,",
+                "min": 100,
+                "max": 180,
+                "levelReq": 80
+            },
+            "soulbound_evasion": {
+                "stat": "evasion",
+                "isPercent": true,
+                "categories": ["evasion", "defensive", "soulbound"],
+                "name": "Sigil of the Drifting Veil,",
+                "min": 100,
+                "max": 180,
+                "levelReq": 80
+            },
+            "soulbound_energy_shield": {
+                "stat": "energy_shield",
+                "isPercent": true,
+                "categories": ["energy_shield", "defensive", "soulbound"],
+                "name": "Sigil of the Radiant Lattice,",
+                "min": 100,
+                "max": 180,
+                "levelReq": 80
+            },
+            "soulbound_increased_health": {
+                "stat": "health",
+                "isPercent": true,
+                "categories": ["health", "defensive", "soulbound"],
+                "name": "Sigil of the Undimmed Flame,",
+                "min": 60,
+                "max": 120,
+                "levelReq": 85
+            },
+            "soulbound_global_increased_defenses": {
+                "stat": "defenses",
+                "isPercent": true,
+                "isGlobal": true,
+                "categories": ["defensive", "soulbound"],
+                "name": "Sigil of the Absolute Ward,",
+                "min": 50,
+                "max": 80,
+                "levelReq": 90
+            },
+            "soulbound_grant_wardstone": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": "Sigil of the Sheltering Star,",
+                "ability": "wardstone",
+                "min": 20,
+                "max": 35,
+                "levelReq": 90
+            }
+        },
+        "suffixes": {
+            "soulbound_all_resistance": {
+                "stat": "all_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "defensive", "soulbound"],
+                "name": ", of the Unbroken Circle",
+                "min": 18,
+                "max": 30,
+                "levelReq": 85
+            },
+            "soulbound_elemental_resistance": {
+                "stat": "elemental_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "elemental", "defensive", "soulbound"],
+                "name": ", of the Tempered Ward",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_divine_resistance": {
+                "stat": "divine_resistance",
+                "isPercent": false,
+                "categories": ["resistance", "divine", "defensive", "soulbound"],
+                "name": ", of the Consecrated Ward",
+                "min": 25,
+                "max": 40,
+                "levelReq": 85
+            },
+            "soulbound_block_chance": {
+                "stat": "chance_to_block",
+                "isPercent": false,
+                "categories": ["block", "defensive", "soulbound"],
+                "name": ", of the Silent Guard",
+                "min": 8,
+                "max": 12,
+                "levelReq": 85
+            },
+            "soulbound_damage_reduction": {
+                "stat": "damage_reduction",
+                "isPercent": true,
+                "categories": ["defensive", "damage_reduction", "soulbound"],
+                "name": ", of the Muted Blow",
+                "min": 30,
+                "max": 45,
+                "levelReq": 90
+            },
+            "soulbound_grant_sanctuary": {
+                "stat": "grant_ability",
+                "isPercent": true,
+                "categories": ["ability", "defensive", "soulbound"],
+                "name": ", of the Everlasting Vigil",
+                "ability": "sanctuary",
+                "min": 4,
+                "max": 8,
+                "levelReq": 90
             }
         }
     }

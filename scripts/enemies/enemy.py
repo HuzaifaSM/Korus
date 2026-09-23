@@ -1,12 +1,13 @@
 import random
 from copy import deepcopy
 from typing import Dict, Optional
-from ..entities import Entity, SIGIL_SLOTS
+from ..entities import Entity, SIGIL_SLOTS, ALL_RES
 from ..items.items import ItemRarity, LootTable, RESOURCES, rollRarity
 from ..items.equipment import Equipment
 from ..runeDrops import rollRuneDrops
 from ..abilities import ENEMY_ABILITIES, ENEMY_AFFIX_ABILITIES, EnemyAbility, BasicAttack
 from ..styles import console
+from ..difficulty import getActiveDifficulty
 from .enemyAi import EnemyAI
 from .enemyAffixes import EnemyAffix, rollAffix
 from enum import Enum
@@ -59,6 +60,7 @@ def rollEncounterClasses(numEnemies: int) -> list[EnemyClass]:
     if numEnemies <= 1:
         return [EnemyClass.ATTACKER] * numEnemies
     numSupports = min(4, max(1, numEnemies // 2 - 1))
+    numSupports = min(numEnemies, max(0, numSupports + getActiveDifficulty().getSupportBiasDelta()))
     classes = [EnemyClass.SUPPORT] * numSupports + [EnemyClass.ATTACKER] * (numEnemies - numSupports)
     random.shuffle(classes)
     return classes
@@ -125,8 +127,8 @@ ENEMY_AFFIXES_PER_RARITY = {
 
 def rollEnemyRarity(level: int = 0) -> EnemyRarity:
     weights = ENEMY_RARITY_WEIGHTS.copy()
-    if level > 0:
-        shiftAmount = min(1.0, level / 100)
+    shiftAmount = max(0.0, min(1.0, level / 100) + getActiveDifficulty().getEnemyRarityShiftBonus()) if level > 0 else getActiveDifficulty().getEnemyRarityShiftBonus()
+    if shiftAmount > 0:
         commonReduction = weights[EnemyRarity.COMMON] * shiftAmount * 0.7
         weights[EnemyRarity.COMMON] = max(5, weights[EnemyRarity.COMMON] - commonReduction)
         weights[EnemyRarity.RARE] += commonReduction * 0.5
@@ -166,13 +168,17 @@ class Enemy(Entity):
                  speed: float = 0.8, lootTable: LootTable = None, rarityModifier: float = 1.0, quantityModifier: float = 1.0, playerClass: str = None, playerName: str = None,
                  rarity: EnemyRarity = None, enemyClass: EnemyClass = None, enemySubclass: EnemySubclass = None, groupSize: int = 1):
         self.rarity = rarity or rollEnemyRarity(level)
-        self.aiDifficulty = ENEMY_RARITY_AI_DIFFICULTY[self.rarity]
+        difficulty = getActiveDifficulty()
+        self.aiDifficulty = min(1.0, max(0.0, ENEMY_RARITY_AI_DIFFICULTY[self.rarity] + difficulty.getAiDifficultyBonus()))
         statMult = ENEMY_RARITY_STAT_MULT[self.rarity]
         groupMult = groupSizeMultiplier(groupSize)
 
         resolvedClass = enemyClass or rollEnemyClass()
         resolvedSubclass = enemySubclass or rollEnemySubclass(resolvedClass, self.rarity)
         self.aggression, self.cautious = rollAggressionAndCautious(resolvedClass, resolvedSubclass)
+        aggressionCautiousBonus = difficulty.getAggressionCautiousBonus()
+        self.aggression = min(1.0, max(0.0, self.aggression + aggressionCautiousBonus))
+        self.cautious = min(1.0, max(0.0, self.cautious + aggressionCautiousBonus))
 
         scaledHealth = round((health + (level - 1) * random.randint(2, 5)) * statMult * groupMult)
         scaledDamage = round((damage + ((level - 1) / 2.5) * random.uniform(1, 2.2)) * statMult * groupMult)
@@ -313,7 +319,8 @@ class Enemy(Entity):
         super()._recalculateStats(doPrint, inCombat)
         if self.ruin > 0:
             self._stats['Temporary']['crit_chance'] -= self.ruin * 0.01
-            self._stats['Temporary']['all'] -= self.ruin
+            for res in ALL_RES:
+                self._stats['Temporary'][res] -= self.ruin
 
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
@@ -381,11 +388,13 @@ class Enemy(Entity):
         
         if self.cursedTurns > 0:
             if not self.cursedLastTurn:
-                self._stats['Temporary']['all'] -= 15
+                for res in ALL_RES:
+                    self._stats['Temporary'][res] -= 15
                 self.cursedLastTurn = True
             self.cursedTurns -= 1
             if self.cursedTurns == 0:
-                self._stats['Temporary']['all'] += 15
+                for res in ALL_RES:
+                    self._stats['Temporary'][res] += 15
         else:
             self.cursedLastTurn = False
         
@@ -571,10 +580,10 @@ class Enemy(Entity):
         return resources, equipment, runes
     
     def getExperienceReward(self) -> int:
-        return round(self._experienceReward * (1 + self.xpModifier))
+        return round(self._experienceReward * (1 + self.xpModifier + getActiveDifficulty().getRewardMultiplier()))
 
     def getGoldReward(self) -> int:
-        return round(self._goldReward * (1 + self.goldModifier))
+        return round(self._goldReward * (1 + self.goldModifier + getActiveDifficulty().getRewardMultiplier()))
 
     def death(self):
         console.print(f"\n[success]{self._name} has been defeated![/success]")

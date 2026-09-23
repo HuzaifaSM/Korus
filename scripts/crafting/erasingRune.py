@@ -107,7 +107,7 @@ class PerfectErasingRune(BaseErasingRune):
     minItemLevel = 30
     maxAffixLevel = 30
     successEntropy = 0.12
-    dropWeight = 80
+    dropWeight = 65
 
 class PredatoryErasingRune(BaseErasingRune):
     name = '[dark_red bold]Predatory Erasing Rune[/dark_red bold]'
@@ -146,7 +146,7 @@ class CleansingErasingRune(BaseErasingRune):
     affixesToRemove = 2
     minItemLevel = 20
     successEntropy = 0.15
-    dropWeight = 80
+    dropWeight = 65
 
 class RuinousErasingRune(BaseErasingRune):
     name = '[deep_pink4 bold underline]Ruinous Erasing Rune[/deep_pink4 bold underline]'
@@ -171,7 +171,7 @@ class EnlighteningErasingRune(BaseErasingRune):
     maxAffixLevel = 40
     minItemLevel = 45
     successEntropy = 0.3
-    dropWeight = 35
+    dropWeight = 25
 
 class SectionedErasingRune(BaseErasingRune):
     name = '[grey35 italic]Sectioned Erasing Rune[/grey35 italic]'
@@ -257,77 +257,7 @@ class PerfectSuffixErasingRune(SuffixErasingRune):
     successEntropy = 0.2
     dropWeight = 80
 
-class PassiveErasingRune(BaseErasingRune):
-    name = '[red3]Passive Erasing Rune[/red3]'
-    description = 'Removes 1 random offensive-related affix.'
-    affixesToRemove = 1
-    minItemLevel = 20
-    successEntropy = 0.1
-    dropWeight = 150
 
-    def getRemovableSlots(self, item):
-        slots = super().getRemovableSlots(item)
-        return [s for s in slots if 'offensive' in s.affix.categories]
-
-class RecklessErasingRune(BaseErasingRune):
-    name = '[steel_blue]Reckless Erasing Rune[/steel_blue]'
-    description = 'Removes 1 random defensive affix.'
-    affixesToRemove = 1
-    minItemLevel = 20
-    successEntropy = 0.1
-    dropWeight = 150
-
-    def getRemovableSlots(self, item):
-        slots = super().getRemovableSlots(item)
-        return [s for s in slots if 'defensive' in s.affix.categories]
-
-class ShallowErasingRune(BaseErasingRune):
-    name = '[cyan]Shallow Erasing Rune[/cyan]'
-    description = 'Removes 1 random utility affix'
-    affixesToRemove = 1
-    minItemLevel = 20
-    successEntropy = 0.1
-    dropWeight = 150
-
-    def getRemovableSlots(self, item):
-        slots = super().getRemovableSlots(item)
-        return [s for s in slots if 'utility' in s.affix.categories]
-
-class WastingErasingRune(BaseErasingRune):
-    name = '[green]Wasting Erasing Rune[/green]'
-    description = 'Removes 1 random health-related affix.'
-    affixesToRemove = 1
-    minItemLevel = 20
-    successEntropy = 0.08
-    dropWeight = 150
-
-    def getRemovableSlots(self, item):
-        slots = super().getRemovableSlots(item)
-        return [s for s in slots if 'health' in s.affix.categories]
-
-class BrittleErasingRune(BaseErasingRune):
-    name = '[purple]Brittle Erasing Rune[/purple]'
-    description = 'Removes 1 random resistance affix.'
-    affixesToRemove = 1
-    minItemLevel = 20
-    successEntropy = 0.08
-    dropWeight = 150
-
-    def getRemovableSlots(self, item):
-        slots = super().getRemovableSlots(item)
-        return [s for s in slots if 'resistance' in s.affix.categories]
-
-class UnluckyErasingRune(BaseErasingRune):
-    name = '[orange1]Unlucky Erasing Rune[/orange1]'
-    description = 'Removes 1 random critical-related affix.'
-    affixesToRemove = 1
-    minItemLevel = 20
-    successEntropy = 0.08
-    dropWeight = 150
-
-    def getRemovableSlots(self, item):
-        slots = super().getRemovableSlots(item)
-        return [s for s in slots if 'critical' in s.affix.categories]
 
 ERASING_RUNES: Dict[str, BaseErasingRune] = {
     'erasing': ErasingRune(),
@@ -352,14 +282,6 @@ ERASING_RUNES: Dict[str, BaseErasingRune] = {
     'suffix': SuffixErasingRune(),
     'greater_suffix': GreaterSuffixErasingRune(),
     'perfect_suffix': PerfectSuffixErasingRune(),
-
-    'passive': PassiveErasingRune(),
-    'reckless': RecklessErasingRune(),
-    'shallow': ShallowErasingRune(),
-    'wasting': WastingErasingRune(),
-    'brittle': BrittleErasingRune(),
-    'unlucky': UnluckyErasingRune(),
-
 }
 
 """

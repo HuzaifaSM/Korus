@@ -2,6 +2,11 @@ NOTES:
   - to build rust .exe files from Korus/ root:
   cargo build --manifest-path native/<folder>/Cargo.toml --release
 
+UNDECIDED IDEAS:
+  - allow for entities to act multiple times in a single turn based on speed
+    > or have a longer turn order in the background which decides how fast each entity acts in combat, based on exact speed rather than initiative system?
+    > e.g. entity 1 has 1 speed, entity 2 has 1.2 speed, 0.2 speed carries over and every 5th turn entity 2 gets a second turn
+
 BUGS:
 
 NEW AFFIXES:
@@ -15,6 +20,8 @@ NEW AFFIXES:
 OTHER STUFF:
   - add descriptions to soulbound affixes, because some do not explain what they do based on the name alone
   - playtime per save file
+  - tqdm library (need to pip install) - used for progress bars, might be nice to have a progress bar on launch if there's any way to display which files are being loaded or whatever is happening before the game starts running
+  - gc library (garbage collector) for performance, check if it would be useful
 
 NEW CLASS IDEA:
   - <name (new mutant?)>: "your healthbar is split into 4 equal sections. a single hit cannot remove more than a single section of health. you cannot heal into a different section of heal (e.g. below 25%, can't heal back above 25%)
@@ -23,33 +30,6 @@ NEW CLASS IDEA:
     > could name each healthbar section, saying 'whilst in <x> healthbar, gain <y> buffs every turn"
 
 CURRENTLY WORKING ON: (main order of implementation)
-  - market rework
-
-  - re-enable soulbound rune
-
-  - rethink value of questBoard, potential to remove if no mechanical benefit can be found (game plays completely fine without it)
-    > could just rework the quest board into some sort of 'tutorial' system that simply rewards gold or low level runes
-
-  - difficulty rework
-    > rather than each difficulty just changing stat numbers, they should alter enemy behaviour, potentially alter loot drops
-    > could convert difficulty format into 'challenges' instead, toggleable at any point from options menu
-      - each challenge is purely for fun, no actual benefits.
-      - e.g. 'smarter enemies' = enemy ai difficulty += 0.5, 'less loot' = -item quantity, etc.
-
-  - account Stash
-
-  - completely rewrite help.py and all sections of Help to better explain everything
-    > detailed about abilities, mechanics, status effects, damage types, stats, crafting, etc.
-    > all keywords in styles.py should also be explained
-      - separated into 'general keywords' and 'class specific'
-       > class specific should probably only show keywords related to the player's current class + all ascendancies
-       > should also be an 'all class mechanics' section that lets players discover/read everything else
-    > tutorial
-      - accessible from start menu screen
-        > scripted playthrough which explains everything:
-          - fights, stamina, abilities, status effects, levelling benefits
-          - item drops, resources, crafting, runes
-
   - dungeons
     > better modifiers + more modifiers
       > dungeons.json basically needs to be remade
@@ -62,37 +42,12 @@ CURRENTLY WORKING ON: (main order of implementation)
 
   - ascendancy levels
 
-FUN BONUS LIBRARIES:
-  - markovify library
-    > gpt says good for random names, fantasy text + procedural diagolue
-  - textual library
-    > allows for terminal UI -> pygame but in the terminal
-    > gpt: "AMAZING for your game if you ever want: proper menus, skill trees, inventory screens"
-      - would actually allow passive skill tree to be added in python and not need a game engine
-  - py_trees <---
-    > behaviour trees
-    > boss logic! modular AI systems
-  - noise
-    > good for procedural generation + dungeon maps
-  - simpy
-    > "discrete-event simultation library"
-    > can simulate combat and other things outside of main game loop to test balance
-
 - ASCENDANCY LEVELS:
   > every 20 levels, continue to gain an ascendancy point, which can be used to unlock a buff, mechanic or other boon
   > more than 4 upgrades, but ascendancy points capped at 4 (gain 1 at 40/60/80/100)
     - e.g. Warlord buff could be: "Gain Fury stacks on attack if you have more than 40 (previously 50) Rage. Gain 5% Damage Reduction"
       > essentially, only upgrades and buffs, similar to PoE ascendancy system (unlock ascendancy then gain extra things to add to it)
-
-MARKET REWORK
-  - need to fix/rework item value calculation and make it make logical sense
-    > based on amount of affixes on an item, item rarity, rarity of item affixes (based on weight), etc.
-  - more exciting items, different items
-  - market has a unique selection of affixes that are market-only
-    > market items on average have higher tiers of affixes
-    > e.g. % more damage, % damage reduction etc.
-  - player can choose to 'vaporise' an item at the market to get a selection of runes of similar level to the item's level
-    > number of runes could be dictated by item level, number of affix slots, total tiers of items, total rarity of item affixes + item
+    - minimum of 6, up to 8, choices of uprades, with at least 2 upgrades needing a prerequisite to unlock
 
 - more assets, properly ths time: soundtracks, art, etc:
   > sprites, symbols, item icons, extra effort: top tier/soulbound/mythic/destabilised affix bonus visuals per item
@@ -114,14 +69,6 @@ MARKET REWORK
       - separate from other map affixes
       - changes entire combat for map e.g.
         - all hits apply burn, enemies take 50% less damage and have 25% less hp, all resistances are inverted, etc.
-
-  > Account Stash
-    > is a camp station
-      - must be built before being able to be accessed per character
-    > can store items and pull them out from other characters
-    > min level required to access
-    > can only pull items out that the character is high enough level for
-    > can deposit anything at any point
 
   > Infinite Scaling Challenges:
     > e.g. infinity dungeons:

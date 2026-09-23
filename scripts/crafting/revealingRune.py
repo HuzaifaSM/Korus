@@ -57,7 +57,7 @@ class BaseRevealingRune(CraftingItem):
             )
             
             if affix:
-                baseId = affix.id.split('_t')[0]
+                baseId = affix.id.rsplit('_t', 1)[0]
                 if baseId not in usedBaseIds:
                     options.append(affix)
                     usedBaseIds.add(baseId)

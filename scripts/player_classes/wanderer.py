@@ -72,7 +72,7 @@ class Wanderer(Player):
     def __init__(self, name, health = 45, damage = 6, damageType = "psychic", speed = 1.1):
         super().__init__(name, health, damage, 0.1, 1.6, damageType, speed, className='Wanderer', classDescription=WANDERER_DESCRIPTIONS['Wanderer'])
         self.lostTrigger = False
-        self._lostAttackActive = False  # stays true across every target of a Lost-triggered attack (set once in onBeforeDamage, read per-target in onAttack/onPrepareHit)
+        self._lostAttackActive = False
         self.lostPercent = 0.1
         self.hope = 0
         self.maxHope = 5
@@ -269,9 +269,6 @@ class Wanderer(Player):
             self._stats['Temporary']['crit_chance'] += 0.1
 
     def onBeforeDamage(self, ability, damage, damageType, targets, combatManager):
-        # _lostAttackActive stays true across every target of this attack (unlike lostTrigger,
-        # which is consumed once here rather than per-target) so the Lost damage bonus, Fracture
-        # gain, and Hope/Hopeless gain all correctly apply to every enemy hit, not just the first.
         self._lostAttackActive = False
         if self._ascendancy == 'Manifestation' and self.lostTrigger and damageType != 'heal':
             if random.random() >= self.lostHitChance:
@@ -391,7 +388,6 @@ class Wanderer(Player):
                 heal *= 2
             self.heal(heal, reason=f"Hunted Attack Kill{' (Radiance Doubled)' if self.radiance else ''} (Abyssal)")
 
-        # generic ability.effects.onKill processing - available to any Wanderer ability
         ability = attackData.get('ability') if attackData else None
         onKillFx = ability.effects.get('onKill', {}) if ability else {}
         if onKillFx:
@@ -426,6 +422,8 @@ class Wanderer(Player):
 
     def onAttack(self, damageDealt, damageType, target, combatManager, ability, crit):
         damageDealt, damageType = super().onAttack(damageDealt, damageType, target, combatManager, ability, crit)
+
+        damageDealt += self.devastationDamage
 
         targetEntity = target.entity if target else None
 
@@ -537,9 +535,9 @@ class Wanderer(Player):
 
             self.randomGainHopeOrHopeless()
 
-        if self.hope > 0:
+        if self.hope > 0 and damageType == 'psychic':
             self._logDamage("Hope", percent=0.1 * self.hope)
-        damageDealt = int(damageDealt * (1 + (0.1 * self.hope)))
+            damageDealt = int(damageDealt * (1 + (0.1 * self.hope)))
 
         if self.devastation:
             self._logDamage("Devastation", percent=1.5 if self._ascendancy == 'Abyssal' else 1.0)
@@ -796,7 +794,9 @@ class Wanderer(Player):
             '_baseSpeed': 0.1,
             '_stats.Permanent.crit_chance': -0.03,
             '_stats.Permanent.crit_multi': -0.1,
-            '_stats.Permanent.otherworld': 10,
+            '_stats.Permanent.chaos': 10,
+            '_stats.Permanent.ethereal': 10,
+            '_stats.Permanent.psychic': 10,
         },
         'Warper': {
             '_baseHealth': 15,

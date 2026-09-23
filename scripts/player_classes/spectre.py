@@ -22,12 +22,11 @@ SPECTRE_DESCRIPTIONS = {
         "- Whenever you Evade an attack, gain Added Damage equal to 50% of your Fading value on your next attack.\n"
         "[bold]Stat Changes:[/bold] +15 HP. +8 Damage. -0.05 Speed. +10% Ethereal Resistance.",
     "Reaper": "[lore]You have seen the end. You have felt its embrace. You turned it into your power. Now, watch as they fall, weak and helpless. Each target, another feast.[/lore]"
-        "- Ghostly grants 5% of ignored Armour Rating gained as Shield.\n"
-        "- Deal 15% Increased Damage to enemies below 30% Max HP. Execute Enemies under 10% Max HP on hit. Execute immediately kills the targeted enemy.\n"
+        "- Ghostly grants 5% of ignored Armour Rating gained as Shield. Deal 15% Increased Damage to enemies below 30% Max HP\n"
         "- When Executing enemies, heal for 10% of their Max HP and gain 1% of their Damage as your own permanently per stack of Vengeance you currently have. Lose all Vengeance when you execute an enemy.\n"
         "- Whenever you critically hit an enemy, gain added Crit Damage equal to 5% of your Damage.\n"
         "- If your attack is Evaded, consume all Vengeance to heal 2% Max HP per stack consumed. If your armour mitigates more than half of an enemy's attack, double your Vengeance.\n"
-        "[bold]Stat Changes:[/bold] -5 HP. -2 Damage. +0.05 Speed. +2% Crit Chance. +100 Armour.",
+        "[bold]Stat Changes:[/bold] -5 HP. -2 Damage. +0.05 Speed. +2% Crit Chance. +100 Armour. +10% Execute Threshold.",
     "Phantasm": "[lore]They strike at you, yet you remain. They reach for you, yet you slip away. Reality itself cannot grasp you. Drink their fear as you flow through them.[/lore]"
         "- 30% Less Physical Damage Taken. Ghostly heals for 5% of ignored Armour Rating. Ethereal Damage has a 25% chance to apply Phased for 3 turns.\n"
         "- You have an additional 5% chance to apply Phased per stack of Vengeance. Vengeance has a maximum of 20 stacks.\n"
@@ -139,7 +138,7 @@ class Spectre(Player):
 
     def onExecuteCheck(self, target, combatManager):
         if self._ascendancy == 'Reaper':
-            threshold = 0.1 + getattr(target, 'reaperExecuteBonus', 0)
+            threshold = (self._stats['Bonuses']['execute_threshold'] / 100) + getattr(target, 'reaperExecuteBonus', 0)
             if getattr(target, 'reaperExecuteBonus', 0):
                 target.reaperExecuteBonus = 0  # one-shot: consumed on the next check regardless of outcome
             if target._health <= (target._maxHealth * threshold):
@@ -551,6 +550,7 @@ class Spectre(Player):
             '_baseSpeed': 0.05,
             '_stats.Permanent.crit_chance': 0.02,
             '_stats.Permanent.added_armour': 100,
+            '_stats.Permanent.execute_threshold': 10,
         },
         'Phantasm': {
             '_baseHealth': 25,

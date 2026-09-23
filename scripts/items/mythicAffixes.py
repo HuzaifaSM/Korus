@@ -4,7 +4,7 @@ from os.path import exists
 from typing import Any, Dict, List, Optional
 
 def _mythicAffixDataPath() -> str:
-    return 'Korus/scripts/items/mythicAffixes.json' if exists('Korus') else 'scripts/items/mythicAffixes.json'
+    return 'Korus/scripts/items/data/mythicAffixes.json' if exists('Korus') else 'scripts/items/data/mythicAffixes.json'
 
 def _loadMythicAffixData() -> Dict[str, Dict]:
     with open(_mythicAffixDataPath(), 'r', encoding='utf-8') as f:
@@ -34,9 +34,6 @@ class MythicAffixLine:
 
     @property
     def values(self) -> Dict[str, float]:
-        """Mastery-scaled values, mirroring Affix.value - every consumer (onActions handlers,
-        conditional_modifier, ability patchers, etc.) reads through here, so scaling this one
-        property is enough to make mastery affect mythic lines exactly like normal affixes."""
         mastery = self.mastery / 100
         scaled = {}
         for key, base in self._baseValues.items():
@@ -55,9 +52,6 @@ class MythicAffixLine:
 
     @property
     def onActions(self) -> Dict[str, Any]:
-        """hookName -> callable(entity, item, line, *hookArgs) for this line's game effect,
-        resolved lazily from the mythicEffects registry (never serialised - callables aren't
-        JSON-safe, and the registry can change/expand between game versions)."""
         from . import mythicEffects
         return mythicEffects.getHandlers(self.affixId, self.effect)
 

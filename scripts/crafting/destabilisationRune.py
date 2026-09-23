@@ -72,6 +72,10 @@ class BaseDestabilisationRune(CraftingItem):
 
         outcome = self._rollOutcome()
 
+        questBoard = getattr(player, '_questBoard', None)
+        if questBoard is not None:
+            questBoard.notifyEvent('destabilisation_outcome', outcome=outcome)
+
         outcomeData = self.data['outcomes'][outcome]
         tier = outcomeData.get('tier', 'neutral')
         tierColours = {
@@ -306,9 +310,9 @@ class BaseDestabilisationRune(CraftingItem):
         maxShift = data.get('maxShift', 0)
         
         shift = random.randint(minShift, maxShift)
-        
+
         item.mastery += shift
-    
+
     def _handleEternal(self, item, data):
         """Make item indestructible"""
         item.maxDurability = float('inf')

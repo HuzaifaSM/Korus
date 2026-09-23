@@ -1,4 +1,4 @@
-from .base import Player, DIVINE_RES, OTHERWORLD_RES
+from .base import Player, DIVINE_RES, OTHERWORLD_RES, ALL_RES
 from scripts.styles import console
 from copy import deepcopy
 import random
@@ -7,7 +7,7 @@ WRETCH_DESCRIPTIONS = {
     "Wretch": "[class_wretch]An outcast mage, revelling in the torture of flesh and blood.[/class_wretch]\n"
         "- You have no Stamina. All abilities cost Health to use. Gain +1% Lifesteal per 5% Missing Health.\n"
         "- Upon attacking an enemy with an ability, apply 1 stack of Blood Spike, up to 10 stacks.\n"
-        "- Each stack of Blood Spike increases the execution threshold on an enemy by 2%. If an enemy's health drops below the execution threshold, they are immediately killed.\n"
+        "- Each stack of Blood Spike on an enemy grants +2% Execute Threshold against them. If an enemy's health drops below your Execute Threshold, they are immediately killed.\n"
         "- When an enemy is executed by Blood Spike, heal for 1% Max HP per stack of Blood Spike on the executed enemy.\n"
         "- Whilst below 40% Health: Gain +0.3 Speed, 20% Increased Dark Damage.\n"
         "[bold]Starting Stats:[/bold] 65 HP | 4 Damage | 5% Crit Chance | 150% Crit Damage | [dark]Dark Damage[/dark] | 0.95 Speed.",
@@ -50,6 +50,7 @@ class Wretch(Player):
     def __init__(self, name, health = 65, damage = 4, damageType = "dark", speed = 0.95):
         super().__init__(name, health, damage, 0.05, 1.5, damageType, speed, className="Wretch", classDescription=WRETCH_DESCRIPTIONS["Wretch"])
         self.maxBloodSpikeStacks = 10
+        self.lifestealFromMissingHp = 0
 
         self.under40LastTurn = False
         self.under20LastTurn = False
@@ -179,7 +180,8 @@ class Wretch(Player):
         return {}
 
     def onExecuteCheck(self, target, combatManager):
-        if target.bloodSpike > 0 and target._health <= (target._maxHealth * (0.02 * target.bloodSpike)):
+        threshold = (self._stats['Bonuses']['execute_threshold'] / 100) + (0.02 * target.bloodSpike)
+        if target.bloodSpike > 0 and target._health <= (target._maxHealth * threshold):
             console.print(f"[class_wretch]Wretch: {target._name} has been Executed from Blood Spike![/class_wretch]")
 
             if self._ascendancy == 'Necromancer':
@@ -468,6 +470,10 @@ class Wretch(Player):
             heal = int(self._maxHealth * 0.02 * self.bloodScent)
             self.heal(heal, reason=f"Plaguebearer ({self.bloodScent} Blood Scent stacks)")
 
+        self.under40LastTurn = False
+        self.under20LastTurn = False
+        self.above60LastTurn = True
+        self.lifestealFromMissingHp = 0
         self.divineOtherworldDamageTaken = 0
         self.healthLost = 0
         self.bloodScent = 0
@@ -485,18 +491,24 @@ class Wretch(Player):
         super().onCombatEnd()
 
     def onTurnStart(self, combatManager=None):
+        self._stats['Temporary']['lifesteal'] -= self.lifestealFromMissingHp
+        self.lifestealFromMissingHp = int(1 * (1 - self._health / self._maxHealth) * 20) # *20 == * 100 / 20
+        self._stats['Temporary']['lifesteal'] += self.lifestealFromMissingHp
+
         if not self.under40LastTurn and self._health <= (self._maxHealth * 0.4):
             self._stats['Temporary']['speed'] += 0.3
             self.under40LastTurn = True
             if self._ascendancy == 'Necrose':
                 self._stats['Temporary']['lifesteal'] += 5
-                self._stats['Temporary']['all'] -= 5
+                for res in ALL_RES:
+                    self._stats['Temporary'][res] -= 5
         elif self.under40LastTurn and self._health > (self._maxHealth * 0.4):
             self._stats['Temporary']['speed'] -= 0.3
             self.under40LastTurn = False
             if self._ascendancy == 'Necrose':
                 self._stats['Temporary']['lifesteal'] -= 5
-                self._stats['Temporary']['all'] += 5
+                for res in ALL_RES:
+                    self._stats['Temporary'][res] += 5
 
         if self._ascendancy == 'Bloodletter':
             if not self.under20LastTurn and self._health <= (self._maxHealth * 0.2):
@@ -507,12 +519,16 @@ class Wretch(Player):
                 self.under20LastTurn = False
 
             if not self.above60LastTurn and self._health <= (self._maxHealth * 0.6):
-                self._stats['Temporary']['divine'] -= 20
-                self._stats['Temporary']['otherworld'] += 10
+                for res in DIVINE_RES:
+                    self._stats['Temporary'][res] -= 20
+                for res in OTHERWORLD_RES:
+                    self._stats['Temporary'][res] += 10
                 self.above60LastTurn = True
             elif self.above60LastTurn and self._health > (self._maxHealth * 0.6):
-                self._stats['Temporary']['divine'] += 20
-                self._stats['Temporary']['otherworld'] -= 10
+                for res in DIVINE_RES:
+                    self._stats['Temporary'][res] += 20
+                for res in OTHERWORLD_RES:
+                    self._stats['Temporary'][res] -= 10
                 self.above60LastTurn = False
 
         elif self._ascendancy == 'Necrose':
@@ -550,7 +566,9 @@ class Wretch(Player):
             '_baseDamage': 2,
             '_baseSpeed': 0.1,
             '_stats.Permanent.dark': 15,
-            '_stats.Permanent.otherworld': 5,
+            '_stats.Permanent.chaos': 5,
+            '_stats.Permanent.ethereal': 5,
+            '_stats.Permanent.psychic': 5,
         },
         'Plaguebearer': {
             '_baseHealth': 5,
@@ -572,7 +590,9 @@ class Wretch(Player):
             '_baseDamage': 2,
             '_baseSpeed': -0.1,
             '_stats.Permanent.hp_regen': 5,
-            '_stats.Permanent.otherworld': 10,
+            '_stats.Permanent.chaos': 10,
+            '_stats.Permanent.ethereal': 10,
+            '_stats.Permanent.psychic': 10,
         },
     }
 

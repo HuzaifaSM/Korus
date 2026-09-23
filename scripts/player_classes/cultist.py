@@ -706,10 +706,11 @@ class Cultist(Player):
             '_baseHealth': -10,
             '_baseDamage': 10,
             '_baseSpeed': -0.05,
-            '_stats.Permanent.otherworld': -5,
+            '_stats.Permanent.chaos': 5,  # -5 otherworld + 10 chaos-specific
+            '_stats.Permanent.ethereal': -5,
+            '_stats.Permanent.psychic': -5,
             '_stats.Permanent.dark': 15,
             '_stats.Permanent.resistance_penetration': 15,
-            '_stats.Permanent.chaos': 10,
         },
     }
 

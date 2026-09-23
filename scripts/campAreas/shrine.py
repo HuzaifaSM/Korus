@@ -19,13 +19,13 @@ class Shrine(Station):
                 'description': 'Unlock the option to [gold1 bold]Ascend[/gold1 bold] at level 20.\nYou will be given multiple choices of [gold1]Ascendancies[/gold1] to pick from, and are allowed to switch at any point for free.'
                 },
             2: {
-                'description': 'Not yet implemented.'
+                'description': None
                 },
             3: {
-                'description': 'Not yet implemented.'
+                'description': None
                 },
             4: {
-                'description': 'Not yet implemented.'
+                'description': None
                 },
             5: {"soul": 100, "ascended_essence": 100,
                 'description': 'You can now increase your max level by 1 at the Shrine for the cost of 50 Souls and 50 Ascended Essence.'
@@ -82,6 +82,9 @@ class Shrine(Station):
                             if self.player.updateAscendancy(chosen):
                                 grammar = "an" if chosen[0].lower() in ['a', 'e', 'i', 'o', 'u'] else "a"
                                 printSuccess(f"You have successfully ascended into {grammar} [asc_{chosen.lower()}]{chosen}[/asc_{chosen.lower()}]")
+                                questBoard = getattr(self.player, '_questBoard', None)
+                                if questBoard is not None:
+                                    questBoard.notifyEvent('ascendancy_chosen')
                             else:
                                 printError(f"You were unable to ascend at this time.")
                             pause()

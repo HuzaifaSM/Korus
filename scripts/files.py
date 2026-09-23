@@ -22,10 +22,16 @@ _HERE = dirname(abspath(__file__))
 _KORUS_ROOT = dirname(_HERE)
 KORUS_SAVE_EXE = join(_KORUS_ROOT, "tools", "korus_save.exe")
 
-def ensure_directories():
-    makedirs(PATH, exist_ok=True)
+def _savesRoot(accountId: str = None) -> str:
+    return f"{PATH}{accountId}/" if accountId else PATH
+
+def _backupRoot(accountId: str = None) -> str:
+    return f"{BACKUP_PATH}{accountId}/" if accountId else BACKUP_PATH
+
+def ensureDirectories(accountId: str = None):
+    makedirs(_savesRoot(accountId), exist_ok=True)
     makedirs(LOGS, exist_ok=True)
-    makedirs(BACKUP_PATH, exist_ok=True)
+    makedirs(_backupRoot(accountId), exist_ok=True)
     makedirs(TOOLS_PATH, exist_ok=True)
 
 # .korus encode/decode wrappers
@@ -71,20 +77,20 @@ def _decodeKorus(korusPath: str, jsonPath: str) -> bool:
 
 # helpers
 
-def _saveFilePath(saveNum: int) -> str:
-    return f"{PATH}Save {saveNum}.korus"
+def _saveFilePath(saveNum: int, accountId: str = None) -> str:
+    return f"{_savesRoot(accountId)}Save {saveNum}.korus"
 
-def _tempJsonPath(saveNum: int) -> str:
+def _tempJsonPath(saveNum: int, accountId: str = None) -> str:
     """Temporary json path used during encode/decode"""
-    return f"{PATH}Save {saveNum}.tmp.json"
+    return f"{_savesRoot(accountId)}Save {saveNum}.tmp.json"
 
-def _backupPath(saveNum: int) -> str:
-    return f"{BACKUP_PATH}Save {saveNum}.backup.korus"
+def _backupPath(saveNum: int, accountId: str = None) -> str:
+    return f"{_savesRoot(accountId)}Save {saveNum}.backup.korus"
 
 # crash logging
 
 def logCrash(exception: Exception, game=None):
-    ensure_directories()
+    ensureDirectories()
     crashTime      = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     crash_filename = datetime.now().strftime("%Y%m%d_%H%M%S")
     crashData = {
@@ -115,18 +121,18 @@ def logCrash(exception: Exception, game=None):
     crash_json_path = f"{LOGS}crash_{crash_filename}.json"
 
     with open(crash_log_path, 'w') as logFile:
-        logFile.write("=" * 70 + "\n")
+        logFile.write("=" * 40 + "\n")
         logFile.write(f"CRASH REPORT - {crashTime}\n")
-        logFile.write("=" * 70 + "\n")
+        logFile.write("=" * 40 + "\n")
         logFile.write(f"Exception Type: {crashData['exception_type']}\n")
         logFile.write(f"Exception Message: {crashData['exception_message']}\n\n")
         if crashData.get('player_name'):
             logFile.write(f"Player: {crashData['player_name']} (Level {crashData['player_level']})\n")
             logFile.write(f"Battles Won: {crashData['battles_won']}\n\n")
         logFile.write("Full Traceback:\n")
-        logFile.write("-" * 70 + "\n")
+        logFile.write("-" * 40 + "\n")
         logFile.write(crashData['traceback'])
-        logFile.write("-" * 70 + "\n\n")
+        logFile.write("-" * 40 + "\n\n")
         if crashData['game_state_saved']:
             logFile.write(f"Game state saved to: {crashData['crash_save_file']}\n")
         elif 'game_state_save_error' in crashData:
@@ -139,21 +145,22 @@ def logCrash(exception: Exception, game=None):
 
 # backup
 
-def _createBackup(saveNum: int) -> bool:
-    savePath = _saveFilePath(saveNum)
+def _createBackup(saveNum: int, accountId: str = None) -> bool:
+    savePath = _saveFilePath(saveNum, accountId)
     if exists(savePath):
         try:
-            ensure_directories()
-            copy2(savePath, _backupPath(saveNum))
+            ensureDirectories(accountId)
+            copy2(savePath, _backupPath(saveNum, accountId))
             return True
         except Exception as e:
             printError(f"Failed to create backup: {e}")
             return False
     return False
 
-def undoLastOperation() -> bool:
-    ensure_directories()
-    backups = [f for f in listdir(BACKUP_PATH) if f.endswith('.backup.korus')]
+def undoLastOperation(accountId: str = None) -> bool:
+    ensureDirectories(accountId)
+    backupRoot = _backupRoot(accountId)
+    backups = [f for f in listdir(backupRoot) if f.endswith('.backup.korus')]
 
     if not backups:
         printError("No backup available to undo.")
@@ -172,8 +179,8 @@ def undoLastOperation() -> bool:
             pause()
             return False
 
-        backupPath = _backupPath(saveNum)
-        savePath   = _saveFilePath(saveNum)
+        backupPath = _backupPath(saveNum, accountId)
+        savePath   = _saveFilePath(saveNum, accountId)
 
         if not exists(backupPath):
             printError(f"No backup found for Save {saveNum}.")
@@ -207,12 +214,14 @@ def undoLastOperation() -> bool:
     
 # save
 
-def displayExistingSaves() -> list:
+def displayExistingSaves(accountId: str = None) -> list:
     from .difficulty import Difficulty
     clearScreen()
     printHeader("Existing Saves")
     saves = []
-    for filename in sorted(listdir(PATH)):
+    ensureDirectories(accountId)
+    savesRoot = _savesRoot(accountId)
+    for filename in sorted(listdir(savesRoot)):
         if filename.startswith('Save ') and filename.endswith('.korus'):
             saveNum = filename.replace("Save ", "").replace(".korus", "")
             try:
@@ -255,7 +264,7 @@ def displayExistingSaves() -> list:
 
     return saves
 
-def save(game, saveNum: int = 0):
+def save(game, saveNum: int = 0, accountId: str = None):
     try:
         saveNum = int(saveNum)
     except ValueError:
@@ -268,11 +277,11 @@ def save(game, saveNum: int = 0):
         pause()
         return
     
-    savePath = _saveFilePath(saveNum)
+    savePath = _saveFilePath(saveNum, accountId)
 
     # if save already exists, show detail and confirm overwrite
     if exists(savePath):
-        tmpJson = _tempJsonPath(saveNum)
+        tmpJson = _tempJsonPath(saveNum, accountId)
         if _decodeKorus(savePath, tmpJson):
             try:
                 with open(tmpJson, 'r') as f:
@@ -296,7 +305,7 @@ def save(game, saveNum: int = 0):
             pause()
             return
 
-        _createBackup(saveNum)
+        _createBackup(saveNum, accountId)
 
     try:
         saveData = {
@@ -304,7 +313,7 @@ def save(game, saveNum: int = 0):
             'camp': game.camp._serialiseAll(),
             'game': game._serialise()
         }
-        ensure_directories()
+        ensureDirectories(accountId)
 
         try:
             from scripts.korusFeedClient import reportPlayerSave
@@ -312,7 +321,7 @@ def save(game, saveNum: int = 0):
         except Exception:
             pass  # feed being unavailable should never block an actual save
 
-        tmpJson = _tempJsonPath(saveNum)
+        tmpJson = _tempJsonPath(saveNum, accountId)
         with open(tmpJson, 'w') as outFile:
             json.dump(saveData, outFile, indent=4)
 
@@ -327,9 +336,7 @@ def save(game, saveNum: int = 0):
         printError(f"Failed to save game: {e}")
         pause()
 
-# load
-
-def load(saveNum: int):
+def load(saveNum: int, accountId: str = None):
     try:
         saveNum = int(saveNum)
     except ValueError:
@@ -337,14 +344,14 @@ def load(saveNum: int):
         pause()
         return {}
 
-    savePath = _saveFilePath(saveNum)
+    savePath = _saveFilePath(saveNum, accountId)
 
     if saveNum < 0 or not exists(savePath):
         printError(f"Unable to find Save File: {saveNum}")
         pause()
         return {}
 
-    tmpJson = _tempJsonPath(saveNum)
+    tmpJson = _tempJsonPath(saveNum, accountId)
 
     if not _decodeKorus(savePath, tmpJson):
         pause()
@@ -358,14 +365,13 @@ def load(saveNum: int):
         pause()
         return {}
     finally:
-        # always clean up the temp file
         if exists(tmpJson):
             remove(tmpJson)
 
     console.print(f"[info]Found save file {saveNum}:[/info]")
     console.print(
         f"[dim]Player: {saveData['player']['name']} | "
-        f"Class: {saveData['player']['className']} | "
+        f"Class: {saveData['player']['className']} | {f'Ascendancy: {saveData['player']['ascendancy']} | ' if saveData['player']['ascendancy'] is not None else ''}"
         f"Level: {saveData['player']['level']}[/dim]"
     )
 
@@ -382,10 +388,8 @@ def load(saveNum: int):
         printInfo("Load cancelled.")
         pause()
         return {}
-    
-# delete
 
-def deleteSave(saveNum: int):
+def deleteSave(saveNum: int, accountId: str = None):
     try:
         saveNum = int(saveNum)
     except ValueError:
@@ -393,7 +397,7 @@ def deleteSave(saveNum: int):
         pause()
         return
 
-    savePath = _saveFilePath(saveNum)
+    savePath = _saveFilePath(saveNum, accountId)
 
     if saveNum < 0 or not exists(savePath):
         printError(f"Unable to find Save File: {saveNum}")
@@ -406,7 +410,7 @@ def deleteSave(saveNum: int):
 
     if confirm == 'y':
         try:
-            _createBackup(saveNum)
+            _createBackup(saveNum, accountId)
             remove(savePath)
             printSuccess(f"Save {saveNum} successfully deleted.")
             pause()
@@ -414,15 +418,14 @@ def deleteSave(saveNum: int):
             printError(f"Failed to delete save: {e}")
             pause()
 
-# misc
-
-def checkForSaves() -> bool:
-    ensure_directories()
-    return any(isfile(join(PATH, f)) for f in listdir(PATH) if f.endswith('.korus'))
+def checkForSaves(accountId: str = None) -> bool:
+    ensureDirectories(accountId)
+    savesRoot = _savesRoot(accountId)
+    return any(isfile(join(savesRoot, f)) for f in listdir(savesRoot) if f.endswith('.korus'))
 
 def addToDeathLog(game):
     try:
-        ensure_directories()
+        ensureDirectories()
         deathTime    = datetime.now().strftime("%B %d %Y %H:%M:%S")
         deathLogPath = f"{PATH}Death Log.json"
 

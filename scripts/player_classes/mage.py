@@ -51,7 +51,7 @@ MAGE_DESCRIPTIONS = {
         "[bold]Stat Changes:[/bold] +25 HP. -0.1 Speed. +5% Crit Chance. +25 Energy Shield. +5 Mana Regeneration.",
     "Unmaker": "[lore]The rest seek power. Knowledge. Recognition. Their facades bore you. This world holds only evils, and you are the single truth. There is no place, after all, for these hideous miscreations.[/lore]"
         "- Whenever you deal a critical hit, or whenever you are critically hit, gain 1 Precision. Precision has a maximum of 10 stacks.\n"
-        "- Precision: +1% Crit Chance, +15% Crit Damage, +1% Execution Threshold. At 10 Precision, double your Crit Chance.\n"
+        "- Precision: +1% Crit Chance, +15% Crit Damage, +1% Execute Threshold. At 10 Precision, double your Crit Chance.\n"
         "- Mana cannot be spent on non-critical attacks. Attacks always consume a minimum of 50% of your Current Mana. Spending Mana heals you for 75% of Mana Spent.\n"
         "- For each Elemental Adaptation you have, gain +3% Crit Chance, +10% Crit Multi, 5% Reduced Defenses.\n"
         "- Archmage also grants +30% Crit Resistance, 10% Increased Defenses, and 5% Lifesteal.\n"
@@ -98,7 +98,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
     def _recalculateStats(self, doPrint=True, inCombat=False):
         super()._recalculateStats(doPrint, inCombat)
-        self._maxMana += self._maxStamina - 100
+        self._maxMana = self._maxStamina
 
         if self._ascendancy == 'Arcanist':
             hpToMana = int(self._maxHealth * 0.1)
@@ -173,7 +173,8 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
     def gainEarthAdaptation(self):
         if not self.earthAdaptation and not (self._ascendancy == 'Calamity' and self.relinquishedEarth):
-            self._stats['Temporary']['elemental'] += 10
+            for res in ELEMENTAL_RES:
+                self._stats['Temporary'][res] += 10
             self.earthAdaptation = True
             self.elementalAdaptations += 1
             if self._ascendancy == 'Unmaker':
@@ -183,7 +184,8 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
     def relinquishEarth(self):
         if self.earthAdaptation:
-            self._stats['Temporary']['elemental'] -= 10
+            for res in ELEMENTAL_RES:
+                self._stats['Temporary'][res] -= 10
             self._stats['Temporary']['increased_defenses'] += 20
             self.relinquishedEarth = True
             self.earthAdaptation = False
@@ -244,6 +246,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 self.calamity = True
                 self._stats['Temporary']['crit_chance'] += 0.5
                 self._stats['Temporary']['crit_multi'] += 1
+                self._stats['Temporary']['less_damage_taken'] += 20
 
     def checkProphetic(self):
         if not self.prophetic and self._ascendancy == 'Hierophant':
@@ -303,6 +306,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
     def gainPrecision(self):
         if self._ascendancy == 'Unmaker' and self.unmakerPrecision < 10:
             self.unmakerPrecision += 1
+            self._stats['Temporary']['execute_threshold'] += 1
             self._stats['Temporary']['crit_chance'] += 0.01
             self._stats['Temporary']['crit_multi'] += 0.15
 
@@ -428,6 +432,7 @@ class Mage(Player): # higher damage, lower health, arcane damage
                 stacksConsumed = self.unmakerPrecision
                 self._stats['Temporary']['crit_chance'] -= 0.01 * stacksConsumed
                 self._stats['Temporary']['crit_multi'] -= 0.15 * stacksConsumed
+                self._stats['Temporary']['execute_threshold'] -= 1 * stacksConsumed
                 self.unmakerPrecision = 0
                 self._logDamage(f"Consumed {stacksConsumed} Precision (Unmaker)", percent=dmgPerStack * stacksConsumed)
                 damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
@@ -515,14 +520,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
 
         return damageDealt, damageType
 
-    def onExecuteCheck(self, target, combatManager):
-        if self._ascendancy == 'Empyrean':
-            if target._health < (target._maxHealth * (self.unmakerPrecision / 100)):
-                console.print(f"[asc_unmaker]Unmaker: {target._name} was Executed from Precision![/asc_unmaker]")
-
-                target.damage(target._health, 'true')
-                combatManager.checkDead(target)
-
     def onBeforeCritRoll(self, targetUnit, targets, combatManager):
         if self._ascendancy == 'Unmaker' and self.unmakerPrecision == 10 and not self.unmakerCritChanceDoubled:
             self._stats['baseCritChance'] *= 2
@@ -589,10 +586,6 @@ class Mage(Player): # higher damage, lower health, arcane damage
             else:
                 attacker._logDamage(f"{self._name}'s Calamity (Non-Elemental/Arcane Damage Taken)", percent=-0.1)
                 damageTaken = int(damageTaken * 0.9)
-            if self.calamity:
-                attacker._logDamage(f"{self._name}'s Calamity", percent=-0.2)
-                damageTaken = int(damageTaken * 0.8)
-
         elif self._ascendancy == 'Arcanist' and damageType in ELEMENTAL_RES:
             mGain = int(damageTaken * 0.1)
             self._mana = min(self._maxMana, self._mana + mGain)
@@ -716,8 +709,13 @@ class Mage(Player): # higher damage, lower health, arcane damage
             '_baseHealth': 25,
             '_baseDamage': 8,
             '_baseSpeed': -0.1,
-            '_stats.Permanent.elemental': 5,
-            '_stats.Permanent.divine': 5,
+            '_stats.Permanent.fire': 5,
+            '_stats.Permanent.cold': 5,
+            '_stats.Permanent.lightning': 5,
+            '_stats.Permanent.earth': 5,
+            '_stats.Permanent.holy': 5,
+            '_stats.Permanent.dark': 5,
+            '_stats.Permanent.arcane': 5,
         },
         'Empyrean': {
             '_baseHealth': 25,

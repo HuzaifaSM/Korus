@@ -140,7 +140,7 @@ class EpicRarityRune(BaseRarityRune):
 
 class AscendantRarityRune(BaseRarityRune):
     name = '[thistle1 bold underline]Ascendant Rarity Rune[/thistle1 bold underline]'
-    description = 'Upgrades a level 60+ Legendary item into either a Mythic or Blank rarity item. 70% Chance for Mythic, 30% Chance flor Blank. If mythic, it will be given a Mythic Affix. If Blank, the item will be undiscovered.'
+    description = 'Upgrades a level 60+ Legendary item into either a Mythic or Blank rarity item. 70% Chance for Mythic, 30% Chance for Blank. If mythic, it will be given a Mythic Affix. If Blank, the item will become undiscovered.'
     fromRarity = ItemRarity.LEGENDARY
     successEntropy = 0.0
     dropWeight = 2
@@ -178,7 +178,7 @@ class AscendantRarityRune(BaseRarityRune):
         numPre = max(4, len(item.prefixSlots))
         numSuf = max(4, len(item.suffixSlots))
         item.prefixSlots = [AffixSlot('prefix') for _ in range(numPre)]
-        item.suffixSlots = [AffixSlot('suffix') for _ in random(numSuf)]
+        item.suffixSlots = [AffixSlot('suffix') for _ in range(numSuf)]
         item.blankCuratedHand = None
         item.blankTableKey = None
         item.destabilised = False

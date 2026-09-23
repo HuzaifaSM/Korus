@@ -190,7 +190,7 @@ def _serialisePlayer(player, saveNum: int, campData: Optional[dict], gameData: O
         "stamina": player._stamina,
         "base_damage": player._baseDamage,
         "damage_type": player._damageType or "",
-        "base_speed": player._baseSpeed,
+        "base_speed": round(player._baseSpeed, 2),
         "stats": player._stats,
         "equipped": equipped,
         "equipment_storage": equipmentStorage,
@@ -213,8 +213,7 @@ def _postInBackground(payload: dict, url: str):
             )
             urllib.request.urlopen(req, timeout=TIMEOUT_SECONDS)
         except urllib.error.HTTPError as e:
-            # the server was reached but rejected the payload - a real bug, worth surfacing,
-            # unlike "server's just not running" which should stay silent
+            # the server was reached but rejected the payload - a real bug,
             try:
                 body = e.read().decode(errors='replace')
             except Exception:

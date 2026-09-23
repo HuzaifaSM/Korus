@@ -813,7 +813,7 @@ def createEnemyPreview(enemies: List) -> Table:
 
     for enemy in enemies:
         lines = []
-        lines.append(f"[bold red]{enemy._name}[/bold red]")
+        lines.append(f"{enemy.rarity.value.title()} [bold red]{enemy._name}[/bold red]")
         classStyle = enemy.className.value
         subStr = ""
         subStyle = ""
@@ -841,7 +841,7 @@ def createEnemyPreview(enemies: List) -> Table:
         if resources:
             lines.append("[bold gold]Resources:[/bold gold]")
             for resource, (minAmt, maxAmt, chance) in resources.items():
-                lines.append(f"[gold]  - {resource}: {minAmt}-{maxAmt} | Drop Chance = {int(chance*100)}%[/gold]")
+                lines.append(f"[gold]  - {resource}: {int(minAmt)}-{int(maxAmt)} | Drop Chance = {int(chance*100)}%[/gold]")
             lines.append("")
 
         equipment = enemy._lootTable.equipmentPool

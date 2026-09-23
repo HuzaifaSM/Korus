@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import Dict, List
 import random
-from scripts.styles import console
 
 class ItemRarity(Enum):
     COMMON = "common"
@@ -147,6 +146,38 @@ class ItemRarity(Enum):
             elif value == 4:
                 return ItemRarity.UNCOMMON
 
+        return ItemRarity.COMMON
+
+    @property
+    def num(self) -> int:
+        if self.value in ['common', 'quest']:
+            return 1
+        elif self.value == 'uncommon':
+            return 2
+        elif self.value == 'rare':
+            return 3
+        elif self.value == 'epic':
+            return 4
+        elif self.value == 'legendary':
+            return 5
+        elif self.value in ['mythic', 'blank']:
+            return 6
+
+    @staticmethod
+    def numToRarity(num: int) -> 'ItemRarity':
+        num = int(num)
+        if num == 1:
+            return ItemRarity.COMMON
+        elif num == 2:
+            return ItemRarity.UNCOMMON
+        elif num == 3:
+            return ItemRarity.RARE
+        elif num == 4:
+            return ItemRarity.EPIC
+        elif num == 5:
+            return ItemRarity.LEGENDARY
+        elif num == 6:
+            return ItemRarity.MYTHIC
         return ItemRarity.COMMON
 
 RARITY_VALUES = {
@@ -364,6 +395,7 @@ RESOURCES = {
     "wood": Resource("Wood", 'Campfire'), "stone": Resource("Stone", 'Campfire'),
     "brick": Resource("Brick", "Forge"), "metal": Resource("Metal", "Forge"),
     "leather": Resource("Leather", "Market"), "cloth": Resource("Cloth", "Market"),
+    "paper": Resource("Paper", "Quest Board"), "nail": Resource("Nail", "Quest Board"),
     "soul": Resource("Soul", "Player"), "ascended_essence": Resource("Ascended Essence", "Player"),
 }
 
