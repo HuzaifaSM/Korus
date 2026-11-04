@@ -18,6 +18,7 @@ from scripts.debug import Debugger
 from scripts.difficulty import Difficulty, setActiveDifficulty
 from scripts.help import Help
 from scripts.items.equipment import peekNextEquipmentId, setNextEquipmentId
+from scripts.dungeons.dungeonRun import DungeonRun
 from scripts.korusFeedClient import ensureServerRunning, isServerRunning
 
 from scripts.styles import (
@@ -457,6 +458,7 @@ class Game:
             console.print("[dim]3)[/dim] [bright_cyan]Go to Camp[/bright_cyan]")
             console.print("[dim]4)[/dim] [grey58]Options Menu[/grey58]")
             console.print("[dim]5.[/dim] [gold3]View Class Details[/gold3]")
+            console.print(f"[dim]7.[/dim] [bold magenta]Dungeons[/bold magenta] [dim]({len(self.player.dungeonMaps)} held)[/dim]")
             if self.areaLevel > 1:
                 console.print("[dim]6.[/dim] [dark_red]Reduce Area Level by 1[/dark_red] [dim](Costs 3 Souls)[/dim]")
             console.print("[dim]Save:[/dim] [purple3]Enter 'save' for the Save Menu[/purple3]")
@@ -531,6 +533,8 @@ class Game:
                             else:
                                 printWarning(f"Not enough Souls! You currently have {playerSouls}/3 Souls.")
                             pause()
+                    case 7:
+                        self.dungeonsMenu()
                     case _:
                         printError("\nInvalid choice.\n")
             except ValueError as e:
@@ -541,6 +545,43 @@ class Game:
                 self.saveMenu()
                 continue
             pause()
+
+    def dungeonsMenu(self):
+        while True:
+            clearScreen()
+            printHeader("Dungeons")
+
+            if not self.player.dungeonMaps:
+                printWarning("You aren't holding any Dungeon Maps. Defeated enemies can drop them, starting from level 10.")
+                pause()
+                return
+
+            printSeparator()
+            for i, dungeonMap in enumerate(self.player.dungeonMaps, 1):
+                console.print(f"[dim]{i}.[/dim] [rarity]{dungeonMap.name}[/rarity] [dim]({dungeonMap.rarity.value.title()}, Tier {dungeonMap.tier}, Level {dungeonMap.level}, {dungeonMap.floorCount} Floors)[/dim]")
+            console.print("[dim]0.[/dim] Return")
+
+            choice = console.input("\n[cyan]>[/cyan] ").strip()
+            checkGlobalCommand(choice)
+
+            try:
+                choice = int(choice)
+            except ValueError:
+                printError("Invalid input!")
+                pause()
+                continue
+
+            if choice == 0:
+                return
+
+            index = choice - 1
+            if not (0 <= index < len(self.player.dungeonMaps)):
+                printError("Invalid choice!")
+                pause()
+                continue
+
+            dungeonMap = self.player.dungeonMaps.pop(index)  # spent the moment you step in - win, retreat, or die
+            DungeonRun(self, dungeonMap).start()
 
     def playerMenu(self):
         while True:
@@ -697,20 +738,21 @@ class Game:
         if result == "victory":
             self.player.onCombatEnd()
             self.player._mythicDispatch('onCombatEnd')
-            self.battlesWon += 1
-            currentAreaLevel = self.areaLevel
-            if self.player._level < AREA_LEVEL_SCALING_START_LEVEL:
-                levelBasedAreaLevel = 1 + self.player._level // AREA_LEVEL_LEVEL_STEP
-                self.areaLevel = max(self.areaLevel, levelBasedAreaLevel)
-            elif self.areaLevel > 100:
-                self.areaLevel += 1 if self.battlesWon % 20 == 0 else 0
-            else:
-                self.areaLevel += 1 if self.battlesWon % 10 == 0 else 0
-            if currentAreaLevel != self.areaLevel: #if area level increased
-                clearScreen()
-                printHeader("Area Level Increased!")
-                console.print(f"[gold1]=== New Area Level: {self.areaLevel} ===[/gold1]")
-                console.print("[warning]Enemies will be stronger, and rewards will be greater...[/warning]")
+            if getattr(self, '_combatAffectsOverworldProgression', True):
+                self.battlesWon += 1
+                currentAreaLevel = self.areaLevel
+                if self.player._level < AREA_LEVEL_SCALING_START_LEVEL:
+                    levelBasedAreaLevel = 1 + self.player._level // AREA_LEVEL_LEVEL_STEP
+                    self.areaLevel = max(self.areaLevel, levelBasedAreaLevel)
+                elif self.areaLevel > 100:
+                    self.areaLevel += 1 if self.battlesWon % 20 == 0 else 0
+                else:
+                    self.areaLevel += 1 if self.battlesWon % 10 == 0 else 0
+                if currentAreaLevel != self.areaLevel: #if area level increased
+                    clearScreen()
+                    printHeader("Area Level Increased!")
+                    console.print(f"[gold1]=== New Area Level: {self.areaLevel} ===[/gold1]")
+                    console.print("[warning]Enemies will be stronger, and rewards will be greater...[/warning]")
             self.victory(enemies, waveEncounter, lootBonus)
         elif result == "defeat":
             clearScreen()
@@ -826,7 +868,7 @@ class Game:
         encounterClasses = rollEncounterClasses(numEnemies)
         for enemyClass in encounterClasses:
             enemies.append(createEnemy(enemyLevel, difficulty, rarity, quantity, self.player.className, self.player._name,
-                                        enemyClass=enemyClass, groupSize=numEnemies))
+                                        enemyClass=enemyClass, groupSize=numEnemies, playerLevel=self.player._level))
 
         return enemies
 
@@ -839,7 +881,8 @@ class Game:
             return False
         return True
 
-    def startCombat(self, enemies: List[Enemy]):
+    def startCombat(self, enemies: List[Enemy], affectsOverworldProgression: bool = True):
+        self._combatAffectsOverworldProgression = affectsOverworldProgression
         clearScreen()
         printHeader("Combat Start")
 
@@ -997,7 +1040,7 @@ class Game:
 
         if len(enemies) == 1:
             return enemies[0]
-        
+
         while True:
             target = console.input("[cyan]Choose target (number):[/cyan]\n> ").strip()
             try:
@@ -1032,6 +1075,7 @@ class Game:
         allLoot = {}
         allEquipment = []
         allRunes = []
+        allDungeonMaps = []
 
         blueprints = 0
         fuel = 0
@@ -1061,7 +1105,10 @@ class Game:
                 )
 
             resources, equipmentPool, runes = enemy.dropLoot()
-            
+
+            if enemy._lootTable.dungeonMap:
+                allDungeonMaps.append(enemy._lootTable.dungeonMap)
+
             for resource, (minAmt, maxAmt, dropChance) in resources.items():
                 minAmt = int(minAmt)
                 maxAmt = int(maxAmt)
@@ -1165,6 +1212,12 @@ class Game:
             console.print(f"\n[cyan bold]=== Runes ===[/cyan bold]")
             for cat, rtype in allRunes:
                 self.player.addRune(cat, rtype, 1)
+
+        if allDungeonMaps:
+            console.print(f"\n[cyan bold]=== Dungeon Maps ===[/cyan bold]")
+            for dungeonMap in allDungeonMaps:
+                self.player.dungeonMaps.append(dungeonMap)
+                console.print(f"  [rarity]{dungeonMap.name}[/rarity] [dim]({dungeonMap.rarity.value.title()}, Tier {dungeonMap.tier}, Level {dungeonMap.level})[/dim]")
 
         self.camp.campfire.applyHeal()
 

@@ -2,7 +2,7 @@ import json
 from os.path import exists
 
 if exists('Korus'):
-    SETTINGS_PATH = "Korus/settings.json"
+    SETTINGS_PATH = "Korus/settings/settings.json"
 else:
     SETTINGS_PATH = "settings.json"
 

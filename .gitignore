@@ -10,3 +10,5 @@ tests/save/
 .claude/
 tools/korus-build/korus-build
 tools/korus-build/korus-build.exe
+data/accounts/
+settings/

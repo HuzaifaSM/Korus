@@ -1,0 +1,35 @@
+{
+  "positive": {
+    "common": [
+      {"name": "Bountiful", "description": "+20% Item Quantity", "effect": "item_quantity", "value": 20, "weight": 10},
+      {"name": "Fortunate", "description": "+15% Item Rarity", "effect": "item_rarity", "value": 15, "weight": 10},
+      {"name": "Enlightening", "description": "+20% Experience Gained", "effect": "experience", "value": 20, "weight": 10},
+      {"name": "Wealthy", "description": "+30% Gold Dropped", "effect": "gold", "value": 30, "weight": 10}
+    ],
+    "rare": [
+      {"name": "Rejuvenating", "description": "Rest Sites are 50% more effective", "effect": "rest_heal_multiplier", "value": 0.5, "weight": 6},
+      {"name": "Abundant", "description": "+15% Item Quantity and Rarity", "effect": "item_quantity_and_rarity", "value": 15, "weight": 6}
+    ],
+    "legendary": [
+      {"name": "Mythic", "description": "Guaranteed Legendary+ equipment drop from the Boss", "effect": "guaranteed_drop", "value": {"count": 1, "minRarity": "legendary"}, "weight": 2},
+      {"name": "Blessed", "description": "Rest Sites are 100% more effective (and always restore Stamina)", "effect": "rest_heal_multiplier", "value": 1.0, "weight": 2}
+    ]
+  },
+  "negative": {
+    "common": [
+      {"name": "Brutal", "description": "Enemies deal 15% more damage", "effect": "enemy_damage", "value": 15, "weight": 10},
+      {"name": "Fortified", "description": "Enemies have 20% more health", "effect": "enemy_health", "value": 20, "weight": 10},
+      {"name": "Swift", "description": "Enemies have 10% more speed", "effect": "enemy_speed", "value": 10, "weight": 10}
+    ],
+    "rare": [
+      {"name": "Overwhelming", "description": "Enemies have 15% more of all stats", "effect": "enemy_all_stats", "value": 15, "weight": 6},
+      {"name": "Escalating", "description": "Enemies are 3 levels higher than normal", "effect": "enemy_level", "value": 3, "weight": 6},
+      {"name": "Swarming", "description": "+1 enemy in every combat", "effect": "extra_enemies", "value": 1, "weight": 6}
+    ],
+    "legendary": [
+      {"name": "Relentless", "description": "Enemies have 30% more of all stats", "effect": "enemy_all_stats", "value": 30, "weight": 2},
+      {"name": "Encroaching", "description": "Enemies gain 3% increased all stats for every floor already cleared", "effect": "floor_enemy_stack", "value": 3, "weight": 2},
+      {"name": "Cursed", "description": "Rest Sites are 50% less effective", "effect": "rest_heal_multiplier", "value": -0.5, "weight": 2}
+    ]
+  }
+}

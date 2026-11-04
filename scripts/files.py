@@ -85,7 +85,7 @@ def _tempJsonPath(saveNum: int, accountId: str = None) -> str:
     return f"{_savesRoot(accountId)}Save {saveNum}.tmp.json"
 
 def _backupPath(saveNum: int, accountId: str = None) -> str:
-    return f"{_savesRoot(accountId)}Save {saveNum}.backup.korus"
+    return f"{_backupRoot(accountId)}Save {saveNum}.backup.korus"
 
 # crash logging
 
@@ -222,15 +222,14 @@ def displayExistingSaves(accountId: str = None) -> list:
     ensureDirectories(accountId)
     savesRoot = _savesRoot(accountId)
     for filename in sorted(listdir(savesRoot)):
-        if filename.startswith('Save ') and filename.endswith('.korus'):
+        if filename.startswith('Save ') and filename.endswith('.korus') and not filename.endswith('.backup.korus'):
             saveNum = filename.replace("Save ", "").replace(".korus", "")
+            tempJson = _tempJsonPath(saveNum, accountId)
             try:
-                tempJson = f"{PATH}Save {saveNum}.temp.json"
-                if not _decodeKorus(f"{PATH}{filename}", tempJson):
+                if not _decodeKorus(f"{savesRoot}{filename}", tempJson):
                     raise Exception(f"Failed to decode save {saveNum}")
                 with open(tempJson, 'r') as f:
                     data: dict = json.load(f)
-                remove(tempJson)
                 player: dict = data.get('player', None)
                 if not player:
                     raise Exception(f"Player data missing from save {saveNum}")
@@ -261,6 +260,9 @@ def displayExistingSaves(accountId: str = None) -> list:
             except Exception as e:
                 printError(f"Error loading Save {saveNum}: {e}")
                 console.print(f"[cyan]{saveNum}.[/cyan] [dim](Corrupted Save File)[/dim]\n")
+            finally:
+                if exists(tempJson):
+                    remove(tempJson)
 
     return saves
 

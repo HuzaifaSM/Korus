@@ -490,7 +490,8 @@ class CombatManager:
                     available = [u.entity for u in self.getUnitsInTeam("player")]
                 targets = random.sample(available, min(numTargets, len(available)))
             else:
-                targets = [target]
+                if not isinstance(target, list):
+                    targets = [target]
 
             damage = ability.calculateDamage(attacker._damage)
             damageType = ability.damageType if ability.damageType else attacker._damageType

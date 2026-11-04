@@ -3,6 +3,7 @@ from typing import Dict, List
 import random
 
 class ItemRarity(Enum):
+    QUEST = "quest"
     COMMON = "common"
     UNCOMMON = "uncommon"
     RARE = "rare"
@@ -10,31 +11,19 @@ class ItemRarity(Enum):
     LEGENDARY = "legendary"
     MYTHIC = "mythic"
     BLANK = "blank"
-    QUEST = "quest"
+
+    @property
+    def listed(self) -> list[str]:
+        """returns all item rarity values"""
+        return [ir.value for ir in list(ItemRarity)]
 
     def __lt__(self, other: ItemRarity) -> bool:
-        if self.value == 'common' and other.value != 'common':
-            return True
-        elif self.value ==  'uncommon':
-            if other.value in ['common', 'uncommon']:
-                return False
-            return True
-        elif self.value == 'rare':
-            if other.value in ['common', 'uncommon', 'rare']:
-                return False
-            return True
-        elif self.value == 'epic':
-            if other.value in ['common', 'uncommon', 'rare', 'epic']:
-                return False
-            return True
-        elif self.value == 'legendary':
-            if other.value not in ['mythic', 'blank']:
-                return False
-            return True
-        elif self.value in ['mythic', 'blank']: # nothing greater than mythic/blank
-            return False
-        elif self.value == 'quest': # quest, all greater
-            return True
+        ir = self.listed
+
+        ind = ir.index(self.value)
+        ind2 = ir.index(other.value)
+
+        return ind < ind2
 
     def __le__(self, other: ItemRarity) -> bool:
         if self.value == other.value:
@@ -42,26 +31,12 @@ class ItemRarity(Enum):
         return self < other
 
     def __gt__(self, other: ItemRarity) -> bool:
-        if self.value == 'common' and other.value != 'common':
-            return False
-        elif self.value ==  'uncommon':
-            if other.value in ['common', 'uncommon']:
-                return True
-            return False
-        elif self.value == 'rare':
-            if other.value in ['common', 'uncommon', 'rare']:
-                return True
-            return False
-        elif self.value == 'epic':
-            if other.value in ['common', 'uncommon', 'rare', 'epic']:
-                return True
-            return False
-        elif self.value in ['legendary', 'mythic', 'blank']: # legendary, mythic, blank > all but mythic/blank
-            if other.value not in ['mythic', 'blank']:
-                return True
-            return False
-        elif self.value == 'quest': # quest, all greater
-            return False
+        ir = self.listed
+
+        ind = ir.index(self.value)
+        ind2 = ir.index(other.value)
+
+        return ind > ind2
 
     def __ge__(self, other: ItemRarity) -> bool:
         if self.value == other.value:
@@ -69,99 +44,24 @@ class ItemRarity(Enum):
         return self > other
 
     def __add__(self, value: int) -> ItemRarity:
-        if value < 0:
-            return self - value
-        if self.value == 'quest':
-            return [ItemRarity.QUEST]
-        if value == 0:
-            return RARITY_SERIALS[self.value]
-        if self.value in ['mythic', 'blank']:
-            return RARITY_SERIALS[self.value]
+        ir = self.listed
 
-        if self.value == 'common':
-            if value == 1:
-                return ItemRarity.UNCOMMON
-            elif value == 2:
-                return ItemRarity.RARE
-            elif value == 3:
-                return ItemRarity.EPIC
-            elif value == 4:
-                return ItemRarity.LEGENDARY
-        
-        elif self.value == 'uncommon':
-            if value == 1:
-                return ItemRarity.RARE
-            elif value == 2:
-                return ItemRarity.EPIC
-            elif value == 3:
-                return ItemRarity.LEGENDARY
+        ind = ir.index(self.value)
+        realAdd = min(value, len(ir) - 1 - ind)
 
-        elif self.value == 'rare':
-            if value == 1:
-                return ItemRarity.EPIC
-            elif value == 2:
-                return ItemRarity.LEGENDARY
-
-        elif self.value == 'epic':
-            if value == 1:
-                return ItemRarity.LEGENDARY
-
-        return ItemRarity.MYTHIC
+        return RARITY_SERIALS[ir[ind + realAdd]]
 
     def __sub__(self, value: int) -> ItemRarity:
-        if value < 0:
-            return self + value
-        if self.value == 'quest':
-            return [ItemRarity.QUEST]
-        elif self.value == 'common':
-            return RARITY_SERIALS[self.value]
-        if value == 0:
-            return RARITY_SERIALS[self.value]
+        ir = self.listed
 
-        if self.value == 'rare':
-            if value == 1:
-                return ItemRarity.UNCOMMON
+        ind = ir.index(self.value)
+        realSub = max(value, len(ir) - 1 - ind)
 
-        elif self.value == 'epic':
-            if value == 1:
-                return ItemRarity.RARE
-            elif value == 2:
-                return ItemRarity.UNCOMMON
-
-        elif self.value == 'legendary':
-            if value == 1:
-                return ItemRarity.EPIC
-            elif value == 2:
-                return ItemRarity.RARE
-            elif value == 3:
-                return ItemRarity.UNCOMMON
-
-        elif self.value in ['mythic', 'blank']:
-            if value == 1:
-                return ItemRarity.LEGENDARY
-            elif value == 2:
-                return ItemRarity.EPIC
-            elif value == 3:
-                return ItemRarity.RARE
-            elif value == 4:
-                return ItemRarity.UNCOMMON
-
-        return ItemRarity.COMMON
+        return RARITY_SERIALS[ir[ind - realSub]]
 
     @property
     def num(self) -> int:
-        if self.value in ['common', 'quest']:
-            return 1
-        elif self.value == 'uncommon':
-            return 2
-        elif self.value == 'rare':
-            return 3
-        elif self.value == 'epic':
-            return 4
-        elif self.value == 'legendary':
-            return 5
-        elif self.value in ['mythic', 'blank']:
-            return 6
+        return self.listed.index(self.value)
 
     @staticmethod
     def numToRarity(num: int) -> 'ItemRarity':
@@ -221,7 +121,8 @@ TYPE_SERIALS = {
     "resource": ItemType.RESOURCE,
     "consumable": ItemType.CONSUMABLE,
     "equipment": ItemType.EQUIPMENT,
-    "quest": ItemType.QUEST
+    "quest": ItemType.QUEST,
+    "dungeon": ItemType.DUNGEON
 }
 
 class Item:
@@ -339,58 +240,6 @@ class QuestItem(Item):
     def __init__(self, name: str, value: int = 1):
         super().__init__(name, "quest", ItemRarity.QUEST, value, stackable=False, maxStack=1)
 
-DUNGEON_RARITY_MULTIPLIERS = {
-    ItemRarity.COMMON: {'difficulty': 1.0, 'rewards': 1.0},
-    ItemRarity.UNCOMMON: {'difficulty': 1.2, 'rewards': 1.5},
-    ItemRarity.RARE: {'difficulty': 1.5, 'rewards': 2.0},
-    ItemRarity.EPIC: {'difficulty': 2.0, 'rewards': 3.0},
-    ItemRarity.LEGENDARY: {'difficulty': 3, 'rewards': 5.0}
-}
-
-class DungeonMap(Item):
-    def __init__(self, name: str, level: int, waves: int, tier: int,
-                 rarity: ItemRarity = ItemRarity.COMMON, description: str = ""):
-        super().__init__(name, ItemType.DUNGEON, rarity, 1, False, 1)
-        self.level = level
-        self.waves = waves
-        self.tier = tier
-        self.description = description
-
-    def serialise(self):
-        temp = super().serialise()
-        temp['level'] = self.level
-        temp['waves'] = self.waves
-        temp['tier'] = self.tier
-        temp['description'] = self.description
-
-        return temp
-    
-    @classmethod
-    def deserialise(cls, data):
-        cls = DungeonMap(
-            data.get('name', 'Dungeon Map'),
-            data.get('level', 1),
-            data.get('waves', 1),
-            data.get('tier', 1),
-            data.get('rarity', ItemRarity.COMMON),
-            data.get('description', "")
-        )
-
-        i = super().deserialise(data)
-
-        cls.itemType = i.itemType
-        cls.value = i.value
-        cls.stackable = i.stackable or False
-        cls.maxStack  = i.maxStack or 1
-
-        return cls
-    
-    def getDifficultyMultiplier(self):
-        return DUNGEON_RARITY_MULTIPLIERS[self.rarity]['difficulty']
-    
-    def getRewardMultiplier(self):
-        return DUNGEON_RARITY_MULTIPLIERS[self.rarity]['rewards']
-
 RESOURCES = {
     "wood": Resource("Wood", 'Campfire'), "stone": Resource("Stone", 'Campfire'),
     "brick": Resource("Brick", "Forge"), "metal": Resource("Metal", "Forge"),
@@ -479,6 +328,7 @@ class LootTable:
         self.equipmentPool: list = []  # List of possible equipment
         self.runeDrops = []
         self.extras = {}
+        self.dungeonMap = None  # already-rolled DungeonMap or None - not chance-gated like the pools above
 
     def __rich__(self):
         return self.__str__()
@@ -503,17 +353,24 @@ class LootTable:
             output += "\n\n === Extras ==="
             for name, data in self.extras.items():
                 output += f"\n  - {name} : {data}"
-        
+
+        if self.dungeonMap:
+            output += "\n\n === Dungeon Map ==="
+            output += f"\n  - {self.dungeonMap.name} ({self.dungeonMap.rarity.value.title()}, Tier {self.dungeonMap.tier})"
+
         return output if output else "\n  No loot available"
-        
+
     def addResource(self, resourceName: str, minAmount: int, maxAmount: int, dropChance: float = 1.0):
         self.resources[resourceName] = (minAmount, maxAmount, min(1.0, dropChance))
-    
+
     def addEquipment(self, equipment, dropChance: float = 0.1):
         self.equipmentPool.append((equipment, min(1.0, dropChance)))
 
     def addRune(self, category: str, runeType: str, dropChance: float = 0.8):
         self.runeDrops.append((category, runeType, min(1.0, dropChance)))
+
+    def addDungeonMap(self, dungeonMap):
+        self.dungeonMap = dungeonMap
 
     def addExtra(self, name, data, dictVersion=None):
         """Use dict version to send multiple otherwise use name/data"""

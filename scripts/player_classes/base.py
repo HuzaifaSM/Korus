@@ -38,7 +38,7 @@ class Player(Entity):
         self.classDescription = classDescription
         self._ascendancy: str = ascendancy
         self.ascendancyDescription: str = ascendancyDescription
-        self.dungeonKeys = {}
+        self.dungeonMaps: list = []
         self._maxLevel = 100
         self.isPlayer = True
         self._questBoard = None
@@ -48,11 +48,14 @@ class Player(Entity):
     def serialise(self):
         temp = super().serialise()
         temp['maxLevel'] = self._maxLevel
+        temp['dungeonMaps'] = [m.serialise() for m in self.dungeonMaps]
         return temp
 
     def deserialise(self, data):
         super().deserialise(data)
         self._maxLevel = data.get('maxLevel', 100)
+        from ..dungeons.dungeonMap import DungeonMap
+        self.dungeonMaps = [DungeonMap.deserialise(m) for m in data.get('dungeonMaps', [])]
         self.gainClassAbilities()
 
     def bypassesFormRequirement(self) -> bool:

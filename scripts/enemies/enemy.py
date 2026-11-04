@@ -4,6 +4,7 @@ from typing import Dict, Optional
 from ..entities import Entity, SIGIL_SLOTS, ALL_RES
 from ..items.items import ItemRarity, LootTable, RESOURCES, rollRarity
 from ..items.equipment import Equipment
+from ..dungeons.dungeonMap import generateDungeonMap
 from ..runeDrops import rollRuneDrops
 from ..abilities import ENEMY_ABILITIES, ENEMY_AFFIX_ABILITIES, EnemyAbility, BasicAttack
 from ..styles import console
@@ -589,13 +590,6 @@ class Enemy(Entity):
         console.print(f"\n[success]{self._name} has been defeated![/success]")
         return True
 
-    def rollDungeonMap(self):
-        from dungeons.dungeons import generateDungeonMap
-        key = generateDungeonMap(self._level)
-        if key:
-            return key
-        return None
-
 GROUP_SIZE_DECAY = 0.65 # how fast the per-enemy reduction shrinks as the group grows - tune by feel
 GROUP_SIZE_FLOOR = 0.45 # asymptotic minimum multiplier - even an 8-enemy fight shouldn't trivialise individuals
 
@@ -605,7 +599,7 @@ def groupSizeMultiplier(numEnemies: int) -> float:
     return GROUP_SIZE_FLOOR + (1.0 - GROUP_SIZE_FLOOR) * (GROUP_SIZE_DECAY ** (numEnemies - 1))
 
 def createEnemy(level: int = 1, difficulty: float = 1.0, rarity: float = 0, quantity: float = 0, playerClassName: str = None, playerName: str = None,
-                 enemyClass: EnemyClass = None, groupSize: int = 1) -> Enemy:
+                 enemyClass: EnemyClass = None, groupSize: int = 1, playerLevel: int = None, forcedRarity: EnemyRarity = None) -> Enemy:
     rarity += 1
     quantity += 1
 
@@ -632,12 +626,12 @@ def createEnemy(level: int = 1, difficulty: float = 1.0, rarity: float = 0, quan
 
     name = f"{ELEMENTAL_NAME[element]} {random.choice(NAMES)}"
     enemy = Enemy(name, level, baseHealth, baseDamage, baseCritChance, baseCritMulti, element, baseSpeed, loot, rarity, quantity, playerClassName, playerName,
-                  enemyClass=enemyClass, groupSize=groupSize)
+                  rarity=forcedRarity, enemyClass=enemyClass, groupSize=groupSize)
     enemy._health = enemy._maxHealth
 
-    key = enemy.rollDungeonMap()
-    if key:
-        enemy._lootTable.addExtra(key.name, key.description)
+    dungeonMap = generateDungeonMap(level, playerLevel if playerLevel is not None else level)
+    if dungeonMap:
+        enemy._lootTable.addDungeonMap(dungeonMap)
 
     for _ in range(random.randint(1, 3)): #pick enemy resistances
         res = random.choice(DAMAGE_TYPES)

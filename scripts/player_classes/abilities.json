@@ -1869,6 +1869,7 @@
         "level": 1,
         "cooldown": 2,
         "effects": {},
+        "targets": 1,
         "description": "Shift between Human and Beast Form.\n  - Cooldown: 2 Turns\n  - No cost."
       },
       "Rake": {

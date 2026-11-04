@@ -132,10 +132,10 @@ def craftingSandbox():
         
         if choice == '0':
             console.print("\n" + "="*50)
-            console.print(item.detailed())
+            console.print(item)
             console.print("="*50)
             continue
-        
+
         if choice not in categories:
             console.print("[red]Invalid choice![/red]")
             continue

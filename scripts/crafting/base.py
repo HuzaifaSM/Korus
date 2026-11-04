@@ -34,9 +34,6 @@ class CraftingItem:
     minItemLevel: Optional[int] = None
     maxTierDelta: Optional[int] = None
 
-    # relative weight used when rolling which rune drops (scripts/runeDrops.py) - higher is more
-    # common. Set explicitly per-rune based on power: roughly 300=basic/utility, 150=common,
-    # 80=uncommon, 35=rare, 15=very rare, 6=build-defining/extremely rare
     dropWeight: float = 100.0
 
     def _serialise(self):

@@ -1,4 +1,4 @@
-from .base import Player, ALL_RES
+from .base import Player
 from scripts.styles import console
 from scripts.abilities import Effects
 import random

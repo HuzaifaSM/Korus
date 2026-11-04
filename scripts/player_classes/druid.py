@@ -445,6 +445,7 @@ class Druid(Player): # balanced damage and speed, earth damage
             dmgPct = fx.get('damage_percent', 0) / 100
             if dmgPct:
                 damageDealt = int(damageDealt * (1 + dmgPct))
+                self._logDamage(f"{ability.name} ({self.form.capitalize()} Form)", percent=dmgPct)
             healPct = fx.get('heal_percent_of_damage', 0) / 100
             if healPct:
                 heal = int(damageDealt * healPct)
@@ -473,6 +474,7 @@ class Druid(Player): # balanced damage and speed, earth damage
                 self.ferocity = 0
                 self._applyFerocityBonus()
                 damageDealt = int(damageDealt * (1 + (dmgPerStack * stacksConsumed)))
+                self._logDamage(f"Skinwalker Ferocity ({stacksConsumed} Stacks)", percent=dmgPerStack * stacksConsumed)
                 console.print(f"[yellow]Skinwalker: {ability.name} consumes {stacksConsumed} Ferocity for +{int(dmgPerStack * stacksConsumed * 100)}% Damage.[/yellow]")
 
             if self._ascendancy == 'Confluence' and 'consumes_verdance_for_damage' in ability.tags and self.verdance > 0:
@@ -483,6 +485,7 @@ class Druid(Player): # balanced damage and speed, earth damage
                 self._applyFormBonuses()
                 bonus = dmgPerStack * stacksConsumed
                 damageDealt += bonus
+                self._logDamage(f"Confluence Verdance ({stacksConsumed} Stacks)", flat=bonus)
                 console.print(f"[earth]Confluence: {ability.name} consumes {stacksConsumed} Verdance for +{bonus} Damage.[/earth]")
 
             if self._ascendancy == 'Confluence' and self.confluenceActive and 'form_adaptive' in ability.tags:
@@ -490,6 +493,7 @@ class Druid(Player): # balanced damage and speed, earth damage
                 confluencePct = fx.get('damage_percent', 0) / 100
                 if confluencePct:
                     damageDealt = int(damageDealt * (1 + confluencePct))
+                    self._logDamage("Confluence Fused Nature", percent=confluencePct)
                     console.print(f"[gold1]Confluence: {ability.name} draws on your fused nature for +{int(confluencePct * 100)}% Damage![/gold1]")
 
             if self._ascendancy == 'Wellspring' and 'consumes_beast_damage_pool' in ability.tags and self.wellspringBeastDamage > 0:
@@ -499,6 +503,7 @@ class Druid(Player): # balanced damage and speed, earth damage
                 self.wellspringBeastDamage = 0
                 bonus = int(pooled * mult)
                 damageDealt += bonus
+                self._logDamage("Wellspring Overflow", flat=bonus)
                 console.print(f"[earth]Wellspring: {ability.name} overflows {pooled} stored Damage for +{bonus}![/earth]")
 
             if self._ascendancy == 'Numen' and 'consumes_numen_pools' in ability.tags and (self.numenBeastDamage > 0 or self.numenThresholdDamage > 0):
@@ -509,25 +514,38 @@ class Druid(Player): # balanced damage and speed, earth damage
                 self.numenThresholdDamage = 0
                 bonus = int(pooled * mult)
                 damageDealt += bonus
+                self._logDamage("Numen Overload", flat=bonus)
                 console.print(f"[earth]Numen: {ability.name} overloads {pooled} stored Damage for +{bonus}![/earth]")
 
         if self.form == 'human':
             self._gainVerdance(2)
 
-        totalEarthBonus = self.formEarthDamage + self.verdanceEarthDamage + self.heartwoodLoamEarthDamage
+        earthBonuses = [
+            (f"{self.form.capitalize()} Form", self.formEarthDamage),
+            ("Verdance", self.verdanceEarthDamage),
+            ("Heartwood Loam", self.heartwoodLoamEarthDamage),
+        ]
         if self._ascendancy == 'Confluence' and self.confluenceActive:
-            totalEarthBonus += 50
+            earthBonuses.append(("Confluence", 50))
+        totalEarthBonus = sum(amount for _, amount in earthBonuses)
         if damageType == 'earth' and totalEarthBonus > 0:
             damageDealt = int(damageDealt * (1 + (totalEarthBonus / 100)))
+            # bonuses are additive with each other, so each is logged as its own share of the combined multiplier
+            for reason, amount in earthBonuses:
+                if amount > 0:
+                    self._logDamage(reason, percent=amount / 100)
 
         if self._ascendancy == 'Wellspring' and self.form == 'beast' and self.wellspringBeastDamage > 0:
             damageDealt += self.wellspringBeastDamage
+            self._logDamage("Wellspring Beast Form", flat=self.wellspringBeastDamage)
 
         if self._ascendancy == 'Numen':
             if self.form == 'beast' and self.numenBeastDamage > 0:
                 damageDealt += self.numenBeastDamage
+                self._logDamage("Numen Beast Form", flat=self.numenBeastDamage)
             if self.numenThresholdDamage > 0:
                 damageDealt += self.numenThresholdDamage
+                self._logDamage("Numen Threshold", flat=self.numenThresholdDamage)
 
         return damageDealt, damageType
 
@@ -539,6 +557,8 @@ class Druid(Player): # balanced damage and speed, earth damage
 
         if self._ascendancy == 'Confluence' and self.confluenceActive:
             damageTaken = int(damageTaken * 1.15)
+            if attacker:
+                attacker._logDamage("Confluence Vulnerability", percent=0.15)
 
         return super().onHit(damageTaken, damageType, crit, attacker, combatManager)
 
